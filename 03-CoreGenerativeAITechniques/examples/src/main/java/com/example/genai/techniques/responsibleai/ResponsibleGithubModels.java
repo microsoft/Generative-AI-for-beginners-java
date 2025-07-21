@@ -70,6 +70,9 @@ public class ResponsibleGithubModels {
         System.out.println("\n=== Summary ===");
         System.out.println("This demonstration shows how GitHub Models implements responsible AI");
         System.out.println("safety measures by filtering harmful content and protecting users.");
+        
+        // Force proper cleanup to avoid thread lingering warnings
+        System.exit(0);
     }
     
     /**

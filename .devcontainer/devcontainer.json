@@ -40,5 +40,15 @@
     "JAVA_HOME": "/usr/lib/jvm/msopenjdk-current",
     "MAVEN_OPTS": "-Xmx2g"
   },
-  "forwardPorts": [8080]
+  "forwardPorts": [3000, 8080],
+  "portsAttributes": {
+    "3000": {
+      "label": "Pet Story App",
+      "onAutoForward": "notify"
+    },
+    "8080": {
+      "label": "MCP Calculator/API Server",
+      "onAutoForward": "notify"
+    }
+  }
 }

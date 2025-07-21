@@ -115,6 +115,9 @@ public class SimpleReaderDemo {
                 e.printStackTrace();
             }
         }
+        
+        // Force proper cleanup to avoid thread lingering warnings
+        System.exit(0);
     }
 
     /**

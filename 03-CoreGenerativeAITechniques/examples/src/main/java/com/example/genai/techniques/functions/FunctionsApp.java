@@ -60,9 +60,13 @@ public class FunctionsApp {
             System.out.println("=== Calculator Function Example ===");
             calculatorFunctionExample(client);
             
+            // Force proper cleanup to avoid thread lingering warnings
+            System.exit(0);
+            
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
             e.printStackTrace();
+            System.exit(1);
         }
     }
     
