@@ -1,215 +1,300 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "a66dad62cdb2e141f05086feaf1a4a39",
-  "translation_date": "2025-07-21T19:49:21+00:00",
+  "original_hash": "2284c54d2a98090a37df0dbef1633ebf",
+  "translation_date": "2025-07-25T11:49:57+00:00",
   "source_file": "04-PracticalSamples/foundrylocal/README.md",
   "language_code": "he"
 }
 -->
-# יישום שורת פקודה מקומי של Foundry
-
->**הערה**: פרק זה כולל [**מדריך**](./TUTORIAL.md) שמנחה אותך כיצד להפעיל את הדוגמאות המוכנות.
-
-יישום פשוט של Spring Boot בשורת פקודה שמדגים כיצד להתחבר ל-Foundry Local באמצעות OpenAI Java SDK.
-
-## מה תלמדו
-
-- כיצד לשלב את Foundry Local עם יישומי Spring Boot באמצעות OpenAI Java SDK
-- שיטות עבודה מומלצות לפיתוח ובדיקות AI מקומיות
+# מדריך Foundry Local עם Spring Boot
 
 ## תוכן עניינים
 
-- [מה תלמדו](../../../../04-PracticalSamples/foundrylocal)
-- [דרישות מוקדמות](../../../../04-PracticalSamples/foundrylocal)
-  - [התקנת Foundry Local](../../../../04-PracticalSamples/foundrylocal)
-  - [אימות](../../../../04-PracticalSamples/foundrylocal)
-- [הגדרות](../../../../04-PracticalSamples/foundrylocal)
-- [התחלה מהירה](../../../../04-PracticalSamples/foundrylocal)
-- [מה היישום עושה](../../../../04-PracticalSamples/foundrylocal)
-- [פלט לדוגמה](../../../../04-PracticalSamples/foundrylocal)
-- [ארכיטקטורה](../../../../04-PracticalSamples/foundrylocal)
-- [נקודות עיקריות בקוד](../../../../04-PracticalSamples/foundrylocal)
-  - [שילוב OpenAI Java SDK](../../../../04-PracticalSamples/foundrylocal)
-  - [Chat Completion API](../../../../04-PracticalSamples/foundrylocal)
-- [פתרון בעיות](../../../../04-PracticalSamples/foundrylocal)
+- [דרישות מקדימות](../../../../04-PracticalSamples/foundrylocal)
+- [סקירת הפרויקט](../../../../04-PracticalSamples/foundrylocal)
+- [הבנת הקוד](../../../../04-PracticalSamples/foundrylocal)
+  - [1. הגדרות האפליקציה (application.properties)](../../../../04-PracticalSamples/foundrylocal)
+  - [2. מחלקת האפליקציה הראשית (Application.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [3. שכבת השירות AI (FoundryLocalService.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [4. תלות הפרויקט (pom.xml)](../../../../04-PracticalSamples/foundrylocal)
+- [איך הכל עובד יחד](../../../../04-PracticalSamples/foundrylocal)
+- [הגדרת Foundry Local](../../../../04-PracticalSamples/foundrylocal)
+- [הרצת האפליקציה](../../../../04-PracticalSamples/foundrylocal)
+- [פלט צפוי](../../../../04-PracticalSamples/foundrylocal)
+- [צעדים הבאים](../../../../04-PracticalSamples/foundrylocal)
+- [פתרון תקלות](../../../../04-PracticalSamples/foundrylocal)
 
-## דרישות מוקדמות
+## דרישות מקדימות
 
-> **⚠️ הערה**: יישום זה **לא פועל בסביבת devcontainer המסופקת** מכיוון שהוא דורש התקנה והפעלה של Foundry Local במערכת המארחת.
+לפני שמתחילים את המדריך, ודאו שיש לכם:
 
-### התקנת Foundry Local
+- **Java 21 או גרסה גבוהה יותר** מותקנת במערכת שלכם
+- **Maven 3.6+** לבניית הפרויקט
+- **Foundry Local** מותקן ופועל
 
-לפני הפעלת היישום, יש להתקין ולהפעיל את Foundry Local. בצעו את השלבים הבאים:
-
-1. **ודאו שהמערכת שלכם עומדת בדרישות**:
-   - **מערכת הפעלה**: Windows 10 (x64), Windows 11 (x64/ARM), Windows Server 2025, או macOS
-   - **חומרה**: 
-     - מינימום: 8GB RAM, 3GB שטח דיסק פנוי
-     - מומלץ: 16GB RAM, 15GB שטח דיסק פנוי
-   - **רשת**: חיבור לאינטרנט להורדת מודל ראשונית (אופציונלי לשימוש לא מקוון)
-   - **האצה (אופציונלי)**: NVIDIA GPU (סדרה 2,000 או חדשה יותר), AMD GPU (סדרה 6,000 או חדשה יותר), Qualcomm Snapdragon X Elite (8GB או יותר זיכרון), או Apple silicon
-   - **הרשאות**: הרשאות מנהל להתקנת תוכנה במכשיר שלכם
-
-2. **התקינו את Foundry Local**:
-   
-   **עבור Windows:**
-   ```bash
-   winget install Microsoft.FoundryLocal
-   ```
-   
-   **עבור macOS:**
-   ```bash
-   brew tap microsoft/foundrylocal
-   brew install foundrylocal
-   ```
-   
-   לחלופין, ניתן להוריד את המתקין ממאגר [Foundry Local GitHub](https://github.com/microsoft/Foundry-Local).
-
-3. **הפעילו את המודל הראשון שלכם**:
-
-   ```bash
-   foundry model run phi-3.5-mini
-   ```
-
-   המודל יורד (תהליך שעשוי לקחת מספר דקות, תלוי במהירות האינטרנט שלכם) ולאחר מכן מופעל. Foundry Local בוחר אוטומטית את גרסת המודל הטובה ביותר עבור המערכת שלכם (CUDA עבור NVIDIA GPUs, גרסת CPU אחרת).
-
-4. **בדקו את המודל** על ידי שאילת שאלה באותו מסוף:
-
-   ```bash
-   Why is the sky blue?
-   ```
-
-   אתם אמורים לראות תגובה ממודל Phi המסבירה מדוע השמיים נראים כחולים.
-
-### אימות
-
-ניתן לאמת שהכול פועל כראוי באמצעות הפקודות הבאות:
+### **התקנת Foundry Local:**
 
 ```bash
-# List all available models
-foundry model list
+# Windows
+winget install Microsoft.FoundryLocal
 
-# Check the service status via REST API
-curl http://localhost:5273/v1/models
+# macOS (after installing)
+foundry model run phi-3.5-mini
 ```
 
-ניתן גם לבקר בכתובת `http://localhost:5273` בדפדפן שלכם כדי לראות את ממשק האינטרנט של Foundry Local.
+## סקירת הפרויקט
 
-## הגדרות
+הפרויקט מורכב מארבעה רכיבים עיקריים:
 
-ניתן להגדיר את היישום דרך `application.properties`:
+1. **Application.java** - נקודת הכניסה הראשית של אפליקציית Spring Boot
+2. **FoundryLocalService.java** - שכבת השירות שמטפלת בתקשורת עם AI
+3. **application.properties** - הגדרות חיבור ל-Foundry Local
+4. **pom.xml** - תלות Maven והגדרות הפרויקט
 
-- `foundry.local.base-url` - כתובת בסיס עבור Foundry Local (ברירת מחדל: http://localhost:5273)
-- `foundry.local.model` - מודל AI לשימוש (ברירת מחדל: Phi-3.5-mini-instruct-cuda-gpu)
+## הבנת הקוד
 
-> **הערה**: שם המודל בהגדרות צריך להתאים לגרסה הספציפית ש-Foundry Local הוריד עבור המערכת שלכם. כאשר אתם מפעילים `foundry model run phi-3.5-mini`, Foundry Local בוחר ומוריד אוטומטית את הגרסה הטובה ביותר (CUDA עבור NVIDIA GPUs, גרסת CPU אחרת). השתמשו ב-`foundry model list` כדי לראות את שם המודל המדויק הזמין במופע המקומי שלכם.
+### 1. הגדרות האפליקציה (application.properties)
 
-## התחלה מהירה
+**קובץ:** `src/main/resources/application.properties`
 
-### 1. נווטו לתיקיית היישום המקומי של Foundry
-```bash
-cd Generative-AI-for-beginners-java/04-PracticalSamples/foundrylocal
+```properties
+foundry.local.base-url=http://localhost:5273
+foundry.local.model=Phi-3.5-mini-instruct-cuda-gpu
 ```
 
-### 2. הפעילו את היישום
+**מה זה עושה:**
+- **base-url**: מציין היכן Foundry Local פועל (ברירת מחדל: פורט 5273)
+- **model**: שם מודל ה-AI לשימוש ביצירת טקסט
 
-```bash
-mvn spring-boot:run
+**רעיון מרכזי:** Spring Boot טוען את ההגדרות הללו באופן אוטומטי ומאפשר גישה אליהן באמצעות האנוטציה `@Value`.
+
+### 2. מחלקת האפליקציה הראשית (Application.java)
+
+**קובץ:** `src/main/java/com/example/Application.java`
+
+```java
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication app = new SpringApplication(Application.class);
+        app.setWebApplicationType(WebApplicationType.NONE);  // No web server needed
+        app.run(args);
+    }
 ```
 
-או בנו והפעילו את קובץ ה-JAR:
+**מה זה עושה:**
+- `@SpringBootApplication` מאפשרת קונפיגורציה אוטומטית של Spring Boot
+- `WebApplicationType.NONE` מציין שזו אפליקציה מבוססת שורת פקודה ולא שרת אינטרנט
+- המתודה הראשית מפעילה את האפליקציה של Spring
 
-```bash
-mvn clean package
-java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+**הרצת הדמו:**
+```java
+@Bean
+public CommandLineRunner foundryLocalRunner(FoundryLocalService foundryLocalService) {
+    return args -> {
+        System.out.println("=== Foundry Local Demo ===");
+        
+        String testMessage = "Hello! Can you tell me what you are and what model you're running?";
+        System.out.println("Sending message: " + testMessage);
+        
+        String response = foundryLocalService.chat(testMessage);
+        System.out.println("Response from Foundry Local:");
+        System.out.println(response);
+    };
+}
 ```
 
-### תלות
+**מה זה עושה:**
+- `@Bean` יוצרת רכיב שמנוהל על ידי Spring
+- `CommandLineRunner` מריץ קוד לאחר ש-Spring Boot מופעל
+- `foundryLocalService` מוזרק אוטומטית על ידי Spring (הזרקת תלות)
+- שולח הודעת בדיקה ל-AI ומציג את התגובה
 
-היישום משתמש ב-OpenAI Java SDK כדי לתקשר עם Foundry Local. התלות המרכזית היא:
+### 3. שכבת השירות AI (FoundryLocalService.java)
+
+**קובץ:** `src/main/java/com/example/FoundryLocalService.java`
+
+#### הזרקת קונפיגורציה:
+```java
+@Service
+public class FoundryLocalService {
+    
+    @Value("${foundry.local.base-url:http://localhost:5273}")
+    private String baseUrl;
+    
+    @Value("${foundry.local.model:Phi-3.5-mini-instruct-cuda-gpu}")
+    private String model;
+```
+
+**מה זה עושה:**
+- `@Service` מציין ל-Spring שהמחלקה מספקת לוגיקה עסקית
+- `@Value` מזריק ערכי קונפיגורציה מתוך application.properties
+- התחביר `:default-value` מספק ערכי ברירת מחדל אם ההגדרות לא מוגדרות
+
+#### אתחול לקוח:
+```java
+@PostConstruct
+public void init() {
+    this.openAIClient = OpenAIOkHttpClient.builder()
+            .baseUrl(baseUrl + "/v1")        // Foundry Local uses OpenAI-compatible API
+            .apiKey("unused")                 // Local server doesn't need real API key
+            .build();
+}
+```
+
+**מה זה עושה:**
+- `@PostConstruct` מריץ את המתודה הזו לאחר ש-Spring יוצר את השירות
+- יוצר לקוח OpenAI שמצביע על המופע המקומי של Foundry Local
+- הנתיב `/v1` נדרש לצורך תאימות ל-API של OpenAI
+- מפתח ה-API הוא "unused" כי פיתוח מקומי לא דורש אימות
+
+#### מתודת הצ'אט:
+```java
+public String chat(String message) {
+    try {
+        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
+                .model(model)                    // Which AI model to use
+                .addUserMessage(message)         // Your question/prompt
+                .maxCompletionTokens(150)        // Limit response length
+                .temperature(0.7)                // Control creativity (0.0-1.0)
+                .build();
+        
+        ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
+        
+        // Extract the AI's response from the API result
+        if (chatCompletion.choices() != null && !chatCompletion.choices().isEmpty()) {
+            return chatCompletion.choices().get(0).message().content().orElse("No response found");
+        }
+        
+        return "No response content found";
+    } catch (Exception e) {
+        throw new RuntimeException("Error calling chat completion: " + e.getMessage(), e);
+    }
+}
+```
+
+**מה זה עושה:**
+- **ChatCompletionCreateParams**: מגדיר את בקשת ה-AI
+  - `model`: מציין איזה מודל AI להשתמש
+  - `addUserMessage`: מוסיף את ההודעה שלכם לשיחה
+  - `maxCompletionTokens`: מגביל את אורך התגובה (חוסך משאבים)
+  - `temperature`: שולט ברנדומליות (0.0 = דטרמיניסטי, 1.0 = יצירתי)
+- **קריאת API**: שולח את הבקשה ל-Foundry Local
+- **טיפול בתגובה**: שולף את תגובת הטקסט של ה-AI בצורה בטוחה
+- **טיפול בשגיאות**: עוטף חריגים עם הודעות שגיאה מועילות
+
+### 4. תלות הפרויקט (pom.xml)
+
+**תלויות מרכזיות:**
 
 ```xml
+<!-- Spring Boot - Application framework -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+    <version>${spring-boot.version}</version>
+</dependency>
+
+<!-- OpenAI Java SDK - For AI API calls -->
 <dependency>
     <groupId>com.openai</groupId>
     <artifactId>openai-java</artifactId>
     <version>2.12.0</version>
 </dependency>
+
+<!-- Jackson - JSON processing -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.17.0</version>
+</dependency>
 ```
 
-היישום מוגדר מראש להתחבר ל-Foundry Local הפועל על הפורט ברירת המחדל.
+**מה הן עושות:**
+- **spring-boot-starter**: מספקת פונקציונליות בסיסית של Spring Boot
+- **openai-java**: SDK רשמי של OpenAI לתקשורת עם API
+- **jackson-databind**: מטפל בסריאליזציה/דסיריאליזציה של JSON עבור קריאות API
 
-## מה היישום עושה
+## איך הכל עובד יחד
 
-כאשר אתם מפעילים את היישום:
+כך מתבצע הזרימה המלאה כאשר מריצים את האפליקציה:
 
-1. **מופעל** כיישום שורת פקודה (ללא שרת אינטרנט)
-2. **שולח אוטומטית** הודעת בדיקה: "שלום! האם תוכל לספר לי מה אתה ואיזה מודל אתה מפעיל?"
-3. **מציג את התגובה** מ-Foundry Local בקונסולה
-4. **יוצא בצורה נקייה** לאחר הדמו
+1. **הפעלה**: Spring Boot מופעל וטוען את `application.properties`
+2. **יצירת שירות**: Spring יוצר את `FoundryLocalService` ומזריק ערכי קונפיגורציה
+3. **הגדרת לקוח**: `@PostConstruct` מאתחל את לקוח OpenAI להתחבר ל-Foundry Local
+4. **הרצת דמו**: `CommandLineRunner` מבוצע לאחר ההפעלה
+5. **קריאת AI**: הדמו קורא ל-`foundryLocalService.chat()` עם הודעת בדיקה
+6. **בקשת API**: השירות בונה ושולח בקשה תואמת OpenAI ל-Foundry Local
+7. **עיבוד תגובה**: השירות שולף ומחזיר את תגובת ה-AI
+8. **הצגה**: האפליקציה מציגה את התגובה ויוצאת
 
-## פלט לדוגמה
+## הגדרת Foundry Local
+
+כדי להגדיר את Foundry Local, בצעו את השלבים הבאים:
+
+1. **התקנת Foundry Local** באמצעות ההוראות בסעיף [דרישות מקדימות](../../../../04-PracticalSamples/foundrylocal).
+2. **הורדת מודל AI** שברצונכם להשתמש בו, לדוגמה, `phi-3.5-mini`, עם הפקודה הבאה:
+   ```bash
+   foundry model run phi-3.5-mini
+   ```
+3. **הגדרת קובץ application.properties** להתאמה להגדרות Foundry Local שלכם, במיוחד אם אתם משתמשים בפורט או מודל שונים.
+
+## הרצת האפליקציה
+
+### שלב 1: הפעלת Foundry Local
+```bash
+foundry model run phi-3.5-mini
+```
+
+### שלב 2: בנייה והרצת האפליקציה
+```bash
+mvn clean package
+java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+```
+
+## פלט צפוי
 
 ```
 === Foundry Local Demo ===
 Calling Foundry Local service...
 Sending message: Hello! Can you tell me what you are and what model you're running?
 Response from Foundry Local:
-Hello! I'm Phi, an AI language model created by Microsoft. I don't have a physical form or a specific hardware model like a smartphone or a computer. I exist purely in software, and I operate on Microsoft's infrastructure...
+Hello! I'm Phi-3.5, a small language model created by Microsoft. I'm currently running 
+as the Phi-3.5-mini-instruct model, which is designed to be helpful, harmless, and honest 
+in my interactions. I can assist with a wide variety of tasks including answering 
+questions, helping with analysis, creative writing, coding, and general conversation. 
+Is there something specific you'd like help with today?
 =========================
 ```
 
-## ארכיטקטורה
+## צעדים הבאים
 
-- **Application.java** - יישום Spring Boot ראשי עם CommandLineRunner
-- **FoundryLocalService.java** - שירות שמשתמש ב-OpenAI Java SDK כדי לתקשר עם Foundry Local
-- שימוש ב-**OpenAI Java SDK** לקריאות API בטוחות
-- סידור/פירוק אוטומטי של JSON מנוהל על ידי ה-SDK
-- הגדרה נקייה באמצעות אנוטציות `@Value` ו-`@PostConstruct` של Spring
+לדוגמאות נוספות, ראו [פרק 04: דוגמאות מעשיות](../README.md)
 
-## נקודות עיקריות בקוד
+## פתרון תקלות
 
-### שילוב OpenAI Java SDK
+### בעיות נפוצות
 
-היישום משתמש ב-OpenAI Java SDK כדי ליצור לקוח המוגדר עבור Foundry Local:
+**"Connection refused" או "Service unavailable"**
+- ודאו ש-Foundry Local פועל: `foundry model list`
+- בדקו שהשירות נמצא בפורט 5273: בדקו את `application.properties`
+- נסו להפעיל מחדש את Foundry Local: `foundry model run phi-3.5-mini`
 
-```java
-@PostConstruct
-public void init() {
-    this.openAIClient = OpenAIOkHttpClient.builder()
-            .baseUrl(baseUrl + "/v1")
-            .apiKey("unused") // Local server doesn't require real API key
-            .build();
-}
-```
+**שגיאות "Model not found"**
+- בדקו אילו מודלים זמינים: `foundry model list`
+- עדכנו את שם המודל ב-`application.properties` כך שיתאים בדיוק
+- הורידו את המודל אם נדרש: `foundry model run phi-3.5-mini`
 
-### Chat Completion API
+**שגיאות קומפילציה ב-Maven**
+- ודאו ש-Java 21 או גרסה גבוהה יותר מותקנת: `java -version`
+- נקו ובנו מחדש: `mvn clean compile`
+- בדקו חיבור לאינטרנט להורדת תלויות
 
-ביצוע בקשות השלמת שיחה הוא פשוט ובטוח:
-
-```java
-ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-        .model(model)
-        .addUserMessage(message)
-        .maxCompletionTokens(150)
-        .temperature(0.7)
-        .build();
-
-ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
-```
-
-## פתרון בעיות
-
-אם אתם רואים שגיאות חיבור:
-1. ודאו ש-Foundry Local פועל בכתובת `http://localhost:5273`
-2. בדקו שמודל Phi-3.5-mini זמין באמצעות `foundry model list`
-3. ודאו ששם המודל ב-`application.properties` תואם לשם המודל המדויק שמופיע ברשימה
-4. ודאו שאין חומת אש שחוסמת את החיבור
-
-בעיות נפוצות:
-- **מודל לא נמצא**: הפעילו `foundry model run phi-3.5-mini` כדי להוריד ולהפעיל את המודל
-- **שירות לא פועל**: ייתכן ששירות Foundry Local נעצר; הפעילו אותו מחדש באמצעות פקודת הפעלת המודל
-- **שם מודל שגוי**: השתמשו ב-`foundry model list` כדי לראות את המודלים הזמינים ועדכנו את ההגדרות שלכם בהתאם
+**האפליקציה מופעלת אך אין פלט**
+- ודאו ש-Foundry Local מגיב: פתחו דפדפן לכתובת `http://localhost:5273`
+- בדקו את לוגי האפליקציה להודעות שגיאה ספציפיות
+- ודאו שהמודל נטען במלואו ומוכן
 
 **כתב ויתור**:  
-מסמך זה תורגם באמצעות שירות תרגום מבוסס בינה מלאכותית [Co-op Translator](https://github.com/Azure/co-op-translator). למרות שאנו שואפים לדיוק, יש להיות מודעים לכך שתרגומים אוטומטיים עשויים להכיל שגיאות או אי דיוקים. המסמך המקורי בשפתו המקורית צריך להיחשב כמקור סמכותי. עבור מידע קריטי, מומלץ להשתמש בתרגום מקצועי על ידי אדם. איננו נושאים באחריות לאי הבנות או לפרשנויות שגויות הנובעות משימוש בתרגום זה.
+מסמך זה תורגם באמצעות שירות תרגום מבוסס בינה מלאכותית [Co-op Translator](https://github.com/Azure/co-op-translator). למרות שאנו שואפים לדיוק, יש להיות מודעים לכך שתרגומים אוטומטיים עשויים להכיל שגיאות או אי דיוקים. המסמך המקורי בשפתו המקורית צריך להיחשב כמקור סמכותי. עבור מידע קריטי, מומלץ להשתמש בתרגום מקצועי אנושי. איננו נושאים באחריות לאי הבנות או לפרשנויות שגויות הנובעות משימוש בתרגום זה.

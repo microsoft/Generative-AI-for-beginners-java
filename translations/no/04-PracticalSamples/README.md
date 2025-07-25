@@ -1,28 +1,26 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "da1b6d87b8a73306b29f9a1bdd681221",
-  "translation_date": "2025-07-21T19:44:09+00:00",
+  "original_hash": "df269f529a172a0197ef28460bf1da9f",
+  "translation_date": "2025-07-25T11:42:48+00:00",
   "source_file": "04-PracticalSamples/README.md",
   "language_code": "no"
 }
 -->
 # Praktiske Applikasjoner og Prosjekter
 
-> Merk: Hvert eksempel inkluderer også en **TUTORIAL.md** som veileder deg gjennom hvordan du kjører applikasjonen.
-
 ## Hva Du Vil Lære
 I denne delen vil vi demonstrere tre praktiske applikasjoner som viser utviklingsmønstre for generativ AI med Java:
-- Lage en multi-modal Pet Story Generator som kombinerer AI på klient- og serversiden
+- Lage en multimodal Historiegenerator for Kjæledyr som kombinerer AI på klient- og serversiden
 - Implementere lokal AI-modellintegrasjon med Foundry Local Spring Boot-demoen
-- Utvikle en Model Context Protocol (MCP)-tjeneste med kalkulator-eksempelet
+- Utvikle en Model Context Protocol (MCP)-tjeneste med Kalkulator-eksempelet
 
 ## Innholdsfortegnelse
 
 - [Introduksjon](../../../04-PracticalSamples)
   - [Foundry Local Spring Boot Demo](../../../04-PracticalSamples)
-  - [Pet Story Generator](../../../04-PracticalSamples)
-  - [MCP Calculator Service (Nybegynnervennlig MCP-demo)](../../../04-PracticalSamples)
+  - [Historiegenerator for Kjæledyr](../../../04-PracticalSamples)
+  - [MCP Kalkulator-tjeneste (Nybegynnervennlig MCP-demo)](../../../04-PracticalSamples)
 - [Læringsprogresjon](../../../04-PracticalSamples)
 - [Oppsummering](../../../04-PracticalSamples)
 - [Neste Steg](../../../04-PracticalSamples)
@@ -35,27 +33,27 @@ Dette kapittelet viser **eksempelprosjekter** som demonstrerer utviklingsmønstr
 
 **[Foundry Local Spring Boot Demo](foundrylocal/README.md)** demonstrerer hvordan man integrerer med lokale AI-modeller ved hjelp av **OpenAI Java SDK**. Den viser hvordan man kobler til **Phi-3.5-mini**-modellen som kjører på Foundry Local, slik at du kan kjøre AI-applikasjoner uten å være avhengig av skytjenester.
 
-### Pet Story Generator
+### Historiegenerator for Kjæledyr
 
-**[Pet Story Generator](petstory/README.md)** er en engasjerende Spring Boot-webapplikasjon som demonstrerer **multi-modal AI-prosessering** for å generere kreative historier om kjæledyr. Den kombinerer AI-funksjoner på klient- og serversiden ved hjelp av transformer.js for AI-interaksjoner i nettleseren og OpenAI SDK for serverbasert prosessering.
+**[Historiegenerator for Kjæledyr](petstory/README.md)** er en engasjerende Spring Boot-webapplikasjon som demonstrerer **multimodal AI-prosessering** for å generere kreative historier om kjæledyr. Den kombinerer AI-funksjoner på klient- og serversiden ved hjelp av transformer.js for AI-interaksjoner i nettleseren og OpenAI SDK for prosessering på serversiden.
 
-### MCP Calculator Service (Nybegynnervennlig MCP-demo)
+### MCP Kalkulator-tjeneste (Nybegynnervennlig MCP-demo)
 
-**[MCP Calculator Service](mcp/calculator/README.md)** er en enkel demonstrasjon av **Model Context Protocol (MCP)** ved bruk av Spring AI. Den gir en nybegynnervennlig introduksjon til MCP-konsepter og viser hvordan man lager en grunnleggende MCP-server som samhandler med MCP-klienter.
+**[MCP Kalkulator-tjeneste](mcp/calculator/README.md)** er en enkel demonstrasjon av **Model Context Protocol (MCP)** ved bruk av Spring AI. Den gir en nybegynnervennlig introduksjon til MCP-konsepter og viser hvordan man lager en grunnleggende MCP-server som samhandler med MCP-klienter.
 
 ## Læringsprogresjon
 
-Disse prosjektene er designet for å bygge på konsepter fra tidligere kapitler:
+Disse prosjektene er designet for å bygge videre på konsepter fra tidligere kapitler:
 
 1. **Start Enkelt**: Begynn med Foundry Local Spring Boot Demo for å forstå grunnleggende AI-integrasjon med lokale modeller
-2. **Legg Til Interaktivitet**: Gå videre til Pet Story Generator for multi-modal AI og nettbaserte interaksjoner
-3. **Lær MCP-grunnleggende**: Prøv MCP Calculator Service for å forstå grunnleggende prinsipper for Model Context Protocol
+2. **Legg til Interaktivitet**: Gå videre til Historiegenerator for Kjæledyr for multimodal AI og nettbaserte interaksjoner
+3. **Lær MCP-grunnleggende**: Prøv MCP Kalkulator-tjenesten for å forstå grunnleggende prinsipper for Model Context Protocol
 
 ## Oppsummering
 
 **Gratulerer!** Du har med suksess:
 
-- **Skapt multi-modale AI-opplevelser** som kombinerer AI-prosessering på klient- og serversiden
+- **Laget multimodale AI-opplevelser** som kombinerer AI-prosessering på klient- og serversiden
 - **Implementert lokal AI-modellintegrasjon** ved bruk av moderne Java-rammeverk og SDK-er
 - **Utviklet Model Context Protocol-tjenester** som demonstrerer integrasjonsmønstre for verktøy
 

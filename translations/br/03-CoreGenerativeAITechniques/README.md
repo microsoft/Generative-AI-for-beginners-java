@@ -1,139 +1,352 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "0a27b17f64f598a80b72d93b98b7ed04",
-  "translation_date": "2025-07-21T17:40:55+00:00",
+  "original_hash": "59454ab4ec36d89840df6fcfe7633cbd",
+  "translation_date": "2025-07-25T11:21:50+00:00",
   "source_file": "03-CoreGenerativeAITechniques/README.md",
   "language_code": "br"
 }
 -->
-# Técnicas Fundamentais de IA Generativa
-
->**Nota**: Este capítulo inclui um [**Tutorial**](./TUTORIAL.md) detalhado que orienta você na execução dos exemplos finalizados.
-
-## O Que Você Vai Aprender
-Neste capítulo, exploramos 4 técnicas fundamentais de IA generativa por meio de exemplos práticos:
-- Completações de LLM e fluxos de conversa
-- Chamadas de funções
-- Geração Aumentada por Recuperação (RAG)
-- Medidas de segurança para IA responsável
+# Tutorial de Técnicas Fundamentais de IA Generativa
 
 ## Índice
 
-- [O Que Você Vai Aprender](../../../03-CoreGenerativeAITechniques)
 - [Pré-requisitos](../../../03-CoreGenerativeAITechniques)
-- [Começando](../../../03-CoreGenerativeAITechniques)
-- [Visão Geral dos Exemplos](../../../03-CoreGenerativeAITechniques)
-  - [1. Completações de LLM e Fluxos de Conversa](../../../03-CoreGenerativeAITechniques)
-  - [2. Funções e Plugins com LLMs](../../../03-CoreGenerativeAITechniques)
-  - [3. Geração Aumentada por Recuperação (RAG)](../../../03-CoreGenerativeAITechniques)
-  - [4. Demonstração de Segurança em IA Responsável](../../../03-CoreGenerativeAITechniques)
-- [Resumo](../../../03-CoreGenerativeAITechniques)
+- [Introdução](../../../03-CoreGenerativeAITechniques)
+  - [Passo 1: Configure sua Variável de Ambiente](../../../03-CoreGenerativeAITechniques)
+  - [Passo 2: Navegue até o Diretório de Exemplos](../../../03-CoreGenerativeAITechniques)
+- [Tutorial 1: Compleções e Chat com LLM](../../../03-CoreGenerativeAITechniques)
+- [Tutorial 2: Chamadas de Função](../../../03-CoreGenerativeAITechniques)
+- [Tutorial 3: RAG (Geração com Recuperação de Dados)](../../../03-CoreGenerativeAITechniques)
+- [Tutorial 4: IA Responsável](../../../03-CoreGenerativeAITechniques)
+- [Padrões Comuns nos Exemplos](../../../03-CoreGenerativeAITechniques)
 - [Próximos Passos](../../../03-CoreGenerativeAITechniques)
+- [Solução de Problemas](../../../03-CoreGenerativeAITechniques)
+  - [Problemas Comuns](../../../03-CoreGenerativeAITechniques)
+
+## Visão Geral
+
+Este tutorial oferece exemplos práticos de técnicas fundamentais de IA generativa usando Java e os Modelos do GitHub. Você aprenderá a interagir com Modelos de Linguagem de Grande Escala (LLMs), implementar chamadas de função, usar geração com recuperação de dados (RAG) e aplicar práticas de IA responsável.
 
 ## Pré-requisitos
 
-- Configuração concluída a partir do [Capítulo 2](../../../02-SetupDevEnvironment)
+Antes de começar, certifique-se de ter:
+- Java 21 ou superior instalado
+- Maven para gerenciamento de dependências
+- Uma conta no GitHub com um token de acesso pessoal (PAT)
 
-## Começando
+## Introdução
 
-1. **Navegue até os exemplos**:  
+### Passo 1: Configure sua Variável de Ambiente
+
+Primeiro, você precisa configurar seu token do GitHub como uma variável de ambiente. Este token permite que você acesse os Modelos do GitHub gratuitamente.
+
+**Windows (Prompt de Comando):**
+```cmd
+set GITHUB_TOKEN=your_github_token_here
+```
+
+**Windows (PowerShell):**
+```powershell
+$env:GITHUB_TOKEN="your_github_token_here"
+```
+
+**Linux/macOS:**
+```bash
+export GITHUB_TOKEN=your_github_token_here
+```
+
+### Passo 2: Navegue até o Diretório de Exemplos
+
 ```bash
 cd 03-CoreGenerativeAITechniques/examples/
-```  
-2. **Configure o ambiente**:  
-```bash
-export GITHUB_TOKEN=your_token_here
-```  
-3. **Compile e execute os exemplos**:  
-```bash
-   # Run completions example
-   mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.completions.LLMCompletionsApp"
-   
-   # Run functions example  
-   mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.functions.FunctionsApp"
-   
-   # Run RAG example
-   mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.rag.SimpleReaderDemo"
-   
-   # Run responsible AI demo
-   mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.responsibleai.ResponsibleGithubModels"
-   ```  
-
-## Visão Geral dos Exemplos
-
-Os exemplos estão organizados na pasta `examples/` com a seguinte estrutura:
-
-```
-examples/
-├── src/main/java/com/example/genai/techniques/
-│   ├── completions/
-│   │   └── LLMCompletionsApp.java        # Basic completions 
-│   ├── functions/
-│   │   └── FunctionsApp.java             # Function calling examples
-│   ├── rag/
-│   │   └── SimpleReaderDemo.java         # Retrieval-Augmented Generation
-│   └── responsibleai/
-│       └── ResponsibleGithubModels.java  # Responsible AI safety demonstration
-├── document.txt                          # Sample document for RAG example
-└── pom.xml                               # Maven configuration
 ```
 
-### 1. Completações de LLM e Fluxos de Conversa
-**Arquivo**: `examples/src/main/java/com/example/genai/techniques/completions/LLMCompletionsApp.java`
+## Tutorial 1: Compleções e Chat com LLM
 
-Aprenda a construir IA conversacional com respostas em streaming e gerenciamento de histórico de conversas.
+**Arquivo:** `src/main/java/com/example/genai/techniques/completions/LLMCompletionsApp.java`
 
-Este exemplo demonstra:
-- Completação de texto simples com prompts do sistema
-- Conversas de múltiplas interações com gerenciamento de histórico
-- Sessões de chat interativas
-- Configuração de parâmetros (temperatura, número máximo de tokens)
+### O Que Este Exemplo Ensina
 
-### 2. Funções e Plugins com LLMs
-**Arquivo**: `examples/src/main/java/com/example/genai/techniques/functions/FunctionsApp.java`
+Este exemplo demonstra os mecanismos principais de interação com Modelos de Linguagem de Grande Escala (LLM) através da API OpenAI, incluindo a inicialização do cliente com os Modelos do GitHub, padrões de estrutura de mensagens para prompts de sistema e usuário, gerenciamento de estado de conversação por meio do acúmulo de histórico de mensagens e ajuste de parâmetros para controlar o comprimento das respostas e os níveis de criatividade.
 
-Amplie as capacidades da IA fornecendo acesso a funções personalizadas e APIs externas.
+### Conceitos-Chave do Código
 
-Este exemplo demonstra:
-- Integração com função de previsão do tempo
-- Implementação de função de calculadora  
-- Chamadas de múltiplas funções em uma única conversa
-- Definição de funções com esquemas JSON
+#### 1. Configuração do Cliente
+```java
+// Create the AI client
+OpenAIClient client = new OpenAIClientBuilder()
+    .endpoint("https://models.inference.ai.azure.com")
+    .credential(new StaticTokenCredential(pat))
+    .buildClient();
+```
 
-### 3. Geração Aumentada por Recuperação (RAG)
-**Arquivo**: `examples/src/main/java/com/example/genai/techniques/rag/SimpleReaderDemo.java`
+Isso cria uma conexão com os Modelos do GitHub usando seu token.
 
-Aprenda a combinar IA com seus próprios documentos e fontes de dados para respostas precisas e contextualizadas.
+#### 2. Compleção Simples
+```java
+List<ChatRequestMessage> messages = List.of(
+    // System message sets AI behavior
+    new ChatRequestSystemMessage("You are a helpful Java expert."),
+    // User message contains the actual question
+    new ChatRequestUserMessage("Explain Java streams briefly.")
+);
 
-Este exemplo demonstra:
-- Respostas baseadas em documentos com o SDK do Azure OpenAI
-- Implementação do padrão RAG com Modelos do GitHub
+ChatCompletionsOptions options = new ChatCompletionsOptions(messages)
+    .setModel("gpt-4o-mini")
+    .setMaxTokens(200)      // Limit response length
+    .setTemperature(0.7);   // Control creativity (0.0-1.0)
+```
 
-**Uso**: Faça perguntas sobre o conteúdo em `document.txt` e receba respostas da IA baseadas apenas nesse contexto.
+#### 3. Memória de Conversação
+```java
+// Add AI's response to maintain conversation history
+messages.add(new ChatRequestAssistantMessage(aiResponse));
+messages.add(new ChatRequestUserMessage("Follow-up question"));
+```
 
-### 4. Demonstração de Segurança em IA Responsável
-**Arquivo**: `examples/src/main/java/com/example/genai/techniques/responsibleai/ResponsibleGithubModels.java`
+A IA lembra mensagens anteriores apenas se você incluí-las em solicitações subsequentes.
 
-Obtenha uma prévia de como funcionam as medidas de segurança em IA testando as capacidades de filtragem de conteúdo dos Modelos do GitHub.
+### Execute o Exemplo
+```bash
+mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.completions.LLMCompletionsApp"
+```
 
-Este exemplo demonstra:
-- Filtragem de conteúdo para prompts potencialmente prejudiciais
-- Tratamento de respostas de segurança em aplicações
-- Diferentes categorias de conteúdo bloqueado (violência, discurso de ódio, desinformação)
-- Tratamento adequado de erros para violações de segurança
+### O Que Acontece Quando Você Executa
 
-> **Saiba Mais**: Esta é apenas uma introdução aos conceitos de IA responsável. Para mais informações sobre ética, mitigação de vieses, considerações de privacidade e frameworks de IA responsável, veja [Capítulo 5: IA Generativa Responsável](../05-ResponsibleGenAI/README.md).
+1. **Compleção Simples**: A IA responde a uma pergunta sobre Java com orientação do prompt do sistema.
+2. **Chat de Múltiplas Rodadas**: A IA mantém o contexto em várias perguntas.
+3. **Chat Interativo**: Você pode ter uma conversa real com a IA.
 
-## Resumo
+## Tutorial 2: Chamadas de Função
 
-Neste capítulo, exploramos completações de LLM e fluxos de conversa, implementamos chamadas de funções para ampliar as capacidades da IA, criamos um sistema de Geração Aumentada por Recuperação (RAG) e demonstramos medidas de segurança em IA responsável.
+**Arquivo:** `src/main/java/com/example/genai/techniques/functions/FunctionsApp.java`
 
-> **NOTA**: Aprofunde-se com o [**Tutorial**](./TUTORIAL.md) fornecido.
+### O Que Este Exemplo Ensina
+
+Chamadas de função permitem que modelos de IA solicitem a execução de ferramentas e APIs externas por meio de um protocolo estruturado, onde o modelo analisa solicitações em linguagem natural, determina as chamadas de função necessárias com parâmetros apropriados usando definições de JSON Schema e processa os resultados retornados para gerar respostas contextuais, enquanto a execução real da função permanece sob controle do desenvolvedor para garantir segurança e confiabilidade.
+
+### Conceitos-Chave do Código
+
+#### 1. Definição de Função
+```java
+ChatCompletionsFunctionToolDefinitionFunction weatherFunction = 
+    new ChatCompletionsFunctionToolDefinitionFunction("get_weather");
+weatherFunction.setDescription("Get current weather information for a city");
+
+// Define parameters using JSON Schema
+weatherFunction.setParameters(BinaryData.fromString("""
+    {
+        "type": "object",
+        "properties": {
+            "city": {
+                "type": "string",
+                "description": "The city name"
+            }
+        },
+        "required": ["city"]
+    }
+    """));
+```
+
+Isso informa à IA quais funções estão disponíveis e como usá-las.
+
+#### 2. Fluxo de Execução da Função
+```java
+// 1. AI requests a function call
+if (choice.getFinishReason() == CompletionsFinishReason.TOOL_CALLS) {
+    ChatCompletionsFunctionToolCall functionCall = ...;
+    
+    // 2. You execute the function
+    String result = simulateWeatherFunction(functionCall.getFunction().getArguments());
+    
+    // 3. You give the result back to AI
+    messages.add(new ChatRequestToolMessage(result, toolCall.getId()));
+    
+    // 4. AI provides final response with function result
+    ChatCompletions finalResponse = client.getChatCompletions(MODEL, options);
+}
+```
+
+#### 3. Implementação da Função
+```java
+private static String simulateWeatherFunction(String arguments) {
+    // Parse arguments and call real weather API
+    // For demo, we return mock data
+    return """
+        {
+            "city": "Seattle",
+            "temperature": "22",
+            "condition": "partly cloudy"
+        }
+        """;
+}
+```
+
+### Execute o Exemplo
+```bash
+mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.functions.FunctionsApp"
+```
+
+### O Que Acontece Quando Você Executa
+
+1. **Função de Clima**: A IA solicita dados climáticos para Seattle, você os fornece, e a IA formata uma resposta.
+2. **Função de Calculadora**: A IA solicita um cálculo (15% de 240), você o realiza, e a IA explica o resultado.
+
+## Tutorial 3: RAG (Geração com Recuperação de Dados)
+
+**Arquivo:** `src/main/java/com/example/genai/techniques/rag/SimpleReaderDemo.java`
+
+### O Que Este Exemplo Ensina
+
+A Geração com Recuperação de Dados (RAG) combina recuperação de informações com geração de linguagem, injetando contexto de documentos externos nos prompts da IA. Isso permite que os modelos forneçam respostas precisas com base em fontes de conhecimento específicas, em vez de dados de treinamento potencialmente desatualizados ou imprecisos, mantendo limites claros entre consultas do usuário e fontes de informação autorizadas por meio de engenharia estratégica de prompts.
+
+### Conceitos-Chave do Código
+
+#### 1. Carregamento de Documentos
+```java
+// Load your knowledge source
+String doc = Files.readString(Paths.get("document.txt"));
+```
+
+#### 2. Injeção de Contexto
+```java
+List<ChatRequestMessage> messages = List.of(
+    new ChatRequestSystemMessage(
+        "Use only the CONTEXT to answer. If not in context, say you cannot find it."
+    ),
+    new ChatRequestUserMessage(
+        "CONTEXT:\n\"\"\"\n" + doc + "\n\"\"\"\n\nQUESTION:\n" + question
+    )
+);
+```
+
+As aspas triplas ajudam a IA a distinguir entre contexto e pergunta.
+
+#### 3. Manipulação Segura de Respostas
+```java
+if (response != null && response.getChoices() != null && !response.getChoices().isEmpty()) {
+    String answer = response.getChoices().get(0).getMessage().getContent();
+    System.out.println("Assistant: " + answer);
+} else {
+    System.err.println("Error: No response received from the API.");
+}
+```
+
+Sempre valide as respostas da API para evitar falhas.
+
+### Execute o Exemplo
+```bash
+mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.rag.SimpleReaderDemo"
+```
+
+### O Que Acontece Quando Você Executa
+
+1. O programa carrega `document.txt` (contém informações sobre os Modelos do GitHub).
+2. Você faz uma pergunta sobre o documento.
+3. A IA responde com base apenas no conteúdo do documento, não em seu conhecimento geral.
+
+Experimente perguntar: "O que são os Modelos do GitHub?" vs "Como está o clima?"
+
+## Tutorial 4: IA Responsável
+
+**Arquivo:** `src/main/java/com/example/genai/techniques/responsibleai/ResponsibleGithubModels.java`
+
+### O Que Este Exemplo Ensina
+
+O exemplo de IA Responsável destaca a importância de implementar medidas de segurança em aplicações de IA. Ele demonstra filtros de segurança que detectam categorias de conteúdo prejudicial, incluindo discurso de ódio, assédio, automutilação, conteúdo sexual e violência, mostrando como aplicações de IA em produção devem lidar graciosamente com violações de políticas de conteúdo por meio de tratamento adequado de exceções, mecanismos de feedback ao usuário e estratégias de resposta alternativa.
+
+### Conceitos-Chave do Código
+
+#### 1. Estrutura de Teste de Segurança
+```java
+private void testPromptSafety(String prompt, String category) {
+    try {
+        // Attempt to get AI response
+        ChatCompletions response = client.getChatCompletions(modelId, options);
+        System.out.println("Response generated (content appears safe)");
+        
+    } catch (HttpResponseException e) {
+        if (e.getResponse().getStatusCode() == 400) {
+            System.out.println("[BLOCKED BY SAFETY FILTER]");
+            System.out.println("This is GOOD - safety system working!");
+        }
+    }
+}
+```
+
+#### 2. Categorias de Segurança Testadas
+- Instruções de violência/autoagressão
+- Discurso de ódio
+- Violações de privacidade
+- Desinformação médica
+- Atividades ilegais
+
+### Execute o Exemplo
+```bash
+mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.responsibleai.ResponsibleGithubModels"
+```
+
+### O Que Acontece Quando Você Executa
+
+O programa testa vários prompts prejudiciais e mostra como o sistema de segurança da IA:
+1. **Bloqueia solicitações perigosas** com erros HTTP 400.
+2. **Permite conteúdo seguro** ser gerado normalmente.
+3. **Protege os usuários** de saídas prejudiciais da IA.
+
+## Padrões Comuns nos Exemplos
+
+### Padrão de Autenticação
+Todos os exemplos usam este padrão para autenticar com os Modelos do GitHub:
+
+```java
+String pat = System.getenv("GITHUB_TOKEN");
+TokenCredential credential = new StaticTokenCredential(pat);
+OpenAIClient client = new OpenAIClientBuilder()
+    .endpoint("https://models.inference.ai.azure.com")
+    .credential(credential)
+    .buildClient();
+```
+
+### Padrão de Tratamento de Erros
+```java
+try {
+    // AI operation
+} catch (HttpResponseException e) {
+    // Handle API errors (rate limits, safety filters)
+} catch (Exception e) {
+    // Handle general errors (network, parsing)
+}
+```
+
+### Padrão de Estrutura de Mensagens
+```java
+List<ChatRequestMessage> messages = List.of(
+    new ChatRequestSystemMessage("Set AI behavior"),
+    new ChatRequestUserMessage("User's actual request")
+);
+```
 
 ## Próximos Passos
 
-[Capítulo 4: Aplicações Práticas e Projetos](../04-PracticalSamples/README.md)
+[Capítulo 04: Exemplos Práticos](../04-PracticalSamples/README.md)
+
+## Solução de Problemas
+
+### Problemas Comuns
+
+**"GITHUB_TOKEN não configurado"**
+- Certifique-se de configurar a variável de ambiente.
+- Verifique se seu token tem o escopo `models:read`.
+
+**"Sem resposta da API"**
+- Verifique sua conexão com a internet.
+- Confirme se seu token é válido.
+- Verifique se você atingiu os limites de taxa.
+
+**Erros de compilação no Maven**
+- Certifique-se de ter o Java 21 ou superior.
+- Execute `mvn clean compile` para atualizar as dependências.
 
 **Aviso Legal**:  
 Este documento foi traduzido utilizando o serviço de tradução por IA [Co-op Translator](https://github.com/Azure/co-op-translator). Embora nos esforcemos para garantir a precisão, esteja ciente de que traduções automatizadas podem conter erros ou imprecisões. O documento original em seu idioma nativo deve ser considerado a fonte autoritativa. Para informações críticas, recomenda-se a tradução profissional realizada por humanos. Não nos responsabilizamos por quaisquer mal-entendidos ou interpretações equivocadas decorrentes do uso desta tradução.

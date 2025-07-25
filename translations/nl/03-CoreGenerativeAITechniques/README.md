@@ -1,139 +1,352 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "0a27b17f64f598a80b72d93b98b7ed04",
-  "translation_date": "2025-07-21T19:12:21+00:00",
+  "original_hash": "59454ab4ec36d89840df6fcfe7633cbd",
+  "translation_date": "2025-07-25T11:47:06+00:00",
   "source_file": "03-CoreGenerativeAITechniques/README.md",
   "language_code": "nl"
 }
 -->
-# Kerntechnieken van Generatieve AI
-
->**Opmerking**: Dit hoofdstuk bevat een gedetailleerde [**Tutorial**](./TUTORIAL.md) die je stap voor stap begeleidt bij het uitvoeren van de voltooide voorbeelden.
-
-## Wat Je Gaat Leren
-In dit hoofdstuk bekijken we 4 kerntechnieken van generatieve AI aan de hand van praktische voorbeelden:
-- LLM-voltooiingen en chatflows
-- Functieaanroepen
-- Retrieval-Augmented Generation (RAG)
-- Veiligheidsmaatregelen voor verantwoorde AI
+# Core Generatieve AI Technieken Tutorial
 
 ## Inhoudsopgave
 
-- [Wat Je Gaat Leren](../../../03-CoreGenerativeAITechniques)
 - [Vereisten](../../../03-CoreGenerativeAITechniques)
-- [Aan de Slag](../../../03-CoreGenerativeAITechniques)
-- [Overzicht van Voorbeelden](../../../03-CoreGenerativeAITechniques)
-  - [1. LLM-voltooiingen en Chatflows](../../../03-CoreGenerativeAITechniques)
-  - [2. Functies & Plugins met LLM's](../../../03-CoreGenerativeAITechniques)
-  - [3. Retrieval-Augmented Generation (RAG)](../../../03-CoreGenerativeAITechniques)
-  - [4. Demonstratie van Verantwoorde AI Veiligheid](../../../03-CoreGenerativeAITechniques)
-- [Samenvatting](../../../03-CoreGenerativeAITechniques)
-- [Volgende Stappen](../../../03-CoreGenerativeAITechniques)
+- [Aan de slag](../../../03-CoreGenerativeAITechniques)
+  - [Stap 1: Stel je omgevingsvariabele in](../../../03-CoreGenerativeAITechniques)
+  - [Stap 2: Navigeer naar de voorbeeldenmap](../../../03-CoreGenerativeAITechniques)
+- [Tutorial 1: LLM-aanvullingen en chat](../../../03-CoreGenerativeAITechniques)
+- [Tutorial 2: Functieaanroepen](../../../03-CoreGenerativeAITechniques)
+- [Tutorial 3: RAG (Retrieval-Augmented Generation)](../../../03-CoreGenerativeAITechniques)
+- [Tutorial 4: Verantwoordelijke AI](../../../03-CoreGenerativeAITechniques)
+- [Algemene patronen in voorbeelden](../../../03-CoreGenerativeAITechniques)
+- [Volgende stappen](../../../03-CoreGenerativeAITechniques)
+- [Problemen oplossen](../../../03-CoreGenerativeAITechniques)
+  - [Veelvoorkomende problemen](../../../03-CoreGenerativeAITechniques)
+
+## Overzicht
+
+Deze tutorial biedt praktische voorbeelden van kerntechnieken voor generatieve AI met behulp van Java en GitHub Models. Je leert hoe je kunt communiceren met Large Language Models (LLMs), functieaanroepen kunt implementeren, retrieval-augmented generation (RAG) kunt gebruiken en verantwoordelijke AI-praktijken kunt toepassen.
 
 ## Vereisten
 
-- Voltooi de setup uit [Hoofdstuk 2](../../../02-SetupDevEnvironment)
+Voordat je begint, zorg ervoor dat je:
+- Java 21 of hoger hebt geïnstalleerd
+- Maven gebruikt voor afhankelijkheidsbeheer
+- Een GitHub-account hebt met een persoonlijke toegangstoken (PAT)
 
-## Aan de Slag
+## Aan de slag
 
-1. **Navigeer naar voorbeelden**: 
+### Stap 1: Stel je omgevingsvariabele in
+
+Eerst moet je je GitHub-token instellen als een omgevingsvariabele. Dit token geeft je toegang tot GitHub Models gratis.
+
+**Windows (Command Prompt):**
+```cmd
+set GITHUB_TOKEN=your_github_token_here
+```
+
+**Windows (PowerShell):**
+```powershell
+$env:GITHUB_TOKEN="your_github_token_here"
+```
+
+**Linux/macOS:**
+```bash
+export GITHUB_TOKEN=your_github_token_here
+```
+
+### Stap 2: Navigeer naar de voorbeeldenmap
+
 ```bash
 cd 03-CoreGenerativeAITechniques/examples/
 ```
-2. **Stel de omgeving in**: 
+
+## Tutorial 1: LLM-aanvullingen en chat
+
+**Bestand:** `src/main/java/com/example/genai/techniques/completions/LLMCompletionsApp.java`
+
+### Wat je leert in dit voorbeeld
+
+Dit voorbeeld laat de kernmechanismen zien van interactie met Large Language Models (LLM) via de OpenAI API, inclusief het initialiseren van de client met GitHub Models, patroonstructuren voor systeem- en gebruikersprompts, het beheren van gespreksgeschiedenis door berichten op te slaan, en het afstemmen van parameters om de lengte en creativiteit van antwoorden te controleren.
+
+### Belangrijke codeconcepten
+
+#### 1. Clientconfiguratie
+```java
+// Create the AI client
+OpenAIClient client = new OpenAIClientBuilder()
+    .endpoint("https://models.inference.ai.azure.com")
+    .credential(new StaticTokenCredential(pat))
+    .buildClient();
+```
+
+Dit maakt een verbinding met GitHub Models met behulp van je token.
+
+#### 2. Eenvoudige aanvulling
+```java
+List<ChatRequestMessage> messages = List.of(
+    // System message sets AI behavior
+    new ChatRequestSystemMessage("You are a helpful Java expert."),
+    // User message contains the actual question
+    new ChatRequestUserMessage("Explain Java streams briefly.")
+);
+
+ChatCompletionsOptions options = new ChatCompletionsOptions(messages)
+    .setModel("gpt-4o-mini")
+    .setMaxTokens(200)      // Limit response length
+    .setTemperature(0.7);   // Control creativity (0.0-1.0)
+```
+
+#### 3. Gespreksgeheugen
+```java
+// Add AI's response to maintain conversation history
+messages.add(new ChatRequestAssistantMessage(aiResponse));
+messages.add(new ChatRequestUserMessage("Follow-up question"));
+```
+
+De AI onthoudt eerdere berichten alleen als je ze opneemt in volgende verzoeken.
+
+### Voer het voorbeeld uit
 ```bash
-export GITHUB_TOKEN=your_token_here
+mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.completions.LLMCompletionsApp"
 ```
-3. **Compileer en voer voorbeelden uit**:
+
+### Wat gebeurt er als je het uitvoert
+
+1. **Eenvoudige aanvulling**: AI beantwoordt een Java-vraag met richtlijnen van de systeemprompt.
+2. **Meerdere beurten chat**: AI behoudt context over meerdere vragen.
+3. **Interactieve chat**: Je kunt een echt gesprek voeren met de AI.
+
+## Tutorial 2: Functieaanroepen
+
+**Bestand:** `src/main/java/com/example/genai/techniques/functions/FunctionsApp.java`
+
+### Wat je leert in dit voorbeeld
+
+Functieaanroepen stellen AI-modellen in staat om externe tools en API's aan te roepen via een gestructureerd protocol waarbij het model natuurlijke taalverzoeken analyseert, benodigde functieaanroepen bepaalt met de juiste parameters via JSON Schema-definities, en de geretourneerde resultaten verwerkt om contextuele antwoorden te genereren, terwijl de daadwerkelijke uitvoering van functies onder controle van de ontwikkelaar blijft voor veiligheid en betrouwbaarheid.
+
+### Belangrijke codeconcepten
+
+#### 1. Functiedefinitie
+```java
+ChatCompletionsFunctionToolDefinitionFunction weatherFunction = 
+    new ChatCompletionsFunctionToolDefinitionFunction("get_weather");
+weatherFunction.setDescription("Get current weather information for a city");
+
+// Define parameters using JSON Schema
+weatherFunction.setParameters(BinaryData.fromString("""
+    {
+        "type": "object",
+        "properties": {
+            "city": {
+                "type": "string",
+                "description": "The city name"
+            }
+        },
+        "required": ["city"]
+    }
+    """));
+```
+
+Dit vertelt de AI welke functies beschikbaar zijn en hoe ze te gebruiken.
+
+#### 2. Functie-uitvoeringsstroom
+```java
+// 1. AI requests a function call
+if (choice.getFinishReason() == CompletionsFinishReason.TOOL_CALLS) {
+    ChatCompletionsFunctionToolCall functionCall = ...;
+    
+    // 2. You execute the function
+    String result = simulateWeatherFunction(functionCall.getFunction().getArguments());
+    
+    // 3. You give the result back to AI
+    messages.add(new ChatRequestToolMessage(result, toolCall.getId()));
+    
+    // 4. AI provides final response with function result
+    ChatCompletions finalResponse = client.getChatCompletions(MODEL, options);
+}
+```
+
+#### 3. Functie-implementatie
+```java
+private static String simulateWeatherFunction(String arguments) {
+    // Parse arguments and call real weather API
+    // For demo, we return mock data
+    return """
+        {
+            "city": "Seattle",
+            "temperature": "22",
+            "condition": "partly cloudy"
+        }
+        """;
+}
+```
+
+### Voer het voorbeeld uit
 ```bash
-   # Run completions example
-   mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.completions.LLMCompletionsApp"
-   
-   # Run functions example  
-   mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.functions.FunctionsApp"
-   
-   # Run RAG example
-   mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.rag.SimpleReaderDemo"
-   
-   # Run responsible AI demo
-   mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.responsibleai.ResponsibleGithubModels"
-   ```
-
-## Overzicht van Voorbeelden
-
-De voorbeelden zijn georganiseerd in de map `examples/` met de volgende structuur:
-
-```
-examples/
-├── src/main/java/com/example/genai/techniques/
-│   ├── completions/
-│   │   └── LLMCompletionsApp.java        # Basic completions 
-│   ├── functions/
-│   │   └── FunctionsApp.java             # Function calling examples
-│   ├── rag/
-│   │   └── SimpleReaderDemo.java         # Retrieval-Augmented Generation
-│   └── responsibleai/
-│       └── ResponsibleGithubModels.java  # Responsible AI safety demonstration
-├── document.txt                          # Sample document for RAG example
-└── pom.xml                               # Maven configuration
+mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.functions.FunctionsApp"
 ```
 
-### 1. LLM-voltooiingen en Chatflows
-**Bestand**: `examples/src/main/java/com/example/genai/techniques/completions/LLMCompletionsApp.java`
+### Wat gebeurt er als je het uitvoert
 
-Leer hoe je conversatie-AI bouwt met streamingreacties en chatgeschiedenisbeheer.
+1. **Weerfunctie**: AI vraagt weergegevens voor Seattle, jij levert ze, AI formatteert een antwoord.
+2. **Rekenfunctie**: AI vraagt een berekening (15% van 240), jij voert deze uit, AI legt het resultaat uit.
 
-Dit voorbeeld laat zien:
-- Eenvoudige tekstvoltooiing met systeemaanwijzingen
-- Gesprekken met meerdere beurten en geschiedenisbeheer
-- Interactieve chatsessies
-- Configuratie van parameters (temperatuur, maximaal aantal tokens)
+## Tutorial 3: RAG (Retrieval-Augmented Generation)
 
-### 2. Functies & Plugins met LLM's
-**Bestand**: `examples/src/main/java/com/example/genai/techniques/functions/FunctionsApp.java`
+**Bestand:** `src/main/java/com/example/genai/techniques/rag/SimpleReaderDemo.java`
 
-Breid de mogelijkheden van AI uit door modellen toegang te geven tot aangepaste functies en externe API's.
+### Wat je leert in dit voorbeeld
 
-Dit voorbeeld laat zien:
-- Integratie van een weerfunctie
-- Implementatie van een rekenmachinefunctie  
-- Meerdere functieaanroepen in één gesprek
-- Functiedefinitie met JSON-schema's
+Retrieval-Augmented Generation (RAG) combineert informatieophaling met taalgeneratie door externe documentcontext in AI-prompts te injecteren, waardoor modellen nauwkeurige antwoorden kunnen geven op basis van specifieke kennisbronnen in plaats van mogelijk verouderde of onnauwkeurige trainingsgegevens, terwijl duidelijke grenzen worden gehandhaafd tussen gebruikersvragen en gezaghebbende informatiebronnen via strategische prompt-engineering.
 
-### 3. Retrieval-Augmented Generation (RAG)
-**Bestand**: `examples/src/main/java/com/example/genai/techniques/rag/SimpleReaderDemo.java`
+### Belangrijke codeconcepten
 
-Leer hoe je AI kunt combineren met je eigen documenten en gegevensbronnen voor nauwkeurige, contextbewuste antwoorden.
+#### 1. Document laden
+```java
+// Load your knowledge source
+String doc = Files.readString(Paths.get("document.txt"));
+```
 
-Dit voorbeeld laat zien:
-- Vraag-en-antwoord op basis van documenten met Azure OpenAI SDK
-- Implementatie van het RAG-patroon met GitHub-modellen
+#### 2. Contextinjectie
+```java
+List<ChatRequestMessage> messages = List.of(
+    new ChatRequestSystemMessage(
+        "Use only the CONTEXT to answer. If not in context, say you cannot find it."
+    ),
+    new ChatRequestUserMessage(
+        "CONTEXT:\n\"\"\"\n" + doc + "\n\"\"\"\n\nQUESTION:\n" + question
+    )
+);
+```
 
-**Gebruik**: Stel vragen over de inhoud van `document.txt` en ontvang AI-antwoorden die uitsluitend op die context zijn gebaseerd.
+De triple quotes helpen AI onderscheid te maken tussen context en vraag.
 
-### 4. Demonstratie van Verantwoorde AI Veiligheid
-**Bestand**: `examples/src/main/java/com/example/genai/techniques/responsibleai/ResponsibleGithubModels.java`
+#### 3. Veilige responsverwerking
+```java
+if (response != null && response.getChoices() != null && !response.getChoices().isEmpty()) {
+    String answer = response.getChoices().get(0).getMessage().getContent();
+    System.out.println("Assistant: " + answer);
+} else {
+    System.err.println("Error: No response received from the API.");
+}
+```
 
-Krijg een voorproefje van hoe AI-veiligheidsmaatregelen werken door de contentfiltermogelijkheden van GitHub-modellen te testen.
+Valideer altijd API-responses om crashes te voorkomen.
 
-Dit voorbeeld laat zien:
-- Contentfiltering voor mogelijk schadelijke prompts
-- Afhandeling van veiligheidsreacties in applicaties
-- Verschillende categorieën van geblokkeerde inhoud (geweld, haatzaaiende uitlatingen, desinformatie)
-- Correcte foutafhandeling bij veiligheidsinbreuken
+### Voer het voorbeeld uit
+```bash
+mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.rag.SimpleReaderDemo"
+```
 
-> **Meer Weten**: Dit is slechts een introductie tot concepten van verantwoorde AI. Voor meer informatie over ethiek, het verminderen van vooroordelen, privacyoverwegingen en kaders voor verantwoorde AI, zie [Hoofdstuk 5: Verantwoorde Generatieve AI](../05-ResponsibleGenAI/README.md).
+### Wat gebeurt er als je het uitvoert
 
-## Samenvatting
+1. Het programma laadt `document.txt` (bevat informatie over GitHub Models).
+2. Je stelt een vraag over het document.
+3. AI antwoordt alleen op basis van de inhoud van het document, niet op basis van algemene kennis.
 
-In dit hoofdstuk hebben we LLM-voltooiingen en chatflows verkend, functieaanroepen geïmplementeerd om AI-mogelijkheden uit te breiden, een Retrieval-Augmented Generation (RAG)-systeem gecreëerd en veiligheidsmaatregelen voor verantwoorde AI gedemonstreerd.
+Probeer te vragen: "Wat zijn GitHub Models?" versus "Hoe is het weer?"
 
-> **Opmerking**: Verdiep je verder met de meegeleverde [**Tutorial**](./TUTORIAL.md)
+## Tutorial 4: Verantwoordelijke AI
 
-## Volgende Stappen
+**Bestand:** `src/main/java/com/example/genai/techniques/responsibleai/ResponsibleGithubModels.java`
 
-[Hoofdstuk 4: Praktische Toepassingen & Projecten](../04-PracticalSamples/README.md)
+### Wat je leert in dit voorbeeld
+
+Het voorbeeld van Verantwoordelijke AI benadrukt het belang van het implementeren van veiligheidsmaatregelen in AI-toepassingen. Het demonstreert veiligheidsfilters die schadelijke inhoudscategorieën detecteren, waaronder haatspraak, intimidatie, zelfbeschadiging, seksuele inhoud en geweld, en laat zien hoe productie-AI-toepassingen inhoudsbeleidsovertredingen op een elegante manier moeten afhandelen via correcte foutafhandeling, gebruikersfeedbackmechanismen en fallback-responsstrategieën.
+
+### Belangrijke codeconcepten
+
+#### 1. Veiligheidstestframework
+```java
+private void testPromptSafety(String prompt, String category) {
+    try {
+        // Attempt to get AI response
+        ChatCompletions response = client.getChatCompletions(modelId, options);
+        System.out.println("Response generated (content appears safe)");
+        
+    } catch (HttpResponseException e) {
+        if (e.getResponse().getStatusCode() == 400) {
+            System.out.println("[BLOCKED BY SAFETY FILTER]");
+            System.out.println("This is GOOD - safety system working!");
+        }
+    }
+}
+```
+
+#### 2. Geteste veiligheidscategorieën
+- Geweld/instructies voor schade
+- Haatspraak
+- Privacyovertredingen
+- Medische desinformatie
+- Illegale activiteiten
+
+### Voer het voorbeeld uit
+```bash
+mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.responsibleai.ResponsibleGithubModels"
+```
+
+### Wat gebeurt er als je het uitvoert
+
+Het programma test verschillende schadelijke prompts en laat zien hoe het AI-veiligheidssysteem:
+1. **Gevaarlijke verzoeken blokkeert** met HTTP 400-fouten.
+2. **Veilige inhoud toestaat** om normaal te worden gegenereerd.
+3. **Gebruikers beschermt** tegen schadelijke AI-uitvoer.
+
+## Algemene patronen in voorbeelden
+
+### Authenticatiepatroon
+Alle voorbeelden gebruiken dit patroon om te authenticeren met GitHub Models:
+
+```java
+String pat = System.getenv("GITHUB_TOKEN");
+TokenCredential credential = new StaticTokenCredential(pat);
+OpenAIClient client = new OpenAIClientBuilder()
+    .endpoint("https://models.inference.ai.azure.com")
+    .credential(credential)
+    .buildClient();
+```
+
+### Foutafhandelingspatroon
+```java
+try {
+    // AI operation
+} catch (HttpResponseException e) {
+    // Handle API errors (rate limits, safety filters)
+} catch (Exception e) {
+    // Handle general errors (network, parsing)
+}
+```
+
+### Berichtstructuurpatroon
+```java
+List<ChatRequestMessage> messages = List.of(
+    new ChatRequestSystemMessage("Set AI behavior"),
+    new ChatRequestUserMessage("User's actual request")
+);
+```
+
+## Volgende stappen
+
+[Hoofdstuk 04: Praktische voorbeelden](../04-PracticalSamples/README.md)
+
+## Problemen oplossen
+
+### Veelvoorkomende problemen
+
+**"GITHUB_TOKEN niet ingesteld"**
+- Zorg ervoor dat je de omgevingsvariabele hebt ingesteld.
+- Controleer of je token de `models:read` scope heeft.
+
+**"Geen reactie van API"**
+- Controleer je internetverbinding.
+- Controleer of je token geldig is.
+- Controleer of je de limieten hebt bereikt.
+
+**Maven compilatiefouten**
+- Zorg ervoor dat je Java 21 of hoger hebt.
+- Voer `mvn clean compile` uit om afhankelijkheden te vernieuwen.
 
 **Disclaimer**:  
-Dit document is vertaald met behulp van de AI-vertalingsservice [Co-op Translator](https://github.com/Azure/co-op-translator). Hoewel we streven naar nauwkeurigheid, dient u zich ervan bewust te zijn dat geautomatiseerde vertalingen fouten of onnauwkeurigheden kunnen bevatten. Het originele document in de oorspronkelijke taal moet worden beschouwd als de gezaghebbende bron. Voor cruciale informatie wordt professionele menselijke vertaling aanbevolen. Wij zijn niet aansprakelijk voor misverstanden of verkeerde interpretaties die voortvloeien uit het gebruik van deze vertaling.
+Dit document is vertaald met behulp van de AI-vertalingsservice [Co-op Translator](https://github.com/Azure/co-op-translator). Hoewel we streven naar nauwkeurigheid, dient u zich ervan bewust te zijn dat geautomatiseerde vertalingen fouten of onnauwkeurigheden kunnen bevatten. Het originele document in de oorspronkelijke taal moet worden beschouwd als de gezaghebbende bron. Voor cruciale informatie wordt professionele menselijke vertaling aanbevolen. Wij zijn niet aansprakelijk voor eventuele misverstanden of verkeerde interpretaties die voortvloeien uit het gebruik van deze vertaling.

@@ -1,215 +1,300 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "a66dad62cdb2e141f05086feaf1a4a39",
-  "translation_date": "2025-07-21T19:46:59+00:00",
+  "original_hash": "2284c54d2a98090a37df0dbef1633ebf",
+  "translation_date": "2025-07-25T11:36:01+00:00",
   "source_file": "04-PracticalSamples/foundrylocal/README.md",
   "language_code": "th"
 }
 -->
-# แอปพลิเคชัน Command-Line ของ Foundry Local
-
->**หมายเหตุ**: บทนี้มี [**บทแนะนำ**](./TUTORIAL.md) ที่จะแนะนำคุณเกี่ยวกับการรันตัวอย่างที่เสร็จสมบูรณ์
-
-แอปพลิเคชัน Command-Line แบบง่ายที่พัฒนาด้วย Spring Boot ซึ่งแสดงให้เห็นวิธีการเชื่อมต่อกับ Foundry Local โดยใช้ OpenAI Java SDK
-
-## สิ่งที่คุณจะได้เรียนรู้
-
-- วิธีการผสานรวม Foundry Local กับแอปพลิเคชัน Spring Boot โดยใช้ OpenAI Java SDK
-- แนวทางปฏิบัติที่ดีที่สุดสำหรับการพัฒนาและทดสอบ AI ในเครื่อง
+# คู่มือการใช้งาน Foundry Local Spring Boot
 
 ## สารบัญ
 
-- [สิ่งที่คุณจะได้เรียนรู้](../../../../04-PracticalSamples/foundrylocal)
 - [ข้อกำหนดเบื้องต้น](../../../../04-PracticalSamples/foundrylocal)
-  - [การติดตั้ง Foundry Local](../../../../04-PracticalSamples/foundrylocal)
-  - [การตรวจสอบ](../../../../04-PracticalSamples/foundrylocal)
-- [การตั้งค่า](../../../../04-PracticalSamples/foundrylocal)
-- [เริ่มต้นอย่างรวดเร็ว](../../../../04-PracticalSamples/foundrylocal)
-- [สิ่งที่แอปพลิเคชันทำ](../../../../04-PracticalSamples/foundrylocal)
-- [ตัวอย่างผลลัพธ์](../../../../04-PracticalSamples/foundrylocal)
-- [สถาปัตยกรรม](../../../../04-PracticalSamples/foundrylocal)
-- [จุดเด่นของโค้ด](../../../../04-PracticalSamples/foundrylocal)
-  - [การผสานรวม OpenAI Java SDK](../../../../04-PracticalSamples/foundrylocal)
-  - [Chat Completion API](../../../../04-PracticalSamples/foundrylocal)
+- [ภาพรวมของโปรเจกต์](../../../../04-PracticalSamples/foundrylocal)
+- [การทำความเข้าใจโค้ด](../../../../04-PracticalSamples/foundrylocal)
+  - [1. การตั้งค่าของแอปพลิเคชัน (application.properties)](../../../../04-PracticalSamples/foundrylocal)
+  - [2. คลาสแอปพลิเคชันหลัก (Application.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [3. ชั้นบริการ AI (FoundryLocalService.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [4. การพึ่งพาโปรเจกต์ (pom.xml)](../../../../04-PracticalSamples/foundrylocal)
+- [การทำงานร่วมกันของระบบ](../../../../04-PracticalSamples/foundrylocal)
+- [การตั้งค่า Foundry Local](../../../../04-PracticalSamples/foundrylocal)
+- [การรันแอปพลิเคชัน](../../../../04-PracticalSamples/foundrylocal)
+- [ผลลัพธ์ที่คาดหวัง](../../../../04-PracticalSamples/foundrylocal)
+- [ขั้นตอนถัดไป](../../../../04-PracticalSamples/foundrylocal)
 - [การแก้ไขปัญหา](../../../../04-PracticalSamples/foundrylocal)
 
 ## ข้อกำหนดเบื้องต้น
 
-> **⚠️ หมายเหตุ**: แอปพลิเคชันนี้ **ไม่สามารถรันใน devcontainer ที่ให้มาได้** เนื่องจากต้องการให้ Foundry Local ติดตั้งและรันอยู่ในระบบโฮสต์
+ก่อนเริ่มต้นคู่มือนี้ คุณต้องมี:
 
-### การติดตั้ง Foundry Local
+- **Java 21 หรือสูงกว่า** ติดตั้งในระบบของคุณ
+- **Maven 3.6+** สำหรับการสร้างโปรเจกต์
+- **Foundry Local** ติดตั้งและกำลังทำงานอยู่
 
-ก่อนที่จะรันแอปพลิเคชันนี้ คุณต้องติดตั้งและเริ่มต้น Foundry Local โดยทำตามขั้นตอนดังนี้:
-
-1. **ตรวจสอบว่าระบบของคุณตรงตามข้อกำหนด**:
-   - **ระบบปฏิบัติการ**: Windows 10 (x64), Windows 11 (x64/ARM), Windows Server 2025 หรือ macOS
-   - **ฮาร์ดแวร์**: 
-     - ขั้นต่ำ: RAM 8GB, พื้นที่ว่างในดิสก์ 3GB
-     - แนะนำ: RAM 16GB, พื้นที่ว่างในดิสก์ 15GB
-   - **เครือข่าย**: การเชื่อมต่ออินเทอร์เน็ตสำหรับการดาวน์โหลดโมเดลครั้งแรก (ไม่จำเป็นสำหรับการใช้งานแบบออฟไลน์)
-   - **การเร่งความเร็ว (ถ้ามี)**: NVIDIA GPU (ซีรีส์ 2,000 หรือใหม่กว่า), AMD GPU (ซีรีส์ 6,000 หรือใหม่กว่า), Qualcomm Snapdragon X Elite (RAM 8GB หรือมากกว่า) หรือ Apple silicon
-   - **สิทธิ์**: สิทธิ์ผู้ดูแลระบบสำหรับการติดตั้งซอฟต์แวร์ในอุปกรณ์ของคุณ
-
-2. **ติดตั้ง Foundry Local**:
-   
-   **สำหรับ Windows:**
-   ```bash
-   winget install Microsoft.FoundryLocal
-   ```
-   
-   **สำหรับ macOS:**
-   ```bash
-   brew tap microsoft/foundrylocal
-   brew install foundrylocal
-   ```
-   
-   หรือคุณสามารถดาวน์โหลดตัวติดตั้งได้จาก [Foundry Local GitHub repository](https://github.com/microsoft/Foundry-Local)
-
-3. **เริ่มต้นโมเดลแรกของคุณ**:
-
-   ```bash
-   foundry model run phi-3.5-mini
-   ```
-
-   โมเดลจะถูกดาวน์โหลด (ซึ่งอาจใช้เวลาสักครู่ ขึ้นอยู่กับความเร็วอินเทอร์เน็ตของคุณ) และเริ่มทำงาน Foundry Local จะเลือกตัวแปรโมเดลที่เหมาะสมที่สุดสำหรับระบบของคุณโดยอัตโนมัติ (CUDA สำหรับ NVIDIA GPUs หรือเวอร์ชัน CPU หากไม่มี)
-
-4. **ทดสอบโมเดล** โดยการถามคำถามในเทอร์มินัลเดียวกัน:
-
-   ```bash
-   Why is the sky blue?
-   ```
-
-   คุณควรเห็นคำตอบจากโมเดล Phi ที่อธิบายว่าทำไมท้องฟ้าถึงดูเป็นสีฟ้า
-
-### การตรวจสอบ
-
-คุณสามารถตรวจสอบว่าทุกอย่างทำงานได้อย่างถูกต้องด้วยคำสั่งเหล่านี้:
+### **การติดตั้ง Foundry Local:**
 
 ```bash
-# List all available models
-foundry model list
+# Windows
+winget install Microsoft.FoundryLocal
 
-# Check the service status via REST API
-curl http://localhost:5273/v1/models
+# macOS (after installing)
+foundry model run phi-3.5-mini
 ```
 
-คุณยังสามารถเข้าไปที่ `http://localhost:5273` ในเบราว์เซอร์ของคุณเพื่อดูอินเทอร์เฟซเว็บของ Foundry Local
+## ภาพรวมของโปรเจกต์
 
-## การตั้งค่า
+โปรเจกต์นี้ประกอบด้วย 4 ส่วนหลัก:
 
-แอปพลิเคชันสามารถตั้งค่าได้ผ่าน `application.properties`:
+1. **Application.java** - จุดเริ่มต้นของแอปพลิเคชัน Spring Boot
+2. **FoundryLocalService.java** - ชั้นบริการที่จัดการการสื่อสารกับ AI
+3. **application.properties** - การตั้งค่าสำหรับการเชื่อมต่อ Foundry Local
+4. **pom.xml** - การพึ่งพา Maven และการตั้งค่าโปรเจกต์
 
-- `foundry.local.base-url` - URL พื้นฐานสำหรับ Foundry Local (ค่าเริ่มต้น: http://localhost:5273)
-- `foundry.local.model` - โมเดล AI ที่จะใช้ (ค่าเริ่มต้น: Phi-3.5-mini-instruct-cuda-gpu)
+## การทำความเข้าใจโค้ด
 
-> **หมายเหตุ**: ชื่อโมเดลในไฟล์การตั้งค่าควรตรงกับตัวแปรเฉพาะที่ Foundry Local ดาวน์โหลดสำหรับระบบของคุณ เมื่อคุณรัน `foundry model run phi-3.5-mini` Foundry Local จะเลือกและดาวน์โหลดตัวแปรที่ดีที่สุดโดยอัตโนมัติ (CUDA สำหรับ NVIDIA GPUs หรือเวอร์ชัน CPU หากไม่มี) ใช้ `foundry model list` เพื่อดูชื่อโมเดลที่มีในอินสแตนซ์ของคุณ
+### 1. การตั้งค่าของแอปพลิเคชัน (application.properties)
 
-## เริ่มต้นอย่างรวดเร็ว
+**ไฟล์:** `src/main/resources/application.properties`
 
-### 1. ไปที่ไดเรกทอรีแอปพลิเคชัน Foundry Local
-```bash
-cd Generative-AI-for-beginners-java/04-PracticalSamples/foundrylocal
+```properties
+foundry.local.base-url=http://localhost:5273
+foundry.local.model=Phi-3.5-mini-instruct-cuda-gpu
 ```
 
-### 2. รันแอปพลิเคชัน
+**สิ่งที่ไฟล์นี้ทำ:**
+- **base-url**: ระบุที่อยู่ที่ Foundry Local กำลังทำงาน (พอร์ตเริ่มต้นคือ 5273)
+- **model**: ชื่อโมเดล AI ที่จะใช้สำหรับการสร้างข้อความ
 
-```bash
-mvn spring-boot:run
+**แนวคิดสำคัญ:** Spring Boot จะโหลดค่าการตั้งค่าเหล่านี้โดยอัตโนมัติและทำให้พร้อมใช้งานในแอปพลิเคชันผ่าน `@Value` annotation
+
+### 2. คลาสแอปพลิเคชันหลัก (Application.java)
+
+**ไฟล์:** `src/main/java/com/example/Application.java`
+
+```java
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication app = new SpringApplication(Application.class);
+        app.setWebApplicationType(WebApplicationType.NONE);  // No web server needed
+        app.run(args);
+    }
 ```
 
-หรือสร้างและรันไฟล์ JAR:
+**สิ่งที่ไฟล์นี้ทำ:**
+- `@SpringBootApplication` เปิดใช้งานการตั้งค่าอัตโนมัติของ Spring Boot
+- `WebApplicationType.NONE` บอก Spring ว่านี่คือแอปพลิเคชันแบบ command-line ไม่ใช่เว็บเซิร์ฟเวอร์
+- เมธอดหลักเริ่มต้นแอปพลิเคชัน Spring
 
-```bash
-mvn clean package
-java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+**ตัวอย่างการทำงาน:**
+```java
+@Bean
+public CommandLineRunner foundryLocalRunner(FoundryLocalService foundryLocalService) {
+    return args -> {
+        System.out.println("=== Foundry Local Demo ===");
+        
+        String testMessage = "Hello! Can you tell me what you are and what model you're running?";
+        System.out.println("Sending message: " + testMessage);
+        
+        String response = foundryLocalService.chat(testMessage);
+        System.out.println("Response from Foundry Local:");
+        System.out.println(response);
+    };
+}
 ```
 
-### การพึ่งพา
+**สิ่งที่ไฟล์นี้ทำ:**
+- `@Bean` สร้างคอมโพเนนต์ที่ Spring จัดการ
+- `CommandLineRunner` รันโค้ดหลังจาก Spring Boot เริ่มต้น
+- `foundryLocalService` ถูก inject โดย Spring (dependency injection)
+- ส่งข้อความทดสอบไปยัง AI และแสดงผลลัพธ์ที่ได้รับ
 
-แอปพลิเคชันนี้ใช้ OpenAI Java SDK เพื่อสื่อสารกับ Foundry Local โดยการพึ่งพาหลักคือ:
+### 3. ชั้นบริการ AI (FoundryLocalService.java)
+
+**ไฟล์:** `src/main/java/com/example/FoundryLocalService.java`
+
+#### การ inject การตั้งค่า:
+```java
+@Service
+public class FoundryLocalService {
+    
+    @Value("${foundry.local.base-url:http://localhost:5273}")
+    private String baseUrl;
+    
+    @Value("${foundry.local.model:Phi-3.5-mini-instruct-cuda-gpu}")
+    private String model;
+```
+
+**สิ่งที่ไฟล์นี้ทำ:**
+- `@Service` บอก Spring ว่าคลาสนี้ให้บริการด้าน business logic
+- `@Value` inject ค่าการตั้งค่าจาก application.properties
+- ไวยากรณ์ `:default-value` ให้ค่าตั้งต้นหากไม่มีการตั้งค่า
+
+#### การตั้งค่าคลายเอนต์:
+```java
+@PostConstruct
+public void init() {
+    this.openAIClient = OpenAIOkHttpClient.builder()
+            .baseUrl(baseUrl + "/v1")        // Foundry Local uses OpenAI-compatible API
+            .apiKey("unused")                 // Local server doesn't need real API key
+            .build();
+}
+```
+
+**สิ่งที่ไฟล์นี้ทำ:**
+- `@PostConstruct` รันเมธอดนี้หลังจาก Spring สร้างบริการ
+- สร้าง OpenAI client ที่ชี้ไปยัง Foundry Local
+- เส้นทาง `/v1` จำเป็นสำหรับความเข้ากันได้กับ OpenAI API
+- API key เป็น "unused" เพราะการพัฒนาในเครื่องไม่ต้องการการยืนยันตัวตน
+
+#### เมธอด Chat:
+```java
+public String chat(String message) {
+    try {
+        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
+                .model(model)                    // Which AI model to use
+                .addUserMessage(message)         // Your question/prompt
+                .maxCompletionTokens(150)        // Limit response length
+                .temperature(0.7)                // Control creativity (0.0-1.0)
+                .build();
+        
+        ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
+        
+        // Extract the AI's response from the API result
+        if (chatCompletion.choices() != null && !chatCompletion.choices().isEmpty()) {
+            return chatCompletion.choices().get(0).message().content().orElse("No response found");
+        }
+        
+        return "No response content found";
+    } catch (Exception e) {
+        throw new RuntimeException("Error calling chat completion: " + e.getMessage(), e);
+    }
+}
+```
+
+**สิ่งที่ไฟล์นี้ทำ:**
+- **ChatCompletionCreateParams**: ตั้งค่าการร้องขอ AI
+  - `model`: ระบุโมเดล AI ที่จะใช้
+  - `addUserMessage`: เพิ่มข้อความของผู้ใช้ในบทสนทนา
+  - `maxCompletionTokens`: จำกัดความยาวของการตอบกลับ (ประหยัดทรัพยากร)
+  - `temperature`: ควบคุมความสุ่ม (0.0 = กำหนดแน่นอน, 1.0 = สร้างสรรค์)
+- **API Call**: ส่งคำร้องขอไปยัง Foundry Local
+- **Response Handling**: ดึงข้อความตอบกลับของ AI อย่างปลอดภัย
+- **Error Handling**: จัดการข้อผิดพลาดพร้อมข้อความช่วยเหลือ
+
+### 4. การพึ่งพาโปรเจกต์ (pom.xml)
+
+**การพึ่งพาหลัก:**
 
 ```xml
+<!-- Spring Boot - Application framework -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+    <version>${spring-boot.version}</version>
+</dependency>
+
+<!-- OpenAI Java SDK - For AI API calls -->
 <dependency>
     <groupId>com.openai</groupId>
     <artifactId>openai-java</artifactId>
     <version>2.12.0</version>
 </dependency>
+
+<!-- Jackson - JSON processing -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.17.0</version>
+</dependency>
 ```
 
-แอปพลิเคชันถูกตั้งค่าไว้ล่วงหน้าเพื่อเชื่อมต่อกับ Foundry Local ที่รันอยู่บนพอร์ตเริ่มต้น
+**สิ่งที่ไฟล์นี้ทำ:**
+- **spring-boot-starter**: ให้ฟังก์ชันการทำงานหลักของ Spring Boot
+- **openai-java**: OpenAI Java SDK อย่างเป็นทางการสำหรับการสื่อสาร API
+- **jackson-databind**: จัดการการ serialize/deserialization JSON สำหรับการเรียก API
 
-## สิ่งที่แอปพลิเคชันทำ
+## การทำงานร่วมกันของระบบ
 
-เมื่อคุณรันแอปพลิเคชัน:
+นี่คือกระบวนการทั้งหมดเมื่อคุณรันแอปพลิเคชัน:
 
-1. **เริ่มต้น** เป็นแอปพลิเคชัน Command-Line (ไม่มีเว็บเซิร์ฟเวอร์)
-2. **ส่งข้อความทดสอบ** โดยอัตโนมัติ: "Hello! Can you tell me what you are and what model you're running?"
-3. **แสดงผลลัพธ์** จาก Foundry Local ในคอนโซล
-4. **ปิดตัวลงอย่างเรียบร้อย** หลังจากการสาธิต
+1. **เริ่มต้นระบบ**: Spring Boot เริ่มต้นและอ่าน `application.properties`
+2. **สร้างบริการ**: Spring สร้าง `FoundryLocalService` และ inject ค่าการตั้งค่า
+3. **ตั้งค่าคลายเอนต์**: `@PostConstruct` เริ่มต้น OpenAI client เพื่อเชื่อมต่อกับ Foundry Local
+4. **การทำงานตัวอย่าง**: `CommandLineRunner` ทำงานหลังจากเริ่มต้นระบบ
+5. **เรียก AI**: ตัวอย่างเรียก `foundryLocalService.chat()` พร้อมข้อความทดสอบ
+6. **คำร้องขอ API**: บริการสร้างและส่งคำร้องขอที่เข้ากันได้กับ OpenAI ไปยัง Foundry Local
+7. **การประมวลผลตอบกลับ**: บริการดึงและส่งคืนข้อความตอบกลับของ AI
+8. **แสดงผล**: แอปพลิเคชันพิมพ์ผลลัพธ์และออกจากระบบ
 
-## ตัวอย่างผลลัพธ์
+## การตั้งค่า Foundry Local
+
+เพื่อการตั้งค่า Foundry Local ให้ทำตามขั้นตอนเหล่านี้:
+
+1. **ติดตั้ง Foundry Local** โดยใช้คำแนะนำในส่วน [ข้อกำหนดเบื้องต้น](../../../../04-PracticalSamples/foundrylocal)
+2. **ดาวน์โหลดโมเดล AI** ที่คุณต้องการใช้ เช่น `phi-3.5-mini` ด้วยคำสั่ง:
+   ```bash
+   foundry model run phi-3.5-mini
+   ```
+3. **ตั้งค่าไฟล์ application.properties** ให้ตรงกับการตั้งค่า Foundry Local ของคุณ โดยเฉพาะหากคุณใช้พอร์ตหรือโมเดลที่แตกต่างกัน
+
+## การรันแอปพลิเคชัน
+
+### ขั้นตอนที่ 1: เริ่มต้น Foundry Local
+```bash
+foundry model run phi-3.5-mini
+```
+
+### ขั้นตอนที่ 2: สร้างและรันแอปพลิเคชัน
+```bash
+mvn clean package
+java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+```
+
+## ผลลัพธ์ที่คาดหวัง
 
 ```
 === Foundry Local Demo ===
 Calling Foundry Local service...
 Sending message: Hello! Can you tell me what you are and what model you're running?
 Response from Foundry Local:
-Hello! I'm Phi, an AI language model created by Microsoft. I don't have a physical form or a specific hardware model like a smartphone or a computer. I exist purely in software, and I operate on Microsoft's infrastructure...
+Hello! I'm Phi-3.5, a small language model created by Microsoft. I'm currently running 
+as the Phi-3.5-mini-instruct model, which is designed to be helpful, harmless, and honest 
+in my interactions. I can assist with a wide variety of tasks including answering 
+questions, helping with analysis, creative writing, coding, and general conversation. 
+Is there something specific you'd like help with today?
 =========================
 ```
 
-## สถาปัตยกรรม
+## ขั้นตอนถัดไป
 
-- **Application.java** - แอปพลิเคชันหลักของ Spring Boot พร้อม CommandLineRunner
-- **FoundryLocalService.java** - บริการที่ใช้ OpenAI Java SDK เพื่อสื่อสารกับ Foundry Local
-- ใช้ **OpenAI Java SDK** สำหรับการเรียก API ที่ปลอดภัยและมีโครงสร้าง
-- การจัดการ JSON serialization/deserialization อัตโนมัติโดย SDK
-- การตั้งค่าที่สะอาดโดยใช้คำสั่ง `@Value` และ `@PostConstruct` ของ Spring
-
-## จุดเด่นของโค้ด
-
-### การผสานรวม OpenAI Java SDK
-
-แอปพลิเคชันใช้ OpenAI Java SDK เพื่อสร้างไคลเอนต์ที่ตั้งค่าสำหรับ Foundry Local:
-
-```java
-@PostConstruct
-public void init() {
-    this.openAIClient = OpenAIOkHttpClient.builder()
-            .baseUrl(baseUrl + "/v1")
-            .apiKey("unused") // Local server doesn't require real API key
-            .build();
-}
-```
-
-### Chat Completion API
-
-การทำคำขอ Chat Completion นั้นง่ายและปลอดภัย:
-
-```java
-ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-        .model(model)
-        .addUserMessage(message)
-        .maxCompletionTokens(150)
-        .temperature(0.7)
-        .build();
-
-ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
-```
+สำหรับตัวอย่างเพิ่มเติม ดู [Chapter 04: Practical samples](../README.md)
 
 ## การแก้ไขปัญหา
 
-หากคุณพบข้อผิดพลาดในการเชื่อมต่อ:
-1. ตรวจสอบว่า Foundry Local กำลังรันอยู่ที่ `http://localhost:5273`
-2. ตรวจสอบว่ามีตัวแปรโมเดล Phi-3.5-mini พร้อมใช้งานโดยใช้ `foundry model list`
-3. ตรวจสอบให้แน่ใจว่าชื่อโมเดลใน `application.properties` ตรงกับชื่อโมเดลที่แสดงในรายการ
-4. ตรวจสอบว่าไม่มีไฟร์วอลล์ที่บล็อกการเชื่อมต่อ
+### ปัญหาทั่วไป
 
-ปัญหาที่พบบ่อย:
-- **ไม่พบโมเดล**: รัน `foundry model run phi-3.5-mini` เพื่อดาวน์โหลดและเริ่มต้นโมเดล
-- **บริการไม่ทำงาน**: บริการ Foundry Local อาจหยุดทำงาน ให้เริ่มต้นใหม่ด้วยคำสั่ง run โมเดล
-- **ชื่อโมเดลผิด**: ใช้ `foundry model list` เพื่อดูโมเดลที่มีและอัปเดตการตั้งค่าของคุณให้ถูกต้อง
+**"Connection refused" หรือ "Service unavailable"**
+- ตรวจสอบว่า Foundry Local กำลังทำงานอยู่: `foundry model list`
+- ยืนยันว่าบริการอยู่บนพอร์ต 5273: ตรวจสอบ `application.properties`
+- ลองรีสตาร์ท Foundry Local: `foundry model run phi-3.5-mini`
+
+**"Model not found" errors**
+- ตรวจสอบโมเดลที่มีอยู่: `foundry model list`
+- อัปเดตชื่อโมเดลใน `application.properties` ให้ตรงกัน
+- ดาวน์โหลดโมเดลหากจำเป็น: `foundry model run phi-3.5-mini`
+
+**ข้อผิดพลาดในการคอมไพล์ Maven**
+- ตรวจสอบว่าใช้ Java 21 หรือสูงกว่า: `java -version`
+- ล้างและสร้างใหม่: `mvn clean compile`
+- ตรวจสอบการเชื่อมต่ออินเทอร์เน็ตสำหรับการดาวน์โหลด dependency
+
+**แอปพลิเคชันเริ่มต้นแต่ไม่มีผลลัพธ์**
+- ยืนยันว่า Foundry Local ตอบสนอง: เปิดเบราว์เซอร์ไปที่ `http://localhost:5273`
+- ตรวจสอบ log ของแอปพลิเคชันสำหรับข้อความข้อผิดพลาดเฉพาะ
+- ตรวจสอบว่าโมเดลโหลดเสร็จและพร้อมใช้งาน
 
 **ข้อจำกัดความรับผิดชอบ**:  
-เอกสารนี้ได้รับการแปลโดยใช้บริการแปลภาษา AI [Co-op Translator](https://github.com/Azure/co-op-translator) แม้ว่าเราจะพยายามอย่างเต็มที่เพื่อความถูกต้อง โปรดทราบว่าการแปลอัตโนมัติอาจมีข้อผิดพลาดหรือความไม่ถูกต้อง เอกสารต้นฉบับในภาษาต้นทางควรถูกพิจารณาเป็นแหล่งข้อมูลที่เชื่อถือได้ สำหรับข้อมูลที่สำคัญ แนะนำให้ใช้บริการแปลภาษามนุษย์ที่เป็นมืออาชีพ เราจะไม่รับผิดชอบต่อความเข้าใจผิดหรือการตีความที่ผิดพลาดซึ่งเกิดจากการใช้การแปลนี้
+เอกสารนี้ได้รับการแปลโดยใช้บริการแปลภาษา AI [Co-op Translator](https://github.com/Azure/co-op-translator) แม้ว่าเราจะพยายามให้การแปลมีความถูกต้อง แต่โปรดทราบว่าการแปลอัตโนมัติอาจมีข้อผิดพลาดหรือความไม่ถูกต้อง เอกสารต้นฉบับในภาษาดั้งเดิมควรถือเป็นแหล่งข้อมูลที่เชื่อถือได้ สำหรับข้อมูลที่สำคัญ ขอแนะนำให้ใช้บริการแปลภาษามนุษย์ที่มีความเชี่ยวชาญ เราไม่รับผิดชอบต่อความเข้าใจผิดหรือการตีความผิดที่เกิดจากการใช้การแปลนี้

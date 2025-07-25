@@ -1,215 +1,300 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "a66dad62cdb2e141f05086feaf1a4a39",
-  "translation_date": "2025-07-21T19:46:24+00:00",
+  "original_hash": "2284c54d2a98090a37df0dbef1633ebf",
+  "translation_date": "2025-07-25T11:33:03+00:00",
   "source_file": "04-PracticalSamples/foundrylocal/README.md",
   "language_code": "el"
 }
 -->
-# Τοπική Εφαρμογή Γραμμής Εντολών Foundry
-
->**Σημείωση**: Αυτό το κεφάλαιο περιλαμβάνει ένα [**Tutorial**](./TUTORIAL.md) που σας καθοδηγεί στη χρήση των ολοκληρωμένων παραδειγμάτων.
-
-Μια απλή εφαρμογή γραμμής εντολών Spring Boot που δείχνει πώς να συνδεθείτε στο Foundry Local χρησιμοποιώντας το OpenAI Java SDK.
-
-## Τι Θα Μάθετε
-
-- Πώς να ενσωματώσετε το Foundry Local σε εφαρμογές Spring Boot χρησιμοποιώντας το OpenAI Java SDK
-- Βέλτιστες πρακτικές για τοπική ανάπτυξη και δοκιμή AI
+# Τοπικό Εγχειρίδιο Foundry Spring Boot
 
 ## Πίνακας Περιεχομένων
 
-- [Τι Θα Μάθετε](../../../../04-PracticalSamples/foundrylocal)
 - [Προαπαιτούμενα](../../../../04-PracticalSamples/foundrylocal)
-  - [Εγκατάσταση του Foundry Local](../../../../04-PracticalSamples/foundrylocal)
-  - [Επαλήθευση](../../../../04-PracticalSamples/foundrylocal)
-- [Ρύθμιση](../../../../04-PracticalSamples/foundrylocal)
-- [Γρήγορη Εκκίνηση](../../../../04-PracticalSamples/foundrylocal)
-- [Τι Κάνει η Εφαρμογή](../../../../04-PracticalSamples/foundrylocal)
-- [Παραδείγματα Εξόδου](../../../../04-PracticalSamples/foundrylocal)
-- [Αρχιτεκτονική](../../../../04-PracticalSamples/foundrylocal)
-- [Κύρια Σημεία Κώδικα](../../../../04-PracticalSamples/foundrylocal)
-  - [Ενσωμάτωση OpenAI Java SDK](../../../../04-PracticalSamples/foundrylocal)
-  - [Chat Completion API](../../../../04-PracticalSamples/foundrylocal)
+- [Επισκόπηση Έργου](../../../../04-PracticalSamples/foundrylocal)
+- [Κατανόηση του Κώδικα](../../../../04-PracticalSamples/foundrylocal)
+  - [1. Ρύθμιση Εφαρμογής (application.properties)](../../../../04-PracticalSamples/foundrylocal)
+  - [2. Κύρια Κλάση Εφαρμογής (Application.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [3. Επίπεδο Υπηρεσίας AI (FoundryLocalService.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [4. Εξαρτήσεις Έργου (pom.xml)](../../../../04-PracticalSamples/foundrylocal)
+- [Πώς Λειτουργούν Όλα Μαζί](../../../../04-PracticalSamples/foundrylocal)
+- [Ρύθμιση του Foundry Local](../../../../04-PracticalSamples/foundrylocal)
+- [Εκτέλεση της Εφαρμογής](../../../../04-PracticalSamples/foundrylocal)
+- [Αναμενόμενο Αποτέλεσμα](../../../../04-PracticalSamples/foundrylocal)
+- [Επόμενα Βήματα](../../../../04-PracticalSamples/foundrylocal)
 - [Αντιμετώπιση Προβλημάτων](../../../../04-PracticalSamples/foundrylocal)
 
 ## Προαπαιτούμενα
 
-> **⚠️ Σημείωση**: Αυτή η εφαρμογή **δεν εκτελείται στο παρεχόμενο devcontainer**, καθώς απαιτεί το Foundry Local να είναι εγκατεστημένο και να εκτελείται στο σύστημα υποδοχής.
+Πριν ξεκινήσετε αυτό το εγχειρίδιο, βεβαιωθείτε ότι έχετε:
 
-### Εγκατάσταση του Foundry Local
+- **Java 21 ή νεότερη έκδοση** εγκατεστημένη στο σύστημά σας
+- **Maven 3.6+** για τη δημιουργία του έργου
+- **Foundry Local** εγκατεστημένο και σε λειτουργία
 
-Πριν εκτελέσετε αυτήν την εφαρμογή, πρέπει να εγκαταστήσετε και να ξεκινήσετε το Foundry Local. Ακολουθήστε τα παρακάτω βήματα:
-
-1. **Βεβαιωθείτε ότι το σύστημά σας πληροί τις απαιτήσεις**:
-   - **Λειτουργικό Σύστημα**: Windows 10 (x64), Windows 11 (x64/ARM), Windows Server 2025 ή macOS
-   - **Υλικό**: 
-     - Ελάχιστο: 8GB RAM, 3GB ελεύθερος χώρος στο δίσκο
-     - Συνιστώμενο: 16GB RAM, 15GB ελεύθερος χώρος στο δίσκο
-   - **Δίκτυο**: Σύνδεση στο διαδίκτυο για την αρχική λήψη του μοντέλου (προαιρετικό για offline χρήση)
-   - **Επιτάχυνση (προαιρετικό)**: NVIDIA GPU (σειρά 2,000 ή νεότερη), AMD GPU (σειρά 6,000 ή νεότερη), Qualcomm Snapdragon X Elite (8GB ή περισσότερη μνήμη) ή Apple silicon
-   - **Δικαιώματα**: Διοικητικά δικαιώματα για την εγκατάσταση λογισμικού στη συσκευή σας
-
-2. **Εγκαταστήστε το Foundry Local**:
-   
-   **Για Windows:**
-   ```bash
-   winget install Microsoft.FoundryLocal
-   ```
-   
-   **Για macOS:**
-   ```bash
-   brew tap microsoft/foundrylocal
-   brew install foundrylocal
-   ```
-   
-   Εναλλακτικά, μπορείτε να κατεβάσετε τον εγκαταστάτη από το [Foundry Local GitHub repository](https://github.com/microsoft/Foundry-Local).
-
-3. **Ξεκινήστε το πρώτο σας μοντέλο**:
-
-   ```bash
-   foundry model run phi-3.5-mini
-   ```
-
-   Το μοντέλο κατεβαίνει (αυτό μπορεί να διαρκέσει λίγα λεπτά, ανάλογα με την ταχύτητα του διαδικτύου σας) και στη συνέχεια εκτελείται. Το Foundry Local επιλέγει αυτόματα την καλύτερη παραλλαγή μοντέλου για το σύστημά σας (CUDA για NVIDIA GPUs, CPU έκδοση διαφορετικά).
-
-4. **Δοκιμάστε το μοντέλο** κάνοντας μια ερώτηση στο ίδιο τερματικό:
-
-   ```bash
-   Why is the sky blue?
-   ```
-
-   Θα πρέπει να δείτε μια απάντηση από το μοντέλο Phi που εξηγεί γιατί ο ουρανός φαίνεται μπλε.
-
-### Επαλήθευση
-
-Μπορείτε να επαληθεύσετε ότι όλα λειτουργούν σωστά με αυτές τις εντολές:
+### **Εγκατάσταση του Foundry Local:**
 
 ```bash
-# List all available models
-foundry model list
+# Windows
+winget install Microsoft.FoundryLocal
 
-# Check the service status via REST API
-curl http://localhost:5273/v1/models
+# macOS (after installing)
+foundry model run phi-3.5-mini
 ```
 
-Μπορείτε επίσης να επισκεφθείτε τη διεύθυνση `http://localhost:5273` στον περιηγητή σας για να δείτε τη διεπαφή ιστού του Foundry Local.
+## Επισκόπηση Έργου
 
-## Ρύθμιση
+Αυτό το έργο αποτελείται από τέσσερα κύρια στοιχεία:
 
-Η εφαρμογή μπορεί να ρυθμιστεί μέσω του `application.properties`:
+1. **Application.java** - Το κύριο σημείο εισόδου της εφαρμογής Spring Boot
+2. **FoundryLocalService.java** - Επίπεδο υπηρεσίας που χειρίζεται την επικοινωνία με την AI
+3. **application.properties** - Ρυθμίσεις για τη σύνδεση με το Foundry Local
+4. **pom.xml** - Εξαρτήσεις Maven και ρυθμίσεις έργου
 
-- `foundry.local.base-url` - Βασική διεύθυνση URL για το Foundry Local (προεπιλογή: http://localhost:5273)
-- `foundry.local.model` - Μοντέλο AI που θα χρησιμοποιηθεί (προεπιλογή: Phi-3.5-mini-instruct-cuda-gpu)
+## Κατανόηση του Κώδικα
 
-> **Σημείωση**: Το όνομα του μοντέλου στη ρύθμιση πρέπει να ταιριάζει με την συγκεκριμένη παραλλαγή που κατέβασε το Foundry Local για το σύστημά σας. Όταν εκτελείτε `foundry model run phi-3.5-mini`, το Foundry Local επιλέγει και κατεβάζει αυτόματα την καλύτερη παραλλαγή (CUDA για NVIDIA GPUs, CPU έκδοση διαφορετικά). Χρησιμοποιήστε `foundry model list` για να δείτε το ακριβές όνομα του μοντέλου που είναι διαθέσιμο στην τοπική σας εγκατάσταση.
+### 1. Ρύθμιση Εφαρμογής (application.properties)
 
-## Γρήγορη Εκκίνηση
+**Αρχείο:** `src/main/resources/application.properties`
 
-### 1. Μεταβείτε στον κατάλογο της εφαρμογής foundry local
-```bash
-cd Generative-AI-for-beginners-java/04-PracticalSamples/foundrylocal
+```properties
+foundry.local.base-url=http://localhost:5273
+foundry.local.model=Phi-3.5-mini-instruct-cuda-gpu
 ```
 
-### 2. Εκτελέστε την Εφαρμογή
+**Τι κάνει:**
+- **base-url**: Καθορίζει πού εκτελείται το Foundry Local (προεπιλεγμένη θύρα 5273)
+- **model**: Ορίζει το όνομα του μοντέλου AI που θα χρησιμοποιηθεί για τη δημιουργία κειμένου
 
-```bash
-mvn spring-boot:run
+**Βασική έννοια:** Το Spring Boot φορτώνει αυτόματα αυτές τις ιδιότητες και τις καθιστά διαθέσιμες στην εφαρμογή σας χρησιμοποιώντας την αναφορά `@Value`.
+
+### 2. Κύρια Κλάση Εφαρμογής (Application.java)
+
+**Αρχείο:** `src/main/java/com/example/Application.java`
+
+```java
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication app = new SpringApplication(Application.class);
+        app.setWebApplicationType(WebApplicationType.NONE);  // No web server needed
+        app.run(args);
+    }
 ```
 
-Ή δημιουργήστε και εκτελέστε το JAR:
+**Τι κάνει:**
+- `@SpringBootApplication` ενεργοποιεί την αυτόματη ρύθμιση του Spring Boot
+- `WebApplicationType.NONE` δηλώνει ότι πρόκειται για εφαρμογή γραμμής εντολών, όχι για διακομιστή ιστού
+- Η κύρια μέθοδος εκκινεί την εφαρμογή Spring
 
-```bash
-mvn clean package
-java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+**Ο Εκτελεστής Επίδειξης:**
+```java
+@Bean
+public CommandLineRunner foundryLocalRunner(FoundryLocalService foundryLocalService) {
+    return args -> {
+        System.out.println("=== Foundry Local Demo ===");
+        
+        String testMessage = "Hello! Can you tell me what you are and what model you're running?";
+        System.out.println("Sending message: " + testMessage);
+        
+        String response = foundryLocalService.chat(testMessage);
+        System.out.println("Response from Foundry Local:");
+        System.out.println(response);
+    };
+}
 ```
 
-### Εξαρτήσεις
+**Τι κάνει:**
+- `@Bean` δημιουργεί ένα στοιχείο που διαχειρίζεται το Spring
+- `CommandLineRunner` εκτελεί κώδικα μετά την εκκίνηση του Spring Boot
+- Το `foundryLocalService` εισάγεται αυτόματα από το Spring (dependency injection)
+- Στέλνει ένα δοκιμαστικό μήνυμα στην AI και εμφανίζει την απάντηση
 
-Αυτή η εφαρμογή χρησιμοποιεί το OpenAI Java SDK για να επικοινωνεί με το Foundry Local. Η βασική εξάρτηση είναι:
+### 3. Επίπεδο Υπηρεσίας AI (FoundryLocalService.java)
+
+**Αρχείο:** `src/main/java/com/example/FoundryLocalService.java`
+
+#### Εισαγωγή Ρυθμίσεων:
+```java
+@Service
+public class FoundryLocalService {
+    
+    @Value("${foundry.local.base-url:http://localhost:5273}")
+    private String baseUrl;
+    
+    @Value("${foundry.local.model:Phi-3.5-mini-instruct-cuda-gpu}")
+    private String model;
+```
+
+**Τι κάνει:**
+- `@Service` δηλώνει ότι αυτή η κλάση παρέχει επιχειρησιακή λογική
+- `@Value` εισάγει τιμές ρυθμίσεων από το application.properties
+- Η σύνταξη `:default-value` παρέχει εναλλακτικές τιμές αν δεν έχουν οριστεί ιδιότητες
+
+#### Αρχικοποίηση Πελάτη:
+```java
+@PostConstruct
+public void init() {
+    this.openAIClient = OpenAIOkHttpClient.builder()
+            .baseUrl(baseUrl + "/v1")        // Foundry Local uses OpenAI-compatible API
+            .apiKey("unused")                 // Local server doesn't need real API key
+            .build();
+}
+```
+
+**Τι κάνει:**
+- `@PostConstruct` εκτελεί αυτή τη μέθοδο μετά τη δημιουργία της υπηρεσίας από το Spring
+- Δημιουργεί έναν πελάτη OpenAI που συνδέεται με την τοπική σας εγκατάσταση Foundry Local
+- Η διαδρομή `/v1` είναι απαραίτητη για συμβατότητα με το API του OpenAI
+- Το API key είναι "unused" επειδή η τοπική ανάπτυξη δεν απαιτεί αυθεντικοποίηση
+
+#### Μέθοδος Συνομιλίας:
+```java
+public String chat(String message) {
+    try {
+        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
+                .model(model)                    // Which AI model to use
+                .addUserMessage(message)         // Your question/prompt
+                .maxCompletionTokens(150)        // Limit response length
+                .temperature(0.7)                // Control creativity (0.0-1.0)
+                .build();
+        
+        ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
+        
+        // Extract the AI's response from the API result
+        if (chatCompletion.choices() != null && !chatCompletion.choices().isEmpty()) {
+            return chatCompletion.choices().get(0).message().content().orElse("No response found");
+        }
+        
+        return "No response content found";
+    } catch (Exception e) {
+        throw new RuntimeException("Error calling chat completion: " + e.getMessage(), e);
+    }
+}
+```
+
+**Τι κάνει:**
+- **ChatCompletionCreateParams**: Ρυθμίζει το αίτημα προς την AI
+  - `model`: Καθορίζει ποιο μοντέλο AI θα χρησιμοποιηθεί
+  - `addUserMessage`: Προσθέτει το μήνυμά σας στη συνομιλία
+  - `maxCompletionTokens`: Περιορίζει το μήκος της απάντησης (εξοικονόμηση πόρων)
+  - `temperature`: Ελέγχει την τυχαιότητα (0.0 = ντετερμινιστικό, 1.0 = δημιουργικό)
+- **Κλήση API**: Στέλνει το αίτημα στο Foundry Local
+- **Επεξεργασία Απάντησης**: Εξάγει με ασφάλεια την απάντηση της AI
+- **Διαχείριση Σφαλμάτων**: Τυλίγει εξαιρέσεις με χρήσιμα μηνύματα σφάλματος
+
+### 4. Εξαρτήσεις Έργου (pom.xml)
+
+**Κύριες Εξαρτήσεις:**
 
 ```xml
+<!-- Spring Boot - Application framework -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+    <version>${spring-boot.version}</version>
+</dependency>
+
+<!-- OpenAI Java SDK - For AI API calls -->
 <dependency>
     <groupId>com.openai</groupId>
     <artifactId>openai-java</artifactId>
     <version>2.12.0</version>
 </dependency>
+
+<!-- Jackson - JSON processing -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.17.0</version>
+</dependency>
 ```
 
-Η εφαρμογή είναι προρυθμισμένη για σύνδεση με το Foundry Local που εκτελείται στην προεπιλεγμένη θύρα.
+**Τι κάνουν:**
+- **spring-boot-starter**: Παρέχει βασική λειτουργικότητα του Spring Boot
+- **openai-java**: Επίσημο OpenAI Java SDK για επικοινωνία με το API
+- **jackson-databind**: Χειρίζεται τη σειριοποίηση/αποσειριοποίηση JSON για κλήσεις API
 
-## Τι Κάνει η Εφαρμογή
+## Πώς Λειτουργούν Όλα Μαζί
 
-Όταν εκτελείτε την εφαρμογή:
+Ακολουθεί η πλήρης ροή όταν εκτελείτε την εφαρμογή:
 
-1. **Ξεκινά** ως εφαρμογή γραμμής εντολών (χωρίς web server)
-2. **Στέλνει αυτόματα** ένα δοκιμαστικό μήνυμα: "Γεια! Μπορείς να μου πεις τι είσαι και ποιο μοντέλο εκτελείς;"
-3. **Εμφανίζει την απάντηση** από το Foundry Local στην κονσόλα
-4. **Τερματίζει καθαρά** μετά την επίδειξη
+1. **Εκκίνηση**: Το Spring Boot ξεκινά και διαβάζει το `application.properties`
+2. **Δημιουργία Υπηρεσίας**: Το Spring δημιουργεί το `FoundryLocalService` και εισάγει τιμές ρυθμίσεων
+3. **Ρύθμιση Πελάτη**: Το `@PostConstruct` αρχικοποιεί τον πελάτη OpenAI για σύνδεση με το Foundry Local
+4. **Εκτέλεση Επίδειξης**: Το `CommandLineRunner` εκτελείται μετά την εκκίνηση
+5. **Κλήση AI**: Η επίδειξη καλεί τη μέθοδο `foundryLocalService.chat()` με ένα δοκιμαστικό μήνυμα
+6. **Αίτημα API**: Η υπηρεσία δημιουργεί και στέλνει αίτημα συμβατό με το OpenAI στο Foundry Local
+7. **Επεξεργασία Απάντησης**: Η υπηρεσία εξάγει και επιστρέφει την απάντηση της AI
+8. **Εμφάνιση**: Η εφαρμογή εκτυπώνει την απάντηση και τερματίζει
 
-## Παραδείγματα Εξόδου
+## Ρύθμιση του Foundry Local
+
+Για να ρυθμίσετε το Foundry Local, ακολουθήστε τα εξής βήματα:
+
+1. **Εγκαταστήστε το Foundry Local** χρησιμοποιώντας τις οδηγίες στην ενότητα [Προαπαιτούμενα](../../../../04-PracticalSamples/foundrylocal).
+2. **Κατεβάστε το μοντέλο AI** που θέλετε να χρησιμοποιήσετε, για παράδειγμα, `phi-3.5-mini`, με την ακόλουθη εντολή:
+   ```bash
+   foundry model run phi-3.5-mini
+   ```
+3. **Ρυθμίστε το αρχείο application.properties** ώστε να ταιριάζει με τις ρυθμίσεις του Foundry Local, ειδικά αν χρησιμοποιείτε διαφορετική θύρα ή μοντέλο.
+
+## Εκτέλεση της Εφαρμογής
+
+### Βήμα 1: Εκκινήστε το Foundry Local
+```bash
+foundry model run phi-3.5-mini
+```
+
+### Βήμα 2: Δημιουργήστε και Εκτελέστε την Εφαρμογή
+```bash
+mvn clean package
+java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+```
+
+## Αναμενόμενο Αποτέλεσμα
 
 ```
 === Foundry Local Demo ===
 Calling Foundry Local service...
 Sending message: Hello! Can you tell me what you are and what model you're running?
 Response from Foundry Local:
-Hello! I'm Phi, an AI language model created by Microsoft. I don't have a physical form or a specific hardware model like a smartphone or a computer. I exist purely in software, and I operate on Microsoft's infrastructure...
+Hello! I'm Phi-3.5, a small language model created by Microsoft. I'm currently running 
+as the Phi-3.5-mini-instruct model, which is designed to be helpful, harmless, and honest 
+in my interactions. I can assist with a wide variety of tasks including answering 
+questions, helping with analysis, creative writing, coding, and general conversation. 
+Is there something specific you'd like help with today?
 =========================
 ```
 
-## Αρχιτεκτονική
+## Επόμενα Βήματα
 
-- **Application.java** - Κύρια εφαρμογή Spring Boot με CommandLineRunner
-- **FoundryLocalService.java** - Υπηρεσία που χρησιμοποιεί το OpenAI Java SDK για επικοινωνία με το Foundry Local
-- Χρησιμοποιεί **OpenAI Java SDK** για κλήσεις API με ασφάλεια τύπων
-- Αυτόματη σειριοποίηση/αποσειριοποίηση JSON που διαχειρίζεται το SDK
-- Καθαρή ρύθμιση μέσω των annotations `@Value` και `@PostConstruct` του Spring
-
-## Κύρια Σημεία Κώδικα
-
-### Ενσωμάτωση OpenAI Java SDK
-
-Η εφαρμογή χρησιμοποιεί το OpenAI Java SDK για να δημιουργήσει έναν πελάτη ρυθμισμένο για το Foundry Local:
-
-```java
-@PostConstruct
-public void init() {
-    this.openAIClient = OpenAIOkHttpClient.builder()
-            .baseUrl(baseUrl + "/v1")
-            .apiKey("unused") // Local server doesn't require real API key
-            .build();
-}
-```
-
-### Chat Completion API
-
-Η δημιουργία αιτημάτων για ολοκλήρωση συνομιλίας είναι απλή και ασφαλής ως προς τους τύπους:
-
-```java
-ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-        .model(model)
-        .addUserMessage(message)
-        .maxCompletionTokens(150)
-        .temperature(0.7)
-        .build();
-
-ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
-```
+Για περισσότερα παραδείγματα, δείτε [Κεφάλαιο 04: Πρακτικά δείγματα](../README.md)
 
 ## Αντιμετώπιση Προβλημάτων
 
-Αν δείτε σφάλματα σύνδεσης:
-1. Επαληθεύστε ότι το Foundry Local εκτελείται στη διεύθυνση `http://localhost:5273`
-2. Ελέγξτε ότι μια παραλλαγή του μοντέλου Phi-3.5-mini είναι διαθέσιμη με `foundry model list`
-3. Βεβαιωθείτε ότι το όνομα του μοντέλου στο `application.properties` ταιριάζει με το ακριβές όνομα του μοντέλου που εμφανίζεται στη λίστα
-4. Βεβαιωθείτε ότι δεν υπάρχει firewall που να μπλοκάρει τη σύνδεση
+### Συνηθισμένα Προβλήματα
 
-Συνηθισμένα προβλήματα:
-- **Το μοντέλο δεν βρέθηκε**: Εκτελέστε `foundry model run phi-3.5-mini` για να κατεβάσετε και να ξεκινήσετε το μοντέλο
-- **Η υπηρεσία δεν εκτελείται**: Η υπηρεσία Foundry Local μπορεί να έχει σταματήσει. Επανεκκινήστε την με την εντολή εκτέλεσης του μοντέλου
-- **Λάθος όνομα μοντέλου**: Χρησιμοποιήστε `foundry model list` για να δείτε τα διαθέσιμα μοντέλα και ενημερώστε τη ρύθμισή σας αναλόγως
+**"Connection refused" ή "Service unavailable"**
+- Βεβαιωθείτε ότι το Foundry Local εκτελείται: `foundry model list`
+- Επαληθεύστε ότι η υπηρεσία είναι στη θύρα 5273: Ελέγξτε το `application.properties`
+- Δοκιμάστε να επανεκκινήσετε το Foundry Local: `foundry model run phi-3.5-mini`
 
-**Αποποίηση ευθύνης**:  
-Αυτό το έγγραφο έχει μεταφραστεί χρησιμοποιώντας την υπηρεσία αυτόματης μετάφρασης [Co-op Translator](https://github.com/Azure/co-op-translator). Παρόλο που καταβάλλουμε προσπάθειες για ακρίβεια, παρακαλούμε να έχετε υπόψη ότι οι αυτοματοποιημένες μεταφράσεις ενδέχεται να περιέχουν λάθη ή ανακρίβειες. Το πρωτότυπο έγγραφο στη μητρική του γλώσσα θα πρέπει να θεωρείται η αυθεντική πηγή. Για κρίσιμες πληροφορίες, συνιστάται επαγγελματική ανθρώπινη μετάφραση. Δεν φέρουμε ευθύνη για τυχόν παρεξηγήσεις ή εσφαλμένες ερμηνείες που προκύπτουν από τη χρήση αυτής της μετάφρασης.
+**Σφάλματα "Model not found"**
+- Ελέγξτε τα διαθέσιμα μοντέλα: `foundry model list`
+- Ενημερώστε το όνομα του μοντέλου στο `application.properties` ώστε να ταιριάζει ακριβώς
+- Κατεβάστε το μοντέλο αν χρειάζεται: `foundry model run phi-3.5-mini`
+
+**Σφάλματα κατά τη σύνταξη με Maven**
+- Βεβαιωθείτε ότι έχετε Java 21 ή νεότερη έκδοση: `java -version`
+- Καθαρίστε και επαναδημιουργήστε: `mvn clean compile`
+- Ελέγξτε τη σύνδεση στο διαδίκτυο για λήψη εξαρτήσεων
+
+**Η εφαρμογή ξεκινά αλλά δεν εμφανίζει αποτέλεσμα**
+- Επαληθεύστε ότι το Foundry Local ανταποκρίνεται: Ανοίξτε τον περιηγητή στο `http://localhost:5273`
+- Ελέγξτε τα αρχεία καταγραφής της εφαρμογής για συγκεκριμένα μηνύματα σφάλματος
+- Βεβαιωθείτε ότι το μοντέλο έχει φορτωθεί πλήρως και είναι έτοιμο
+
+**Αποποίηση Ευθύνης**:  
+Αυτό το έγγραφο έχει μεταφραστεί χρησιμοποιώντας την υπηρεσία αυτόματης μετάφρασης [Co-op Translator](https://github.com/Azure/co-op-translator). Παρόλο που καταβάλλουμε προσπάθειες για ακρίβεια, παρακαλούμε να έχετε υπόψη ότι οι αυτόματες μεταφράσεις ενδέχεται να περιέχουν λάθη ή ανακρίβειες. Το πρωτότυπο έγγραφο στη μητρική του γλώσσα θα πρέπει να θεωρείται η αυθεντική πηγή. Για κρίσιμες πληροφορίες, συνιστάται επαγγελματική ανθρώπινη μετάφραση. Δεν φέρουμε ευθύνη για τυχόν παρεξηγήσεις ή εσφαλμένες ερμηνείες που προκύπτουν από τη χρήση αυτής της μετάφρασης.

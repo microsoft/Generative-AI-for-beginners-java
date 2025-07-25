@@ -1,215 +1,300 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "a66dad62cdb2e141f05086feaf1a4a39",
-  "translation_date": "2025-07-21T16:33:23+00:00",
+  "original_hash": "2284c54d2a98090a37df0dbef1633ebf",
+  "translation_date": "2025-07-25T10:59:14+00:00",
   "source_file": "04-PracticalSamples/foundrylocal/README.md",
   "language_code": "tw"
 }
 -->
-# Foundry Local 命令列應用程式
-
->**注意**：本章節包含一個[**教學**](./TUTORIAL.md)，指導您如何執行完成的範例。
-
-一個簡單的 Spring Boot 命令列應用程式，展示如何使用 OpenAI Java SDK 連接到 Foundry Local。
-
-## 您將學到什麼
-
-- 如何使用 OpenAI Java SDK 將 Foundry Local 整合到 Spring Boot 應用程式中
-- 本地 AI 開發與測試的最佳實踐
+# Foundry Local Spring Boot 教學
 
 ## 目錄
 
-- [您將學到什麼](../../../../04-PracticalSamples/foundrylocal)
 - [先決條件](../../../../04-PracticalSamples/foundrylocal)
-  - [安裝 Foundry Local](../../../../04-PracticalSamples/foundrylocal)
-  - [驗證](../../../../04-PracticalSamples/foundrylocal)
-- [配置](../../../../04-PracticalSamples/foundrylocal)
-- [快速開始](../../../../04-PracticalSamples/foundrylocal)
-- [應用程式的功能](../../../../04-PracticalSamples/foundrylocal)
-- [範例輸出](../../../../04-PracticalSamples/foundrylocal)
-- [架構](../../../../04-PracticalSamples/foundrylocal)
-- [程式碼亮點](../../../../04-PracticalSamples/foundrylocal)
-  - [OpenAI Java SDK 整合](../../../../04-PracticalSamples/foundrylocal)
-  - [聊天完成 API](../../../../04-PracticalSamples/foundrylocal)
-- [疑難排解](../../../../04-PracticalSamples/foundrylocal)
+- [專案概述](../../../../04-PracticalSamples/foundrylocal)
+- [理解程式碼](../../../../04-PracticalSamples/foundrylocal)
+  - [1. 應用程式配置 (application.properties)](../../../../04-PracticalSamples/foundrylocal)
+  - [2. 主應用程式類別 (Application.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [3. AI 服務層 (FoundryLocalService.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [4. 專案依賴項 (pom.xml)](../../../../04-PracticalSamples/foundrylocal)
+- [整體運作方式](../../../../04-PracticalSamples/foundrylocal)
+- [設置 Foundry Local](../../../../04-PracticalSamples/foundrylocal)
+- [執行應用程式](../../../../04-PracticalSamples/foundrylocal)
+- [預期輸出](../../../../04-PracticalSamples/foundrylocal)
+- [下一步](../../../../04-PracticalSamples/foundrylocal)
+- [故障排除](../../../../04-PracticalSamples/foundrylocal)
 
 ## 先決條件
 
-> **⚠️ 注意**：此應用程式**無法在提供的 devcontainer 中執行**，因為它需要在主機系統上安裝並運行 Foundry Local。
+在開始本教學之前，請確保您已完成以下準備：
 
-### 安裝 Foundry Local
+- 系統已安裝 **Java 21 或更高版本**
+- **Maven 3.6+** 用於建置專案
+- 已安裝並運行 **Foundry Local**
 
-在執行此應用程式之前，您需要安裝並啟動 Foundry Local。請按照以下步驟操作：
-
-1. **確保您的系統符合要求**：
-   - **作業系統**：Windows 10 (x64)、Windows 11 (x64/ARM)、Windows Server 2025 或 macOS
-   - **硬體**：
-     - 最低要求：8GB RAM，3GB 可用磁碟空間
-     - 推薦配置：16GB RAM，15GB 可用磁碟空間
-   - **網路**：初次下載模型需要網路連線（離線使用可選）
-   - **加速（可選）**：NVIDIA GPU（2000 系列或更新）、AMD GPU（6000 系列或更新）、Qualcomm Snapdragon X Elite（8GB 或更多記憶體）或 Apple Silicon
-   - **權限**：安裝軟體需要管理員權限
-
-2. **安裝 Foundry Local**：
-   
-   **對於 Windows：**
-   ```bash
-   winget install Microsoft.FoundryLocal
-   ```
-   
-   **對於 macOS：**
-   ```bash
-   brew tap microsoft/foundrylocal
-   brew install foundrylocal
-   ```
-   
-   或者，您可以從 [Foundry Local GitHub 儲存庫](https://github.com/microsoft/Foundry-Local) 下載安裝程式。
-
-3. **啟動您的第一個模型**：
-
-   ```bash
-   foundry model run phi-3.5-mini
-   ```
-
-   模型將被下載（根據您的網速可能需要幾分鐘），然後開始運行。Foundry Local 會自動為您的系統選擇最佳的模型版本（NVIDIA GPU 使用 CUDA，否則使用 CPU 版本）。
-
-4. **在同一終端中測試模型**，輸入問題：
-
-   ```bash
-   Why is the sky blue?
-   ```
-
-   您應該會看到 Phi 模型的回應，解釋為什麼天空看起來是藍色的。
-
-### 驗證
-
-您可以使用以下命令驗證一切是否正常運行：
+### **安裝 Foundry Local:**
 
 ```bash
-# List all available models
-foundry model list
+# Windows
+winget install Microsoft.FoundryLocal
 
-# Check the service status via REST API
-curl http://localhost:5273/v1/models
+# macOS (after installing)
+foundry model run phi-3.5-mini
 ```
 
-您也可以在瀏覽器中訪問 `http://localhost:5273` 查看 Foundry Local 的網頁介面。
+## 專案概述
 
-## 配置
+此專案包含四個主要組件：
 
-此應用程式可以通過 `application.properties` 進行配置：
+1. **Application.java** - Spring Boot 應用程式的主要入口點
+2. **FoundryLocalService.java** - 處理 AI 通訊的服務層
+3. **application.properties** - Foundry Local 連接的配置檔案
+4. **pom.xml** - Maven 依賴項及專案配置
 
-- `foundry.local.base-url` - Foundry Local 的基礎 URL（預設值：http://localhost:5273）
-- `foundry.local.model` - 要使用的 AI 模型（預設值：Phi-3.5-mini-instruct-cuda-gpu）
+## 理解程式碼
 
-> **注意**：配置中的模型名稱應與 Foundry Local 為您的系統下載的具體版本相匹配。當您執行 `foundry model run phi-3.5-mini` 時，Foundry Local 會自動選擇並下載最佳版本（NVIDIA GPU 使用 CUDA，否則使用 CPU 版本）。使用 `foundry model list` 查看本地實例中可用的具體模型名稱。
+### 1. 應用程式配置 (application.properties)
 
-## 快速開始
+**檔案位置:** `src/main/resources/application.properties`
 
-### 1. 導航到 Foundry Local 應用程式目錄
-```bash
-cd Generative-AI-for-beginners-java/04-PracticalSamples/foundrylocal
+```properties
+foundry.local.base-url=http://localhost:5273
+foundry.local.model=Phi-3.5-mini-instruct-cuda-gpu
 ```
 
-### 2. 執行應用程式
+**功能說明:**
+- **base-url**: 指定 Foundry Local 的運行位置 (預設埠為 5273)
+- **model**: 指定用於文字生成的 AI 模型名稱
 
-```bash
-mvn spring-boot:run
+**關鍵概念:** Spring Boot 會自動載入這些屬性，並通過 `@Value` 註解使其在應用程式中可用。
+
+### 2. 主應用程式類別 (Application.java)
+
+**檔案位置:** `src/main/java/com/example/Application.java`
+
+```java
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication app = new SpringApplication(Application.class);
+        app.setWebApplicationType(WebApplicationType.NONE);  // No web server needed
+        app.run(args);
+    }
 ```
 
-或者構建並運行 JAR：
+**功能說明:**
+- `@SpringBootApplication` 啟用 Spring Boot 的自動配置功能
+- `WebApplicationType.NONE` 告訴 Spring 這是一個命令列應用程式，而非網頁伺服器
+- 主方法啟動 Spring 應用程式
 
-```bash
-mvn clean package
-java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+**示範執行程式:**
+```java
+@Bean
+public CommandLineRunner foundryLocalRunner(FoundryLocalService foundryLocalService) {
+    return args -> {
+        System.out.println("=== Foundry Local Demo ===");
+        
+        String testMessage = "Hello! Can you tell me what you are and what model you're running?";
+        System.out.println("Sending message: " + testMessage);
+        
+        String response = foundryLocalService.chat(testMessage);
+        System.out.println("Response from Foundry Local:");
+        System.out.println(response);
+    };
+}
 ```
 
-### 依賴項
+**功能說明:**
+- `@Bean` 創建由 Spring 管理的元件
+- `CommandLineRunner` 在 Spring Boot 啟動後執行程式碼
+- `foundryLocalService` 由 Spring 自動注入 (依賴注入)
+- 發送測試訊息給 AI 並顯示回應
 
-此應用程式使用 OpenAI Java SDK 與 Foundry Local 通信。主要依賴項為：
+### 3. AI 服務層 (FoundryLocalService.java)
+
+**檔案位置:** `src/main/java/com/example/FoundryLocalService.java`
+
+#### 配置注入:
+```java
+@Service
+public class FoundryLocalService {
+    
+    @Value("${foundry.local.base-url:http://localhost:5273}")
+    private String baseUrl;
+    
+    @Value("${foundry.local.model:Phi-3.5-mini-instruct-cuda-gpu}")
+    private String model;
+```
+
+**功能說明:**
+- `@Service` 告訴 Spring 此類別提供業務邏輯
+- `@Value` 從 application.properties 中注入配置值
+- `:default-value` 語法提供屬性未設置時的預設值
+
+#### 客戶端初始化:
+```java
+@PostConstruct
+public void init() {
+    this.openAIClient = OpenAIOkHttpClient.builder()
+            .baseUrl(baseUrl + "/v1")        // Foundry Local uses OpenAI-compatible API
+            .apiKey("unused")                 // Local server doesn't need real API key
+            .build();
+}
+```
+
+**功能說明:**
+- `@PostConstruct` 在 Spring 創建服務後執行此方法
+- 創建指向本地 Foundry Local 實例的 OpenAI 客戶端
+- `/v1` 路徑是 OpenAI API 兼容性所需
+- API 金鑰為 "unused"，因為本地開發不需要身份驗證
+
+#### 聊天方法:
+```java
+public String chat(String message) {
+    try {
+        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
+                .model(model)                    // Which AI model to use
+                .addUserMessage(message)         // Your question/prompt
+                .maxCompletionTokens(150)        // Limit response length
+                .temperature(0.7)                // Control creativity (0.0-1.0)
+                .build();
+        
+        ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
+        
+        // Extract the AI's response from the API result
+        if (chatCompletion.choices() != null && !chatCompletion.choices().isEmpty()) {
+            return chatCompletion.choices().get(0).message().content().orElse("No response found");
+        }
+        
+        return "No response content found";
+    } catch (Exception e) {
+        throw new RuntimeException("Error calling chat completion: " + e.getMessage(), e);
+    }
+}
+```
+
+**功能說明:**
+- **ChatCompletionCreateParams**: 配置 AI 請求
+  - `model`: 指定使用的 AI 模型
+  - `addUserMessage`: 將您的訊息添加到對話中
+  - `maxCompletionTokens`: 限制回應的長度 (節省資源)
+  - `temperature`: 控制隨機性 (0.0 = 確定性, 1.0 = 創造性)
+- **API 呼叫**: 發送請求到 Foundry Local
+- **回應處理**: 安全提取 AI 的文字回應
+- **錯誤處理**: 包裝例外並提供有用的錯誤訊息
+
+### 4. 專案依賴項 (pom.xml)
+
+**主要依賴項:**
 
 ```xml
+<!-- Spring Boot - Application framework -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+    <version>${spring-boot.version}</version>
+</dependency>
+
+<!-- OpenAI Java SDK - For AI API calls -->
 <dependency>
     <groupId>com.openai</groupId>
     <artifactId>openai-java</artifactId>
     <version>2.12.0</version>
 </dependency>
+
+<!-- Jackson - JSON processing -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.17.0</version>
+</dependency>
 ```
 
-應用程式已預先配置為連接到運行在預設埠上的 Foundry Local。
+**功能說明:**
+- **spring-boot-starter**: 提供核心 Spring Boot 功能
+- **openai-java**: 官方 OpenAI Java SDK 用於 API 通訊
+- **jackson-databind**: 處理 API 呼叫的 JSON 序列化/反序列化
 
-## 應用程式的功能
+## 整體運作方式
 
-當您運行此應用程式時：
+當您執行應用程式時，以下是完整流程：
 
-1. **啟動**為命令列應用程式（無網頁伺服器）
-2. **自動發送**測試訊息："Hello! Can you tell me what you are and what model you're running?"
-3. **在控制台顯示**來自 Foundry Local 的回應
-4. **在演示結束後**正常退出
+1. **啟動**: Spring Boot 啟動並讀取 `application.properties`
+2. **服務創建**: Spring 創建 `FoundryLocalService` 並注入配置值
+3. **客戶端設置**: `@PostConstruct` 初始化 OpenAI 客戶端以連接到 Foundry Local
+4. **示範執行**: `CommandLineRunner` 在啟動後執行
+5. **AI 呼叫**: 示範程式使用測試訊息呼叫 `foundryLocalService.chat()`
+6. **API 請求**: 服務構建並發送 OpenAI 兼容請求到 Foundry Local
+7. **回應處理**: 服務提取並返回 AI 的回應
+8. **顯示**: 應用程式打印回應並退出
 
-## 範例輸出
+## 設置 Foundry Local
+
+按照以下步驟設置 Foundry Local：
+
+1. **安裝 Foundry Local**，請參考 [先決條件](../../../../04-PracticalSamples/foundrylocal) 部分的指導。
+2. **下載您想使用的 AI 模型**，例如 `phi-3.5-mini`，使用以下指令：
+   ```bash
+   foundry model run phi-3.5-mini
+   ```
+3. **配置 application.properties** 檔案以匹配您的 Foundry Local 設置，特別是如果您使用不同的埠或模型。
+
+## 執行應用程式
+
+### 步驟 1: 啟動 Foundry Local
+```bash
+foundry model run phi-3.5-mini
+```
+
+### 步驟 2: 建置並執行應用程式
+```bash
+mvn clean package
+java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+```
+
+## 預期輸出
 
 ```
 === Foundry Local Demo ===
 Calling Foundry Local service...
 Sending message: Hello! Can you tell me what you are and what model you're running?
 Response from Foundry Local:
-Hello! I'm Phi, an AI language model created by Microsoft. I don't have a physical form or a specific hardware model like a smartphone or a computer. I exist purely in software, and I operate on Microsoft's infrastructure...
+Hello! I'm Phi-3.5, a small language model created by Microsoft. I'm currently running 
+as the Phi-3.5-mini-instruct model, which is designed to be helpful, harmless, and honest 
+in my interactions. I can assist with a wide variety of tasks including answering 
+questions, helping with analysis, creative writing, coding, and general conversation. 
+Is there something specific you'd like help with today?
 =========================
 ```
 
-## 架構
+## 下一步
 
-- **Application.java** - 主 Spring Boot 應用程式，包含 CommandLineRunner
-- **FoundryLocalService.java** - 使用 OpenAI Java SDK 與 Foundry Local 通信的服務
-- 使用 **OpenAI Java SDK** 進行類型安全的 API 調用
-- SDK 自動處理 JSON 序列化/反序列化
-- 使用 Spring 的 `@Value` 和 `@PostConstruct` 註解進行清晰的配置
+更多範例請參考 [第 04 章: 實用範例](../README.md)
 
-## 程式碼亮點
+## 故障排除
 
-### OpenAI Java SDK 整合
+### 常見問題
 
-應用程式使用 OpenAI Java SDK 創建一個為 Foundry Local 配置的客戶端：
+**"Connection refused" 或 "Service unavailable"**
+- 確保 Foundry Local 正在運行: `foundry model list`
+- 驗證服務是否在埠 5273: 檢查 `application.properties`
+- 嘗試重新啟動 Foundry Local: `foundry model run phi-3.5-mini`
 
-```java
-@PostConstruct
-public void init() {
-    this.openAIClient = OpenAIOkHttpClient.builder()
-            .baseUrl(baseUrl + "/v1")
-            .apiKey("unused") // Local server doesn't require real API key
-            .build();
-}
-```
+**"Model not found" 錯誤**
+- 檢查可用模型: `foundry model list`
+- 更新 `application.properties` 中的模型名稱以完全匹配
+- 如果需要，下載模型: `foundry model run phi-3.5-mini`
 
-### 聊天完成 API
+**Maven 編譯錯誤**
+- 確保 Java 21 或更高版本: `java -version`
+- 清理並重新建置: `mvn clean compile`
+- 檢查網路連接以下載依賴項
 
-進行聊天完成請求既簡單又類型安全：
-
-```java
-ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-        .model(model)
-        .addUserMessage(message)
-        .maxCompletionTokens(150)
-        .temperature(0.7)
-        .build();
-
-ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
-```
-
-## 疑難排解
-
-如果出現連接錯誤：
-1. 確認 Foundry Local 正在 `http://localhost:5273` 運行
-2. 使用 `foundry model list` 檢查是否有 Phi-3.5-mini 模型版本可用
-3. 確保 `application.properties` 中的模型名稱與列表中顯示的具體模型名稱匹配
-4. 確保沒有防火牆阻止連接
-
-常見問題：
-- **找不到模型**：執行 `foundry model run phi-3.5-mini` 下載並啟動模型
-- **服務未運行**：Foundry Local 服務可能已停止；使用模型運行命令重新啟動
-- **模型名稱錯誤**：使用 `foundry model list` 查看可用模型並相應更新您的配置
+**應用程式啟動但無輸出**
+- 驗證 Foundry Local 是否有回應: 在瀏覽器中打開 `http://localhost:5273`
+- 檢查應用程式日誌以獲取具體錯誤訊息
+- 確保模型已完全加載並準備好使用
 
 **免責聲明**：  
-本文件使用 AI 翻譯服務 [Co-op Translator](https://github.com/Azure/co-op-translator) 進行翻譯。儘管我們努力確保翻譯的準確性，但請注意，自動翻譯可能包含錯誤或不準確之處。原始文件的母語版本應被視為權威來源。對於關鍵資訊，建議使用專業人工翻譯。我們對因使用此翻譯而引起的任何誤解或錯誤解釋不承擔責任。
+本文件使用 AI 翻譯服務 [Co-op Translator](https://github.com/Azure/co-op-translator) 進行翻譯。雖然我們致力於提供準確的翻譯，但請注意，自動翻譯可能包含錯誤或不準確之處。原始文件的母語版本應被視為權威來源。對於關鍵信息，建議使用專業人工翻譯。我們對因使用此翻譯而引起的任何誤解或錯誤解釋不承擔責任。

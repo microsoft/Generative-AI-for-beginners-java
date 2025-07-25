@@ -1,215 +1,300 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "a66dad62cdb2e141f05086feaf1a4a39",
-  "translation_date": "2025-07-21T18:16:23+00:00",
+  "original_hash": "2284c54d2a98090a37df0dbef1633ebf",
+  "translation_date": "2025-07-25T11:30:07+00:00",
   "source_file": "04-PracticalSamples/foundrylocal/README.md",
   "language_code": "tr"
 }
 -->
-# Foundry Yerel Komut Satırı Uygulaması
-
->**Not**: Bu bölüm, tamamlanmış örnekleri çalıştırma konusunda size rehberlik eden bir [**Eğitim**](./TUTORIAL.md) içerir.
-
-OpenAI Java SDK kullanarak Foundry Yerel'e bağlanmayı gösteren basit bir Spring Boot komut satırı uygulaması.
-
-## Öğrenecekleriniz
-
-- OpenAI Java SDK kullanarak Foundry Yerel'i Spring Boot uygulamalarıyla nasıl entegre edeceğinizi
-- Yerel yapay zeka geliştirme ve test için en iyi uygulamalar
+# Foundry Local Spring Boot Eğitimi
 
 ## İçindekiler
 
-- [Öğrenecekleriniz](../../../../04-PracticalSamples/foundrylocal)
-- [Ön Koşullar](../../../../04-PracticalSamples/foundrylocal)
-  - [Foundry Yerel'in Kurulumu](../../../../04-PracticalSamples/foundrylocal)
-  - [Doğrulama](../../../../04-PracticalSamples/foundrylocal)
-- [Yapılandırma](../../../../04-PracticalSamples/foundrylocal)
-- [Hızlı Başlangıç](../../../../04-PracticalSamples/foundrylocal)
-- [Uygulamanın Yaptıkları](../../../../04-PracticalSamples/foundrylocal)
-- [Örnek Çıktı](../../../../04-PracticalSamples/foundrylocal)
-- [Mimari](../../../../04-PracticalSamples/foundrylocal)
-- [Kod Öne Çıkanlar](../../../../04-PracticalSamples/foundrylocal)
-  - [OpenAI Java SDK Entegrasyonu](../../../../04-PracticalSamples/foundrylocal)
-  - [Chat Completion API](../../../../04-PracticalSamples/foundrylocal)
+- [Ön Gereksinimler](../../../../04-PracticalSamples/foundrylocal)
+- [Proje Genel Bakış](../../../../04-PracticalSamples/foundrylocal)
+- [Kodu Anlamak](../../../../04-PracticalSamples/foundrylocal)
+  - [1. Uygulama Konfigürasyonu (application.properties)](../../../../04-PracticalSamples/foundrylocal)
+  - [2. Ana Uygulama Sınıfı (Application.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [3. AI Servis Katmanı (FoundryLocalService.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [4. Proje Bağımlılıkları (pom.xml)](../../../../04-PracticalSamples/foundrylocal)
+- [Her Şey Nasıl Birlikte Çalışır](../../../../04-PracticalSamples/foundrylocal)
+- [Foundry Local Kurulumu](../../../../04-PracticalSamples/foundrylocal)
+- [Uygulamayı Çalıştırma](../../../../04-PracticalSamples/foundrylocal)
+- [Beklenen Çıktı](../../../../04-PracticalSamples/foundrylocal)
+- [Sonraki Adımlar](../../../../04-PracticalSamples/foundrylocal)
 - [Sorun Giderme](../../../../04-PracticalSamples/foundrylocal)
 
-## Ön Koşullar
+## Ön Gereksinimler
 
-> **⚠️ Not**: Bu uygulama **sağlanan devcontainer içinde çalışmaz** çünkü Foundry Yerel'in ana sistemde kurulu ve çalışıyor olması gerekir.
+Bu eğitime başlamadan önce aşağıdakilere sahip olduğunuzdan emin olun:
 
-### Foundry Yerel'in Kurulumu
+- Sisteminizde kurulu **Java 21 veya daha üstü**
+- Projeyi derlemek için **Maven 3.6+**
+- Kurulu ve çalışan bir **Foundry Local**
 
-Bu uygulamayı çalıştırmadan önce Foundry Yerel'i kurmanız ve başlatmanız gerekir. Aşağıdaki adımları izleyin:
-
-1. **Sisteminizin gereksinimleri karşıladığından emin olun**:
-   - **İşletim Sistemi**: Windows 10 (x64), Windows 11 (x64/ARM), Windows Server 2025 veya macOS
-   - **Donanım**: 
-     - Minimum: 8GB RAM, 3GB boş disk alanı
-     - Önerilen: 16GB RAM, 15GB boş disk alanı
-   - **Ağ**: İlk model indirme için internet bağlantısı (çevrimdışı kullanım için isteğe bağlı)
-   - **Hızlandırma (isteğe bağlı)**: NVIDIA GPU (2,000 serisi veya daha yeni), AMD GPU (6,000 serisi veya daha yeni), Qualcomm Snapdragon X Elite (8GB veya daha fazla bellek), veya Apple silicon
-   - **İzinler**: Cihazınıza yazılım yüklemek için yönetici yetkileri
-
-2. **Foundry Yerel'i Kurun**:
-   
-   **Windows için:**
-   ```bash
-   winget install Microsoft.FoundryLocal
-   ```
-   
-   **macOS için:**
-   ```bash
-   brew tap microsoft/foundrylocal
-   brew install foundrylocal
-   ```
-   
-   Alternatif olarak, [Foundry Yerel GitHub deposundan](https://github.com/microsoft/Foundry-Local) yükleyiciyi indirebilirsiniz.
-
-3. **İlk modelinizi başlatın**:
-
-   ```bash
-   foundry model run phi-3.5-mini
-   ```
-
-   Model indirilir (internet hızınıza bağlı olarak birkaç dakika sürebilir) ve ardından çalışır. Foundry Yerel, sisteminiz için en iyi model varyantını otomatik olarak seçer (NVIDIA GPU'lar için CUDA, aksi takdirde CPU sürümü).
-
-4. **Modeli test edin**: Aynı terminalde bir soru sorarak:
-
-   ```bash
-   Why is the sky blue?
-   ```
-
-   Gökyüzünün neden mavi göründüğünü açıklayan Phi modelinden bir yanıt görmelisiniz.
-
-### Doğrulama
-
-Her şeyin düzgün çalıştığını şu komutlarla doğrulayabilirsiniz:
+### **Foundry Local Kurulumu:**
 
 ```bash
-# List all available models
-foundry model list
+# Windows
+winget install Microsoft.FoundryLocal
 
-# Check the service status via REST API
-curl http://localhost:5273/v1/models
+# macOS (after installing)
+foundry model run phi-3.5-mini
 ```
 
-Ayrıca `http://localhost:5273` adresini tarayıcınızda ziyaret ederek Foundry Yerel web arayüzünü görebilirsiniz.
+## Proje Genel Bakış
 
-## Yapılandırma
+Bu proje dört ana bileşenden oluşur:
 
-Uygulama `application.properties` dosyası üzerinden yapılandırılabilir:
+1. **Application.java** - Spring Boot uygulamasının ana giriş noktası
+2. **FoundryLocalService.java** - AI iletişimini yöneten servis katmanı
+3. **application.properties** - Foundry Local bağlantısı için yapılandırma
+4. **pom.xml** - Maven bağımlılıkları ve proje yapılandırması
 
-- `foundry.local.base-url` - Foundry Yerel için temel URL (varsayılan: http://localhost:5273)
-- `foundry.local.model` - Kullanılacak yapay zeka modeli (varsayılan: Phi-3.5-mini-instruct-cuda-gpu)
+## Kodu Anlamak
 
-> **Not**: Yapılandırmadaki model adı, Foundry Yerel'in sisteminiz için indirdiği belirli varyantla eşleşmelidir. `foundry model run phi-3.5-mini` komutunu çalıştırdığınızda, Foundry Yerel en iyi varyantı otomatik olarak seçer ve indirir (NVIDIA GPU'lar için CUDA, aksi takdirde CPU sürümü). Yerel örneğinizde mevcut olan tam model adını görmek için `foundry model list` komutunu kullanın.
+### 1. Uygulama Konfigürasyonu (application.properties)
 
-## Hızlı Başlangıç
+**Dosya:** `src/main/resources/application.properties`
 
-### 1. Foundry Yerel uygulama dizinine gidin
-```bash
-cd Generative-AI-for-beginners-java/04-PracticalSamples/foundrylocal
+```properties
+foundry.local.base-url=http://localhost:5273
+foundry.local.model=Phi-3.5-mini-instruct-cuda-gpu
 ```
 
-### 2. Uygulamayı Çalıştırın
+**Bu ne yapar:**
+- **base-url**: Foundry Local'ın çalıştığı yeri belirtir (varsayılan port 5273)
+- **model**: Metin üretimi için kullanılacak AI modelinin adını belirtir
 
-```bash
-mvn spring-boot:run
+**Anahtar kavram:** Spring Boot bu özellikleri otomatik olarak yükler ve `@Value` anotasyonu kullanılarak uygulamanızda kullanılabilir hale getirir.
+
+### 2. Ana Uygulama Sınıfı (Application.java)
+
+**Dosya:** `src/main/java/com/example/Application.java`
+
+```java
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication app = new SpringApplication(Application.class);
+        app.setWebApplicationType(WebApplicationType.NONE);  // No web server needed
+        app.run(args);
+    }
 ```
 
-Ya da JAR dosyasını oluşturup çalıştırın:
+**Bu ne yapar:**
+- `@SpringBootApplication` Spring Boot otomatik yapılandırmasını etkinleştirir
+- `WebApplicationType.NONE` Spring'e bunun bir komut satırı uygulaması olduğunu, bir web sunucusu olmadığını söyler
+- Ana metot Spring uygulamasını başlatır
 
-```bash
-mvn clean package
-java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+**Demo Çalıştırıcısı:**
+```java
+@Bean
+public CommandLineRunner foundryLocalRunner(FoundryLocalService foundryLocalService) {
+    return args -> {
+        System.out.println("=== Foundry Local Demo ===");
+        
+        String testMessage = "Hello! Can you tell me what you are and what model you're running?";
+        System.out.println("Sending message: " + testMessage);
+        
+        String response = foundryLocalService.chat(testMessage);
+        System.out.println("Response from Foundry Local:");
+        System.out.println(response);
+    };
+}
 ```
 
-### Bağımlılıklar
+**Bu ne yapar:**
+- `@Bean` Spring tarafından yönetilen bir bileşen oluşturur
+- `CommandLineRunner` Spring Boot başlatıldıktan sonra kod çalıştırır
+- `foundryLocalService` Spring tarafından otomatik olarak enjekte edilir (bağımlılık enjeksiyonu)
+- AI'ya bir test mesajı gönderir ve yanıtı görüntüler
 
-Bu uygulama, Foundry Yerel ile iletişim kurmak için OpenAI Java SDK kullanır. Ana bağımlılık:
+### 3. AI Servis Katmanı (FoundryLocalService.java)
+
+**Dosya:** `src/main/java/com/example/FoundryLocalService.java`
+
+#### Konfigürasyon Enjeksiyonu:
+```java
+@Service
+public class FoundryLocalService {
+    
+    @Value("${foundry.local.base-url:http://localhost:5273}")
+    private String baseUrl;
+    
+    @Value("${foundry.local.model:Phi-3.5-mini-instruct-cuda-gpu}")
+    private String model;
+```
+
+**Bu ne yapar:**
+- `@Service` Spring'e bu sınıfın iş mantığı sağladığını söyler
+- `@Value` application.properties dosyasından yapılandırma değerlerini enjekte eder
+- `:default-value` sözdizimi, özellikler ayarlanmadığında yedek değerler sağlar
+
+#### İstemci Başlatma:
+```java
+@PostConstruct
+public void init() {
+    this.openAIClient = OpenAIOkHttpClient.builder()
+            .baseUrl(baseUrl + "/v1")        // Foundry Local uses OpenAI-compatible API
+            .apiKey("unused")                 // Local server doesn't need real API key
+            .build();
+}
+```
+
+**Bu ne yapar:**
+- `@PostConstruct` bu metodu Spring servisi oluşturduktan sonra çalıştırır
+- Yerel Foundry Local örneğinize işaret eden bir OpenAI istemcisi oluşturur
+- `/v1` yolu, OpenAI API uyumluluğu için gereklidir
+- API anahtarı "kullanılmıyor" çünkü yerel geliştirme kimlik doğrulama gerektirmez
+
+#### Sohbet Metodu:
+```java
+public String chat(String message) {
+    try {
+        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
+                .model(model)                    // Which AI model to use
+                .addUserMessage(message)         // Your question/prompt
+                .maxCompletionTokens(150)        // Limit response length
+                .temperature(0.7)                // Control creativity (0.0-1.0)
+                .build();
+        
+        ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
+        
+        // Extract the AI's response from the API result
+        if (chatCompletion.choices() != null && !chatCompletion.choices().isEmpty()) {
+            return chatCompletion.choices().get(0).message().content().orElse("No response found");
+        }
+        
+        return "No response content found";
+    } catch (Exception e) {
+        throw new RuntimeException("Error calling chat completion: " + e.getMessage(), e);
+    }
+}
+```
+
+**Bu ne yapar:**
+- **ChatCompletionCreateParams**: AI isteğini yapılandırır
+  - `model`: Kullanılacak AI modelini belirtir
+  - `addUserMessage`: Mesajınızı konuşmaya ekler
+  - `maxCompletionTokens`: Yanıtın uzunluğunu sınırlar (kaynakları korur)
+  - `temperature`: Rastgeleliği kontrol eder (0.0 = deterministik, 1.0 = yaratıcı)
+- **API Çağrısı**: İsteği Foundry Local'a gönderir
+- **Yanıt İşleme**: AI'nın metin yanıtını güvenli bir şekilde çıkarır
+- **Hata İşleme**: Hataları açıklayıcı hata mesajlarıyla sarar
+
+### 4. Proje Bağımlılıkları (pom.xml)
+
+**Ana Bağımlılıklar:**
 
 ```xml
+<!-- Spring Boot - Application framework -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+    <version>${spring-boot.version}</version>
+</dependency>
+
+<!-- OpenAI Java SDK - For AI API calls -->
 <dependency>
     <groupId>com.openai</groupId>
     <artifactId>openai-java</artifactId>
     <version>2.12.0</version>
 </dependency>
+
+<!-- Jackson - JSON processing -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.17.0</version>
+</dependency>
 ```
 
-Uygulama, varsayılan portta çalışan Foundry Yerel'e bağlanacak şekilde önceden yapılandırılmıştır.
+**Bunlar ne yapar:**
+- **spring-boot-starter**: Temel Spring Boot işlevselliğini sağlar
+- **openai-java**: API iletişimi için resmi OpenAI Java SDK'sı
+- **jackson-databind**: API çağrıları için JSON serileştirme/deserileştirme işlemlerini yönetir
 
-## Uygulamanın Yaptıkları
+## Her Şey Nasıl Birlikte Çalışır
 
-Uygulamayı çalıştırdığınızda:
+Uygulamayı çalıştırdığınızda iş akışı şu şekildedir:
 
-1. **Başlatılır**: Komut satırı uygulaması olarak (web sunucusu yok)
-2. **Otomatik olarak bir test mesajı gönderir**: "Merhaba! Bana ne olduğunu ve hangi modeli çalıştırdığını söyleyebilir misin?"
-3. **Foundry Yerel'den gelen yanıtı** konsolda gösterir
-4. **Temiz bir şekilde çıkar**: Demo tamamlandıktan sonra
+1. **Başlangıç**: Spring Boot başlar ve `application.properties` dosyasını okur
+2. **Servis Oluşturma**: Spring, `FoundryLocalService` oluşturur ve yapılandırma değerlerini enjekte eder
+3. **İstemci Kurulumu**: `@PostConstruct`, OpenAI istemcisini Foundry Local'a bağlanacak şekilde başlatır
+4. **Demo Çalıştırma**: `CommandLineRunner` başlangıçtan sonra çalışır
+5. **AI Çağrısı**: Demo, `foundryLocalService.chat()` ile bir test mesajı gönderir
+6. **API İsteği**: Servis, OpenAI uyumlu isteği Foundry Local'a gönderir
+7. **Yanıt İşleme**: Servis, AI'nın yanıtını çıkarır ve döndürür
+8. **Görüntüleme**: Uygulama yanıtı yazdırır ve çıkar
 
-## Örnek Çıktı
+## Foundry Local Kurulumu
+
+Foundry Local'ı kurmak için şu adımları izleyin:
+
+1. **Foundry Local'ı Kurun**, [Ön Gereksinimler](../../../../04-PracticalSamples/foundrylocal) bölümündeki talimatları izleyerek.
+2. Kullanmak istediğiniz AI modelini indirin, örneğin `phi-3.5-mini`, şu komutla:
+   ```bash
+   foundry model run phi-3.5-mini
+   ```
+3. **application.properties** dosyasını Foundry Local ayarlarınıza uyacak şekilde yapılandırın, özellikle farklı bir port veya model kullanıyorsanız.
+
+## Uygulamayı Çalıştırma
+
+### Adım 1: Foundry Local'ı Başlatın
+```bash
+foundry model run phi-3.5-mini
+```
+
+### Adım 2: Uygulamayı Derleyin ve Çalıştırın
+```bash
+mvn clean package
+java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+```
+
+## Beklenen Çıktı
 
 ```
 === Foundry Local Demo ===
 Calling Foundry Local service...
 Sending message: Hello! Can you tell me what you are and what model you're running?
 Response from Foundry Local:
-Hello! I'm Phi, an AI language model created by Microsoft. I don't have a physical form or a specific hardware model like a smartphone or a computer. I exist purely in software, and I operate on Microsoft's infrastructure...
+Hello! I'm Phi-3.5, a small language model created by Microsoft. I'm currently running 
+as the Phi-3.5-mini-instruct model, which is designed to be helpful, harmless, and honest 
+in my interactions. I can assist with a wide variety of tasks including answering 
+questions, helping with analysis, creative writing, coding, and general conversation. 
+Is there something specific you'd like help with today?
 =========================
 ```
 
-## Mimari
+## Sonraki Adımlar
 
-- **Application.java** - CommandLineRunner ile ana Spring Boot uygulaması
-- **FoundryLocalService.java** - Foundry Yerel ile iletişim kurmak için OpenAI Java SDK kullanan servis
-- **OpenAI Java SDK** kullanılarak tip güvenli API çağrıları
-- SDK tarafından otomatik JSON serileştirme/deserileştirme
-- Spring'in `@Value` ve `@PostConstruct` anotasyonları kullanılarak temiz yapılandırma
-
-## Kod Öne Çıkanlar
-
-### OpenAI Java SDK Entegrasyonu
-
-Uygulama, Foundry Yerel için yapılandırılmış bir istemci oluşturmak üzere OpenAI Java SDK kullanır:
-
-```java
-@PostConstruct
-public void init() {
-    this.openAIClient = OpenAIOkHttpClient.builder()
-            .baseUrl(baseUrl + "/v1")
-            .apiKey("unused") // Local server doesn't require real API key
-            .build();
-}
-```
-
-### Chat Completion API
-
-Chat completion istekleri yapmak basit ve tip güvenlidir:
-
-```java
-ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-        .model(model)
-        .addUserMessage(message)
-        .maxCompletionTokens(150)
-        .temperature(0.7)
-        .build();
-
-ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
-```
+Daha fazla örnek için [Bölüm 04: Pratik örnekler](../README.md) bölümüne bakın.
 
 ## Sorun Giderme
 
-Bağlantı hataları görürseniz:
-1. Foundry Yerel'in `http://localhost:5273` adresinde çalıştığını doğrulayın
-2. `foundry model list` komutuyla Phi-3.5-mini model varyantının mevcut olduğunu kontrol edin
-3. `application.properties` dosyasındaki model adının listede gösterilen tam model adıyla eşleştiğinden emin olun
-4. Hiçbir güvenlik duvarının bağlantıyı engellemediğinden emin olun
+### Yaygın Sorunlar
 
-Yaygın sorunlar:
-- **Model bulunamadı**: `foundry model run phi-3.5-mini` komutunu çalıştırarak modeli indirin ve başlatın
-- **Hizmet çalışmıyor**: Foundry Yerel hizmeti durmuş olabilir; model çalıştırma komutuyla yeniden başlatın
-- **Yanlış model adı**: Mevcut modelleri görmek için `foundry model list` komutunu kullanın ve yapılandırmanızı buna göre güncelleyin
+**"Bağlantı reddedildi" veya "Hizmet kullanılamıyor"**
+- Foundry Local'ın çalıştığından emin olun: `foundry model list`
+- Hizmetin 5273 portunda olduğundan emin olun: `application.properties` dosyasını kontrol edin
+- Foundry Local'ı yeniden başlatmayı deneyin: `foundry model run phi-3.5-mini`
+
+**"Model bulunamadı" hataları**
+- Mevcut modelleri kontrol edin: `foundry model list`
+- `application.properties` dosyasındaki model adını tam olarak eşleşecek şekilde güncelleyin
+- Gerekirse modeli indirin: `foundry model run phi-3.5-mini`
+
+**Maven derleme hataları**
+- Java 21 veya daha üstü olduğundan emin olun: `java -version`
+- Temizleyin ve yeniden derleyin: `mvn clean compile`
+- Bağımlılık indirmeleri için internet bağlantısını kontrol edin
+
+**Uygulama başlıyor ama çıktı yok**
+- Foundry Local'ın yanıt verdiğinden emin olun: Tarayıcıda `http://localhost:5273` adresini açın
+- Belirli hata mesajları için uygulama günlüklerini kontrol edin
+- Modelin tamamen yüklendiğinden ve hazır olduğundan emin olun
 
 **Feragatname**:  
 Bu belge, AI çeviri hizmeti [Co-op Translator](https://github.com/Azure/co-op-translator) kullanılarak çevrilmiştir. Doğruluk için çaba göstersek de, otomatik çevirilerin hata veya yanlışlık içerebileceğini lütfen unutmayın. Belgenin orijinal dili, yetkili kaynak olarak kabul edilmelidir. Kritik bilgiler için profesyonel insan çevirisi önerilir. Bu çevirinin kullanımından kaynaklanan yanlış anlamalar veya yanlış yorumlamalar için sorumluluk kabul etmiyoruz.

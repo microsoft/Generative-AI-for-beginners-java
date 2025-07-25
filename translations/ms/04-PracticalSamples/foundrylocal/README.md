@@ -1,215 +1,300 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "a66dad62cdb2e141f05086feaf1a4a39",
-  "translation_date": "2025-07-21T19:50:30+00:00",
+  "original_hash": "2284c54d2a98090a37df0dbef1633ebf",
+  "translation_date": "2025-07-25T11:56:54+00:00",
   "source_file": "04-PracticalSamples/foundrylocal/README.md",
   "language_code": "ms"
 }
 -->
-# Aplikasi Baris Perintah Tempatan Foundry
-
->**Nota**: Bab ini termasuk [**Tutorial**](./TUTORIAL.md) yang membimbing anda menjalankan sampel yang telah siap.
-
-Sebuah aplikasi baris perintah Spring Boot yang ringkas yang menunjukkan cara untuk menyambung ke Foundry Local menggunakan OpenAI Java SDK.
-
-## Apa yang Anda Akan Pelajari
-
-- Cara mengintegrasikan Foundry Local dengan aplikasi Spring Boot menggunakan OpenAI Java SDK
-- Amalan terbaik untuk pembangunan dan ujian AI secara tempatan
+# Tutorial Spring Boot Foundry Local
 
 ## Kandungan
 
-- [Apa yang Anda Akan Pelajari](../../../../04-PracticalSamples/foundrylocal)
-- [Prasyarat](../../../../04-PracticalSamples/foundrylocal)
-  - [Memasang Foundry Local](../../../../04-PracticalSamples/foundrylocal)
-  - [Pengesahan](../../../../04-PracticalSamples/foundrylocal)
-- [Konfigurasi](../../../../04-PracticalSamples/foundrylocal)
-- [Permulaan Pantas](../../../../04-PracticalSamples/foundrylocal)
-- [Apa yang Aplikasi Ini Lakukan](../../../../04-PracticalSamples/foundrylocal)
-- [Contoh Output](../../../../04-PracticalSamples/foundrylocal)
-- [Seni Bina](../../../../04-PracticalSamples/foundrylocal)
-- [Sorotan Kod](../../../../04-PracticalSamples/foundrylocal)
-  - [Integrasi OpenAI Java SDK](../../../../04-PracticalSamples/foundrylocal)
-  - [API Penyempurnaan Chat](../../../../04-PracticalSamples/foundrylocal)
+- [Keperluan Awal](../../../../04-PracticalSamples/foundrylocal)
+- [Gambaran Projek](../../../../04-PracticalSamples/foundrylocal)
+- [Memahami Kod](../../../../04-PracticalSamples/foundrylocal)
+  - [1. Konfigurasi Aplikasi (application.properties)](../../../../04-PracticalSamples/foundrylocal)
+  - [2. Kelas Aplikasi Utama (Application.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [3. Lapisan Perkhidmatan AI (FoundryLocalService.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [4. Kebergantungan Projek (pom.xml)](../../../../04-PracticalSamples/foundrylocal)
+- [Bagaimana Semua Ini Berfungsi Bersama](../../../../04-PracticalSamples/foundrylocal)
+- [Menyiapkan Foundry Local](../../../../04-PracticalSamples/foundrylocal)
+- [Menjalankan Aplikasi](../../../../04-PracticalSamples/foundrylocal)
+- [Output Dijangka](../../../../04-PracticalSamples/foundrylocal)
+- [Langkah Seterusnya](../../../../04-PracticalSamples/foundrylocal)
 - [Penyelesaian Masalah](../../../../04-PracticalSamples/foundrylocal)
 
-## Prasyarat
+## Keperluan Awal
 
-> **⚠️ Nota**: Aplikasi ini **tidak berjalan dalam devcontainer yang disediakan** kerana ia memerlukan Foundry Local dipasang dan berjalan pada sistem hos.
+Sebelum memulakan tutorial ini, pastikan anda mempunyai:
 
-### Memasang Foundry Local
+- **Java 21 atau lebih tinggi** dipasang pada sistem anda
+- **Maven 3.6+** untuk membina projek
+- **Foundry Local** dipasang dan berjalan
 
-Sebelum menjalankan aplikasi ini, anda perlu memasang dan memulakan Foundry Local. Ikuti langkah-langkah berikut:
-
-1. **Pastikan sistem anda memenuhi keperluan**:
-   - **Sistem Operasi**: Windows 10 (x64), Windows 11 (x64/ARM), Windows Server 2025, atau macOS
-   - **Perkakasan**: 
-     - Minimum: 8GB RAM, 3GB ruang cakera kosong
-     - Disyorkan: 16GB RAM, 15GB ruang cakera kosong
-   - **Rangkaian**: Sambungan internet untuk muat turun model awal (pilihan untuk penggunaan luar talian)
-   - **Pecutan (pilihan)**: NVIDIA GPU (siri 2,000 atau lebih baru), AMD GPU (siri 6,000 atau lebih baru), Qualcomm Snapdragon X Elite (8GB atau lebih memori), atau Apple silicon
-   - **Kebenaran**: Keistimewaan pentadbiran untuk memasang perisian pada peranti anda
-
-2. **Pasang Foundry Local**:
-   
-   **Untuk Windows:**
-   ```bash
-   winget install Microsoft.FoundryLocal
-   ```
-   
-   **Untuk macOS:**
-   ```bash
-   brew tap microsoft/foundrylocal
-   brew install foundrylocal
-   ```
-   
-   Sebagai alternatif, anda boleh memuat turun pemasang dari [repositori GitHub Foundry Local](https://github.com/microsoft/Foundry-Local).
-
-3. **Mulakan model pertama anda**:
-
-   ```bash
-   foundry model run phi-3.5-mini
-   ```
-
-   Model akan dimuat turun (yang mungkin mengambil masa beberapa minit, bergantung pada kelajuan internet anda) dan kemudian dijalankan. Foundry Local secara automatik memilih varian model terbaik untuk sistem anda (CUDA untuk NVIDIA GPUs, versi CPU jika tidak).
-
-4. **Uji model** dengan bertanya soalan dalam terminal yang sama:
-
-   ```bash
-   Why is the sky blue?
-   ```
-
-   Anda sepatutnya melihat respons dari model Phi yang menerangkan mengapa langit kelihatan biru.
-
-### Pengesahan
-
-Anda boleh mengesahkan semuanya berfungsi dengan betul menggunakan arahan berikut:
+### **Pasang Foundry Local:**
 
 ```bash
-# List all available models
-foundry model list
+# Windows
+winget install Microsoft.FoundryLocal
 
-# Check the service status via REST API
-curl http://localhost:5273/v1/models
+# macOS (after installing)
+foundry model run phi-3.5-mini
 ```
 
-Anda juga boleh melawat `http://localhost:5273` dalam pelayar anda untuk melihat antara muka web Foundry Local.
+## Gambaran Projek
 
-## Konfigurasi
+Projek ini terdiri daripada empat komponen utama:
 
-Aplikasi ini boleh dikonfigurasi melalui `application.properties`:
+1. **Application.java** - Titik masuk utama aplikasi Spring Boot
+2. **FoundryLocalService.java** - Lapisan perkhidmatan yang mengendalikan komunikasi AI
+3. **application.properties** - Konfigurasi untuk sambungan Foundry Local
+4. **pom.xml** - Kebergantungan Maven dan konfigurasi projek
 
-- `foundry.local.base-url` - URL asas untuk Foundry Local (lalai: http://localhost:5273)
-- `foundry.local.model` - Model AI yang digunakan (lalai: Phi-3.5-mini-instruct-cuda-gpu)
+## Memahami Kod
 
-> **Nota**: Nama model dalam konfigurasi harus sepadan dengan varian spesifik yang dimuat turun oleh Foundry Local untuk sistem anda. Apabila anda menjalankan `foundry model run phi-3.5-mini`, Foundry Local secara automatik memilih dan memuat turun varian terbaik (CUDA untuk NVIDIA GPUs, versi CPU jika tidak). Gunakan `foundry model list` untuk melihat nama model tepat yang tersedia dalam instans tempatan anda.
+### 1. Konfigurasi Aplikasi (application.properties)
 
-## Permulaan Pantas
+**Fail:** `src/main/resources/application.properties`
 
-### 1. Navigasi ke direktori aplikasi Foundry Local
-```bash
-cd Generative-AI-for-beginners-java/04-PracticalSamples/foundrylocal
+```properties
+foundry.local.base-url=http://localhost:5273
+foundry.local.model=Phi-3.5-mini-instruct-cuda-gpu
 ```
 
-### 2. Jalankan Aplikasi
+**Apa yang dilakukan:**
+- **base-url**: Menentukan lokasi Foundry Local berjalan (port lalai 5273)
+- **model**: Menamakan model AI yang akan digunakan untuk penjanaan teks
 
-```bash
-mvn spring-boot:run
+**Konsep utama:** Spring Boot secara automatik memuatkan sifat-sifat ini dan menjadikannya tersedia untuk aplikasi anda menggunakan anotasi `@Value`.
+
+### 2. Kelas Aplikasi Utama (Application.java)
+
+**Fail:** `src/main/java/com/example/Application.java`
+
+```java
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication app = new SpringApplication(Application.class);
+        app.setWebApplicationType(WebApplicationType.NONE);  // No web server needed
+        app.run(args);
+    }
 ```
 
-Atau bina dan jalankan JAR:
+**Apa yang dilakukan:**
+- `@SpringBootApplication` mengaktifkan konfigurasi automatik Spring Boot
+- `WebApplicationType.NONE` memberitahu Spring bahawa ini adalah aplikasi baris perintah, bukan pelayan web
+- Kaedah utama memulakan aplikasi Spring
 
-```bash
-mvn clean package
-java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+**Demo Runner:**
+```java
+@Bean
+public CommandLineRunner foundryLocalRunner(FoundryLocalService foundryLocalService) {
+    return args -> {
+        System.out.println("=== Foundry Local Demo ===");
+        
+        String testMessage = "Hello! Can you tell me what you are and what model you're running?";
+        System.out.println("Sending message: " + testMessage);
+        
+        String response = foundryLocalService.chat(testMessage);
+        System.out.println("Response from Foundry Local:");
+        System.out.println(response);
+    };
+}
 ```
 
-### Kebergantungan
+**Apa yang dilakukan:**
+- `@Bean` mencipta komponen yang diuruskan oleh Spring
+- `CommandLineRunner` menjalankan kod selepas Spring Boot dimulakan
+- `foundryLocalService` disuntik secara automatik oleh Spring (suntikan kebergantungan)
+- Menghantar mesej ujian kepada AI dan memaparkan respons
 
-Aplikasi ini menggunakan OpenAI Java SDK untuk berkomunikasi dengan Foundry Local. Kebergantungan utama adalah:
+### 3. Lapisan Perkhidmatan AI (FoundryLocalService.java)
+
+**Fail:** `src/main/java/com/example/FoundryLocalService.java`
+
+#### Suntikan Konfigurasi:
+```java
+@Service
+public class FoundryLocalService {
+    
+    @Value("${foundry.local.base-url:http://localhost:5273}")
+    private String baseUrl;
+    
+    @Value("${foundry.local.model:Phi-3.5-mini-instruct-cuda-gpu}")
+    private String model;
+```
+
+**Apa yang dilakukan:**
+- `@Service` memberitahu Spring bahawa kelas ini menyediakan logik perniagaan
+- `@Value` menyuntik nilai konfigurasi daripada application.properties
+- Sintaks `:default-value` menyediakan nilai sandaran jika sifat tidak ditetapkan
+
+#### Inisialisasi Klien:
+```java
+@PostConstruct
+public void init() {
+    this.openAIClient = OpenAIOkHttpClient.builder()
+            .baseUrl(baseUrl + "/v1")        // Foundry Local uses OpenAI-compatible API
+            .apiKey("unused")                 // Local server doesn't need real API key
+            .build();
+}
+```
+
+**Apa yang dilakukan:**
+- `@PostConstruct` menjalankan kaedah ini selepas Spring mencipta perkhidmatan
+- Mencipta klien OpenAI yang menunjuk kepada instance Foundry Local anda
+- Laluan `/v1` diperlukan untuk keserasian API OpenAI
+- Kunci API adalah "tidak digunakan" kerana pembangunan tempatan tidak memerlukan pengesahan
+
+#### Kaedah Chat:
+```java
+public String chat(String message) {
+    try {
+        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
+                .model(model)                    // Which AI model to use
+                .addUserMessage(message)         // Your question/prompt
+                .maxCompletionTokens(150)        // Limit response length
+                .temperature(0.7)                // Control creativity (0.0-1.0)
+                .build();
+        
+        ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
+        
+        // Extract the AI's response from the API result
+        if (chatCompletion.choices() != null && !chatCompletion.choices().isEmpty()) {
+            return chatCompletion.choices().get(0).message().content().orElse("No response found");
+        }
+        
+        return "No response content found";
+    } catch (Exception e) {
+        throw new RuntimeException("Error calling chat completion: " + e.getMessage(), e);
+    }
+}
+```
+
+**Apa yang dilakukan:**
+- **ChatCompletionCreateParams**: Mengkonfigurasi permintaan AI
+  - `model`: Menentukan model AI yang akan digunakan
+  - `addUserMessage`: Menambah mesej anda ke perbualan
+  - `maxCompletionTokens`: Mengehadkan panjang respons (menjimatkan sumber)
+  - `temperature`: Mengawal kebarangkalian (0.0 = deterministik, 1.0 = kreatif)
+- **Panggilan API**: Menghantar permintaan kepada Foundry Local
+- **Pengendalian Respons**: Mengekstrak respons teks AI dengan selamat
+- **Pengendalian Ralat**: Membungkus pengecualian dengan mesej ralat yang berguna
+
+### 4. Kebergantungan Projek (pom.xml)
+
+**Kebergantungan Utama:**
 
 ```xml
+<!-- Spring Boot - Application framework -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+    <version>${spring-boot.version}</version>
+</dependency>
+
+<!-- OpenAI Java SDK - For AI API calls -->
 <dependency>
     <groupId>com.openai</groupId>
     <artifactId>openai-java</artifactId>
     <version>2.12.0</version>
 </dependency>
+
+<!-- Jackson - JSON processing -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.17.0</version>
+</dependency>
 ```
 
-Aplikasi ini telah dikonfigurasi untuk menyambung ke Foundry Local yang berjalan pada port lalai.
+**Apa yang dilakukan:**
+- **spring-boot-starter**: Menyediakan fungsi teras Spring Boot
+- **openai-java**: SDK Java rasmi OpenAI untuk komunikasi API
+- **jackson-databind**: Mengendalikan serialisasi/deserialisasi JSON untuk panggilan API
 
-## Apa yang Aplikasi Ini Lakukan
+## Bagaimana Semua Ini Berfungsi Bersama
 
-Apabila anda menjalankan aplikasi:
+Berikut adalah aliran lengkap apabila anda menjalankan aplikasi:
 
-1. **Dimulakan** sebagai aplikasi baris perintah (tanpa pelayan web)
-2. **Secara automatik menghantar** mesej ujian: "Hello! Can you tell me what you are and what model you're running?"
-3. **Memaparkan respons** dari Foundry Local dalam konsol
-4. **Keluar dengan bersih** selepas demo
+1. **Permulaan**: Spring Boot dimulakan dan membaca `application.properties`
+2. **Penciptaan Perkhidmatan**: Spring mencipta `FoundryLocalService` dan menyuntik nilai konfigurasi
+3. **Persediaan Klien**: `@PostConstruct` menginisialisasi klien OpenAI untuk menyambung ke Foundry Local
+4. **Pelaksanaan Demo**: `CommandLineRunner` dilaksanakan selepas permulaan
+5. **Panggilan AI**: Demo memanggil `foundryLocalService.chat()` dengan mesej ujian
+6. **Permintaan API**: Perkhidmatan membina dan menghantar permintaan yang serasi dengan OpenAI kepada Foundry Local
+7. **Pemprosesan Respons**: Perkhidmatan mengekstrak dan mengembalikan respons AI
+8. **Paparan**: Aplikasi mencetak respons dan keluar
 
-## Contoh Output
+## Menyiapkan Foundry Local
+
+Untuk menyiapkan Foundry Local, ikuti langkah-langkah berikut:
+
+1. **Pasang Foundry Local** menggunakan arahan dalam bahagian [Keperluan Awal](../../../../04-PracticalSamples/foundrylocal).
+2. **Muat turun model AI** yang ingin anda gunakan, contohnya, `phi-3.5-mini`, dengan arahan berikut:
+   ```bash
+   foundry model run phi-3.5-mini
+   ```
+3. **Konfigurasi fail application.properties** untuk sepadan dengan tetapan Foundry Local anda, terutamanya jika anda menggunakan port atau model yang berbeza.
+
+## Menjalankan Aplikasi
+
+### Langkah 1: Mulakan Foundry Local
+```bash
+foundry model run phi-3.5-mini
+```
+
+### Langkah 2: Bina dan Jalankan Aplikasi
+```bash
+mvn clean package
+java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+```
+
+## Output Dijangka
 
 ```
 === Foundry Local Demo ===
 Calling Foundry Local service...
 Sending message: Hello! Can you tell me what you are and what model you're running?
 Response from Foundry Local:
-Hello! I'm Phi, an AI language model created by Microsoft. I don't have a physical form or a specific hardware model like a smartphone or a computer. I exist purely in software, and I operate on Microsoft's infrastructure...
+Hello! I'm Phi-3.5, a small language model created by Microsoft. I'm currently running 
+as the Phi-3.5-mini-instruct model, which is designed to be helpful, harmless, and honest 
+in my interactions. I can assist with a wide variety of tasks including answering 
+questions, helping with analysis, creative writing, coding, and general conversation. 
+Is there something specific you'd like help with today?
 =========================
 ```
 
-## Seni Bina
+## Langkah Seterusnya
 
-- **Application.java** - Aplikasi utama Spring Boot dengan CommandLineRunner
-- **FoundryLocalService.java** - Perkhidmatan yang menggunakan OpenAI Java SDK untuk berkomunikasi dengan Foundry Local
-- Menggunakan **OpenAI Java SDK** untuk panggilan API yang selamat jenis
-- Penyusunan/penyahsusunan JSON automatik dikendalikan oleh SDK
-- Konfigurasi bersih menggunakan anotasi `@Value` dan `@PostConstruct` Spring
-
-## Sorotan Kod
-
-### Integrasi OpenAI Java SDK
-
-Aplikasi ini menggunakan OpenAI Java SDK untuk mencipta klien yang dikonfigurasi untuk Foundry Local:
-
-```java
-@PostConstruct
-public void init() {
-    this.openAIClient = OpenAIOkHttpClient.builder()
-            .baseUrl(baseUrl + "/v1")
-            .apiKey("unused") // Local server doesn't require real API key
-            .build();
-}
-```
-
-### API Penyempurnaan Chat
-
-Membuat permintaan penyempurnaan chat adalah mudah dan selamat jenis:
-
-```java
-ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-        .model(model)
-        .addUserMessage(message)
-        .maxCompletionTokens(150)
-        .temperature(0.7)
-        .build();
-
-ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
-```
+Untuk lebih banyak contoh, lihat [Bab 04: Contoh praktikal](../README.md)
 
 ## Penyelesaian Masalah
 
-Jika anda melihat ralat sambungan:
-1. Sahkan Foundry Local sedang berjalan pada `http://localhost:5273`
-2. Periksa bahawa varian model Phi-3.5-mini tersedia dengan `foundry model list`
-3. Pastikan nama model dalam `application.properties` sepadan dengan nama model tepat yang ditunjukkan dalam senarai
-4. Pastikan tiada firewall yang menyekat sambungan
+### Masalah Biasa
 
-Masalah biasa:
-- **Model tidak dijumpai**: Jalankan `foundry model run phi-3.5-mini` untuk memuat turun dan memulakan model
-- **Perkhidmatan tidak berjalan**: Perkhidmatan Foundry Local mungkin telah berhenti; mulakan semula dengan arahan run model
-- **Nama model salah**: Gunakan `foundry model list` untuk melihat model yang tersedia dan kemas kini konfigurasi anda sewajarnya
+**"Connection refused" atau "Service unavailable"**
+- Pastikan Foundry Local sedang berjalan: `foundry model list`
+- Sahkan perkhidmatan berada pada port 5273: Periksa `application.properties`
+- Cuba mulakan semula Foundry Local: `foundry model run phi-3.5-mini`
+
+**Ralat "Model not found"**
+- Periksa model yang tersedia: `foundry model list`
+- Kemas kini nama model dalam `application.properties` agar sepadan dengan tepat
+- Muat turun model jika diperlukan: `foundry model run phi-3.5-mini`
+
+**Ralat kompilasi Maven**
+- Pastikan Java 21 atau lebih tinggi: `java -version`
+- Bersihkan dan bina semula: `mvn clean compile`
+- Periksa sambungan internet untuk muat turun kebergantungan
+
+**Aplikasi bermula tetapi tiada output**
+- Sahkan Foundry Local memberi respons: Buka pelayar ke `http://localhost:5273`
+- Periksa log aplikasi untuk mesej ralat tertentu
+- Pastikan model dimuat sepenuhnya dan sedia
 
 **Penafian**:  
 Dokumen ini telah diterjemahkan menggunakan perkhidmatan terjemahan AI [Co-op Translator](https://github.com/Azure/co-op-translator). Walaupun kami berusaha untuk memastikan ketepatan, sila ambil perhatian bahawa terjemahan automatik mungkin mengandungi kesilapan atau ketidaktepatan. Dokumen asal dalam bahasa asalnya harus dianggap sebagai sumber yang berwibawa. Untuk maklumat yang kritikal, terjemahan manusia profesional adalah disyorkan. Kami tidak bertanggungjawab atas sebarang salah faham atau salah tafsir yang timbul daripada penggunaan terjemahan ini.

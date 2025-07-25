@@ -1,137 +1,313 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "7bf9a4a832911269a8bd0decb97ff36c",
-  "translation_date": "2025-07-21T21:28:05+00:00",
+  "original_hash": "8c6c7e9008b114540677f7a65aa9ddad",
+  "translation_date": "2025-07-25T12:12:21+00:00",
   "source_file": "04-PracticalSamples/mcp/calculator/README.md",
   "language_code": "ro"
 }
 -->
-# Serviciul de Calculator de Bază MCP
-
->**Notă**: Acest capitol include un [**Tutorial**](./TUTORIAL.md) care te ghidează prin rularea exemplelor finalizate.
-
-Bine ai venit la prima ta experiență practică cu **Model Context Protocol (MCP)**! În capitolele anterioare, ai învățat despre fundamentele AI generativ și ai configurat mediul de dezvoltare. Acum este momentul să construim ceva practic.
-
-Acest serviciu de calculator demonstrează cum modelele AI pot interacționa în siguranță cu instrumente externe folosind MCP. În loc să ne bazăm pe capacitățile uneori nesigure ale modelului AI de a face calcule matematice, îți vom arăta cum să construiești un sistem robust în care AI poate apela servicii specializate pentru calcule precise.
+# Tutorial MCP Calculator pentru Începători
 
 ## Cuprins
 
 - [Ce Vei Învăța](../../../../../04-PracticalSamples/mcp/calculator)
 - [Cerințe Prealabile](../../../../../04-PracticalSamples/mcp/calculator)
-- [Concepte Cheie](../../../../../04-PracticalSamples/mcp/calculator)
-- [Start Rapid](../../../../../04-PracticalSamples/mcp/calculator)
-- [Operațiuni Disponibile ale Calculatorului](../../../../../04-PracticalSamples/mcp/calculator)
-- [Clienți de Testare](../../../../../04-PracticalSamples/mcp/calculator)
-  - [1. Client MCP Direct (SDKClient)](../../../../../04-PracticalSamples/mcp/calculator)
-  - [2. Client Alimentat de AI (LangChain4jClient)](../../../../../04-PracticalSamples/mcp/calculator)
-- [Inspector MCP (Interfață Web)](../../../../../04-PracticalSamples/mcp/calculator)
-  - [Instrucțiuni Pas cu Pas](../../../../../04-PracticalSamples/mcp/calculator)
+- [Înțelegerea Structurii Proiectului](../../../../../04-PracticalSamples/mcp/calculator)
+- [Componentele de Bază Explicate](../../../../../04-PracticalSamples/mcp/calculator)
+  - [1. Aplicația Principală](../../../../../04-PracticalSamples/mcp/calculator)
+  - [2. Serviciul Calculator](../../../../../04-PracticalSamples/mcp/calculator)
+  - [3. Client MCP Direct](../../../../../04-PracticalSamples/mcp/calculator)
+  - [4. Client Bazat pe AI](../../../../../04-PracticalSamples/mcp/calculator)
+- [Rularea Exemplului](../../../../../04-PracticalSamples/mcp/calculator)
+- [Cum Funcționează Împreună](../../../../../04-PracticalSamples/mcp/calculator)
+- [Pașii Următori](../../../../../04-PracticalSamples/mcp/calculator)
 
 ## Ce Vei Învăța
 
-Lucrând prin acest exemplu, vei înțelege:
-- Cum să creezi servicii compatibile MCP folosind Spring Boot
-- Diferența dintre comunicarea directă prin protocol și interacțiunea alimentată de AI
-- Cum modelele AI decid când și cum să utilizeze instrumente externe
-- Cele mai bune practici pentru construirea aplicațiilor AI cu instrumente integrate
+Acest tutorial explică cum să construiești un serviciu de calculator folosind Model Context Protocol (MCP). Vei înțelege:
 
-Perfect pentru începători care învață conceptele MCP și sunt gata să construiască prima lor integrare AI cu un instrument!
+- Cum să creezi un serviciu pe care AI îl poate folosi ca unealtă
+- Cum să configurezi comunicarea directă cu serviciile MCP
+- Cum modelele AI pot alege automat ce unelte să folosească
+- Diferența dintre apelurile directe de protocol și interacțiunile asistate de AI
 
 ## Cerințe Prealabile
 
-- Java 21+
-- Maven 3.6+
-- **Token GitHub**: Necesită pentru clientul alimentat de AI. Dacă nu l-ai configurat încă, vezi [Capitolul 2: Configurarea mediului de dezvoltare](../../../02-SetupDevEnvironment/README.md) pentru instrucțiuni.
+Înainte de a începe, asigură-te că ai:
+- Java 21 sau o versiune mai nouă instalată
+- Maven pentru gestionarea dependențelor
+- Un cont GitHub cu un token de acces personal (PAT)
+- Cunoștințe de bază despre Java și Spring Boot
 
-## Concepte Cheie
+## Înțelegerea Structurii Proiectului
 
-**Model Context Protocol (MCP)** este o metodă standardizată prin care aplicațiile AI se conectează în siguranță la instrumente externe. Gândește-te la el ca la un "pod" care permite modelelor AI să utilizeze servicii externe, cum ar fi calculatorul nostru. În loc ca modelul AI să încerce să facă calcule (ceea ce poate fi nesigur), acesta poate apela serviciul nostru de calculator pentru a obține rezultate precise. MCP asigură că această comunicare are loc în siguranță și în mod constant.
+Proiectul calculatorului conține mai multe fișiere importante:
 
-**Server-Sent Events (SSE)** permite comunicarea în timp real între server și clienți. Spre deosebire de cererile HTTP tradiționale, unde întrebi și aștepți un răspuns, SSE permite serverului să trimită actualizări continue către client. Acest lucru este perfect pentru aplicațiile AI unde răspunsurile pot fi transmise în flux sau pot necesita timp pentru procesare.
-
-**Instrumente AI & Apelarea Funcțiilor** permit modelelor AI să aleagă și să utilizeze automat funcții externe (cum ar fi operațiunile calculatorului) pe baza cererilor utilizatorului. Când întrebi "Cât face 15 + 27?", modelul AI înțelege că vrei o adunare, apelează automat funcția `add` cu parametrii corecți (15, 27) și returnează rezultatul în limbaj natural. AI-ul acționează ca un coordonator inteligent care știe când și cum să folosească fiecare instrument.
-
-## Start Rapid
-
-### 1. Navighează la directorul aplicației calculatorului
-```bash
-cd Generative-AI-for-beginners-java/04-PracticalSamples/mcp/calculator
+```
+calculator/
+├── src/main/java/com/microsoft/mcp/sample/server/
+│   ├── McpServerApplication.java          # Main Spring Boot app
+│   └── service/CalculatorService.java     # Calculator operations
+└── src/test/java/com/microsoft/mcp/sample/client/
+    ├── SDKClient.java                     # Direct MCP communication
+    ├── LangChain4jClient.java            # AI-powered client
+    └── Bot.java                          # Simple chat interface
 ```
 
-### 2. Construiește și Rulează
-```bash
-mvn clean install -DskipTests
-java -jar target/calculator-server-0.0.1-SNAPSHOT.jar
+## Componentele de Bază Explicate
+
+### 1. Aplicația Principală
+
+**Fișier:** `McpServerApplication.java`
+
+Acesta este punctul de intrare al serviciului nostru de calculator. Este o aplicație standard Spring Boot cu o adăugire specială:
+
+```java
+@SpringBootApplication
+public class McpServerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(McpServerApplication.class, args);
+    }
+    
+    @Bean
+    public ToolCallbackProvider calculatorTools(CalculatorService calculator) {
+        return MethodToolCallbackProvider.builder().toolObjects(calculator).build();
+    }
+}
 ```
 
-### 3. Testează cu Clienți
-- **SDKClient**: Interacțiune directă prin protocol MCP
-- **LangChain4jClient**: Interacțiune naturală alimentată de AI (necesită token GitHub)
+**Ce face:**
+- Pornește un server web Spring Boot pe portul 8080
+- Creează un `ToolCallbackProvider` care face metodele calculatorului disponibile ca unelte MCP
+- Anotarea `@Bean` spune Spring să gestioneze acest lucru ca un component pe care alte părți îl pot folosi
 
-## Operațiuni Disponibile ale Calculatorului
+### 2. Serviciul Calculator
 
-- `add(a, b)`, `subtract(a, b)`, `multiply(a, b)`, `divide(a, b)`
-- `power(base, exponent)`, `squareRoot(number)`, `absolute(number)`
-- `modulus(a, b)`, `help()`
+**Fișier:** `CalculatorService.java`
 
-## Clienți de Testare
+Aici se realizează toate calculele. Fiecare metodă este marcată cu `@Tool` pentru a fi disponibilă prin MCP:
 
-### 1. Client MCP Direct (SDKClient)
-Testează comunicarea brută prin protocol MCP. Rulează cu:
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient" -Dexec.classpathScope=test
+```java
+@Service
+public class CalculatorService {
+
+    @Tool(description = "Add two numbers together")
+    public String add(double a, double b) {
+        double result = a + b;
+        return formatResult(a, "+", b, result);
+    }
+
+    @Tool(description = "Subtract the second number from the first number")
+    public String subtract(double a, double b) {
+        double result = a - b;
+        return formatResult(a, "-", b, result);
+    }
+    
+    // More calculator operations...
+    
+    private String formatResult(double a, String operator, double b, double result) {
+        return String.format("%.2f %s %.2f = %.2f", a, operator, b, result);
+    }
+}
 ```
 
-### 2. Client Alimentat de AI (LangChain4jClient)
-Demonstrează interacțiunea naturală cu modelele GitHub. Necesită token GitHub (vezi [Cerințe Prealabile](../../../../../04-PracticalSamples/mcp/calculator)).
+**Caracteristici cheie:**
 
-**Rulează:**
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient" -Dexec.classpathScope=test
+1. **Anotarea `@Tool`**: Indică MCP că această metodă poate fi apelată de clienți externi
+2. **Descrieri Clare**: Fiecare unealtă are o descriere care ajută modelele AI să înțeleagă când să o folosească
+3. **Format Consistent al Rezultatelor**: Toate operațiile returnează șiruri de caractere ușor de citit, precum "5.00 + 3.00 = 8.00"
+4. **Gestionarea Erorilor**: Împărțirea la zero și rădăcinile pătrate negative returnează mesaje de eroare
+
+**Operații Disponibile:**
+- `add(a, b)` - Adună două numere
+- `subtract(a, b)` - Scade al doilea număr din primul
+- `multiply(a, b)` - Înmulțește două numere
+- `divide(a, b)` - Împarte primul număr la al doilea (cu verificare pentru zero)
+- `power(base, exponent)` - Ridică baza la puterea exponentului
+- `squareRoot(number)` - Calculează rădăcina pătrată (cu verificare pentru numere negative)
+- `modulus(a, b)` - Returnează restul împărțirii
+- `absolute(number)` - Returnează valoarea absolută
+- `help()` - Returnează informații despre toate operațiile
+
+### 3. Client MCP Direct
+
+**Fișier:** `SDKClient.java`
+
+Acest client comunică direct cu serverul MCP fără a folosi AI. Apelează manual funcțiile specifice ale calculatorului:
+
+```java
+public class SDKClient {
+    
+    public static void main(String[] args) {
+        var transport = new WebFluxSseClientTransport(
+            WebClient.builder().baseUrl("http://localhost:8080")
+        );
+        new SDKClient(transport).run();
+    }
+    
+    public void run() {
+        var client = McpClient.sync(this.transport).build();
+        client.initialize();
+        
+        // List available tools
+        ListToolsResult toolsList = client.listTools();
+        System.out.println("Available Tools = " + toolsList);
+        
+        // Call specific calculator functions
+        CallToolResult resultAdd = client.callTool(
+            new CallToolRequest("add", Map.of("a", 5.0, "b", 3.0))
+        );
+        System.out.println("Add Result = " + resultAdd);
+        
+        CallToolResult resultSqrt = client.callTool(
+            new CallToolRequest("squareRoot", Map.of("number", 16.0))
+        );
+        System.out.println("Square Root Result = " + resultSqrt);
+        
+        client.closeGracefully();
+    }
+}
 ```
 
-## Inspector MCP (Interfață Web)
+**Ce face:**
+1. **Se conectează** la serverul calculatorului la `http://localhost:8080`
+2. **Listează** toate uneltele disponibile (funcțiile calculatorului nostru)
+3. **Apelează** funcții specifice cu parametri exacți
+4. **Afișează** rezultatele direct
 
-Inspectorul MCP oferă o interfață web vizuală pentru a testa serviciul MCP fără a scrie cod. Perfect pentru începători care vor să înțeleagă cum funcționează MCP!
+**Când să-l folosești:** Când știi exact ce calcul vrei să efectuezi și dorești să-l apelezi programatic.
 
-### Instrucțiuni Pas cu Pas:
+### 4. Client Bazat pe AI
 
-1. **Pornește serverul calculatorului** (dacă nu este deja pornit):
-   ```bash
-   java -jar target/calculator-server-0.0.1-SNAPSHOT.jar
-   ```
+**Fișier:** `LangChain4jClient.java`
 
-2. **Instalează și rulează Inspector MCP** într-un terminal nou:
-   ```bash
-   npx @modelcontextprotocol/inspector
-   ```
+Acest client folosește un model AI (GPT-4o-mini) care poate decide automat ce unelte ale calculatorului să folosească:
 
-3. **Deschide interfața web**:
-   - Caută un mesaj de tipul "Inspector running at http://localhost:6274"
-   - Deschide acel URL în browserul tău
+```java
+public class LangChain4jClient {
+    
+    public static void main(String[] args) throws Exception {
+        // Set up the AI model (using GitHub Models)
+        ChatLanguageModel model = OpenAiOfficialChatModel.builder()
+                .isGitHubModels(true)
+                .apiKey(System.getenv("GITHUB_TOKEN"))
+                .modelName("gpt-4o-mini")
+                .build();
 
-4. **Conectează-te la serviciul calculatorului**:
-   - În interfața web, setează tipul de transport la "SSE"
-   - Setează URL-ul la: `http://localhost:8080/sse`
-   - Apasă butonul "Connect"
+        // Connect to our calculator MCP server
+        McpTransport transport = new HttpMcpTransport.Builder()
+                .sseUrl("http://localhost:8080/sse")
+                .logRequests(true)  // Shows what the AI is doing
+                .logResponses(true)
+                .build();
 
-5. **Explorează instrumentele disponibile**:
-   - Apasă "List Tools" pentru a vedea toate operațiunile calculatorului
-   - Vei vedea funcții precum `add`, `subtract`, `multiply`, etc.
+        McpClient mcpClient = new DefaultMcpClient.Builder()
+                .transport(transport)
+                .build();
 
-6. **Testează o operațiune a calculatorului**:
-   - Selectează un instrument (de exemplu, "add")
-   - Introdu parametrii (de exemplu, `a: 15`, `b: 27`)
-   - Apasă "Run Tool"
-   - Vezi rezultatul returnat de serviciul MCP!
+        // Give the AI access to our calculator tools
+        ToolProvider toolProvider = McpToolProvider.builder()
+                .mcpClients(List.of(mcpClient))
+                .build();
 
-Această abordare vizuală te ajută să înțelegi exact cum funcționează comunicarea MCP înainte de a-ți construi propriii clienți.
+        // Create an AI bot that can use our calculator
+        Bot bot = AiServices.builder(Bot.class)
+                .chatLanguageModel(model)
+                .toolProvider(toolProvider)
+                .build();
 
-![npx inspector](../../../../../translated_images/tool.214c70103694335c4cfdc2d624373dfce4b0162f6aea089ac1da9051fb563b7f.ro.png)
+        // Now we can ask the AI to do calculations in natural language
+        String response = bot.chat("Calculate the sum of 24.5 and 17.3 using the calculator service");
+        System.out.println(response);
 
----
-**Referință:** [Documentația MCP Server Boot Starter](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-server-boot-starter-docs.html)
+        response = bot.chat("What's the square root of 144?");
+        System.out.println(response);
+    }
+}
+```
+
+**Ce face:**
+1. **Creează** o conexiune cu modelul AI folosind token-ul tău GitHub
+2. **Conectează** AI-ul la serverul MCP al calculatorului nostru
+3. **Oferă** AI-ului acces la toate uneltele calculatorului
+4. **Permite** cereri în limbaj natural, precum "Calculează suma dintre 24.5 și 17.3"
+
+**AI-ul automat:**
+- Înțelege că vrei să aduni numere
+- Alege unealta `add`
+- Apelează `add(24.5, 17.3)`
+- Returnează rezultatul într-un răspuns natural
+
+## Rularea Exemplului
+
+### Pasul 1: Pornește Serverul Calculatorului
+
+Mai întâi, setează token-ul GitHub (necesar pentru clientul AI):
+
+**Windows:**
+```cmd
+set GITHUB_TOKEN=your_github_token_here
+```
+
+**Linux/macOS:**
+```bash
+export GITHUB_TOKEN=your_github_token_here
+```
+
+Pornește serverul:
+```bash
+cd 04-PracticalSamples/mcp/calculator
+mvn spring-boot:run
+```
+
+Serverul va porni la `http://localhost:8080`. Ar trebui să vezi:
+```
+Started McpServerApplication in X.XXX seconds
+```
+
+### Pasul 2: Testează cu Clientul Direct
+
+Într-un terminal nou:
+```bash
+mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient"
+```
+
+Vei vedea un output precum:
+```
+Available Tools = [add, subtract, multiply, divide, power, squareRoot, modulus, absolute, help]
+Add Result = 5.00 + 3.00 = 8.00
+Square Root Result = √16.00 = 4.00
+```
+
+### Pasul 3: Testează cu Clientul AI
+
+```bash
+mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient"
+```
+
+Vei vedea AI-ul folosind automat uneltele:
+```
+The sum of 24.5 and 17.3 is 41.8.
+The square root of 144 is 12.
+```
+
+## Cum Funcționează Împreună
+
+Iată fluxul complet când întrebi AI-ul "Cât fac 5 + 3?":
+
+1. **Tu** întrebi AI-ul în limbaj natural
+2. **AI-ul** analizează cererea ta și își dă seama că vrei să aduni
+3. **AI-ul** apelează serverul MCP: `add(5.0, 3.0)`
+4. **Serviciul Calculator** efectuează: `5.0 + 3.0 = 8.0`
+5. **Serviciul Calculator** returnează: `"5.00 + 3.00 = 8.00"`
+6. **AI-ul** primește rezultatul și îl formatează într-un răspuns natural
+7. **Tu** primești: "Suma dintre 5 și 3 este 8"
+
+## Pașii Următori
+
+Pentru mai multe exemple, vezi [Capitolul 04: Exemple practice](../../README.md)
 
 **Declinare de responsabilitate**:  
 Acest document a fost tradus folosind serviciul de traducere AI [Co-op Translator](https://github.com/Azure/co-op-translator). Deși ne străduim să asigurăm acuratețea, vă rugăm să fiți conștienți că traducerile automate pot conține erori sau inexactități. Documentul original în limba sa natală ar trebui considerat sursa autoritară. Pentru informații critice, se recomandă traducerea profesională realizată de un specialist uman. Nu ne asumăm responsabilitatea pentru eventualele neînțelegeri sau interpretări greșite care pot apărea din utilizarea acestei traduceri.

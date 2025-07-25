@@ -1,137 +1,313 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "7bf9a4a832911269a8bd0decb97ff36c",
-  "translation_date": "2025-07-21T21:26:33+00:00",
+  "original_hash": "8c6c7e9008b114540677f7a65aa9ddad",
+  "translation_date": "2025-07-25T12:01:47+00:00",
   "source_file": "04-PracticalSamples/mcp/calculator/README.md",
   "language_code": "sw"
 }
 -->
-# Huduma ya Msingi ya Calculator MCP
+# Mafunzo ya MCP Calculator kwa Anayeanza
 
->**Note**: Sura hii inajumuisha [**Mafunzo**](./TUTORIAL.md) yanayokuongoza jinsi ya kuendesha mifano iliyokamilika.
-
-Karibu kwenye uzoefu wako wa kwanza wa vitendo na **Model Context Protocol (MCP)**! Katika sura zilizopita, umejifunza misingi ya AI ya kizazi na kuandaa mazingira yako ya maendeleo. Sasa ni wakati wa kujenga kitu cha vitendo.
-
-Huduma hii ya calculator inaonyesha jinsi mifano ya AI inaweza kuingiliana kwa usalama na zana za nje kwa kutumia MCP. Badala ya kutegemea uwezo wa hesabu wa AI ambao wakati mwingine si wa kuaminika, tutaonyesha jinsi ya kujenga mfumo thabiti ambapo AI inaweza kuita huduma maalum kwa mahesabu sahihi.
-
-## Jedwali la Maudhui
+## Jedwali la Yaliyomo
 
 - [Unachojifunza](../../../../../04-PracticalSamples/mcp/calculator)
 - [Mahitaji ya Awali](../../../../../04-PracticalSamples/mcp/calculator)
-- [Misingi Muhimu](../../../../../04-PracticalSamples/mcp/calculator)
-- [Kuanza Haraka](../../../../../04-PracticalSamples/mcp/calculator)
-- [Operesheni Zinazopatikana za Calculator](../../../../../04-PracticalSamples/mcp/calculator)
-- [Wateja wa Kujaribu](../../../../../04-PracticalSamples/mcp/calculator)
-  - [1. Mteja wa Moja kwa Moja wa MCP (SDKClient)](../../../../../04-PracticalSamples/mcp/calculator)
-  - [2. Mteja Unaotumia AI (LangChain4jClient)](../../../../../04-PracticalSamples/mcp/calculator)
-- [MCP Inspector (Web UI)](../../../../../04-PracticalSamples/mcp/calculator)
-  - [Maelekezo Hatua kwa Hatua](../../../../../04-PracticalSamples/mcp/calculator)
+- [Kuelewa Muundo wa Mradi](../../../../../04-PracticalSamples/mcp/calculator)
+- [Vipengele Muhimu Vilivyoelezwa](../../../../../04-PracticalSamples/mcp/calculator)
+  - [1. Programu Kuu](../../../../../04-PracticalSamples/mcp/calculator)
+  - [2. Huduma ya Calculator](../../../../../04-PracticalSamples/mcp/calculator)
+  - [3. Mteja wa MCP wa Moja kwa Moja](../../../../../04-PracticalSamples/mcp/calculator)
+  - [4. Mteja Anayetumia AI](../../../../../04-PracticalSamples/mcp/calculator)
+- [Kuendesha Mifano](../../../../../04-PracticalSamples/mcp/calculator)
+- [Jinsi Inavyofanya Kazi Pamoja](../../../../../04-PracticalSamples/mcp/calculator)
+- [Hatua Zifuatazo](../../../../../04-PracticalSamples/mcp/calculator)
 
 ## Unachojifunza
 
-Kwa kufanya kazi kupitia mfano huu, utaelewa:
-- Jinsi ya kuunda huduma zinazolingana na MCP kwa kutumia Spring Boot
-- Tofauti kati ya mawasiliano ya moja kwa moja ya itifaki na mwingiliano unaotumia AI
-- Jinsi mifano ya AI inavyoamua lini na jinsi ya kutumia zana za nje
-- Mbinu bora za kujenga programu za AI zinazotumia zana
+Mafunzo haya yanaelezea jinsi ya kujenga huduma ya calculator kwa kutumia Model Context Protocol (MCP). Utaelewa:
 
-Inafaa kwa wanaoanza kujifunza dhana za MCP na walio tayari kujenga ujumuishaji wao wa kwanza wa zana za AI!
+- Jinsi ya kuunda huduma ambayo AI inaweza kutumia kama zana
+- Jinsi ya kusanidi mawasiliano ya moja kwa moja na huduma za MCP
+- Jinsi mifano ya AI inaweza kuchagua zana za kutumia kiotomatiki
+- Tofauti kati ya miito ya moja kwa moja ya itifaki na mwingiliano unaosaidiwa na AI
 
 ## Mahitaji ya Awali
 
-- Java 21+
-- Maven 3.6+
-- **GitHub Token**: Inahitajika kwa mteja unaotumia AI. Ikiwa bado hujaweka hii, angalia [Sura ya 2: Kuandaa mazingira yako ya maendeleo](../../../02-SetupDevEnvironment/README.md) kwa maelekezo.
+Kabla ya kuanza, hakikisha una:
+- Java 21 au toleo la juu zaidi limewekwa
+- Maven kwa usimamizi wa utegemezi
+- Akaunti ya GitHub yenye tokeni ya ufikiaji wa kibinafsi (PAT)
+- Uelewa wa msingi wa Java na Spring Boot
 
-## Misingi Muhimu
+## Kuelewa Muundo wa Mradi
 
-**Model Context Protocol (MCP)** ni njia sanifu ya programu za AI kuunganishwa kwa usalama na zana za nje. Fikiria kama "daraja" linaloruhusu mifano ya AI kutumia huduma za nje kama calculator yetu. Badala ya mfano wa AI kujaribu kufanya hesabu yenyewe (ambayo inaweza kuwa si ya kuaminika), inaweza kuita huduma yetu ya calculator kupata matokeo sahihi. MCP inahakikisha mawasiliano haya yanatokea kwa usalama na uthabiti.
+Mradi wa calculator una faili kadhaa muhimu:
 
-**Server-Sent Events (SSE)** huwezesha mawasiliano ya wakati halisi kati ya seva na wateja. Tofauti na maombi ya jadi ya HTTP ambapo unauliza na kusubiri jibu, SSE huruhusu seva kuendelea kutuma masasisho kwa mteja. Hii ni bora kwa programu za AI ambapo majibu yanaweza kutiririka au kuchukua muda kusindika.
-
-**Zana za AI & Kuita Kazi** huruhusu mifano ya AI kuchagua na kutumia kazi za nje (kama operesheni za calculator) kiotomatiki kulingana na maombi ya mtumiaji. Unapouliza "Ni nini 15 + 27?", mfano wa AI unaelewa unataka kuongeza, unaita zana yetu ya `add` na vigezo sahihi (15, 27), na kurudisha matokeo kwa lugha ya kawaida. AI inafanya kazi kama mratibu mwenye akili anayejua lini na jinsi ya kutumia kila zana.
-
-## Kuanza Haraka
-
-### 1. Nenda kwenye saraka ya programu ya calculator
-```bash
-cd Generative-AI-for-beginners-java/04-PracticalSamples/mcp/calculator
+```
+calculator/
+├── src/main/java/com/microsoft/mcp/sample/server/
+│   ├── McpServerApplication.java          # Main Spring Boot app
+│   └── service/CalculatorService.java     # Calculator operations
+└── src/test/java/com/microsoft/mcp/sample/client/
+    ├── SDKClient.java                     # Direct MCP communication
+    ├── LangChain4jClient.java            # AI-powered client
+    └── Bot.java                          # Simple chat interface
 ```
 
-### 2. Jenga & Endesha
-```bash
-mvn clean install -DskipTests
-java -jar target/calculator-server-0.0.1-SNAPSHOT.jar
+## Vipengele Muhimu Vilivyoelezwa
+
+### 1. Programu Kuu
+
+**Faili:** `McpServerApplication.java`
+
+Hii ni sehemu ya kuanzia ya huduma yetu ya calculator. Ni programu ya kawaida ya Spring Boot yenye nyongeza moja maalum:
+
+```java
+@SpringBootApplication
+public class McpServerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(McpServerApplication.class, args);
+    }
+    
+    @Bean
+    public ToolCallbackProvider calculatorTools(CalculatorService calculator) {
+        return MethodToolCallbackProvider.builder().toolObjects(calculator).build();
+    }
+}
 ```
 
-### 2. Jaribu na Wateja
-- **SDKClient**: Mawasiliano ya moja kwa moja ya itifaki ya MCP
-- **LangChain4jClient**: Mawasiliano ya lugha ya kawaida yanayotumia AI (inahitaji tokeni ya GitHub)
+**Inachofanya:**
+- Inaendesha seva ya wavuti ya Spring Boot kwenye bandari 8080
+- Inaunda `ToolCallbackProvider` inayofanya mbinu za calculator zetu zipatikane kama zana za MCP
+- Anotesheni ya `@Bean` inaiambia Spring kusimamia hii kama sehemu ambayo sehemu nyingine zinaweza kutumia
 
-## Operesheni Zinazopatikana za Calculator
+### 2. Huduma ya Calculator
 
-- `add(a, b)`, `subtract(a, b)`, `multiply(a, b)`, `divide(a, b)`
-- `power(base, exponent)`, `squareRoot(number)`, `absolute(number)`
-- `modulus(a, b)`, `help()`
+**Faili:** `CalculatorService.java`
 
-## Wateja wa Kujaribu
+Hapa ndipo hesabu zote hufanyika. Kila mbinu imewekwa alama na `@Tool` ili iweze kupatikana kupitia MCP:
 
-### 1. Mteja wa Moja kwa Moja wa MCP (SDKClient)
-Hujaribu mawasiliano ya itifaki ya MCP moja kwa moja. Endesha kwa:
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient" -Dexec.classpathScope=test
+```java
+@Service
+public class CalculatorService {
+
+    @Tool(description = "Add two numbers together")
+    public String add(double a, double b) {
+        double result = a + b;
+        return formatResult(a, "+", b, result);
+    }
+
+    @Tool(description = "Subtract the second number from the first number")
+    public String subtract(double a, double b) {
+        double result = a - b;
+        return formatResult(a, "-", b, result);
+    }
+    
+    // More calculator operations...
+    
+    private String formatResult(double a, String operator, double b, double result) {
+        return String.format("%.2f %s %.2f = %.2f", a, operator, b, result);
+    }
+}
 ```
 
-### 2. Mteja Unaotumia AI (LangChain4jClient)
-Inaonyesha mwingiliano wa lugha ya kawaida na mifano ya GitHub. Inahitaji tokeni ya GitHub (angalia [Mahitaji ya Awali](../../../../../04-PracticalSamples/mcp/calculator)).
+**Vipengele Muhimu:**
 
-**Endesha:**
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient" -Dexec.classpathScope=test
+1. **Anotesheni ya `@Tool`**: Hii inaiambia MCP kwamba mbinu hii inaweza kuitwa na wateja wa nje
+2. **Maelezo Wazi**: Kila zana ina maelezo yanayosaidia mifano ya AI kuelewa wakati wa kuitumia
+3. **Muundo wa Matokeo Thabiti**: Operesheni zote zinarudisha maandishi yanayosomeka kama "5.00 + 3.00 = 8.00"
+4. **Ushughulikiaji wa Makosa**: Mgawanyiko kwa sifuri na mizizi ya mraba hasi hurudisha ujumbe wa makosa
+
+**Operesheni Zinazopatikana:**
+- `add(a, b)` - Huongeza namba mbili
+- `subtract(a, b)` - Hutoa ya pili kutoka ya kwanza
+- `multiply(a, b)` - Huzidisha namba mbili
+- `divide(a, b)` - Hugawa ya kwanza kwa ya pili (na ukaguzi wa sifuri)
+- `power(base, exponent)` - Huinua msingi kwa nguvu ya exponent
+- `squareRoot(number)` - Hukokotoa mzizi wa mraba (na ukaguzi wa hasi)
+- `modulus(a, b)` - Hutoa baki ya mgawanyiko
+- `absolute(number)` - Hutoa thamani kamili
+- `help()` - Hutoa taarifa kuhusu operesheni zote
+
+### 3. Mteja wa MCP wa Moja kwa Moja
+
+**Faili:** `SDKClient.java`
+
+Mteja huyu huzungumza moja kwa moja na seva ya MCP bila kutumia AI. Huita mbinu maalum za calculator kwa mikono:
+
+```java
+public class SDKClient {
+    
+    public static void main(String[] args) {
+        var transport = new WebFluxSseClientTransport(
+            WebClient.builder().baseUrl("http://localhost:8080")
+        );
+        new SDKClient(transport).run();
+    }
+    
+    public void run() {
+        var client = McpClient.sync(this.transport).build();
+        client.initialize();
+        
+        // List available tools
+        ListToolsResult toolsList = client.listTools();
+        System.out.println("Available Tools = " + toolsList);
+        
+        // Call specific calculator functions
+        CallToolResult resultAdd = client.callTool(
+            new CallToolRequest("add", Map.of("a", 5.0, "b", 3.0))
+        );
+        System.out.println("Add Result = " + resultAdd);
+        
+        CallToolResult resultSqrt = client.callTool(
+            new CallToolRequest("squareRoot", Map.of("number", 16.0))
+        );
+        System.out.println("Square Root Result = " + resultSqrt);
+        
+        client.closeGracefully();
+    }
+}
 ```
 
-## MCP Inspector (Web UI)
+**Inachofanya:**
+1. **Inaunganisha** na seva ya calculator kwenye `http://localhost:8080`
+2. **Inaorodhesha** zana zote zinazopatikana (mbinu za calculator zetu)
+3. **Inaita** mbinu maalum na vigezo sahihi
+4. **Inachapisha** matokeo moja kwa moja
 
-MCP Inspector hutoa kiolesura cha kuona cha wavuti cha kujaribu huduma yako ya MCP bila kuandika msimbo. Inafaa kwa wanaoanza kuelewa jinsi MCP inavyofanya kazi!
+**Wakati wa kutumia hii:** Wakati unajua hasa hesabu unayotaka kufanya na unataka kuifanya kwa mpangilio wa programu.
 
-### Maelekezo Hatua kwa Hatua:
+### 4. Mteja Anayetumia AI
 
-1. **Anzisha seva ya calculator** (ikiwa bado haijaendeshwa):
-   ```bash
-   java -jar target/calculator-server-0.0.1-SNAPSHOT.jar
-   ```
+**Faili:** `LangChain4jClient.java`
 
-2. **Sakinisha na endesha MCP Inspector** kwenye terminal mpya:
-   ```bash
-   npx @modelcontextprotocol/inspector
-   ```
+Mteja huyu hutumia mfano wa AI (GPT-4o-mini) ambao unaweza kuamua kiotomatiki zana za calculator za kutumia:
 
-3. **Fungua kiolesura cha wavuti**:
-   - Tafuta ujumbe kama "Inspector running at http://localhost:6274"
-   - Fungua URL hiyo kwenye kivinjari chako
+```java
+public class LangChain4jClient {
+    
+    public static void main(String[] args) throws Exception {
+        // Set up the AI model (using GitHub Models)
+        ChatLanguageModel model = OpenAiOfficialChatModel.builder()
+                .isGitHubModels(true)
+                .apiKey(System.getenv("GITHUB_TOKEN"))
+                .modelName("gpt-4o-mini")
+                .build();
 
-4. **Unganisha na huduma yako ya calculator**:
-   - Katika kiolesura cha wavuti, weka aina ya usafirishaji kuwa "SSE"
-   - Weka URL kuwa: `http://localhost:8080/sse`
-   - Bonyeza kitufe cha "Connect"
+        // Connect to our calculator MCP server
+        McpTransport transport = new HttpMcpTransport.Builder()
+                .sseUrl("http://localhost:8080/sse")
+                .logRequests(true)  // Shows what the AI is doing
+                .logResponses(true)
+                .build();
 
-5. **Chunguza zana zinazopatikana**:
-   - Bonyeza "List Tools" kuona operesheni zote za calculator
-   - Utaona kazi kama `add`, `subtract`, `multiply`, nk.
+        McpClient mcpClient = new DefaultMcpClient.Builder()
+                .transport(transport)
+                .build();
 
-6. **Jaribu operesheni ya calculator**:
-   - Chagua zana (mfano, "add")
-   - Ingiza vigezo (mfano, `a: 15`, `b: 27`)
-   - Bonyeza "Run Tool"
-   - Tazama matokeo yanayorudishwa na huduma yako ya MCP!
+        // Give the AI access to our calculator tools
+        ToolProvider toolProvider = McpToolProvider.builder()
+                .mcpClients(List.of(mcpClient))
+                .build();
 
-Njia hii ya kuona inakusaidia kuelewa jinsi mawasiliano ya MCP yanavyofanya kazi kabla ya kujenga wateja wako mwenyewe.
+        // Create an AI bot that can use our calculator
+        Bot bot = AiServices.builder(Bot.class)
+                .chatLanguageModel(model)
+                .toolProvider(toolProvider)
+                .build();
 
-![npx inspector](../../../../../translated_images/tool.214c70103694335c4cfdc2d624373dfce4b0162f6aea089ac1da9051fb563b7f.sw.png)
+        // Now we can ask the AI to do calculations in natural language
+        String response = bot.chat("Calculate the sum of 24.5 and 17.3 using the calculator service");
+        System.out.println(response);
 
----
-**Marejeleo:** [MCP Server Boot Starter Docs](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-server-boot-starter-docs.html)
+        response = bot.chat("What's the square root of 144?");
+        System.out.println(response);
+    }
+}
+```
+
+**Inachofanya:**
+1. **Inaunda** muunganisho wa mfano wa AI kwa kutumia tokeni yako ya GitHub
+2. **Inaunganisha** AI na seva yetu ya MCP ya calculator
+3. **Inatoa** AI ufikiaji wa zana zote za calculator zetu
+4. **Inaruhusu** maombi ya lugha ya asili kama "Hesabu jumla ya 24.5 na 17.3"
+
+**AI kiotomatiki:**
+- Inaelewa unataka kuongeza namba
+- Inachagua zana ya `add`
+- Inaita `add(24.5, 17.3)`
+- Inarudisha matokeo kwa majibu ya asili
+
+## Kuendesha Mifano
+
+### Hatua ya 1: Anzisha Seva ya Calculator
+
+Kwanza, weka tokeni yako ya GitHub (inayohitajika kwa mteja wa AI):
+
+**Windows:**
+```cmd
+set GITHUB_TOKEN=your_github_token_here
+```
+
+**Linux/macOS:**
+```bash
+export GITHUB_TOKEN=your_github_token_here
+```
+
+Anzisha seva:
+```bash
+cd 04-PracticalSamples/mcp/calculator
+mvn spring-boot:run
+```
+
+Seva itaanza kwenye `http://localhost:8080`. Unapaswa kuona:
+```
+Started McpServerApplication in X.XXX seconds
+```
+
+### Hatua ya 2: Jaribu na Mteja wa Moja kwa Moja
+
+Katika terminal mpya:
+```bash
+mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient"
+```
+
+Utaona matokeo kama:
+```
+Available Tools = [add, subtract, multiply, divide, power, squareRoot, modulus, absolute, help]
+Add Result = 5.00 + 3.00 = 8.00
+Square Root Result = √16.00 = 4.00
+```
+
+### Hatua ya 3: Jaribu na Mteja wa AI
+
+```bash
+mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient"
+```
+
+Utaona AI ikitumia zana kiotomatiki:
+```
+The sum of 24.5 and 17.3 is 41.8.
+The square root of 144 is 12.
+```
+
+## Jinsi Inavyofanya Kazi Pamoja
+
+Hivi ndivyo mtiririko mzima unavyokuwa unapouliza AI "5 + 3 ni ngapi?":
+
+1. **Wewe** unauliza AI kwa lugha ya asili
+2. **AI** inachambua ombi lako na kugundua unataka kuongeza
+3. **AI** inaita seva ya MCP: `add(5.0, 3.0)`
+4. **Huduma ya Calculator** inafanya: `5.0 + 3.0 = 8.0`
+5. **Huduma ya Calculator** inarudisha: `"5.00 + 3.00 = 8.00"`
+6. **AI** inapokea matokeo na kuunda jibu la asili
+7. **Wewe** unapokea: "Jumla ya 5 na 3 ni 8"
+
+## Hatua Zifuatazo
+
+Kwa mifano zaidi, angalia [Sura ya 04: Sampuli za vitendo](../../README.md)
 
 **Kanusho**:  
 Hati hii imetafsiriwa kwa kutumia huduma ya kutafsiri ya AI [Co-op Translator](https://github.com/Azure/co-op-translator). Ingawa tunajitahidi kuhakikisha usahihi, tafadhali fahamu kuwa tafsiri za kiotomatiki zinaweza kuwa na makosa au kutokuwa sahihi. Hati ya asili katika lugha yake ya awali inapaswa kuzingatiwa kama chanzo cha mamlaka. Kwa taarifa muhimu, tafsiri ya kitaalamu ya binadamu inapendekezwa. Hatutawajibika kwa kutoelewana au tafsiri zisizo sahihi zinazotokana na matumizi ya tafsiri hii.

@@ -1,215 +1,300 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "a66dad62cdb2e141f05086feaf1a4a39",
-  "translation_date": "2025-07-21T19:49:42+00:00",
+  "original_hash": "2284c54d2a98090a37df0dbef1633ebf",
+  "translation_date": "2025-07-25T11:52:22+00:00",
   "source_file": "04-PracticalSamples/foundrylocal/README.md",
   "language_code": "vi"
 }
 -->
-# Ứng Dụng Dòng Lệnh Foundry Local
-
->**Lưu ý**: Chương này bao gồm một [**Hướng dẫn**](./TUTORIAL.md) giúp bạn chạy các mẫu hoàn chỉnh.
-
-Một ứng dụng dòng lệnh Spring Boot đơn giản minh họa cách kết nối với Foundry Local bằng OpenAI Java SDK.
-
-## Bạn Sẽ Học Được Gì
-
-- Cách tích hợp Foundry Local với các ứng dụng Spring Boot bằng OpenAI Java SDK
-- Các phương pháp tốt nhất để phát triển và kiểm tra AI cục bộ
+# Hướng Dẫn Sử Dụng Foundry Local Với Spring Boot
 
 ## Mục Lục
 
-- [Bạn Sẽ Học Được Gì](../../../../04-PracticalSamples/foundrylocal)
 - [Yêu Cầu Trước](../../../../04-PracticalSamples/foundrylocal)
-  - [Cài Đặt Foundry Local](../../../../04-PracticalSamples/foundrylocal)
-  - [Xác Minh](../../../../04-PracticalSamples/foundrylocal)
-- [Cấu Hình](../../../../04-PracticalSamples/foundrylocal)
-- [Bắt Đầu Nhanh](../../../../04-PracticalSamples/foundrylocal)
-- [Ứng Dụng Làm Gì](../../../../04-PracticalSamples/foundrylocal)
-- [Kết Quả Mẫu](../../../../04-PracticalSamples/foundrylocal)
-- [Kiến Trúc](../../../../04-PracticalSamples/foundrylocal)
-- [Điểm Nổi Bật Trong Mã](../../../../04-PracticalSamples/foundrylocal)
-  - [Tích Hợp OpenAI Java SDK](../../../../04-PracticalSamples/foundrylocal)
-  - [API Hoàn Thành Hội Thoại](../../../../04-PracticalSamples/foundrylocal)
-- [Khắc Phục Sự Cố](../../../../04-PracticalSamples/foundrylocal)
+- [Tổng Quan Dự Án](../../../../04-PracticalSamples/foundrylocal)
+- [Hiểu Rõ Mã Nguồn](../../../../04-PracticalSamples/foundrylocal)
+  - [1. Cấu Hình Ứng Dụng (application.properties)](../../../../04-PracticalSamples/foundrylocal)
+  - [2. Lớp Ứng Dụng Chính (Application.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [3. Tầng Dịch Vụ AI (FoundryLocalService.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [4. Các Phụ Thuộc Dự Án (pom.xml)](../../../../04-PracticalSamples/foundrylocal)
+- [Cách Các Thành Phần Hoạt Động Cùng Nhau](../../../../04-PracticalSamples/foundrylocal)
+- [Cài Đặt Foundry Local](../../../../04-PracticalSamples/foundrylocal)
+- [Chạy Ứng Dụng](../../../../04-PracticalSamples/foundrylocal)
+- [Kết Quả Mong Đợi](../../../../04-PracticalSamples/foundrylocal)
+- [Bước Tiếp Theo](../../../../04-PracticalSamples/foundrylocal)
+- [Xử Lý Sự Cố](../../../../04-PracticalSamples/foundrylocal)
 
 ## Yêu Cầu Trước
 
-> **⚠️ Lưu ý**: Ứng dụng này **không chạy trong devcontainer được cung cấp** vì nó yêu cầu Foundry Local được cài đặt và chạy trên hệ thống máy chủ.
+Trước khi bắt đầu hướng dẫn này, hãy đảm bảo bạn đã:
 
-### Cài Đặt Foundry Local
+- Cài đặt **Java 21 hoặc cao hơn** trên hệ thống của bạn
+- Cài đặt **Maven 3.6+** để xây dựng dự án
+- Cài đặt và chạy **Foundry Local**
 
-Trước khi chạy ứng dụng này, bạn cần cài đặt và khởi động Foundry Local. Thực hiện các bước sau:
-
-1. **Đảm bảo hệ thống của bạn đáp ứng các yêu cầu**:
-   - **Hệ Điều Hành**: Windows 10 (x64), Windows 11 (x64/ARM), Windows Server 2025, hoặc macOS
-   - **Phần Cứng**: 
-     - Tối thiểu: 8GB RAM, 3GB dung lượng đĩa trống
-     - Khuyến nghị: 16GB RAM, 15GB dung lượng đĩa trống
-   - **Mạng**: Kết nối internet để tải xuống mô hình ban đầu (tùy chọn cho sử dụng ngoại tuyến)
-   - **Tăng Tốc (tùy chọn)**: GPU NVIDIA (dòng 2,000 hoặc mới hơn), GPU AMD (dòng 6,000 hoặc mới hơn), Qualcomm Snapdragon X Elite (8GB RAM trở lên), hoặc Apple silicon
-   - **Quyền**: Quyền quản trị để cài đặt phần mềm trên thiết bị của bạn
-
-2. **Cài đặt Foundry Local**:
-   
-   **Đối với Windows:**
-   ```bash
-   winget install Microsoft.FoundryLocal
-   ```
-   
-   **Đối với macOS:**
-   ```bash
-   brew tap microsoft/foundrylocal
-   brew install foundrylocal
-   ```
-   
-   Ngoài ra, bạn có thể tải xuống trình cài đặt từ [kho lưu trữ GitHub của Foundry Local](https://github.com/microsoft/Foundry-Local).
-
-3. **Khởi động mô hình đầu tiên của bạn**:
-
-   ```bash
-   foundry model run phi-3.5-mini
-   ```
-
-   Mô hình sẽ được tải xuống (có thể mất vài phút, tùy thuộc vào tốc độ internet của bạn) và sau đó chạy. Foundry Local tự động chọn biến thể mô hình tốt nhất cho hệ thống của bạn (CUDA cho GPU NVIDIA, phiên bản CPU nếu không có GPU).
-
-4. **Kiểm tra mô hình** bằng cách đặt câu hỏi trong cùng một terminal:
-
-   ```bash
-   Why is the sky blue?
-   ```
-
-   Bạn sẽ thấy một phản hồi từ mô hình Phi giải thích tại sao bầu trời có màu xanh.
-
-### Xác Minh
-
-Bạn có thể xác minh mọi thứ hoạt động đúng với các lệnh sau:
+### **Cài Đặt Foundry Local:**
 
 ```bash
-# List all available models
-foundry model list
+# Windows
+winget install Microsoft.FoundryLocal
 
-# Check the service status via REST API
-curl http://localhost:5273/v1/models
+# macOS (after installing)
+foundry model run phi-3.5-mini
 ```
 
-Bạn cũng có thể truy cập `http://localhost:5273` trong trình duyệt để xem giao diện web của Foundry Local.
+## Tổng Quan Dự Án
 
-## Cấu Hình
+Dự án này bao gồm bốn thành phần chính:
 
-Ứng dụng có thể được cấu hình thông qua `application.properties`:
+1. **Application.java** - Điểm khởi đầu chính của ứng dụng Spring Boot
+2. **FoundryLocalService.java** - Tầng dịch vụ xử lý giao tiếp AI
+3. **application.properties** - Cấu hình kết nối với Foundry Local
+4. **pom.xml** - Các phụ thuộc Maven và cấu hình dự án
 
-- `foundry.local.base-url` - URL cơ sở cho Foundry Local (mặc định: http://localhost:5273)
-- `foundry.local.model` - Mô hình AI để sử dụng (mặc định: Phi-3.5-mini-instruct-cuda-gpu)
+## Hiểu Rõ Mã Nguồn
 
-> **Lưu ý**: Tên mô hình trong cấu hình phải khớp với biến thể cụ thể mà Foundry Local đã tải xuống cho hệ thống của bạn. Khi bạn chạy `foundry model run phi-3.5-mini`, Foundry Local tự động chọn và tải xuống biến thể tốt nhất (CUDA cho GPU NVIDIA, phiên bản CPU nếu không có GPU). Sử dụng `foundry model list` để xem tên mô hình chính xác có sẵn trong phiên bản cục bộ của bạn.
+### 1. Cấu Hình Ứng Dụng (application.properties)
 
-## Bắt Đầu Nhanh
+**Tệp:** `src/main/resources/application.properties`
 
-### 1. Điều hướng đến thư mục ứng dụng Foundry Local
-```bash
-cd Generative-AI-for-beginners-java/04-PracticalSamples/foundrylocal
+```properties
+foundry.local.base-url=http://localhost:5273
+foundry.local.model=Phi-3.5-mini-instruct-cuda-gpu
 ```
 
-### 2. Chạy Ứng Dụng
+**Chức năng:**
+- **base-url**: Xác định nơi Foundry Local đang chạy (cổng mặc định 5273)
+- **model**: Đặt tên mô hình AI để sử dụng cho việc tạo văn bản
 
-```bash
-mvn spring-boot:run
+**Khái niệm chính:** Spring Boot tự động tải các thuộc tính này và làm cho chúng có sẵn cho ứng dụng của bạn thông qua `@Value`.
+
+### 2. Lớp Ứng Dụng Chính (Application.java)
+
+**Tệp:** `src/main/java/com/example/Application.java`
+
+```java
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication app = new SpringApplication(Application.class);
+        app.setWebApplicationType(WebApplicationType.NONE);  // No web server needed
+        app.run(args);
+    }
 ```
 
-Hoặc xây dựng và chạy tệp JAR:
+**Chức năng:**
+- `@SpringBootApplication` kích hoạt cấu hình tự động của Spring Boot
+- `WebApplicationType.NONE` cho Spring biết đây là ứng dụng dòng lệnh, không phải máy chủ web
+- Phương thức chính khởi động ứng dụng Spring
 
-```bash
-mvn clean package
-java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+**Trình Chạy Demo:**
+```java
+@Bean
+public CommandLineRunner foundryLocalRunner(FoundryLocalService foundryLocalService) {
+    return args -> {
+        System.out.println("=== Foundry Local Demo ===");
+        
+        String testMessage = "Hello! Can you tell me what you are and what model you're running?";
+        System.out.println("Sending message: " + testMessage);
+        
+        String response = foundryLocalService.chat(testMessage);
+        System.out.println("Response from Foundry Local:");
+        System.out.println(response);
+    };
+}
 ```
 
-### Phụ Thuộc
+**Chức năng:**
+- `@Bean` tạo một thành phần được Spring quản lý
+- `CommandLineRunner` chạy mã sau khi Spring Boot khởi động
+- `foundryLocalService` được tự động tiêm bởi Spring (tiêm phụ thuộc)
+- Gửi một tin nhắn thử nghiệm đến AI và hiển thị phản hồi
 
-Ứng dụng này sử dụng OpenAI Java SDK để giao tiếp với Foundry Local. Phụ thuộc chính là:
+### 3. Tầng Dịch Vụ AI (FoundryLocalService.java)
+
+**Tệp:** `src/main/java/com/example/FoundryLocalService.java`
+
+#### Tiêm Cấu Hình:
+```java
+@Service
+public class FoundryLocalService {
+    
+    @Value("${foundry.local.base-url:http://localhost:5273}")
+    private String baseUrl;
+    
+    @Value("${foundry.local.model:Phi-3.5-mini-instruct-cuda-gpu}")
+    private String model;
+```
+
+**Chức năng:**
+- `@Service` cho Spring biết lớp này cung cấp logic nghiệp vụ
+- `@Value` tiêm các giá trị cấu hình từ application.properties
+- Cú pháp `:default-value` cung cấp giá trị dự phòng nếu thuộc tính không được đặt
+
+#### Khởi Tạo Client:
+```java
+@PostConstruct
+public void init() {
+    this.openAIClient = OpenAIOkHttpClient.builder()
+            .baseUrl(baseUrl + "/v1")        // Foundry Local uses OpenAI-compatible API
+            .apiKey("unused")                 // Local server doesn't need real API key
+            .build();
+}
+```
+
+**Chức năng:**
+- `@PostConstruct` chạy phương thức này sau khi Spring tạo dịch vụ
+- Tạo một client OpenAI trỏ đến phiên bản Foundry Local của bạn
+- Đường dẫn `/v1` là bắt buộc để tương thích với API OpenAI
+- API key là "unused" vì phát triển cục bộ không yêu cầu xác thực
+
+#### Phương Thức Chat:
+```java
+public String chat(String message) {
+    try {
+        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
+                .model(model)                    // Which AI model to use
+                .addUserMessage(message)         // Your question/prompt
+                .maxCompletionTokens(150)        // Limit response length
+                .temperature(0.7)                // Control creativity (0.0-1.0)
+                .build();
+        
+        ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
+        
+        // Extract the AI's response from the API result
+        if (chatCompletion.choices() != null && !chatCompletion.choices().isEmpty()) {
+            return chatCompletion.choices().get(0).message().content().orElse("No response found");
+        }
+        
+        return "No response content found";
+    } catch (Exception e) {
+        throw new RuntimeException("Error calling chat completion: " + e.getMessage(), e);
+    }
+}
+```
+
+**Chức năng:**
+- **ChatCompletionCreateParams**: Cấu hình yêu cầu AI
+  - `model`: Xác định mô hình AI để sử dụng
+  - `addUserMessage`: Thêm tin nhắn của bạn vào cuộc trò chuyện
+  - `maxCompletionTokens`: Giới hạn độ dài phản hồi (tiết kiệm tài nguyên)
+  - `temperature`: Điều chỉnh độ ngẫu nhiên (0.0 = xác định, 1.0 = sáng tạo)
+- **Gọi API**: Gửi yêu cầu đến Foundry Local
+- **Xử Lý Phản Hồi**: Trích xuất phản hồi văn bản của AI một cách an toàn
+- **Xử Lý Lỗi**: Bao bọc ngoại lệ với thông báo lỗi hữu ích
+
+### 4. Các Phụ Thuộc Dự Án (pom.xml)
+
+**Các Phụ Thuộc Chính:**
 
 ```xml
+<!-- Spring Boot - Application framework -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+    <version>${spring-boot.version}</version>
+</dependency>
+
+<!-- OpenAI Java SDK - For AI API calls -->
 <dependency>
     <groupId>com.openai</groupId>
     <artifactId>openai-java</artifactId>
     <version>2.12.0</version>
 </dependency>
+
+<!-- Jackson - JSON processing -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.17.0</version>
+</dependency>
 ```
 
-Ứng dụng được cấu hình sẵn để kết nối với Foundry Local chạy trên cổng mặc định.
+**Chức năng:**
+- **spring-boot-starter**: Cung cấp chức năng cốt lõi của Spring Boot
+- **openai-java**: SDK Java chính thức của OpenAI để giao tiếp API
+- **jackson-databind**: Xử lý tuần tự hóa/giải tuần tự JSON cho các cuộc gọi API
 
-## Ứng Dụng Làm Gì
+## Cách Các Thành Phần Hoạt Động Cùng Nhau
 
-Khi bạn chạy ứng dụng:
+Dưới đây là luồng hoàn chỉnh khi bạn chạy ứng dụng:
 
-1. **Khởi động** dưới dạng một ứng dụng dòng lệnh (không có máy chủ web)
-2. **Tự động gửi** một tin nhắn kiểm tra: "Hello! Can you tell me what you are and what model you're running?"
-3. **Hiển thị phản hồi** từ Foundry Local trong console
-4. **Thoát sạch sẽ** sau khi hoàn thành demo
+1. **Khởi Động**: Spring Boot khởi động và đọc `application.properties`
+2. **Tạo Dịch Vụ**: Spring tạo `FoundryLocalService` và tiêm các giá trị cấu hình
+3. **Thiết Lập Client**: `@PostConstruct` khởi tạo client OpenAI để kết nối với Foundry Local
+4. **Thực Thi Demo**: `CommandLineRunner` thực thi sau khi khởi động
+5. **Gọi AI**: Demo gọi `foundryLocalService.chat()` với một tin nhắn thử nghiệm
+6. **Yêu Cầu API**: Dịch vụ xây dựng và gửi yêu cầu tương thích OpenAI đến Foundry Local
+7. **Xử Lý Phản Hồi**: Dịch vụ trích xuất và trả về phản hồi của AI
+8. **Hiển Thị**: Ứng dụng in phản hồi và thoát
 
-## Kết Quả Mẫu
+## Cài Đặt Foundry Local
+
+Để cài đặt Foundry Local, hãy làm theo các bước sau:
+
+1. **Cài Đặt Foundry Local** theo hướng dẫn trong phần [Yêu Cầu Trước](../../../../04-PracticalSamples/foundrylocal).
+2. **Tải xuống mô hình AI** bạn muốn sử dụng, ví dụ, `phi-3.5-mini`, với lệnh sau:
+   ```bash
+   foundry model run phi-3.5-mini
+   ```
+3. **Cấu hình tệp application.properties** để phù hợp với cài đặt Foundry Local của bạn, đặc biệt nếu bạn sử dụng cổng hoặc mô hình khác.
+
+## Chạy Ứng Dụng
+
+### Bước 1: Khởi Động Foundry Local
+```bash
+foundry model run phi-3.5-mini
+```
+
+### Bước 2: Xây Dựng và Chạy Ứng Dụng
+```bash
+mvn clean package
+java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+```
+
+## Kết Quả Mong Đợi
 
 ```
 === Foundry Local Demo ===
 Calling Foundry Local service...
 Sending message: Hello! Can you tell me what you are and what model you're running?
 Response from Foundry Local:
-Hello! I'm Phi, an AI language model created by Microsoft. I don't have a physical form or a specific hardware model like a smartphone or a computer. I exist purely in software, and I operate on Microsoft's infrastructure...
+Hello! I'm Phi-3.5, a small language model created by Microsoft. I'm currently running 
+as the Phi-3.5-mini-instruct model, which is designed to be helpful, harmless, and honest 
+in my interactions. I can assist with a wide variety of tasks including answering 
+questions, helping with analysis, creative writing, coding, and general conversation. 
+Is there something specific you'd like help with today?
 =========================
 ```
 
-## Kiến Trúc
+## Bước Tiếp Theo
 
-- **Application.java** - Ứng dụng Spring Boot chính với CommandLineRunner
-- **FoundryLocalService.java** - Dịch vụ sử dụng OpenAI Java SDK để giao tiếp với Foundry Local
-- Sử dụng **OpenAI Java SDK** để gọi API an toàn kiểu
-- Tự động tuần tự hóa/giải tuần tự hóa JSON được xử lý bởi SDK
-- Cấu hình sạch sẽ sử dụng các chú thích `@Value` và `@PostConstruct` của Spring
+Để biết thêm ví dụ, xem [Chương 04: Các mẫu thực tế](../README.md)
 
-## Điểm Nổi Bật Trong Mã
+## Xử Lý Sự Cố
 
-### Tích Hợp OpenAI Java SDK
+### Các Vấn Đề Thường Gặp
 
-Ứng dụng sử dụng OpenAI Java SDK để tạo một client được cấu hình cho Foundry Local:
+**"Connection refused" hoặc "Service unavailable"**
+- Đảm bảo Foundry Local đang chạy: `foundry model list`
+- Xác minh dịch vụ đang ở cổng 5273: Kiểm tra `application.properties`
+- Thử khởi động lại Foundry Local: `foundry model run phi-3.5-mini`
 
-```java
-@PostConstruct
-public void init() {
-    this.openAIClient = OpenAIOkHttpClient.builder()
-            .baseUrl(baseUrl + "/v1")
-            .apiKey("unused") // Local server doesn't require real API key
-            .build();
-}
-```
+**Lỗi "Model not found"**
+- Kiểm tra các mô hình có sẵn: `foundry model list`
+- Cập nhật tên mô hình trong `application.properties` để khớp chính xác
+- Tải xuống mô hình nếu cần: `foundry model run phi-3.5-mini`
 
-### API Hoàn Thành Hội Thoại
+**Lỗi biên dịch Maven**
+- Đảm bảo Java 21 hoặc cao hơn: `java -version`
+- Dọn dẹp và xây dựng lại: `mvn clean compile`
+- Kiểm tra kết nối internet để tải xuống phụ thuộc
 
-Thực hiện các yêu cầu hoàn thành hội thoại đơn giản và an toàn kiểu:
-
-```java
-ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-        .model(model)
-        .addUserMessage(message)
-        .maxCompletionTokens(150)
-        .temperature(0.7)
-        .build();
-
-ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
-```
-
-## Khắc Phục Sự Cố
-
-Nếu bạn thấy lỗi kết nối:
-1. Xác minh Foundry Local đang chạy trên `http://localhost:5273`
-2. Kiểm tra rằng một biến thể mô hình Phi-3.5-mini có sẵn với `foundry model list`
-3. Đảm bảo tên mô hình trong `application.properties` khớp với tên mô hình chính xác hiển thị trong danh sách
-4. Đảm bảo không có tường lửa chặn kết nối
-
-Các vấn đề thường gặp:
-- **Không tìm thấy mô hình**: Chạy `foundry model run phi-3.5-mini` để tải xuống và khởi động mô hình
-- **Dịch vụ không chạy**: Dịch vụ Foundry Local có thể đã dừng; khởi động lại nó bằng lệnh chạy mô hình
-- **Tên mô hình sai**: Sử dụng `foundry model list` để xem các mô hình có sẵn và cập nhật cấu hình của bạn cho phù hợp
+**Ứng dụng khởi động nhưng không có đầu ra**
+- Xác minh Foundry Local đang phản hồi: Mở trình duyệt đến `http://localhost:5273`
+- Kiểm tra nhật ký ứng dụng để tìm thông báo lỗi cụ thể
+- Đảm bảo mô hình đã được tải đầy đủ và sẵn sàng
 
 **Tuyên bố miễn trừ trách nhiệm**:  
-Tài liệu này đã được dịch bằng dịch vụ dịch thuật AI [Co-op Translator](https://github.com/Azure/co-op-translator). Mặc dù chúng tôi cố gắng đảm bảo độ chính xác, xin lưu ý rằng các bản dịch tự động có thể chứa lỗi hoặc không chính xác. Tài liệu gốc bằng ngôn ngữ bản địa nên được coi là nguồn thông tin chính thức. Đối với các thông tin quan trọng, khuyến nghị sử dụng dịch vụ dịch thuật chuyên nghiệp bởi con người. Chúng tôi không chịu trách nhiệm cho bất kỳ sự hiểu lầm hoặc diễn giải sai nào phát sinh từ việc sử dụng bản dịch này.
+Tài liệu này đã được dịch bằng dịch vụ dịch thuật AI [Co-op Translator](https://github.com/Azure/co-op-translator). Mặc dù chúng tôi cố gắng đảm bảo độ chính xác, xin lưu ý rằng các bản dịch tự động có thể chứa lỗi hoặc không chính xác. Tài liệu gốc bằng ngôn ngữ bản địa nên được coi là nguồn thông tin chính thức. Đối với các thông tin quan trọng, chúng tôi khuyến nghị sử dụng dịch vụ dịch thuật chuyên nghiệp từ con người. Chúng tôi không chịu trách nhiệm cho bất kỳ sự hiểu lầm hoặc diễn giải sai nào phát sinh từ việc sử dụng bản dịch này.

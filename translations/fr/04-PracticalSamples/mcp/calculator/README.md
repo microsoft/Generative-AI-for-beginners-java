@@ -1,137 +1,313 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "7bf9a4a832911269a8bd0decb97ff36c",
-  "translation_date": "2025-07-21T16:43:29+00:00",
+  "original_hash": "8c6c7e9008b114540677f7a65aa9ddad",
+  "translation_date": "2025-07-25T10:35:06+00:00",
   "source_file": "04-PracticalSamples/mcp/calculator/README.md",
   "language_code": "fr"
 }
 -->
-# Service de Calculatrice MCP
+# Tutoriel du Calculateur MCP pour Débutants
 
->**Note** : Ce chapitre inclut un [**Tutoriel**](./TUTORIAL.md) qui vous guide à travers l'exécution des exemples terminés.
+## Table des Matières
 
-Bienvenue dans votre première expérience pratique avec le **Model Context Protocol (MCP)** ! Dans les chapitres précédents, vous avez appris les bases de l'IA générative et configuré votre environnement de développement. Il est maintenant temps de construire quelque chose de concret.
-
-Ce service de calculatrice démontre comment les modèles d'IA peuvent interagir de manière sécurisée avec des outils externes en utilisant MCP. Plutôt que de se fier aux capacités parfois peu fiables des modèles d'IA en mathématiques, nous allons montrer comment construire un système robuste où l'IA peut appeler des services spécialisés pour des calculs précis.
-
-## Table des matières
-
-- [Ce que vous allez apprendre](../../../../../04-PracticalSamples/mcp/calculator)
+- [Ce que Vous Allez Apprendre](../../../../../04-PracticalSamples/mcp/calculator)
 - [Prérequis](../../../../../04-PracticalSamples/mcp/calculator)
-- [Concepts clés](../../../../../04-PracticalSamples/mcp/calculator)
-- [Démarrage rapide](../../../../../04-PracticalSamples/mcp/calculator)
-- [Opérations disponibles de la calculatrice](../../../../../04-PracticalSamples/mcp/calculator)
-- [Clients de test](../../../../../04-PracticalSamples/mcp/calculator)
-  - [1. Client MCP direct (SDKClient)](../../../../../04-PracticalSamples/mcp/calculator)
-  - [2. Client alimenté par l'IA (LangChain4jClient)](../../../../../04-PracticalSamples/mcp/calculator)
-- [Inspecteur MCP (Interface Web)](../../../../../04-PracticalSamples/mcp/calculator)
-  - [Instructions étape par étape](../../../../../04-PracticalSamples/mcp/calculator)
+- [Comprendre la Structure du Projet](../../../../../04-PracticalSamples/mcp/calculator)
+- [Explication des Composants Principaux](../../../../../04-PracticalSamples/mcp/calculator)
+  - [1. Application Principale](../../../../../04-PracticalSamples/mcp/calculator)
+  - [2. Service de Calculatrice](../../../../../04-PracticalSamples/mcp/calculator)
+  - [3. Client MCP Direct](../../../../../04-PracticalSamples/mcp/calculator)
+  - [4. Client Alimenté par l'IA](../../../../../04-PracticalSamples/mcp/calculator)
+- [Exécution des Exemples](../../../../../04-PracticalSamples/mcp/calculator)
+- [Comment Tout Fonctionne Ensemble](../../../../../04-PracticalSamples/mcp/calculator)
+- [Prochaines Étapes](../../../../../04-PracticalSamples/mcp/calculator)
 
-## Ce que vous allez apprendre
+## Ce que Vous Allez Apprendre
 
-En travaillant sur cet exemple, vous comprendrez :
-- Comment créer des services compatibles MCP avec Spring Boot
-- La différence entre la communication directe via le protocole et l'interaction alimentée par l'IA
-- Comment les modèles d'IA décident quand et comment utiliser des outils externes
-- Les meilleures pratiques pour construire des applications d'IA intégrant des outils
+Ce tutoriel explique comment créer un service de calculatrice en utilisant le protocole Model Context Protocol (MCP). Vous comprendrez :
 
-Parfait pour les débutants qui apprennent les concepts MCP et sont prêts à construire leur première intégration d'outils d'IA !
+- Comment créer un service que l'IA peut utiliser comme outil
+- Comment configurer une communication directe avec les services MCP
+- Comment les modèles d'IA peuvent choisir automatiquement quels outils utiliser
+- La différence entre les appels directs au protocole et les interactions assistées par l'IA
 
 ## Prérequis
 
-- Java 21+
-- Maven 3.6+
-- **Jeton GitHub** : Nécessaire pour le client alimenté par l'IA. Si vous ne l'avez pas encore configuré, consultez [Chapitre 2 : Configuration de votre environnement de développement](../../../02-SetupDevEnvironment/README.md) pour les instructions.
+Avant de commencer, assurez-vous d'avoir :
+- Java 21 ou une version supérieure installée
+- Maven pour la gestion des dépendances
+- Un compte GitHub avec un jeton d'accès personnel (PAT)
+- Une compréhension de base de Java et Spring Boot
 
-## Concepts clés
+## Comprendre la Structure du Projet
 
-**Model Context Protocol (MCP)** est une méthode standardisée permettant aux applications d'IA de se connecter de manière sécurisée à des outils externes. Pensez-y comme un "pont" qui permet aux modèles d'IA d'utiliser des services externes comme notre calculatrice. Plutôt que de tenter de faire les calculs eux-mêmes (ce qui peut être peu fiable), les modèles d'IA peuvent appeler notre service de calculatrice pour obtenir des résultats précis. MCP garantit que cette communication se fait de manière sûre et cohérente.
+Le projet de calculatrice contient plusieurs fichiers importants :
 
-**Server-Sent Events (SSE)** permet une communication en temps réel entre le serveur et les clients. Contrairement aux requêtes HTTP traditionnelles où vous demandez et attendez une réponse, SSE permet au serveur d'envoyer continuellement des mises à jour au client. Cela est idéal pour les applications d'IA où les réponses peuvent être diffusées ou nécessiter du temps pour être traitées.
-
-**Outils d'IA et Appels de Fonction** permettent aux modèles d'IA de choisir et d'utiliser automatiquement des fonctions externes (comme les opérations de calculatrice) en fonction des demandes des utilisateurs. Lorsque vous demandez "Quel est le résultat de 15 + 27 ?", le modèle d'IA comprend que vous voulez une addition, appelle automatiquement notre outil `add` avec les bons paramètres (15, 27), et retourne le résultat en langage naturel. L'IA agit comme un coordinateur intelligent qui sait quand et comment utiliser chaque outil.
-
-## Démarrage rapide
-
-### 1. Accédez au répertoire de l'application calculatrice
-```bash
-cd Generative-AI-for-beginners-java/04-PracticalSamples/mcp/calculator
+```
+calculator/
+├── src/main/java/com/microsoft/mcp/sample/server/
+│   ├── McpServerApplication.java          # Main Spring Boot app
+│   └── service/CalculatorService.java     # Calculator operations
+└── src/test/java/com/microsoft/mcp/sample/client/
+    ├── SDKClient.java                     # Direct MCP communication
+    ├── LangChain4jClient.java            # AI-powered client
+    └── Bot.java                          # Simple chat interface
 ```
 
-### 2. Construisez et exécutez
-```bash
-mvn clean install -DskipTests
-java -jar target/calculator-server-0.0.1-SNAPSHOT.jar
+## Explication des Composants Principaux
+
+### 1. Application Principale
+
+**Fichier :** `McpServerApplication.java`
+
+C'est le point d'entrée de notre service de calculatrice. Il s'agit d'une application Spring Boot standard avec une addition spéciale :
+
+```java
+@SpringBootApplication
+public class McpServerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(McpServerApplication.class, args);
+    }
+    
+    @Bean
+    public ToolCallbackProvider calculatorTools(CalculatorService calculator) {
+        return MethodToolCallbackProvider.builder().toolObjects(calculator).build();
+    }
+}
 ```
 
-### 3. Testez avec les clients
-- **SDKClient** : Interaction directe avec le protocole MCP
-- **LangChain4jClient** : Interaction en langage naturel alimentée par l'IA (nécessite un jeton GitHub)
+**Ce que cela fait :**
+- Démarre un serveur web Spring Boot sur le port 8080
+- Crée un `ToolCallbackProvider` qui rend nos méthodes de calculatrice disponibles en tant qu'outils MCP
+- L'annotation `@Bean` indique à Spring de gérer cela comme un composant utilisable par d'autres parties
 
-## Opérations disponibles de la calculatrice
+### 2. Service de Calculatrice
 
-- `add(a, b)`, `subtract(a, b)`, `multiply(a, b)`, `divide(a, b)`
-- `power(base, exponent)`, `squareRoot(number)`, `absolute(number)`
-- `modulus(a, b)`, `help()`
+**Fichier :** `CalculatorService.java`
 
-## Clients de test
+C'est ici que tous les calculs sont effectués. Chaque méthode est marquée avec `@Tool` pour la rendre accessible via MCP :
 
-### 1. Client MCP direct (SDKClient)
-Teste la communication brute via le protocole MCP. Exécutez avec :
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient" -Dexec.classpathScope=test
+```java
+@Service
+public class CalculatorService {
+
+    @Tool(description = "Add two numbers together")
+    public String add(double a, double b) {
+        double result = a + b;
+        return formatResult(a, "+", b, result);
+    }
+
+    @Tool(description = "Subtract the second number from the first number")
+    public String subtract(double a, double b) {
+        double result = a - b;
+        return formatResult(a, "-", b, result);
+    }
+    
+    // More calculator operations...
+    
+    private String formatResult(double a, String operator, double b, double result) {
+        return String.format("%.2f %s %.2f = %.2f", a, operator, b, result);
+    }
+}
 ```
 
-### 2. Client alimenté par l'IA (LangChain4jClient)
-Démontre l'interaction en langage naturel avec les modèles GitHub. Nécessite un jeton GitHub (voir [Prérequis](../../../../../04-PracticalSamples/mcp/calculator)).
+**Caractéristiques principales :**
 
-**Exécutez :**
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient" -Dexec.classpathScope=test
+1. **Annotation `@Tool` :** Cela indique à MCP que cette méthode peut être appelée par des clients externes
+2. **Descriptions Claires :** Chaque outil a une description qui aide les modèles d'IA à comprendre quand l'utiliser
+3. **Format de Retour Cohérent :** Toutes les opérations renvoient des chaînes lisibles comme "5.00 + 3.00 = 8.00"
+4. **Gestion des Erreurs :** La division par zéro et les racines carrées négatives renvoient des messages d'erreur
+
+**Opérations Disponibles :**
+- `add(a, b)` - Additionne deux nombres
+- `subtract(a, b)` - Soustrait le second du premier
+- `multiply(a, b)` - Multiplie deux nombres
+- `divide(a, b)` - Divise le premier par le second (avec vérification de zéro)
+- `power(base, exponent)` - Élève la base à la puissance de l'exposant
+- `squareRoot(number)` - Calcule la racine carrée (avec vérification des négatifs)
+- `modulus(a, b)` - Renvoie le reste de la division
+- `absolute(number)` - Renvoie la valeur absolue
+- `help()` - Renvoie des informations sur toutes les opérations
+
+### 3. Client MCP Direct
+
+**Fichier :** `SDKClient.java`
+
+Ce client communique directement avec le serveur MCP sans utiliser l'IA. Il appelle manuellement des fonctions spécifiques de la calculatrice :
+
+```java
+public class SDKClient {
+    
+    public static void main(String[] args) {
+        var transport = new WebFluxSseClientTransport(
+            WebClient.builder().baseUrl("http://localhost:8080")
+        );
+        new SDKClient(transport).run();
+    }
+    
+    public void run() {
+        var client = McpClient.sync(this.transport).build();
+        client.initialize();
+        
+        // List available tools
+        ListToolsResult toolsList = client.listTools();
+        System.out.println("Available Tools = " + toolsList);
+        
+        // Call specific calculator functions
+        CallToolResult resultAdd = client.callTool(
+            new CallToolRequest("add", Map.of("a", 5.0, "b", 3.0))
+        );
+        System.out.println("Add Result = " + resultAdd);
+        
+        CallToolResult resultSqrt = client.callTool(
+            new CallToolRequest("squareRoot", Map.of("number", 16.0))
+        );
+        System.out.println("Square Root Result = " + resultSqrt);
+        
+        client.closeGracefully();
+    }
+}
 ```
 
-## Inspecteur MCP (Interface Web)
+**Ce que cela fait :**
+1. **Se Connecte** au serveur de calculatrice à `http://localhost:8080`
+2. **Liste** tous les outils disponibles (nos fonctions de calculatrice)
+3. **Appelle** des fonctions spécifiques avec des paramètres exacts
+4. **Affiche** directement les résultats
 
-L'Inspecteur MCP fournit une interface web visuelle pour tester votre service MCP sans écrire de code. Parfait pour les débutants qui souhaitent comprendre le fonctionnement de MCP !
+**Quand l'utiliser :** Lorsque vous savez exactement quel calcul vous voulez effectuer et que vous souhaitez l'appeler de manière programmatique.
 
-### Instructions étape par étape :
+### 4. Client Alimenté par l'IA
 
-1. **Démarrez le serveur de calculatrice** (si ce n'est pas déjà fait) :
-   ```bash
-   java -jar target/calculator-server-0.0.1-SNAPSHOT.jar
-   ```
+**Fichier :** `LangChain4jClient.java`
 
-2. **Installez et exécutez l'Inspecteur MCP** dans un nouveau terminal :
-   ```bash
-   npx @modelcontextprotocol/inspector
-   ```
+Ce client utilise un modèle d'IA (GPT-4o-mini) qui peut décider automatiquement quels outils de calculatrice utiliser :
 
-3. **Ouvrez l'interface web** :
-   - Recherchez un message comme "Inspecteur en cours d'exécution à http://localhost:6274"
-   - Ouvrez cette URL dans votre navigateur web
+```java
+public class LangChain4jClient {
+    
+    public static void main(String[] args) throws Exception {
+        // Set up the AI model (using GitHub Models)
+        ChatLanguageModel model = OpenAiOfficialChatModel.builder()
+                .isGitHubModels(true)
+                .apiKey(System.getenv("GITHUB_TOKEN"))
+                .modelName("gpt-4o-mini")
+                .build();
 
-4. **Connectez-vous à votre service de calculatrice** :
-   - Dans l'interface web, définissez le type de transport sur "SSE"
-   - Définissez l'URL sur : `http://localhost:8080/sse`
-   - Cliquez sur le bouton "Connecter"
+        // Connect to our calculator MCP server
+        McpTransport transport = new HttpMcpTransport.Builder()
+                .sseUrl("http://localhost:8080/sse")
+                .logRequests(true)  // Shows what the AI is doing
+                .logResponses(true)
+                .build();
 
-5. **Explorez les outils disponibles** :
-   - Cliquez sur "Lister les outils" pour voir toutes les opérations de la calculatrice
-   - Vous verrez des fonctions comme `add`, `subtract`, `multiply`, etc.
+        McpClient mcpClient = new DefaultMcpClient.Builder()
+                .transport(transport)
+                .build();
 
-6. **Testez une opération de calculatrice** :
-   - Sélectionnez un outil (par exemple, "add")
-   - Entrez les paramètres (par exemple, `a: 15`, `b: 27`)
-   - Cliquez sur "Exécuter l'outil"
-   - Observez le résultat retourné par votre service MCP !
+        // Give the AI access to our calculator tools
+        ToolProvider toolProvider = McpToolProvider.builder()
+                .mcpClients(List.of(mcpClient))
+                .build();
 
-Cette approche visuelle vous aide à comprendre exactement comment fonctionne la communication MCP avant de construire vos propres clients.
+        // Create an AI bot that can use our calculator
+        Bot bot = AiServices.builder(Bot.class)
+                .chatLanguageModel(model)
+                .toolProvider(toolProvider)
+                .build();
 
-![npx inspector](../../../../../translated_images/tool.214c70103694335c4cfdc2d624373dfce4b0162f6aea089ac1da9051fb563b7f.fr.png)
+        // Now we can ask the AI to do calculations in natural language
+        String response = bot.chat("Calculate the sum of 24.5 and 17.3 using the calculator service");
+        System.out.println(response);
 
----
-**Référence :** [Documentation MCP Server Boot Starter](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-server-boot-starter-docs.html)
+        response = bot.chat("What's the square root of 144?");
+        System.out.println(response);
+    }
+}
+```
+
+**Ce que cela fait :**
+1. **Crée** une connexion au modèle d'IA en utilisant votre jeton GitHub
+2. **Connecte** l'IA à notre serveur MCP de calculatrice
+3. **Donne** à l'IA accès à tous nos outils de calculatrice
+4. **Permet** des requêtes en langage naturel comme "Calcule la somme de 24,5 et 17,3"
+
+**L'IA fait automatiquement :**
+- Comprend que vous voulez additionner des nombres
+- Choisit l'outil `add`
+- Appelle `add(24.5, 17.3)`
+- Renvoie le résultat dans une réponse naturelle
+
+## Exécution des Exemples
+
+### Étape 1 : Démarrer le Serveur de Calculatrice
+
+D'abord, configurez votre jeton GitHub (nécessaire pour le client IA) :
+
+**Windows :**
+```cmd
+set GITHUB_TOKEN=your_github_token_here
+```
+
+**Linux/macOS :**
+```bash
+export GITHUB_TOKEN=your_github_token_here
+```
+
+Démarrez le serveur :
+```bash
+cd 04-PracticalSamples/mcp/calculator
+mvn spring-boot:run
+```
+
+Le serveur démarrera sur `http://localhost:8080`. Vous devriez voir :
+```
+Started McpServerApplication in X.XXX seconds
+```
+
+### Étape 2 : Tester avec le Client Direct
+
+Dans un nouveau terminal :
+```bash
+mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient"
+```
+
+Vous verrez une sortie comme :
+```
+Available Tools = [add, subtract, multiply, divide, power, squareRoot, modulus, absolute, help]
+Add Result = 5.00 + 3.00 = 8.00
+Square Root Result = √16.00 = 4.00
+```
+
+### Étape 3 : Tester avec le Client IA
+
+```bash
+mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient"
+```
+
+Vous verrez l'IA utiliser automatiquement les outils :
+```
+The sum of 24.5 and 17.3 is 41.8.
+The square root of 144 is 12.
+```
+
+## Comment Tout Fonctionne Ensemble
+
+Voici le flux complet lorsque vous demandez à l'IA "Combien font 5 + 3 ?" :
+
+1. **Vous** posez la question à l'IA en langage naturel
+2. **L'IA** analyse votre requête et comprend que vous voulez une addition
+3. **L'IA** appelle le serveur MCP : `add(5.0, 3.0)`
+4. **Le Service de Calculatrice** effectue : `5.0 + 3.0 = 8.0`
+5. **Le Service de Calculatrice** renvoie : `"5.00 + 3.00 = 8.00"`
+6. **L'IA** reçoit le résultat et le formate dans une réponse naturelle
+7. **Vous** recevez : "La somme de 5 et 3 est 8"
+
+## Prochaines Étapes
+
+Pour plus d'exemples, consultez [Chapitre 04 : Exemples pratiques](../../README.md)
 
 **Avertissement** :  
-Ce document a été traduit à l'aide du service de traduction automatique [Co-op Translator](https://github.com/Azure/co-op-translator). Bien que nous nous efforcions d'assurer l'exactitude, veuillez noter que les traductions automatisées peuvent contenir des erreurs ou des inexactitudes. Le document original dans sa langue d'origine doit être considéré comme la source faisant autorité. Pour des informations critiques, il est recommandé de recourir à une traduction professionnelle réalisée par un humain. Nous déclinons toute responsabilité en cas de malentendus ou d'interprétations erronées résultant de l'utilisation de cette traduction.
+Ce document a été traduit à l'aide du service de traduction automatique [Co-op Translator](https://github.com/Azure/co-op-translator). Bien que nous nous efforcions d'assurer l'exactitude, veuillez noter que les traductions automatisées peuvent contenir des erreurs ou des inexactitudes. Le document original dans sa langue d'origine doit être considéré comme la source faisant autorité. Pour des informations critiques, il est recommandé de recourir à une traduction professionnelle réalisée par un humain. Nous ne sommes pas responsables des malentendus ou des interprétations erronées résultant de l'utilisation de cette traduction.

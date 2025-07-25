@@ -1,19 +1,17 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "da1b6d87b8a73306b29f9a1bdd681221",
-  "translation_date": "2025-07-21T21:15:09+00:00",
+  "original_hash": "df269f529a172a0197ef28460bf1da9f",
+  "translation_date": "2025-07-25T12:19:52+00:00",
   "source_file": "04-PracticalSamples/README.md",
   "language_code": "hr"
 }
 -->
 # Praktične Primjene i Projekti
 
-> Napomena: Svaki primjer također uključuje **TUTORIAL.md** koji vas vodi kroz pokretanje aplikacije.
-
 ## Što ćete naučiti
-U ovom dijelu prikazat ćemo tri praktične aplikacije koje demonstriraju obrasce razvoja generativne umjetne inteligencije s Javom:
-- Kreiranje višemodalnog generatora priča o kućnim ljubimcima koji kombinira AI na strani klijenta i poslužitelja
+U ovom dijelu prikazat ćemo tri praktične primjene koje demonstriraju obrasce razvoja generativne umjetne inteligencije s Javom:
+- Izrada višemodalnog generatora priča o kućnim ljubimcima koji kombinira AI na strani klijenta i poslužitelja
 - Implementacija integracije lokalnog AI modela s Foundry Local Spring Boot demonstracijom
 - Razvoj usluge Model Context Protocol (MCP) s primjerom Kalkulatora
 
@@ -33,7 +31,7 @@ Ovo poglavlje prikazuje **primjere projekata** koji demonstriraju obrasce razvoj
 
 ### Foundry Local Spring Boot Demo
 
-**[Foundry Local Spring Boot Demo](foundrylocal/README.md)** demonstrira kako se integrirati s lokalnim AI modelima koristeći **OpenAI Java SDK**. Prikazuje povezivanje s modelom **Phi-3.5-mini** koji radi na Foundry Local, omogućujući pokretanje AI aplikacija bez oslanjanja na cloud usluge.
+**[Foundry Local Spring Boot Demo](foundrylocal/README.md)** demonstrira kako integrirati lokalne AI modele koristeći **OpenAI Java SDK**. Prikazuje povezivanje s modelom **Phi-3.5-mini** koji radi na Foundry Local, omogućujući pokretanje AI aplikacija bez oslanjanja na cloud usluge.
 
 ### Generator priča o kućnim ljubimcima
 
@@ -55,9 +53,9 @@ Ovi projekti su osmišljeni tako da se nadovezuju na koncepte iz prethodnih pogl
 
 **Čestitamo!** Uspješno ste:
 
-- **Kreirali višemodalna AI iskustva** kombinirajući AI obradu na strani klijenta i poslužitelja
+- **Stvorili višemodalna AI iskustva** kombinirajući AI obradu na strani klijenta i poslužitelja
 - **Implementirali integraciju lokalnih AI modela** koristeći moderne Java okvire i SDK-ove
-- **Razvili usluge Model Context Protocol-a** demonstrirajući obrasce integracije alata
+- **Razvili usluge Model Context Protocol-a** koje demonstriraju obrasce integracije alata
 
 ## Sljedeći koraci
 

@@ -1,215 +1,300 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "a66dad62cdb2e141f05086feaf1a4a39",
-  "translation_date": "2025-07-21T18:12:48+00:00",
+  "original_hash": "2284c54d2a98090a37df0dbef1633ebf",
+  "translation_date": "2025-07-25T10:49:16+00:00",
   "source_file": "04-PracticalSamples/foundrylocal/README.md",
   "language_code": "ur"
 }
 -->
-# فاؤنڈری لوکل کمانڈ لائن ایپلیکیشن
-
->**نوٹ**: یہ باب ایک [**ٹیوٹوریل**](./TUTORIAL.md) شامل کرتا ہے جو آپ کو مکمل نمونوں کو چلانے کے عمل سے گزارتا ہے۔
-
-ایک سادہ اسپرنگ بوٹ کمانڈ لائن ایپلیکیشن جو OpenAI جاوا SDK کا استعمال کرتے ہوئے فاؤنڈری لوکل سے جڑنے کا طریقہ دکھاتی ہے۔
-
-## آپ کیا سیکھیں گے
-
-- اسپرنگ بوٹ ایپلیکیشنز کے ساتھ OpenAI جاوا SDK کا استعمال کرتے ہوئے فاؤنڈری لوکل کو کیسے ضم کریں
-- مقامی AI کی ترقی اور ٹیسٹنگ کے بہترین طریقے
+# فاؤنڈری لوکل اسپرنگ بوٹ ٹیوٹوریل
 
 ## مواد کی فہرست
 
-- [آپ کیا سیکھیں گے](../../../../04-PracticalSamples/foundrylocal)
-- [پیشگی شرائط](../../../../04-PracticalSamples/foundrylocal)
-  - [فاؤنڈری لوکل کی تنصیب](../../../../04-PracticalSamples/foundrylocal)
-  - [تصدیق](../../../../04-PracticalSamples/foundrylocal)
-- [ترتیب](../../../../04-PracticalSamples/foundrylocal)
-- [جلدی شروع کریں](../../../../04-PracticalSamples/foundrylocal)
-- [ایپلیکیشن کیا کرتی ہے](../../../../04-PracticalSamples/foundrylocal)
-- [نمونہ آؤٹ پٹ](../../../../04-PracticalSamples/foundrylocal)
-- [معماری](../../../../04-PracticalSamples/foundrylocal)
-- [کوڈ کی جھلکیاں](../../../../04-PracticalSamples/foundrylocal)
-  - [OpenAI جاوا SDK انضمام](../../../../04-PracticalSamples/foundrylocal)
-  - [چیٹ کمپلیشن API](../../../../04-PracticalSamples/foundrylocal)
+- [ضروریات](../../../../04-PracticalSamples/foundrylocal)
+- [پروجیکٹ کا جائزہ](../../../../04-PracticalSamples/foundrylocal)
+- [کوڈ کو سمجھنا](../../../../04-PracticalSamples/foundrylocal)
+  - [1. ایپلیکیشن کنفیگریشن (application.properties)](../../../../04-PracticalSamples/foundrylocal)
+  - [2. مین ایپلیکیشن کلاس (Application.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [3. اے آئی سروس لیئر (FoundryLocalService.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [4. پروجیکٹ ڈیپینڈنسیز (pom.xml)](../../../../04-PracticalSamples/foundrylocal)
+- [یہ سب کیسے کام کرتا ہے](../../../../04-PracticalSamples/foundrylocal)
+- [فاؤنڈری لوکل سیٹ اپ کرنا](../../../../04-PracticalSamples/foundrylocal)
+- [ایپلیکیشن چلانا](../../../../04-PracticalSamples/foundrylocal)
+- [متوقع نتائج](../../../../04-PracticalSamples/foundrylocal)
+- [اگلے مراحل](../../../../04-PracticalSamples/foundrylocal)
 - [مسائل کا حل](../../../../04-PracticalSamples/foundrylocal)
 
-## پیشگی شرائط
+## ضروریات
 
-> **⚠️ نوٹ**: یہ ایپلیکیشن **فراہم کردہ ڈیوی کانٹینر میں نہیں چلتی** کیونکہ اس کے لیے ضروری ہے کہ فاؤنڈری لوکل میزبان سسٹم پر انسٹال اور چل رہا ہو۔
+اس ٹیوٹوریل کو شروع کرنے سے پہلے، یقینی بنائیں کہ آپ کے پاس درج ذیل موجود ہیں:
 
-### فاؤنڈری لوکل کی تنصیب
+- **جاوا 21 یا اس سے زیادہ** آپ کے سسٹم پر انسٹال ہو
+- **ماؤن 3.6+** پروجیکٹ کو بنانے کے لیے
+- **فاؤنڈری لوکل** انسٹال اور چل رہا ہو
 
-اس ایپلیکیشن کو چلانے سے پہلے، آپ کو فاؤنڈری لوکل انسٹال اور شروع کرنا ہوگا۔ ان مراحل پر عمل کریں:
-
-1. **یقینی بنائیں کہ آپ کا سسٹم ضروریات پوری کرتا ہے**:
-   - **آپریٹنگ سسٹم**: ونڈوز 10 (x64)، ونڈوز 11 (x64/ARM)، ونڈوز سرور 2025، یا میک او ایس
-   - **ہارڈویئر**: 
-     - کم از کم: 8GB RAM، 3GB خالی ڈسک اسپیس
-     - تجویز کردہ: 16GB RAM، 15GB خالی ڈسک اسپیس
-   - **نیٹ ورک**: ابتدائی ماڈل ڈاؤن لوڈ کے لیے انٹرنیٹ کنکشن (آف لائن استعمال کے لیے اختیاری)
-   - **ایکسلیریشن (اختیاری)**: NVIDIA GPU (2000 سیریز یا جدید)، AMD GPU (6000 سیریز یا جدید)، Qualcomm Snapdragon X Elite (8GB یا زیادہ میموری)، یا Apple silicon
-   - **اجازتیں**: آپ کے ڈیوائس پر سافٹ ویئر انسٹال کرنے کے لیے ایڈمنسٹریٹو حقوق
-
-2. **فاؤنڈری لوکل انسٹال کریں**:
-   
-   **ونڈوز کے لیے:**
-   ```bash
-   winget install Microsoft.FoundryLocal
-   ```
-   
-   **میک او ایس کے لیے:**
-   ```bash
-   brew tap microsoft/foundrylocal
-   brew install foundrylocal
-   ```
-   
-   متبادل طور پر، آپ انسٹالر کو [فاؤنڈری لوکل گٹ ہب ریپوزٹری](https://github.com/microsoft/Foundry-Local) سے ڈاؤن لوڈ کر سکتے ہیں۔
-
-3. **اپنا پہلا ماڈل شروع کریں**:
-
-   ```bash
-   foundry model run phi-3.5-mini
-   ```
-
-   ماڈل ڈاؤن لوڈ ہوگا (جو آپ کی انٹرنیٹ کی رفتار پر منحصر ہے چند منٹ لے سکتا ہے) اور پھر چلایا جائے گا۔ فاؤنڈری لوکل خود بخود آپ کے سسٹم کے لیے بہترین ماڈل ورژن منتخب کرتا ہے (NVIDIA GPUs کے لیے CUDA، ورنہ CPU ورژن)۔
-
-4. **ماڈل کو ٹیسٹ کریں** اسی ٹرمینل میں ایک سوال پوچھ کر:
-
-   ```bash
-   Why is the sky blue?
-   ```
-
-   آپ کو Phi ماڈل سے ایک جواب نظر آنا چاہیے جو وضاحت کرے کہ آسمان نیلا کیوں نظر آتا ہے۔
-
-### تصدیق
-
-آپ ان کمانڈز کے ذریعے تصدیق کر سکتے ہیں کہ سب کچھ صحیح کام کر رہا ہے:
+### **فاؤنڈری لوکل انسٹال کریں:**
 
 ```bash
-# List all available models
-foundry model list
+# Windows
+winget install Microsoft.FoundryLocal
 
-# Check the service status via REST API
-curl http://localhost:5273/v1/models
+# macOS (after installing)
+foundry model run phi-3.5-mini
 ```
 
-آپ `http://localhost:5273` پر اپنے براؤزر میں جا کر فاؤنڈری لوکل ویب انٹرفیس بھی دیکھ سکتے ہیں۔
+## پروجیکٹ کا جائزہ
 
-## ترتیب
+یہ پروجیکٹ چار اہم اجزاء پر مشتمل ہے:
 
-ایپلیکیشن کو `application.properties` کے ذریعے ترتیب دیا جا سکتا ہے:
+1. **Application.java** - اسپرنگ بوٹ ایپلیکیشن کا مرکزی انٹری پوائنٹ
+2. **FoundryLocalService.java** - سروس لیئر جو اے آئی کمیونیکیشن کو ہینڈل کرتی ہے
+3. **application.properties** - فاؤنڈری لوکل کنکشن کے لیے کنفیگریشن
+4. **pom.xml** - ماؤن ڈیپینڈنسیز اور پروجیکٹ کنفیگریشن
 
-- `foundry.local.base-url` - فاؤنڈری لوکل کے لیے بیس URL (ڈیفالٹ: http://localhost:5273)
-- `foundry.local.model` - استعمال کرنے کے لیے AI ماڈل (ڈیفالٹ: Phi-3.5-mini-instruct-cuda-gpu)
+## کوڈ کو سمجھنا
 
-> **نوٹ**: ترتیب میں ماڈل کا نام اس مخصوص ورژن سے میل کھانا چاہیے جو فاؤنڈری لوکل نے آپ کے سسٹم کے لیے ڈاؤن لوڈ کیا ہے۔ جب آپ `foundry model run phi-3.5-mini` چلاتے ہیں، فاؤنڈری لوکل خود بخود بہترین ورژن منتخب اور ڈاؤن لوڈ کرتا ہے (NVIDIA GPUs کے لیے CUDA، ورنہ CPU ورژن)۔ اپنے مقامی انسٹینس میں دستیاب ماڈل کا صحیح نام دیکھنے کے لیے `foundry model list` استعمال کریں۔
+### 1. ایپلیکیشن کنفیگریشن (application.properties)
 
-## جلدی شروع کریں
+**فائل:** `src/main/resources/application.properties`
 
-### 1. فاؤنڈری لوکل ایپلیکیشن ڈائریکٹری پر جائیں
-```bash
-cd Generative-AI-for-beginners-java/04-PracticalSamples/foundrylocal
+```properties
+foundry.local.base-url=http://localhost:5273
+foundry.local.model=Phi-3.5-mini-instruct-cuda-gpu
 ```
 
-### 2. ایپلیکیشن چلائیں
+**یہ کیا کرتا ہے:**
+- **base-url**: بتاتا ہے کہ فاؤنڈری لوکل کہاں چل رہا ہے (ڈیفالٹ پورٹ 5273)
+- **model**: اس اے آئی ماڈل کا نام جو ٹیکسٹ جنریشن کے لیے استعمال ہوگا
 
-```bash
-mvn spring-boot:run
+**اہم تصور:** اسپرنگ بوٹ خود بخود ان پراپرٹیز کو لوڈ کرتا ہے اور انہیں آپ کی ایپلیکیشن میں `@Value` اینوٹیشن کے ذریعے دستیاب بناتا ہے۔
+
+### 2. مین ایپلیکیشن کلاس (Application.java)
+
+**فائل:** `src/main/java/com/example/Application.java`
+
+```java
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication app = new SpringApplication(Application.class);
+        app.setWebApplicationType(WebApplicationType.NONE);  // No web server needed
+        app.run(args);
+    }
 ```
 
-یا JAR بنائیں اور چلائیں:
+**یہ کیا کرتا ہے:**
+- `@SpringBootApplication` اسپرنگ بوٹ آٹو کنفیگریشن کو فعال کرتا ہے
+- `WebApplicationType.NONE` اسپرنگ کو بتاتا ہے کہ یہ کمانڈ لائن ایپ ہے، ویب سرور نہیں
+- مین میتھڈ اسپرنگ ایپلیکیشن کو شروع کرتا ہے
 
-```bash
-mvn clean package
-java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+**ڈیمو رنر:**
+```java
+@Bean
+public CommandLineRunner foundryLocalRunner(FoundryLocalService foundryLocalService) {
+    return args -> {
+        System.out.println("=== Foundry Local Demo ===");
+        
+        String testMessage = "Hello! Can you tell me what you are and what model you're running?";
+        System.out.println("Sending message: " + testMessage);
+        
+        String response = foundryLocalService.chat(testMessage);
+        System.out.println("Response from Foundry Local:");
+        System.out.println(response);
+    };
+}
 ```
 
-### انحصارات
+**یہ کیا کرتا ہے:**
+- `@Bean` ایک کمپوننٹ بناتا ہے جسے اسپرنگ مینیج کرتا ہے
+- `CommandLineRunner` اسپرنگ بوٹ کے شروع ہونے کے بعد کوڈ چلاتا ہے
+- `foundryLocalService` اسپرنگ کے ذریعے خود بخود انجیکٹ ہوتا ہے (ڈیپینڈنسی انجیکشن)
+- اے آئی کو ایک ٹیسٹ میسج بھیجتا ہے اور جواب دکھاتا ہے
 
-یہ ایپلیکیشن فاؤنڈری لوکل کے ساتھ بات چیت کرنے کے لیے OpenAI جاوا SDK استعمال کرتی ہے۔ کلیدی انحصار یہ ہے:
+### 3. اے آئی سروس لیئر (FoundryLocalService.java)
+
+**فائل:** `src/main/java/com/example/FoundryLocalService.java`
+
+#### کنفیگریشن انجیکشن:
+```java
+@Service
+public class FoundryLocalService {
+    
+    @Value("${foundry.local.base-url:http://localhost:5273}")
+    private String baseUrl;
+    
+    @Value("${foundry.local.model:Phi-3.5-mini-instruct-cuda-gpu}")
+    private String model;
+```
+
+**یہ کیا کرتا ہے:**
+- `@Service` اسپرنگ کو بتاتا ہے کہ یہ کلاس بزنس لاجک فراہم کرتی ہے
+- `@Value` کنفیگریشن ویلیوز کو application.properties سے انجیکٹ کرتا ہے
+- `:default-value` سینٹیکس پراپرٹیز نہ ہونے کی صورت میں فال بیک ویلیوز فراہم کرتا ہے
+
+#### کلائنٹ انیشلائزیشن:
+```java
+@PostConstruct
+public void init() {
+    this.openAIClient = OpenAIOkHttpClient.builder()
+            .baseUrl(baseUrl + "/v1")        // Foundry Local uses OpenAI-compatible API
+            .apiKey("unused")                 // Local server doesn't need real API key
+            .build();
+}
+```
+
+**یہ کیا کرتا ہے:**
+- `@PostConstruct` اس میتھڈ کو اسپرنگ کے سروس بنانے کے بعد چلاتا ہے
+- ایک اوپن اے آئی کلائنٹ بناتا ہے جو آپ کے لوکل فاؤنڈری لوکل انسٹینس کی طرف اشارہ کرتا ہے
+- `/v1` راستہ اوپن اے آئی API مطابقت کے لیے ضروری ہے
+- API کی "unused" کلید کیونکہ لوکل ڈیولپمنٹ میں تصدیق کی ضرورت نہیں ہوتی
+
+#### چیٹ میتھڈ:
+```java
+public String chat(String message) {
+    try {
+        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
+                .model(model)                    // Which AI model to use
+                .addUserMessage(message)         // Your question/prompt
+                .maxCompletionTokens(150)        // Limit response length
+                .temperature(0.7)                // Control creativity (0.0-1.0)
+                .build();
+        
+        ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
+        
+        // Extract the AI's response from the API result
+        if (chatCompletion.choices() != null && !chatCompletion.choices().isEmpty()) {
+            return chatCompletion.choices().get(0).message().content().orElse("No response found");
+        }
+        
+        return "No response content found";
+    } catch (Exception e) {
+        throw new RuntimeException("Error calling chat completion: " + e.getMessage(), e);
+    }
+}
+```
+
+**یہ کیا کرتا ہے:**
+- **ChatCompletionCreateParams**: اے آئی درخواست کو کنفیگر کرتا ہے
+  - `model`: بتاتا ہے کہ کون سا اے آئی ماڈل استعمال کرنا ہے
+  - `addUserMessage`: آپ کا میسج گفتگو میں شامل کرتا ہے
+  - `maxCompletionTokens`: جواب کی لمبائی محدود کرتا ہے (وسائل بچانے کے لیے)
+  - `temperature`: بے ترتیبی کو کنٹرول کرتا ہے (0.0 = متعین، 1.0 = تخلیقی)
+- **API کال**: درخواست فاؤنڈری لوکل کو بھیجتا ہے
+- **جواب ہینڈلنگ**: اے آئی کے ٹیکسٹ جواب کو محفوظ طریقے سے نکالتا ہے
+- **غلطی ہینڈلنگ**: مددگار غلطی پیغامات کے ساتھ ایکسیپشنز کو لپیٹتا ہے
+
+### 4. پروجیکٹ ڈیپینڈنسیز (pom.xml)
+
+**اہم ڈیپینڈنسیز:**
 
 ```xml
+<!-- Spring Boot - Application framework -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+    <version>${spring-boot.version}</version>
+</dependency>
+
+<!-- OpenAI Java SDK - For AI API calls -->
 <dependency>
     <groupId>com.openai</groupId>
     <artifactId>openai-java</artifactId>
     <version>2.12.0</version>
 </dependency>
+
+<!-- Jackson - JSON processing -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.17.0</version>
+</dependency>
 ```
 
-ایپلیکیشن پہلے سے ترتیب شدہ ہے تاکہ ڈیفالٹ پورٹ پر چلنے والے فاؤنڈری لوکل سے جڑ سکے۔
+**یہ کیا کرتے ہیں:**
+- **spring-boot-starter**: اسپرنگ بوٹ کی بنیادی فعالیت فراہم کرتا ہے
+- **openai-java**: اوپن اے آئی جاوا SDK API کمیونیکیشن کے لیے
+- **jackson-databind**: API کالز کے لیے JSON سیریلائزیشن/ڈی سیریلائزیشن کو ہینڈل کرتا ہے
 
-## ایپلیکیشن کیا کرتی ہے
+## یہ سب کیسے کام کرتا ہے
 
-جب آپ ایپلیکیشن چلاتے ہیں:
+جب آپ ایپلیکیشن چلاتے ہیں تو مکمل فلو یہ ہے:
 
-1. **کمانڈ لائن ایپلیکیشن کے طور پر شروع ہوتی ہے** (کوئی ویب سرور نہیں)
-2. **خود بخود ایک ٹیسٹ پیغام بھیجتی ہے**: "ہیلو! کیا آپ مجھے بتا سکتے ہیں کہ آپ کیا ہیں اور کون سا ماڈل چلا رہے ہیں؟"
-3. **فاؤنڈری لوکل سے جواب دکھاتی ہے** کنسول میں
-4. **ڈیمو کے بعد صاف طور پر بند ہو جاتی ہے**
+1. **اسٹارٹ اپ**: اسپرنگ بوٹ شروع ہوتا ہے اور `application.properties` کو پڑھتا ہے
+2. **سروس تخلیق**: اسپرنگ `FoundryLocalService` بناتا ہے اور کنفیگریشن ویلیوز انجیکٹ کرتا ہے
+3. **کلائنٹ سیٹ اپ**: `@PostConstruct` اوپن اے آئی کلائنٹ کو فاؤنڈری لوکل سے کنیکٹ کرنے کے لیے انیشلائز کرتا ہے
+4. **ڈیمو ایکزیکیوشن**: `CommandLineRunner` اسٹارٹ اپ کے بعد ایکزیکیوٹ ہوتا ہے
+5. **اے آئی کال**: ڈیمو `foundryLocalService.chat()` کو ایک ٹیسٹ میسج کے ساتھ کال کرتا ہے
+6. **API درخواست**: سروس اوپن اے آئی مطابقت پذیر درخواست فاؤنڈری لوکل کو بھیجتی ہے
+7. **جواب پروسیسنگ**: سروس اے آئی کے جواب کو نکالتی اور واپس کرتی ہے
+8. **ڈسپلے**: ایپلیکیشن جواب پرنٹ کرتی ہے اور بند ہو جاتی ہے
 
-## نمونہ آؤٹ پٹ
+## فاؤنڈری لوکل سیٹ اپ کرنا
+
+فاؤنڈری لوکل سیٹ اپ کرنے کے لیے، درج ذیل مراحل پر عمل کریں:
+
+1. **فاؤنڈری لوکل انسٹال کریں** جیسا کہ [ضروریات](../../../../04-PracticalSamples/foundrylocal) سیکشن میں بتایا گیا ہے۔
+2. **اے آئی ماڈل ڈاؤنلوڈ کریں** جو آپ استعمال کرنا چاہتے ہیں، مثلاً `phi-3.5-mini`، درج ذیل کمانڈ کے ساتھ:
+   ```bash
+   foundry model run phi-3.5-mini
+   ```
+3. **application.properties فائل کو کنفیگر کریں** تاکہ آپ کے فاؤنڈری لوکل سیٹنگز سے میل کھائے، خاص طور پر اگر آپ مختلف پورٹ یا ماڈل استعمال کر رہے ہیں۔
+
+## ایپلیکیشن چلانا
+
+### مرحلہ 1: فاؤنڈری لوکل شروع کریں
+```bash
+foundry model run phi-3.5-mini
+```
+
+### مرحلہ 2: ایپلیکیشن کو بنائیں اور چلائیں
+```bash
+mvn clean package
+java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+```
+
+## متوقع نتائج
 
 ```
 === Foundry Local Demo ===
 Calling Foundry Local service...
 Sending message: Hello! Can you tell me what you are and what model you're running?
 Response from Foundry Local:
-Hello! I'm Phi, an AI language model created by Microsoft. I don't have a physical form or a specific hardware model like a smartphone or a computer. I exist purely in software, and I operate on Microsoft's infrastructure...
+Hello! I'm Phi-3.5, a small language model created by Microsoft. I'm currently running 
+as the Phi-3.5-mini-instruct model, which is designed to be helpful, harmless, and honest 
+in my interactions. I can assist with a wide variety of tasks including answering 
+questions, helping with analysis, creative writing, coding, and general conversation. 
+Is there something specific you'd like help with today?
 =========================
 ```
 
-## معماری
+## اگلے مراحل
 
-- **Application.java** - مین اسپرنگ بوٹ ایپلیکیشن CommandLineRunner کے ساتھ
-- **FoundryLocalService.java** - سروس جو OpenAI جاوا SDK کا استعمال کرتے ہوئے فاؤنڈری لوکل سے بات چیت کرتی ہے
-- **OpenAI جاوا SDK** کا استعمال ٹائپ سیف API کالز کے لیے
-- JSON سیریلائزیشن/ڈی سیریلائزیشن خودکار طور پر SDK کے ذریعے ہینڈل کی جاتی ہے
-- اسپرنگ کے `@Value` اور `@PostConstruct` اینوٹیشنز کا استعمال کرتے ہوئے صاف ترتیب
-
-## کوڈ کی جھلکیاں
-
-### OpenAI جاوا SDK انضمام
-
-ایپلیکیشن OpenAI جاوا SDK کا استعمال کرتی ہے تاکہ فاؤنڈری لوکل کے لیے ایک کلائنٹ ترتیب دیا جا سکے:
-
-```java
-@PostConstruct
-public void init() {
-    this.openAIClient = OpenAIOkHttpClient.builder()
-            .baseUrl(baseUrl + "/v1")
-            .apiKey("unused") // Local server doesn't require real API key
-            .build();
-}
-```
-
-### چیٹ کمپلیشن API
-
-چیٹ کمپلیشن کی درخواستیں بنانا آسان اور ٹائپ سیف ہے:
-
-```java
-ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-        .model(model)
-        .addUserMessage(message)
-        .maxCompletionTokens(150)
-        .temperature(0.7)
-        .build();
-
-ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
-```
+مزید مثالوں کے لیے، دیکھیں [باب 04: عملی نمونے](../README.md)
 
 ## مسائل کا حل
 
-اگر آپ کو کنکشن کی غلطیاں نظر آئیں:
-1. تصدیق کریں کہ فاؤنڈری لوکل `http://localhost:5273` پر چل رہا ہے
-2. چیک کریں کہ Phi-3.5-mini ماڈل ورژن `foundry model list` کے ساتھ دستیاب ہے
-3. یقینی بنائیں کہ `application.properties` میں ماڈل کا نام دستیاب ماڈل کے صحیح نام سے میل کھاتا ہے
-4. یقینی بنائیں کہ کوئی فائر وال کنکشن کو بلاک نہیں کر رہا
+### عام مسائل
 
-عام مسائل:
-- **ماڈل نہیں ملا**: `foundry model run phi-3.5-mini` چلائیں تاکہ ماڈل ڈاؤن لوڈ اور شروع کیا جا سکے
-- **سروس نہیں چل رہی**: فاؤنڈری لوکل سروس بند ہو سکتی ہے؛ ماڈل رن کمانڈ کے ساتھ اسے دوبارہ شروع کریں
-- **غلط ماڈل نام**: دستیاب ماڈلز دیکھنے کے لیے `foundry model list` استعمال کریں اور اپنی ترتیب کو مناسب طریقے سے اپ ڈیٹ کریں
+**"کنکشن ریفیوزڈ" یا "سروس دستیاب نہیں"**
+- یقینی بنائیں کہ فاؤنڈری لوکل چل رہا ہے: `foundry model list`
+- تصدیق کریں کہ سروس پورٹ 5273 پر ہے: `application.properties` چیک کریں
+- فاؤنڈری لوکل کو دوبارہ شروع کرنے کی کوشش کریں: `foundry model run phi-3.5-mini`
+
+**"ماڈل نہیں ملا" کی غلطیاں**
+- دستیاب ماڈلز چیک کریں: `foundry model list`
+- `application.properties` میں ماڈل کا نام بالکل درست اپڈیٹ کریں
+- اگر ضرورت ہو تو ماڈل ڈاؤنلوڈ کریں: `foundry model run phi-3.5-mini`
+
+**ماؤن کمپائلیشن کی غلطیاں**
+- جاوا 21 یا اس سے زیادہ یقینی بنائیں: `java -version`
+- صاف کریں اور دوبارہ بنائیں: `mvn clean compile`
+- ڈیپینڈنسی ڈاؤنلوڈ کے لیے انٹرنیٹ کنکشن چیک کریں
+
+**ایپلیکیشن شروع ہوتی ہے لیکن کوئی آؤٹ پٹ نہیں**
+- تصدیق کریں کہ فاؤنڈری لوکل جواب دے رہا ہے: براؤزر میں `http://localhost:5273` کھولیں
+- مخصوص غلطی پیغامات کے لیے ایپلیکیشن لاگز چیک کریں
+- یقینی بنائیں کہ ماڈل مکمل طور پر لوڈ ہو چکا ہے اور تیار ہے
 
 **ڈسکلیمر**:  
 یہ دستاویز AI ترجمہ سروس [Co-op Translator](https://github.com/Azure/co-op-translator) کا استعمال کرتے ہوئے ترجمہ کی گئی ہے۔ ہم درستگی کے لیے کوشش کرتے ہیں، لیکن براہ کرم آگاہ رہیں کہ خودکار ترجمے میں غلطیاں یا غیر درستیاں ہو سکتی ہیں۔ اصل دستاویز کو اس کی اصل زبان میں مستند ذریعہ سمجھا جانا چاہیے۔ اہم معلومات کے لیے، پیشہ ور انسانی ترجمہ کی سفارش کی جاتی ہے۔ ہم اس ترجمے کے استعمال سے پیدا ہونے والی کسی بھی غلط فہمی یا غلط تشریح کے ذمہ دار نہیں ہیں۔

@@ -1,215 +1,300 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "a66dad62cdb2e141f05086feaf1a4a39",
-  "translation_date": "2025-07-21T18:13:38+00:00",
+  "original_hash": "2284c54d2a98090a37df0dbef1633ebf",
+  "translation_date": "2025-07-25T11:09:03+00:00",
   "source_file": "04-PracticalSamples/foundrylocal/README.md",
   "language_code": "bn"
 }
 -->
-# ফাউন্ড্রি লোকাল কমান্ড-লাইন অ্যাপ্লিকেশন
+# Foundry Local Spring Boot টিউটোরিয়াল
 
->**নোট**: এই অধ্যায়ে একটি [**টিউটোরিয়াল**](./TUTORIAL.md) অন্তর্ভুক্ত রয়েছে যা আপনাকে সমাপ্ত নমুনাগুলি চালানোর মাধ্যমে গাইড করবে।
+## সূচিপত্র
 
-একটি সহজ স্প্রিং বুট কমান্ড-লাইন অ্যাপ্লিকেশন যা OpenAI Java SDK ব্যবহার করে ফাউন্ড্রি লোকালের সাথে সংযোগ স্থাপনের পদ্ধতি প্রদর্শন করে।
-
-## আপনি কী শিখবেন
-
-- OpenAI Java SDK ব্যবহার করে কীভাবে ফাউন্ড্রি লোকালকে স্প্রিং বুট অ্যাপ্লিকেশনের সাথে সংযুক্ত করবেন
-- স্থানীয় AI ডেভেলপমেন্ট এবং টেস্টিংয়ের সেরা পদ্ধতিগুলি
-
-## বিষয়সূচি
-
-- [আপনি কী শিখবেন](../../../../04-PracticalSamples/foundrylocal)
 - [প্রয়োজনীয়তা](../../../../04-PracticalSamples/foundrylocal)
-  - [ফাউন্ড্রি লোকাল ইনস্টল করা](../../../../04-PracticalSamples/foundrylocal)
-  - [যাচাই](../../../../04-PracticalSamples/foundrylocal)
-- [কনফিগারেশন](../../../../04-PracticalSamples/foundrylocal)
-- [দ্রুত শুরু](../../../../04-PracticalSamples/foundrylocal)
-- [অ্যাপ্লিকেশনটি কী করে](../../../../04-PracticalSamples/foundrylocal)
-- [নমুনা আউটপুট](../../../../04-PracticalSamples/foundrylocal)
-- [আর্কিটেকচার](../../../../04-PracticalSamples/foundrylocal)
-- [কোডের হাইলাইটস](../../../../04-PracticalSamples/foundrylocal)
-  - [OpenAI Java SDK ইন্টিগ্রেশন](../../../../04-PracticalSamples/foundrylocal)
-  - [চ্যাট কমপ্লিশন API](../../../../04-PracticalSamples/foundrylocal)
+- [প্রকল্পের সংক্ষিপ্ত বিবরণ](../../../../04-PracticalSamples/foundrylocal)
+- [কোড বোঝা](../../../../04-PracticalSamples/foundrylocal)
+  - [১. অ্যাপ্লিকেশন কনফিগারেশন (application.properties)](../../../../04-PracticalSamples/foundrylocal)
+  - [২. প্রধান অ্যাপ্লিকেশন ক্লাস (Application.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [৩. এআই সার্ভিস লেয়ার (FoundryLocalService.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [৪. প্রকল্পের নির্ভরতা (pom.xml)](../../../../04-PracticalSamples/foundrylocal)
+- [সবকিছু কীভাবে একসাথে কাজ করে](../../../../04-PracticalSamples/foundrylocal)
+- [Foundry Local সেটআপ করা](../../../../04-PracticalSamples/foundrylocal)
+- [অ্যাপ্লিকেশন চালানো](../../../../04-PracticalSamples/foundrylocal)
+- [প্রত্যাশিত আউটপুট](../../../../04-PracticalSamples/foundrylocal)
+- [পরবর্তী পদক্ষেপ](../../../../04-PracticalSamples/foundrylocal)
 - [সমস্যা সমাধান](../../../../04-PracticalSamples/foundrylocal)
 
 ## প্রয়োজনীয়তা
 
-> **⚠️ নোট**: এই অ্যাপ্লিকেশনটি **সরবরাহকৃত ডেভকন্টেইনারে চালানো যায় না** কারণ এটি ফাউন্ড্রি লোকাল ইনস্টল এবং হোস্ট সিস্টেমে চালানোর প্রয়োজন।
+এই টিউটোরিয়াল শুরু করার আগে নিশ্চিত করুন যে আপনার কাছে রয়েছে:
 
-### ফাউন্ড্রি লোকাল ইনস্টল করা
+- **Java 21 বা তার বেশি** আপনার সিস্টেমে ইনস্টল করা
+- **Maven 3.6+** প্রকল্পটি তৈরি করার জন্য
+- **Foundry Local** ইনস্টল করা এবং চালু রয়েছে
 
-এই অ্যাপ্লিকেশনটি চালানোর আগে, আপনাকে ফাউন্ড্রি লোকাল ইনস্টল এবং শুরু করতে হবে। নিম্নলিখিত ধাপগুলি অনুসরণ করুন:
-
-1. **আপনার সিস্টেমের প্রয়োজনীয়তা নিশ্চিত করুন**:
-   - **অপারেটিং সিস্টেম**: Windows 10 (x64), Windows 11 (x64/ARM), Windows Server 2025, অথবা macOS
-   - **হার্ডওয়্যার**: 
-     - ন্যূনতম: 8GB RAM, 3GB ফ্রি ডিস্ক স্পেস
-     - সুপারিশকৃত: 16GB RAM, 15GB ফ্রি ডিস্ক স্পেস
-   - **নেটওয়ার্ক**: প্রাথমিক মডেল ডাউনলোডের জন্য ইন্টারনেট সংযোগ (অফলাইন ব্যবহারের জন্য ঐচ্ছিক)
-   - **অ্যাক্সিলারেশন (ঐচ্ছিক)**: NVIDIA GPU (2,000 সিরিজ বা নতুন), AMD GPU (6,000 সিরিজ বা নতুন), Qualcomm Snapdragon X Elite (8GB বা তার বেশি মেমরি), অথবা Apple silicon
-   - **অনুমতি**: আপনার ডিভাইসে সফটওয়্যার ইনস্টল করার জন্য প্রশাসনিক অনুমতি
-
-2. **ফাউন্ড্রি লোকাল ইনস্টল করুন**:
-   
-   **Windows এর জন্য:**
-   ```bash
-   winget install Microsoft.FoundryLocal
-   ```
-   
-   **macOS এর জন্য:**
-   ```bash
-   brew tap microsoft/foundrylocal
-   brew install foundrylocal
-   ```
-   
-   বিকল্পভাবে, আপনি [Foundry Local GitHub repository](https://github.com/microsoft/Foundry-Local) থেকে ইনস্টলার ডাউনলোড করতে পারেন।
-
-3. **আপনার প্রথম মডেল শুরু করুন**:
-
-   ```bash
-   foundry model run phi-3.5-mini
-   ```
-
-   মডেলটি ডাউনলোড হবে (যা আপনার ইন্টারনেট গতির উপর নির্ভর করে কয়েক মিনিট সময় নিতে পারে) এবং তারপর চালু হবে। ফাউন্ড্রি লোকাল স্বয়ংক্রিয়ভাবে আপনার সিস্টেমের জন্য সেরা মডেল ভ্যারিয়েন্ট নির্বাচন করে (NVIDIA GPU এর জন্য CUDA, অন্যথায় CPU সংস্করণ)।
-
-4. **মডেলটি পরীক্ষা করুন** একই টার্মিনালে একটি প্রশ্ন জিজ্ঞাসা করে:
-
-   ```bash
-   Why is the sky blue?
-   ```
-
-   আপনি একটি উত্তর দেখতে পাবেন যেখানে Phi মডেল ব্যাখ্যা করবে কেন আকাশ নীল দেখায়।
-
-### যাচাই
-
-নিম্নলিখিত কমান্ডগুলি ব্যবহার করে আপনি যাচাই করতে পারেন যে সবকিছু সঠিকভাবে কাজ করছে:
+### **Foundry Local ইনস্টল করুন:**
 
 ```bash
-# List all available models
-foundry model list
+# Windows
+winget install Microsoft.FoundryLocal
 
-# Check the service status via REST API
-curl http://localhost:5273/v1/models
+# macOS (after installing)
+foundry model run phi-3.5-mini
 ```
 
-আপনি `http://localhost:5273` এ আপনার ব্রাউজারে গিয়ে ফাউন্ড্রি লোকালের ওয়েব ইন্টারফেসও দেখতে পারেন।
+## প্রকল্পের সংক্ষিপ্ত বিবরণ
 
-## কনফিগারেশন
+এই প্রকল্পটি চারটি প্রধান উপাদান নিয়ে গঠিত:
 
-অ্যাপ্লিকেশনটি `application.properties` এর মাধ্যমে কনফিগার করা যায়:
+1. **Application.java** - প্রধান Spring Boot অ্যাপ্লিকেশনের এন্ট্রি পয়েন্ট
+2. **FoundryLocalService.java** - সার্ভিস লেয়ার যা এআই যোগাযোগ পরিচালনা করে
+3. **application.properties** - Foundry Local সংযোগের জন্য কনফিগারেশন
+4. **pom.xml** - Maven নির্ভরতা এবং প্রকল্পের কনফিগারেশন
 
-- `foundry.local.base-url` - ফাউন্ড্রি লোকালের বেস URL (ডিফল্ট: http://localhost:5273)
-- `foundry.local.model` - ব্যবহৃত AI মডেল (ডিফল্ট: Phi-3.5-mini-instruct-cuda-gpu)
+## কোড বোঝা
 
-> **নোট**: কনফিগারেশনে মডেলের নামটি ফাউন্ড্রি লোকাল আপনার সিস্টেমের জন্য ডাউনলোড করা নির্দিষ্ট ভ্যারিয়েন্টের সাথে মিলে যেতে হবে। যখন আপনি `foundry model run phi-3.5-mini` চালান, ফাউন্ড্রি লোকাল স্বয়ংক্রিয়ভাবে সেরা ভ্যারিয়েন্ট নির্বাচন এবং ডাউনলোড করে (NVIDIA GPU এর জন্য CUDA, অন্যথায় CPU সংস্করণ)। আপনার স্থানীয় ইনস্ট্যান্সে উপলব্ধ সঠিক মডেলের নাম দেখতে `foundry model list` ব্যবহার করুন।
+### ১. অ্যাপ্লিকেশন কনফিগারেশন (application.properties)
 
-## দ্রুত শুরু
+**ফাইল:** `src/main/resources/application.properties`
 
-### 1. ফাউন্ড্রি লোকাল অ্যাপ্লিকেশন ডিরেক্টরিতে যান
-```bash
-cd Generative-AI-for-beginners-java/04-PracticalSamples/foundrylocal
+```properties
+foundry.local.base-url=http://localhost:5273
+foundry.local.model=Phi-3.5-mini-instruct-cuda-gpu
 ```
 
-### 2. অ্যাপ্লিকেশন চালান
+**এটি কী করে:**
+- **base-url**: Foundry Local কোথায় চলছে তা নির্দিষ্ট করে (ডিফল্ট পোর্ট ৫২৭৩)
+- **model**: টেক্সট জেনারেশনের জন্য ব্যবহৃত এআই মডেলের নাম নির্ধারণ করে
 
-```bash
-mvn spring-boot:run
+**মূল ধারণা:** Spring Boot স্বয়ংক্রিয়ভাবে এই প্রপার্টিগুলি লোড করে এবং `@Value` অ্যানোটেশনের মাধ্যমে আপনার অ্যাপ্লিকেশনে উপলব্ধ করে।
+
+### ২. প্রধান অ্যাপ্লিকেশন ক্লাস (Application.java)
+
+**ফাইল:** `src/main/java/com/example/Application.java`
+
+```java
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication app = new SpringApplication(Application.class);
+        app.setWebApplicationType(WebApplicationType.NONE);  // No web server needed
+        app.run(args);
+    }
 ```
 
-অথবা JAR তৈরি করে চালান:
+**এটি কী করে:**
+- `@SpringBootApplication` Spring Boot এর অটো-কনফিগারেশন সক্ষম করে
+- `WebApplicationType.NONE` Spring-কে জানায় এটি একটি কমান্ড-লাইন অ্যাপ, ওয়েব সার্ভার নয়
+- প্রধান মেথড Spring অ্যাপ্লিকেশন শুরু করে
 
-```bash
-mvn clean package
-java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+**ডেমো রানার:**
+```java
+@Bean
+public CommandLineRunner foundryLocalRunner(FoundryLocalService foundryLocalService) {
+    return args -> {
+        System.out.println("=== Foundry Local Demo ===");
+        
+        String testMessage = "Hello! Can you tell me what you are and what model you're running?";
+        System.out.println("Sending message: " + testMessage);
+        
+        String response = foundryLocalService.chat(testMessage);
+        System.out.println("Response from Foundry Local:");
+        System.out.println(response);
+    };
+}
 ```
 
-### নির্ভরশীলতা
+**এটি কী করে:**
+- `@Bean` একটি কম্পোনেন্ট তৈরি করে যা Spring পরিচালনা করে
+- `CommandLineRunner` Spring Boot শুরু হওয়ার পরে কোড চালায়
+- `foundryLocalService` Spring দ্বারা স্বয়ংক্রিয়ভাবে ইনজেক্ট করা হয় (ডিপেনডেন্সি ইনজেকশন)
+- একটি টেস্ট মেসেজ এআই-তে পাঠায় এবং প্রতিক্রিয়া প্রদর্শন করে
 
-এই অ্যাপ্লিকেশনটি ফাউন্ড্রি লোকালের সাথে যোগাযোগ করতে OpenAI Java SDK ব্যবহার করে। মূল নির্ভরশীলতা:
+### ৩. এআই সার্ভিস লেয়ার (FoundryLocalService.java)
+
+**ফাইল:** `src/main/java/com/example/FoundryLocalService.java`
+
+#### কনফিগারেশন ইনজেকশন:
+```java
+@Service
+public class FoundryLocalService {
+    
+    @Value("${foundry.local.base-url:http://localhost:5273}")
+    private String baseUrl;
+    
+    @Value("${foundry.local.model:Phi-3.5-mini-instruct-cuda-gpu}")
+    private String model;
+```
+
+**এটি কী করে:**
+- `@Service` Spring-কে জানায় এই ক্লাসটি ব্যবসায়িক লজিক প্রদান করে
+- `@Value` application.properties থেকে কনফিগারেশন মান ইনজেক্ট করে
+- `:default-value` সিনট্যাক্স প্রপার্টি সেট না থাকলে ডিফল্ট মান প্রদান করে
+
+#### ক্লায়েন্ট ইনিশিয়ালাইজেশন:
+```java
+@PostConstruct
+public void init() {
+    this.openAIClient = OpenAIOkHttpClient.builder()
+            .baseUrl(baseUrl + "/v1")        // Foundry Local uses OpenAI-compatible API
+            .apiKey("unused")                 // Local server doesn't need real API key
+            .build();
+}
+```
+
+**এটি কী করে:**
+- `@PostConstruct` Spring সার্ভিস তৈরি করার পরে এই মেথড চালায়
+- একটি OpenAI ক্লায়েন্ট তৈরি করে যা আপনার স্থানীয় Foundry Local ইনস্ট্যান্সে নির্দেশ করে
+- `/v1` পাথ OpenAI API সামঞ্জস্যের জন্য প্রয়োজন
+- API কী "unused" কারণ স্থানীয় ডেভেলপমেন্টে প্রমাণীকরণ প্রয়োজন হয় না
+
+#### চ্যাট মেথড:
+```java
+public String chat(String message) {
+    try {
+        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
+                .model(model)                    // Which AI model to use
+                .addUserMessage(message)         // Your question/prompt
+                .maxCompletionTokens(150)        // Limit response length
+                .temperature(0.7)                // Control creativity (0.0-1.0)
+                .build();
+        
+        ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
+        
+        // Extract the AI's response from the API result
+        if (chatCompletion.choices() != null && !chatCompletion.choices().isEmpty()) {
+            return chatCompletion.choices().get(0).message().content().orElse("No response found");
+        }
+        
+        return "No response content found";
+    } catch (Exception e) {
+        throw new RuntimeException("Error calling chat completion: " + e.getMessage(), e);
+    }
+}
+```
+
+**এটি কী করে:**
+- **ChatCompletionCreateParams**: এআই অনুরোধ কনফিগার করে
+  - `model`: কোন এআই মডেল ব্যবহার করতে হবে তা নির্ধারণ করে
+  - `addUserMessage`: আপনার মেসেজ কথোপকথনে যোগ করে
+  - `maxCompletionTokens`: প্রতিক্রিয়া কতটা দীর্ঘ হতে পারে তা সীমাবদ্ধ করে (সম্পদ সংরক্ষণ করে)
+  - `temperature`: র্যান্ডমনেস নিয়ন্ত্রণ করে (০.০ = নির্ধারিত, ১.০ = সৃজনশীল)
+- **API কল**: অনুরোধটি Foundry Local-এ পাঠায়
+- **প্রতিক্রিয়া পরিচালনা**: এআই-এর টেক্সট প্রতিক্রিয়া নিরাপদে বের করে
+- **ত্রুটি পরিচালনা**: সহায়ক ত্রুটি বার্তাগুলির সাথে এক্সসেপশন মোড়ায়
+
+### ৪. প্রকল্পের নির্ভরতা (pom.xml)
+
+**মূল নির্ভরতা:**
 
 ```xml
+<!-- Spring Boot - Application framework -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+    <version>${spring-boot.version}</version>
+</dependency>
+
+<!-- OpenAI Java SDK - For AI API calls -->
 <dependency>
     <groupId>com.openai</groupId>
     <artifactId>openai-java</artifactId>
     <version>2.12.0</version>
 </dependency>
+
+<!-- Jackson - JSON processing -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.17.0</version>
+</dependency>
 ```
 
-অ্যাপ্লিকেশনটি ডিফল্ট পোর্টে চলমান ফাউন্ড্রি লোকালের সাথে সংযোগ করার জন্য প্রি-কনফিগার করা।
+**এগুলি কী করে:**
+- **spring-boot-starter**: Spring Boot এর মূল কার্যকারিতা প্রদান করে
+- **openai-java**: OpenAI Java SDK API যোগাযোগের জন্য
+- **jackson-databind**: API কলের জন্য JSON সিরিয়ালাইজেশন/ডিসিরিয়ালাইজেশন পরিচালনা করে
 
-## অ্যাপ্লিকেশনটি কী করে
+## সবকিছু কীভাবে একসাথে কাজ করে
 
-যখন আপনি অ্যাপ্লিকেশনটি চালান:
+যখন আপনি অ্যাপ্লিকেশন চালান, তখন সম্পূর্ণ প্রবাহটি এভাবে হয়:
 
-1. **কমান্ড-লাইন অ্যাপ্লিকেশন** হিসেবে শুরু হয় (কোনো ওয়েব সার্ভার নয়)
-2. **স্বয়ংক্রিয়ভাবে একটি টেস্ট মেসেজ পাঠায়**: "হ্যালো! আপনি কী এবং আপনি কোন মডেল চালাচ্ছেন তা কি বলতে পারেন?"
-3. **ফাউন্ড্রি লোকাল থেকে প্রাপ্ত উত্তরটি প্রদর্শন করে** কনসোলে
-4. **ডেমো শেষ হওয়ার পর পরিষ্কারভাবে বন্ধ হয়**
+1. **স্টার্টআপ**: Spring Boot শুরু হয় এবং `application.properties` পড়ে
+2. **সার্ভিস তৈরি**: Spring `FoundryLocalService` তৈরি করে এবং কনফিগারেশন মান ইনজেক্ট করে
+3. **ক্লায়েন্ট সেটআপ**: `@PostConstruct` OpenAI ক্লায়েন্ট ইনিশিয়ালাইজ করে Foundry Local-এ সংযোগ করতে
+4. **ডেমো এক্সিকিউশন**: `CommandLineRunner` স্টার্টআপের পরে চালায়
+5. **এআই কল**: ডেমো একটি টেস্ট মেসেজ সহ `foundryLocalService.chat()` কল করে
+6. **API অনুরোধ**: সার্ভিস OpenAI-সামঞ্জস্যপূর্ণ অনুরোধ তৈরি করে এবং Foundry Local-এ পাঠায়
+7. **প্রতিক্রিয়া প্রক্রিয়াকরণ**: সার্ভিস এআই-এর প্রতিক্রিয়া বের করে এবং ফেরত দেয়
+8. **প্রদর্শন**: অ্যাপ্লিকেশন প্রতিক্রিয়া প্রিন্ট করে এবং বেরিয়ে যায়
 
-## নমুনা আউটপুট
+## Foundry Local সেটআপ করা
+
+Foundry Local সেটআপ করতে, এই ধাপগুলি অনুসরণ করুন:
+
+1. **Foundry Local ইনস্টল করুন** [প্রয়োজনীয়তা](../../../../04-PracticalSamples/foundrylocal) সেকশনের নির্দেশনা অনুসারে।
+2. **এআই মডেল ডাউনলোড করুন** যা আপনি ব্যবহার করতে চান, যেমন `phi-3.5-mini`, নিম্নলিখিত কমান্ড দিয়ে:
+   ```bash
+   foundry model run phi-3.5-mini
+   ```
+3. **application.properties** ফাইলটি আপনার Foundry Local সেটিংসের সাথে মেলাতে কনফিগার করুন, বিশেষ করে যদি আপনি ভিন্ন পোর্ট বা মডেল ব্যবহার করেন।
+
+## অ্যাপ্লিকেশন চালানো
+
+### ধাপ ১: Foundry Local শুরু করুন
+```bash
+foundry model run phi-3.5-mini
+```
+
+### ধাপ ২: অ্যাপ্লিকেশন তৈরি এবং চালান
+```bash
+mvn clean package
+java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+```
+
+## প্রত্যাশিত আউটপুট
 
 ```
 === Foundry Local Demo ===
 Calling Foundry Local service...
 Sending message: Hello! Can you tell me what you are and what model you're running?
 Response from Foundry Local:
-Hello! I'm Phi, an AI language model created by Microsoft. I don't have a physical form or a specific hardware model like a smartphone or a computer. I exist purely in software, and I operate on Microsoft's infrastructure...
+Hello! I'm Phi-3.5, a small language model created by Microsoft. I'm currently running 
+as the Phi-3.5-mini-instruct model, which is designed to be helpful, harmless, and honest 
+in my interactions. I can assist with a wide variety of tasks including answering 
+questions, helping with analysis, creative writing, coding, and general conversation. 
+Is there something specific you'd like help with today?
 =========================
 ```
 
-## আর্কিটেকচার
+## পরবর্তী পদক্ষেপ
 
-- **Application.java** - প্রধান স্প্রিং বুট অ্যাপ্লিকেশন CommandLineRunner সহ
-- **FoundryLocalService.java** - OpenAI Java SDK ব্যবহার করে ফাউন্ড্রি লোকালের সাথে যোগাযোগ করার জন্য সার্ভিস
-- **OpenAI Java SDK** ব্যবহার করে টাইপ-সেফ API কল
-- SDK দ্বারা স্বয়ংক্রিয় JSON সিরিয়ালাইজেশন/ডিসিরিয়ালাইজেশন পরিচালিত
-- Spring এর `@Value` এবং `@PostConstruct` অ্যানোটেশন ব্যবহার করে পরিষ্কার কনফিগারেশন
-
-## কোডের হাইলাইটস
-
-### OpenAI Java SDK ইন্টিগ্রেশন
-
-অ্যাপ্লিকেশনটি OpenAI Java SDK ব্যবহার করে ফাউন্ড্রি লোকালের জন্য একটি ক্লায়েন্ট তৈরি করে:
-
-```java
-@PostConstruct
-public void init() {
-    this.openAIClient = OpenAIOkHttpClient.builder()
-            .baseUrl(baseUrl + "/v1")
-            .apiKey("unused") // Local server doesn't require real API key
-            .build();
-}
-```
-
-### চ্যাট কমপ্লিশন API
-
-চ্যাট কমপ্লিশন অনুরোধ করা সহজ এবং টাইপ-সেফ:
-
-```java
-ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-        .model(model)
-        .addUserMessage(message)
-        .maxCompletionTokens(150)
-        .temperature(0.7)
-        .build();
-
-ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
-```
+আরও উদাহরণের জন্য দেখুন [Chapter 04: Practical samples](../README.md)
 
 ## সমস্যার সমাধান
 
-যদি আপনি সংযোগ ত্রুটি দেখেন:
-1. নিশ্চিত করুন ফাউন্ড্রি লোকাল `http://localhost:5273` এ চালু রয়েছে
-2. `foundry model list` ব্যবহার করে নিশ্চিত করুন যে একটি Phi-3.5-mini মডেল ভ্যারিয়েন্ট উপলব্ধ
-3. `application.properties` এ মডেলের নামটি তালিকায় প্রদর্শিত সঠিক মডেলের নামের সাথে মেলে কিনা তা পরীক্ষা করুন
-4. নিশ্চিত করুন কোনো ফায়ারওয়াল সংযোগটি ব্লক করছে না
+### সাধারণ সমস্যা
 
-সাধারণ সমস্যা:
-- **মডেল পাওয়া যায়নি**: `foundry model run phi-3.5-mini` চালিয়ে মডেলটি ডাউনলোড এবং চালু করুন
-- **সার্ভিস চালু নেই**: ফাউন্ড্রি লোকাল সার্ভিসটি বন্ধ হয়ে থাকতে পারে; মডেল রান কমান্ড দিয়ে এটি পুনরায় চালু করুন
-- **ভুল মডেলের নাম**: উপলব্ধ মডেল দেখতে `foundry model list` ব্যবহার করুন এবং আপনার কনফিগারেশন অনুযায়ী আপডেট করুন
+**"Connection refused" বা "Service unavailable"**
+- নিশ্চিত করুন Foundry Local চলছে: `foundry model list`
+- সার্ভিসটি পোর্ট ৫২৭৩-এ রয়েছে কিনা যাচাই করুন: `application.properties` পরীক্ষা করুন
+- Foundry Local পুনরায় চালানোর চেষ্টা করুন: `foundry model run phi-3.5-mini`
+
+**"Model not found" ত্রুটি**
+- উপলব্ধ মডেলগুলি পরীক্ষা করুন: `foundry model list`
+- `application.properties`-এ মডেলের নাম সঠিকভাবে আপডেট করুন
+- প্রয়োজন হলে মডেলটি ডাউনলোড করুন: `foundry model run phi-3.5-mini`
+
+**Maven কম্পাইলেশন ত্রুটি**
+- নিশ্চিত করুন Java 21 বা তার বেশি: `java -version`
+- ক্লিন এবং পুনরায় তৈরি করুন: `mvn clean compile`
+- নির্ভরতা ডাউনলোডের জন্য ইন্টারনেট সংযোগ পরীক্ষা করুন
+
+**অ্যাপ্লিকেশন শুরু হয় কিন্তু কোনো আউটপুট নেই**
+- নিশ্চিত করুন Foundry Local প্রতিক্রিয়া দিচ্ছে: ব্রাউজারে `http://localhost:5273` খুলুন
+- নির্দিষ্ট ত্রুটি বার্তার জন্য অ্যাপ্লিকেশন লগ পরীক্ষা করুন
+- নিশ্চিত করুন মডেলটি সম্পূর্ণরূপে লোড হয়েছে এবং প্রস্তুত
 
 **অস্বীকৃতি**:  
-এই নথিটি AI অনুবাদ পরিষেবা [Co-op Translator](https://github.com/Azure/co-op-translator) ব্যবহার করে অনুবাদ করা হয়েছে। আমরা যথাসাধ্য সঠিকতার জন্য চেষ্টা করি, তবে অনুগ্রহ করে মনে রাখবেন যে স্বয়ংক্রিয় অনুবাদে ত্রুটি বা অসঙ্গতি থাকতে পারে। মূল ভাষায় থাকা নথিটিকে প্রামাণিক উৎস হিসেবে বিবেচনা করা উচিত। গুরুত্বপূর্ণ তথ্যের জন্য, পেশাদার মানব অনুবাদ সুপারিশ করা হয়। এই অনুবাদ ব্যবহারের ফলে কোনো ভুল বোঝাবুঝি বা ভুল ব্যাখ্যা হলে আমরা তার জন্য দায়ী থাকব না।
+এই নথিটি AI অনুবাদ পরিষেবা [Co-op Translator](https://github.com/Azure/co-op-translator) ব্যবহার করে অনুবাদ করা হয়েছে। আমরা যথাসম্ভব সঠিকতার জন্য চেষ্টা করি, তবে অনুগ্রহ করে মনে রাখবেন যে স্বয়ংক্রিয় অনুবাদে ত্রুটি বা অসঙ্গতি থাকতে পারে। এর মূল ভাষায় থাকা নথিটিকে প্রামাণিক উৎস হিসেবে বিবেচনা করা উচিত। গুরুত্বপূর্ণ তথ্যের জন্য, পেশাদার মানব অনুবাদ সুপারিশ করা হয়। এই অনুবাদ ব্যবহারের ফলে কোনো ভুল বোঝাবুঝি বা ভুল ব্যাখ্যা হলে আমরা দায়বদ্ধ থাকব না।

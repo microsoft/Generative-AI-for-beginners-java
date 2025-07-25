@@ -1,20 +1,18 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "da1b6d87b8a73306b29f9a1bdd681221",
-  "translation_date": "2025-07-21T16:31:56+00:00",
+  "original_hash": "df269f529a172a0197ef28460bf1da9f",
+  "translation_date": "2025-07-25T10:36:44+00:00",
   "source_file": "04-PracticalSamples/README.md",
   "language_code": "es"
 }
 -->
 # Aplicaciones Prácticas y Proyectos
 
-> Nota: Cada ejemplo también incluye un archivo **TUTORIAL.md** que te guía para ejecutar la aplicación.
-
-## Lo Que Aprenderás
-En esta sección presentaremos tres aplicaciones prácticas que muestran patrones de desarrollo de IA generativa con Java:
+## Lo que Aprenderás
+En esta sección, presentaremos tres aplicaciones prácticas que muestran patrones de desarrollo de IA generativa con Java:
 - Crear un Generador de Historias de Mascotas multimodal que combina IA en el cliente y en el servidor
-- Implementar integración de modelos de IA locales con el demo Foundry Local Spring Boot
+- Implementar la integración de modelos de IA locales con el demo Foundry Local Spring Boot
 - Desarrollar un servicio de Protocolo de Contexto de Modelo (MCP) con el ejemplo de Calculadora
 
 ## Tabla de Contenidos
@@ -37,7 +35,7 @@ El **[Demo Foundry Local Spring Boot](foundrylocal/README.md)** demuestra cómo 
 
 ### Generador de Historias de Mascotas
 
-El **[Generador de Historias de Mascotas](petstory/README.md)** es una aplicación web interactiva desarrollada con Spring Boot que demuestra el **procesamiento de IA multimodal** para generar historias creativas de mascotas. Combina capacidades de IA en el cliente y en el servidor utilizando transformer.js para interacciones basadas en el navegador y el OpenAI SDK para procesamiento en el servidor.
+El **[Generador de Historias de Mascotas](petstory/README.md)** es una aplicación web interactiva de Spring Boot que demuestra el **procesamiento de IA multimodal** para generar historias creativas de mascotas. Combina capacidades de IA en el cliente y en el servidor utilizando transformer.js para interacciones de IA en el navegador y el OpenAI SDK para el procesamiento en el servidor.
 
 ### Servicio MCP Calculadora (Demo MCP para Principiantes)
 
@@ -45,7 +43,7 @@ El **[Servicio MCP Calculadora](mcp/calculator/README.md)** es una demostración
 
 ## Progresión de Aprendizaje
 
-Estos proyectos están diseñados para construir sobre conceptos de capítulos anteriores:
+Estos proyectos están diseñados para construir sobre los conceptos de capítulos anteriores:
 
 1. **Comienza Simple**: Inicia con el Demo Foundry Local Spring Boot para entender la integración básica de IA con modelos locales
 2. **Añade Interactividad**: Avanza al Generador de Historias de Mascotas para procesamiento de IA multimodal e interacciones basadas en la web
@@ -56,8 +54,8 @@ Estos proyectos están diseñados para construir sobre conceptos de capítulos a
 **¡Felicidades!** Has logrado:
 
 - **Crear experiencias de IA multimodal** combinando procesamiento de IA en el cliente y en el servidor
-- **Implementar integración de modelos de IA locales** utilizando frameworks y SDKs modernos de Java
-- **Desarrollar servicios de Protocolo de Contexto de Modelo** demostrando patrones de integración de herramientas
+- **Implementar la integración de modelos de IA locales** utilizando frameworks y SDKs modernos de Java
+- **Desarrollar servicios de Protocolo de Contexto de Modelo** que demuestran patrones de integración de herramientas
 
 ## Próximos Pasos
 

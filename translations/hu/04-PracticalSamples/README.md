@@ -1,15 +1,13 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "da1b6d87b8a73306b29f9a1bdd681221",
-  "translation_date": "2025-07-21T21:13:36+00:00",
+  "original_hash": "df269f529a172a0197ef28460bf1da9f",
+  "translation_date": "2025-07-25T12:03:56+00:00",
   "source_file": "04-PracticalSamples/README.md",
   "language_code": "hu"
 }
 -->
 # Gyakorlati Alkalmazások és Projektek
-
-> Megjegyzés: Minden példához tartozik egy **TUTORIAL.md**, amely lépésről lépésre bemutatja az alkalmazás futtatását.
 
 ## Amit Megtanulsz
 Ebben a részben három gyakorlati alkalmazást mutatunk be, amelyek a generatív AI fejlesztési mintáit szemléltetik Java nyelven:
@@ -29,7 +27,7 @@ Ebben a részben három gyakorlati alkalmazást mutatunk be, amelyek a generatí
 
 ## Bevezetés
 
-Ez a fejezet **minta projekteket** mutat be, amelyek a generatív AI fejlesztési mintáit szemléltetik Java nyelven. Minden projekt teljesen működőképes, és bemutatja az AI technológiák, architekturális minták és legjobb gyakorlatok konkrét alkalmazását, amelyeket saját projektjeidben is felhasználhatsz.
+Ez a fejezet **minta projekteket** mutat be, amelyek a generatív AI fejlesztési mintáit szemléltetik Java nyelven. Minden projekt teljesen működőképes, és bemutatja az AI technológiák, architekturális minták és bevált gyakorlatok konkrét alkalmazását, amelyeket saját projektjeidhez is adaptálhatsz.
 
 ### Foundry Local Spring Boot Demó
 
@@ -63,5 +61,5 @@ Ezek a projektek az előző fejezetekben tanult fogalmakra épülnek:
 
 [5. fejezet: Felelős Generatív AI](../05-ResponsibleGenAI/README.md)
 
-**Felelősség kizárása**:  
-Ez a dokumentum az AI fordítási szolgáltatás, a [Co-op Translator](https://github.com/Azure/co-op-translator) segítségével lett lefordítva. Bár törekszünk a pontosságra, kérjük, vegye figyelembe, hogy az automatikus fordítások hibákat vagy pontatlanságokat tartalmazhatnak. Az eredeti dokumentum az eredeti nyelvén tekintendő hiteles forrásnak. Kritikus információk esetén javasolt professzionális emberi fordítást igénybe venni. Nem vállalunk felelősséget semmilyen félreértésért vagy téves értelmezésért, amely a fordítás használatából eredhet.
+**Felelősségkizárás**:  
+Ez a dokumentum az [Co-op Translator](https://github.com/Azure/co-op-translator) AI fordítási szolgáltatás segítségével készült. Bár törekszünk a pontosságra, kérjük, vegye figyelembe, hogy az automatikus fordítások hibákat vagy pontatlanságokat tartalmazhatnak. Az eredeti dokumentum az eredeti nyelvén tekintendő hiteles forrásnak. Kritikus információk esetén javasolt professzionális, emberi fordítást igénybe venni. Nem vállalunk felelősséget a fordítás használatából eredő félreértésekért vagy téves értelmezésekért.

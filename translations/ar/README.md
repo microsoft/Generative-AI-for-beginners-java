@@ -1,21 +1,28 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "0f080f1f2a635610b5f6eff5a58a9590",
-  "translation_date": "2025-07-25T07:36:05+00:00",
+  "original_hash": "a49b35508745c032a0033d914df7901b",
+  "translation_date": "2025-07-25T10:43:00+00:00",
   "source_file": "README.md",
   "language_code": "ar"
 }
 -->
 # الذكاء الاصطناعي التوليدي للمبتدئين - إصدار Java
 
-> **NOTE: Quick Start**: يمكن إتمام الدورة بالكامل عبر الإنترنت - لا حاجة لإعداد محلي!
+[![Microsoft Azure AI Foundry Discord](https://dcbadge.limes.pink/api/server/ByRwuEEgH4)](https://discord.com/invite/ByRwuEEgH4)
+
+![Generative AI for Beginners - Java Edition](../../translated_images/beg-genai-series.61edc4a6b2cc54284fa2d70eda26dc0ca2669e26e49655b842ea799cd6e16d2a.ar.png)
+
+**الوقت المطلوب**: يمكن إكمال الورشة بالكامل عبر الإنترنت دون الحاجة إلى إعداد محلي. إذا كنت ترغب في تشغيل الأمثلة، فإن إعداد البيئة يستغرق دقيقتين، واستكشاف الأمثلة يتطلب من 1 إلى 3 ساعات حسب عمق الاستكشاف.
+
+> **البدء السريع**
+
 1. قم بعمل Fork لهذا المستودع إلى حساب GitHub الخاص بك
 2. انقر على **Code** → علامة تبويب **Codespaces** → **...** → **New with options...**
-3. استخدم الإعدادات الافتراضية – سيقوم هذا باختيار حاوية التطوير المخصصة لهذه الدورة
+3. استخدم الإعدادات الافتراضية – سيقوم هذا باختيار حاوية التطوير التي تم إنشاؤها لهذه الدورة
 4. انقر على **Create codespace**
-5. انتظر حوالي دقيقتين حتى يصبح البيئة جاهزة
-6. انتقل مباشرة إلى [إنشاء رمز GitHub Models Token الخاص بك](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)
+5. انتظر حوالي دقيقتين حتى تكون البيئة جاهزة
+6. انتقل مباشرة إلى [إنشاء رمز نماذج GitHub الخاص بك](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)
 
 ## دعم متعدد اللغات
 
@@ -25,20 +32,18 @@ CO_OP_TRANSLATOR_METADATA:
 
 ## هيكل الدورة ومسار التعلم
 
-**الوقت المطلوب**: إعداد البيئة يستغرق دقيقتين، بينما تتطلب الأمثلة من 1-3 ساعات حسب عمق الاستكشاف. يمكن إتمام الورشة بالكامل عبر الإنترنت دون إعداد محلي.
-
 ### **الفصل الأول: مقدمة في الذكاء الاصطناعي التوليدي**
 - **المفاهيم الأساسية**: فهم نماذج اللغة الكبيرة، الرموز، التضمينات، وقدرات الذكاء الاصطناعي
-- **نظام Java للذكاء الاصطناعي**: نظرة عامة على Spring AI و OpenAI SDKs
+- **نظام الذكاء الاصطناعي في Java**: نظرة عامة على Spring AI و OpenAI SDKs
 - **بروتوكول سياق النموذج**: مقدمة عن MCP ودوره في تواصل وكلاء الذكاء الاصطناعي
 - **التطبيقات العملية**: سيناريوهات واقعية تشمل روبوتات الدردشة وتوليد المحتوى
 - **[→ ابدأ الفصل الأول](./01-IntroToGenAI/README.md)**
 
 ### **الفصل الثاني: إعداد بيئة التطوير**
-- **إعداد متعدد المزودين**: إعداد تكامل GitHub Models و Azure OpenAI و OpenAI Java SDK
+- **تكوين متعدد المزودين**: إعداد نماذج GitHub، Azure OpenAI، ودمج OpenAI Java SDK
 - **Spring Boot + Spring AI**: أفضل الممارسات لتطوير تطبيقات الذكاء الاصطناعي للمؤسسات
-- **GitHub Models**: الوصول المجاني لنماذج الذكاء الاصطناعي للتجربة والتعلم (لا حاجة لبطاقة ائتمان)
-- **أدوات التطوير**: إعداد حاويات Docker، VS Code، و GitHub Codespaces
+- **نماذج GitHub**: الوصول المجاني إلى نماذج الذكاء الاصطناعي للتجربة والتعلم (لا حاجة لبطاقة ائتمان)
+- **أدوات التطوير**: تكوين حاويات Docker، VS Code، و GitHub Codespaces
 - **[→ ابدأ الفصل الثاني](./02-SetupDevEnvironment/README.md)**
 
 ### **الفصل الثالث: تقنيات الذكاء الاصطناعي التوليدي الأساسية**
@@ -49,34 +54,34 @@ CO_OP_TRANSLATOR_METADATA:
 - **[→ ابدأ الفصل الثالث](./03-CoreGenerativeAITechniques/README.md)**
 
 ### **الفصل الرابع: التطبيقات العملية والمشاريع**
-- **مولد قصص الحيوانات الأليفة** (`petstory/`): توليد محتوى إبداعي باستخدام GitHub Models
-- **عرض Foundry المحلي** (`foundrylocal/`): تكامل نماذج الذكاء الاصطناعي المحلية مع OpenAI Java SDK
-- **خدمة MCP للحسابات** (`mcp/calculator/`): تنفيذ بروتوكول سياق النموذج الأساسي باستخدام Spring AI
+- **مولد قصص الحيوانات الأليفة** (`petstory/`): توليد محتوى إبداعي باستخدام نماذج GitHub
+- **عرض محلي لـ Foundry** (`foundrylocal/`): دمج نماذج الذكاء الاصطناعي محليًا باستخدام OpenAI Java SDK
+- **خدمة حاسبة بروتوكول سياق النموذج** (`mcp/calculator/`): تنفيذ أساسي لبروتوكول MCP باستخدام Spring AI
 - **[→ ابدأ الفصل الرابع](./04-PracticalSamples/README.md)**
 
 ### **الفصل الخامس: تطوير الذكاء الاصطناعي المسؤول**
-- **أمان GitHub Models**: اختبار تصفية المحتوى وآليات الأمان المدمجة
-- **عرض الذكاء الاصطناعي المسؤول**: مثال عملي يوضح كيفية عمل فلاتر الأمان للذكاء الاصطناعي
+- **أمان نماذج GitHub**: اختبار آليات تصفية المحتوى والسلامة المدمجة
+- **عرض الذكاء الاصطناعي المسؤول**: مثال عملي يوضح كيفية عمل فلاتر أمان الذكاء الاصطناعي
 - **أفضل الممارسات**: إرشادات أساسية لتطوير ونشر الذكاء الاصطناعي الأخلاقي
 - **[→ ابدأ الفصل الخامس](./05-ResponsibleGenAI/README.md)**
 
 ## موارد إضافية 
 
-- [AI Agents For Beginners](https://github.com/microsoft/ai-agents-for-beginners)
-- [Generative AI for Beginners using .NET](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)
-- [Generative AI for Beginners using JavaScript](https://github.com/microsoft/generative-ai-with-javascript)
-- [Generative AI for Beginners](https://github.com/microsoft/generative-ai-for-beginners)
-- [ML for Beginners](https://aka.ms/ml-beginners)
-- [Data Science for Beginners](https://aka.ms/datascience-beginners)
-- [AI for Beginners](https://aka.ms/ai-beginners)
-- [Cybersecurity for Beginners](https://github.com/microsoft/Security-101)
-- [Web Dev for Beginners](https://aka.ms/webdev-beginners)
-- [IoT for Beginners](https://aka.ms/iot-beginners)
-- [XR Development for Beginners](https://github.com/microsoft/xr-development-for-beginners)
-- [Mastering GitHub Copilot for AI Paired Programming](https://aka.ms/GitHubCopilotAI)
-- [Mastering GitHub Copilot for C#/.NET Developers](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers)
-- [Choose Your Own Copilot Adventure](https://github.com/microsoft/CopilotAdventures)
-- [RAG Chat App with Azure AI Services](https://github.com/Azure-Samples/azure-search-openai-demo-java)
+- [وكلاء الذكاء الاصطناعي للمبتدئين](https://github.com/microsoft/ai-agents-for-beginners)
+- [الذكاء الاصطناعي التوليدي للمبتدئين باستخدام .NET](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)
+- [الذكاء الاصطناعي التوليدي للمبتدئين باستخدام JavaScript](https://github.com/microsoft/generative-ai-with-javascript)
+- [الذكاء الاصطناعي التوليدي للمبتدئين](https://github.com/microsoft/generative-ai-for-beginners)
+- [تعلم الآلة للمبتدئين](https://aka.ms/ml-beginners)
+- [علم البيانات للمبتدئين](https://aka.ms/datascience-beginners)
+- [الذكاء الاصطناعي للمبتدئين](https://aka.ms/ai-beginners)
+- [الأمن السيبراني للمبتدئين](https://github.com/microsoft/Security-101)
+- [تطوير الويب للمبتدئين](https://aka.ms/webdev-beginners)
+- [إنترنت الأشياء للمبتدئين](https://aka.ms/iot-beginners)
+- [تطوير الواقع الممتد للمبتدئين](https://github.com/microsoft/xr-development-for-beginners)
+- [إتقان GitHub Copilot للبرمجة المزدوجة بالذكاء الاصطناعي](https://aka.ms/GitHubCopilotAI)
+- [إتقان GitHub Copilot لمطوري C#/.NET](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers)
+- [اختر مغامرتك الخاصة مع Copilot](https://github.com/microsoft/CopilotAdventures)
+- [تطبيق دردشة RAG مع خدمات Azure AI](https://github.com/Azure-Samples/azure-search-openai-demo-java)
 
 **إخلاء المسؤولية**:  
 تم ترجمة هذا المستند باستخدام خدمة الترجمة بالذكاء الاصطناعي [Co-op Translator](https://github.com/Azure/co-op-translator). بينما نسعى لتحقيق الدقة، يرجى العلم أن الترجمات الآلية قد تحتوي على أخطاء أو معلومات غير دقيقة. يجب اعتبار المستند الأصلي بلغته الأصلية المصدر الموثوق. للحصول على معلومات حاسمة، يُوصى بالاستعانة بترجمة بشرية احترافية. نحن غير مسؤولين عن أي سوء فهم أو تفسيرات خاطئة تنشأ عن استخدام هذه الترجمة.

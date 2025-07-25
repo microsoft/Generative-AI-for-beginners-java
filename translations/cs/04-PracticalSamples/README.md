@@ -1,21 +1,19 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "da1b6d87b8a73306b29f9a1bdd681221",
-  "translation_date": "2025-07-21T21:13:54+00:00",
+  "original_hash": "df269f529a172a0197ef28460bf1da9f",
+  "translation_date": "2025-07-25T12:06:43+00:00",
   "source_file": "04-PracticalSamples/README.md",
   "language_code": "cs"
 }
 -->
 # Praktické aplikace a projekty
 
-> Poznámka: Každý příklad obsahuje také soubor **TUTORIAL.md**, který vás provede spuštěním aplikace.
-
 ## Co se naučíte
-V této části si ukážeme tři praktické aplikace, které demonstrují vzory vývoje generativní AI s Javou:
+V této části si ukážeme tři praktické aplikace, které představují vzory vývoje generativní AI s využitím Javy:
 - Vytvoření multimodálního generátoru příběhů o mazlíčcích kombinujícího AI na straně klienta i serveru
-- Implementace integrace lokálního AI modelu s ukázkou Foundry Local Spring Boot
-- Vývoj služby Model Context Protocol (MCP) s příkladem Kalkulačky
+- Implementace integrace lokálního AI modelu pomocí ukázky Foundry Local Spring Boot
+- Vývoj služby Model Context Protocol (MCP) na příkladu Kalkulačky
 
 ## Obsah
 
@@ -29,11 +27,11 @@ V této části si ukážeme tři praktické aplikace, které demonstrují vzory
 
 ## Úvod
 
-Tato kapitola představuje **ukázkové projekty**, které demonstrují vzory vývoje generativní AI s Javou. Každý projekt je plně funkční a ukazuje konkrétní AI technologie, architektonické vzory a osvědčené postupy, které můžete přizpůsobit pro své vlastní aplikace.
+Tato kapitola představuje **ukázkové projekty**, které demonstrují vzory vývoje generativní AI s využitím Javy. Každý projekt je plně funkční a ukazuje konkrétní AI technologie, architektonické vzory a osvědčené postupy, které můžete přizpůsobit pro své vlastní aplikace.
 
 ### Ukázka Foundry Local Spring Boot
 
-**[Ukázka Foundry Local Spring Boot](foundrylocal/README.md)** ukazuje, jak integrovat lokální AI modely pomocí **OpenAI Java SDK**. Demonstruje připojení k modelu **Phi-3.5-mini** běžícímu na Foundry Local, což umožňuje spouštět AI aplikace bez závislosti na cloudových službách.
+**[Ukázka Foundry Local Spring Boot](foundrylocal/README.md)** ukazuje, jak integrovat lokální AI modely pomocí **OpenAI Java SDK**. Demonstruje připojení k modelu **Phi-3.5-mini** běžícímu na Foundry Local, což umožňuje provozovat AI aplikace bez závislosti na cloudových službách.
 
 ### Generátor příběhů o mazlíčcích
 
@@ -41,7 +39,7 @@ Tato kapitola představuje **ukázkové projekty**, které demonstrují vzory v�
 
 ### MCP Kalkulačka (Ukázka MCP pro začátečníky)
 
-**[MCP Kalkulačka](mcp/calculator/README.md)** je jednoduchá ukázka **Model Context Protocol (MCP)** pomocí Spring AI. Poskytuje přívětivý úvod do konceptů MCP a ukazuje, jak vytvořit základní MCP Server, který komunikuje s MCP klienty.
+**[MCP Kalkulačka](mcp/calculator/README.md)** je jednoduchá ukázka **Model Context Protocol (MCP)** s využitím Spring AI. Poskytuje přívětivý úvod do konceptů MCP a ukazuje, jak vytvořit základní MCP Server, který komunikuje s MCP klienty.
 
 ## Postup učení
 
@@ -49,14 +47,14 @@ Tyto projekty jsou navrženy tak, aby stavěly na konceptech z předchozích kap
 
 1. **Začněte jednoduše**: Začněte s ukázkou Foundry Local Spring Boot, abyste pochopili základní integraci AI s lokálními modely
 2. **Přidejte interaktivitu**: Pokračujte s Generátorem příběhů o mazlíčcích pro multimodální AI a interakce na webu
-3. **Naučte se základy MCP**: Vyzkoušejte MCP Kalkulačku, abyste pochopili základy Model Context Protocol
+3. **Seznamte se se základy MCP**: Vyzkoušejte MCP Kalkulačku, abyste pochopili základy Model Context Protocol
 
 ## Shrnutí
 
 **Gratulujeme!** Úspěšně jste:
 
 - **Vytvořili multimodální AI zážitky** kombinující AI zpracování na straně klienta i serveru
-- **Implementovali integraci lokálního AI modelu** pomocí moderních Java frameworků a SDK
+- **Implementovali integraci lokálního AI modelu** s využitím moderních Java frameworků a SDK
 - **Vyvinuli služby Model Context Protocol**, které demonstrují vzory integrace nástrojů
 
 ## Další kroky

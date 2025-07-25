@@ -1,137 +1,313 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "7bf9a4a832911269a8bd0decb97ff36c",
-  "translation_date": "2025-07-21T19:57:57+00:00",
+  "original_hash": "8c6c7e9008b114540677f7a65aa9ddad",
+  "translation_date": "2025-07-25T11:41:12+00:00",
   "source_file": "04-PracticalSamples/mcp/calculator/README.md",
   "language_code": "da"
 }
 -->
-# Grundlæggende Lommeregner MCP Service
-
->**Note**: Dette kapitel inkluderer en [**Tutorial**](./TUTORIAL.md), der guider dig gennem at køre de færdige eksempler.
-
-Velkommen til din første praktiske oplevelse med **Model Context Protocol (MCP)**! I de tidligere kapitler har du lært om grundlæggende generativ AI og opsat dit udviklingsmiljø. Nu er det tid til at bygge noget praktisk.
-
-Denne lommeregner-service demonstrerer, hvordan AI-modeller sikkert kan interagere med eksterne værktøjer ved hjælp af MCP. I stedet for at stole på AI-modellens til tider upålidelige matematiske evner, viser vi, hvordan man bygger et robust system, hvor AI kan kalde specialiserede tjenester for præcise beregninger.
+# MCP Calculator Tutorial for Begyndere
 
 ## Indholdsfortegnelse
 
 - [Hvad Du Vil Lære](../../../../../04-PracticalSamples/mcp/calculator)
 - [Forudsætninger](../../../../../04-PracticalSamples/mcp/calculator)
-- [Nøglekoncepter](../../../../../04-PracticalSamples/mcp/calculator)
-- [Hurtig Start](../../../../../04-PracticalSamples/mcp/calculator)
-- [Tilgængelige Lommeregnerfunktioner](../../../../../04-PracticalSamples/mcp/calculator)
-- [Testklienter](../../../../../04-PracticalSamples/mcp/calculator)
-  - [1. Direkte MCP Klient (SDKClient)](../../../../../04-PracticalSamples/mcp/calculator)
-  - [2. AI-drevet Klient (LangChain4jClient)](../../../../../04-PracticalSamples/mcp/calculator)
-- [MCP Inspector (Web UI)](../../../../../04-PracticalSamples/mcp/calculator)
-  - [Trinvise Instruktioner](../../../../../04-PracticalSamples/mcp/calculator)
+- [Forstå Projektstrukturen](../../../../../04-PracticalSamples/mcp/calculator)
+- [Forklaring af Kernekomponenter](../../../../../04-PracticalSamples/mcp/calculator)
+  - [1. Hovedapplikation](../../../../../04-PracticalSamples/mcp/calculator)
+  - [2. Calculator Service](../../../../../04-PracticalSamples/mcp/calculator)
+  - [3. Direkte MCP-klient](../../../../../04-PracticalSamples/mcp/calculator)
+  - [4. AI-drevet Klient](../../../../../04-PracticalSamples/mcp/calculator)
+- [Kør Eksemplerne](../../../../../04-PracticalSamples/mcp/calculator)
+- [Hvordan Det Hele Fungerer Sammen](../../../../../04-PracticalSamples/mcp/calculator)
+- [Næste Skridt](../../../../../04-PracticalSamples/mcp/calculator)
 
 ## Hvad Du Vil Lære
 
-Ved at arbejde med dette eksempel vil du forstå:
-- Hvordan man opretter MCP-kompatible tjenester ved hjælp af Spring Boot
-- Forskellen mellem direkte protokolkommunikation og AI-drevet interaktion
-- Hvordan AI-modeller beslutter, hvornår og hvordan de skal bruge eksterne værktøjer
-- Bedste praksis for at bygge værktøjsaktiverede AI-applikationer
+Denne tutorial forklarer, hvordan man bygger en calculator service ved hjælp af Model Context Protocol (MCP). Du vil lære:
 
-Perfekt for begyndere, der lærer MCP-koncepter og er klar til at bygge deres første AI-værktøjsintegration!
+- Hvordan man opretter en service, som AI kan bruge som et værktøj
+- Hvordan man opsætter direkte kommunikation med MCP-services
+- Hvordan AI-modeller automatisk kan vælge, hvilke værktøjer der skal bruges
+- Forskellen mellem direkte protokolopkald og AI-assisterede interaktioner
 
 ## Forudsætninger
 
-- Java 21+
-- Maven 3.6+
-- **GitHub Token**: Påkrævet for den AI-drevne klient. Hvis du ikke har opsat dette endnu, se [Kapitel 2: Opsætning af dit udviklingsmiljø](../../../02-SetupDevEnvironment/README.md) for instruktioner.
+Før du starter, skal du sikre dig, at du har:
+- Java 21 eller nyere installeret
+- Maven til håndtering af afhængigheder
+- En GitHub-konto med en personlig adgangstoken (PAT)
+- Grundlæggende forståelse af Java og Spring Boot
 
-## Nøglekoncepter
+## Forstå Projektstrukturen
 
-**Model Context Protocol (MCP)** er en standardiseret måde for AI-applikationer at forbinde sikkert til eksterne værktøjer. Tænk på det som en "bro", der gør det muligt for AI-modeller at bruge eksterne tjenester som vores lommeregner. I stedet for at AI-modellen forsøger at udføre matematik selv (hvilket kan være upålideligt), kan den kalde vores lommeregner-service for at få præcise resultater. MCP sikrer, at denne kommunikation sker sikkert og konsekvent.
+Calculator-projektet indeholder flere vigtige filer:
 
-**Server-Sent Events (SSE)** muliggør realtidskommunikation mellem serveren og klienterne. I modsætning til traditionelle HTTP-forespørgsler, hvor du spørger og venter på et svar, tillader SSE serveren kontinuerligt at sende opdateringer til klienten. Dette er perfekt til AI-applikationer, hvor svar kan streames eller tage tid at behandle.
-
-**AI-værktøjer & Funktionskald** giver AI-modeller mulighed for automatisk at vælge og bruge eksterne funktioner (som lommeregnerfunktioner) baseret på brugerens forespørgsler. Når du spørger "Hvad er 15 + 27?", forstår AI-modellen, at du ønsker addition, kalder automatisk vores `add`-værktøj med de rigtige parametre (15, 27) og returnerer resultatet i naturligt sprog. AI fungerer som en intelligent koordinator, der ved, hvornår og hvordan hvert værktøj skal bruges.
-
-## Hurtig Start
-
-### 1. Naviger til lommeregnerapplikationens mappe
-```bash
-cd Generative-AI-for-beginners-java/04-PracticalSamples/mcp/calculator
+```
+calculator/
+├── src/main/java/com/microsoft/mcp/sample/server/
+│   ├── McpServerApplication.java          # Main Spring Boot app
+│   └── service/CalculatorService.java     # Calculator operations
+└── src/test/java/com/microsoft/mcp/sample/client/
+    ├── SDKClient.java                     # Direct MCP communication
+    ├── LangChain4jClient.java            # AI-powered client
+    └── Bot.java                          # Simple chat interface
 ```
 
-### 2. Byg & Kør
-```bash
-mvn clean install -DskipTests
-java -jar target/calculator-server-0.0.1-SNAPSHOT.jar
+## Forklaring af Kernekomponenter
+
+### 1. Hovedapplikation
+
+**Fil:** `McpServerApplication.java`
+
+Dette er indgangspunktet for vores calculator service. Det er en standard Spring Boot-applikation med en særlig tilføjelse:
+
+```java
+@SpringBootApplication
+public class McpServerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(McpServerApplication.class, args);
+    }
+    
+    @Bean
+    public ToolCallbackProvider calculatorTools(CalculatorService calculator) {
+        return MethodToolCallbackProvider.builder().toolObjects(calculator).build();
+    }
+}
 ```
 
-### 2. Test med Klienter
-- **SDKClient**: Direkte MCP-protokolinteraktion
-- **LangChain4jClient**: AI-drevet naturlig sproginteraktion (kræver GitHub-token)
+**Hvad dette gør:**
+- Starter en Spring Boot-webserver på port 8080
+- Opretter en `ToolCallbackProvider`, der gør vores calculator-metoder tilgængelige som MCP-værktøjer
+- `@Bean`-annoteringen fortæller Spring, at dette skal administreres som en komponent, som andre dele kan bruge
 
-## Tilgængelige Lommeregnerfunktioner
+### 2. Calculator Service
 
-- `add(a, b)`, `subtract(a, b)`, `multiply(a, b)`, `divide(a, b)`
-- `power(base, exponent)`, `squareRoot(number)`, `absolute(number)`
-- `modulus(a, b)`, `help()`
+**Fil:** `CalculatorService.java`
 
-## Testklienter
+Her sker alle beregningerne. Hver metode er markeret med `@Tool` for at gøre den tilgængelig via MCP:
 
-### 1. Direkte MCP Klient (SDKClient)
-Tester rå MCP-protokolkommunikation. Kør med:
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient" -Dexec.classpathScope=test
+```java
+@Service
+public class CalculatorService {
+
+    @Tool(description = "Add two numbers together")
+    public String add(double a, double b) {
+        double result = a + b;
+        return formatResult(a, "+", b, result);
+    }
+
+    @Tool(description = "Subtract the second number from the first number")
+    public String subtract(double a, double b) {
+        double result = a - b;
+        return formatResult(a, "-", b, result);
+    }
+    
+    // More calculator operations...
+    
+    private String formatResult(double a, String operator, double b, double result) {
+        return String.format("%.2f %s %.2f = %.2f", a, operator, b, result);
+    }
+}
 ```
 
-### 2. AI-drevet Klient (LangChain4jClient)
-Demonstrerer naturlig sproginteraktion med GitHub-modeller. Kræver GitHub-token (se [Forudsætninger](../../../../../04-PracticalSamples/mcp/calculator)).
+**Nøglefunktioner:**
 
-**Kør:**
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient" -Dexec.classpathScope=test
+1. **`@Tool`-annotering**: Dette fortæller MCP, at denne metode kan kaldes af eksterne klienter
+2. **Klare beskrivelser**: Hvert værktøj har en beskrivelse, der hjælper AI-modeller med at forstå, hvornår det skal bruges
+3. **Konsistent returformat**: Alle operationer returnerer læsbare strenge som "5.00 + 3.00 = 8.00"
+4. **Fejlhåndtering**: Division med nul og negative kvadratrødder returnerer fejlmeddelelser
+
+**Tilgængelige operationer:**
+- `add(a, b)` - Lægger to tal sammen
+- `subtract(a, b)` - Trækker det andet tal fra det første
+- `multiply(a, b)` - Ganger to tal
+- `divide(a, b)` - Dividerer det første tal med det andet (med nul-tjek)
+- `power(base, exponent)` - Løfter base til eksponentens potens
+- `squareRoot(number)` - Beregner kvadratroden (med negativt tjek)
+- `modulus(a, b)` - Returnerer resten af divisionen
+- `absolute(number)` - Returnerer den absolutte værdi
+- `help()` - Returnerer information om alle operationer
+
+### 3. Direkte MCP-klient
+
+**Fil:** `SDKClient.java`
+
+Denne klient kommunikerer direkte med MCP-serveren uden at bruge AI. Den kalder manuelt specifikke calculator-funktioner:
+
+```java
+public class SDKClient {
+    
+    public static void main(String[] args) {
+        var transport = new WebFluxSseClientTransport(
+            WebClient.builder().baseUrl("http://localhost:8080")
+        );
+        new SDKClient(transport).run();
+    }
+    
+    public void run() {
+        var client = McpClient.sync(this.transport).build();
+        client.initialize();
+        
+        // List available tools
+        ListToolsResult toolsList = client.listTools();
+        System.out.println("Available Tools = " + toolsList);
+        
+        // Call specific calculator functions
+        CallToolResult resultAdd = client.callTool(
+            new CallToolRequest("add", Map.of("a", 5.0, "b", 3.0))
+        );
+        System.out.println("Add Result = " + resultAdd);
+        
+        CallToolResult resultSqrt = client.callTool(
+            new CallToolRequest("squareRoot", Map.of("number", 16.0))
+        );
+        System.out.println("Square Root Result = " + resultSqrt);
+        
+        client.closeGracefully();
+    }
+}
 ```
 
-## MCP Inspector (Web UI)
+**Hvad dette gør:**
+1. **Forbinder** til calculator-serveren på `http://localhost:8080`
+2. **Lister** alle tilgængelige værktøjer (vores calculator-funktioner)
+3. **Kalder** specifikke funktioner med præcise parametre
+4. **Printer** resultaterne direkte
 
-MCP Inspector giver en visuel webgrænseflade til at teste din MCP-service uden at skrive kode. Perfekt for begyndere til at forstå, hvordan MCP fungerer!
+**Hvornår man skal bruge dette:** Når du præcist ved, hvilken beregning du vil udføre, og ønsker at kalde den programmæssigt.
 
-### Trinvise Instruktioner:
+### 4. AI-drevet Klient
 
-1. **Start lommeregner-serveren** (hvis den ikke allerede kører):
-   ```bash
-   java -jar target/calculator-server-0.0.1-SNAPSHOT.jar
-   ```
+**Fil:** `LangChain4jClient.java`
 
-2. **Installer og kør MCP Inspector** i et nyt terminalvindue:
-   ```bash
-   npx @modelcontextprotocol/inspector
-   ```
+Denne klient bruger en AI-model (GPT-4o-mini), der automatisk kan beslutte, hvilke calculator-værktøjer der skal bruges:
 
-3. **Åbn webgrænsefladen**:
-   - Kig efter en besked som "Inspector running at http://localhost:6274"
-   - Åbn den URL i din webbrowser
+```java
+public class LangChain4jClient {
+    
+    public static void main(String[] args) throws Exception {
+        // Set up the AI model (using GitHub Models)
+        ChatLanguageModel model = OpenAiOfficialChatModel.builder()
+                .isGitHubModels(true)
+                .apiKey(System.getenv("GITHUB_TOKEN"))
+                .modelName("gpt-4o-mini")
+                .build();
 
-4. **Forbind til din lommeregner-service**:
-   - I webgrænsefladen skal du indstille transporttypen til "SSE"
-   - Indstil URL'en til: `http://localhost:8080/sse`
-   - Klik på knappen "Connect"
+        // Connect to our calculator MCP server
+        McpTransport transport = new HttpMcpTransport.Builder()
+                .sseUrl("http://localhost:8080/sse")
+                .logRequests(true)  // Shows what the AI is doing
+                .logResponses(true)
+                .build();
 
-5. **Udforsk tilgængelige værktøjer**:
-   - Klik på "List Tools" for at se alle lommeregnerfunktioner
-   - Du vil se funktioner som `add`, `subtract`, `multiply` osv.
+        McpClient mcpClient = new DefaultMcpClient.Builder()
+                .transport(transport)
+                .build();
 
-6. **Test en lommeregnerfunktion**:
-   - Vælg et værktøj (f.eks. "add")
-   - Indtast parametre (f.eks. `a: 15`, `b: 27`)
-   - Klik på "Run Tool"
-   - Se resultatet returneret af din MCP-service!
+        // Give the AI access to our calculator tools
+        ToolProvider toolProvider = McpToolProvider.builder()
+                .mcpClients(List.of(mcpClient))
+                .build();
 
-Denne visuelle tilgang hjælper dig med at forstå præcis, hvordan MCP-kommunikation fungerer, før du bygger dine egne klienter.
+        // Create an AI bot that can use our calculator
+        Bot bot = AiServices.builder(Bot.class)
+                .chatLanguageModel(model)
+                .toolProvider(toolProvider)
+                .build();
 
-![npx inspector](../../../../../translated_images/tool.214c70103694335c4cfdc2d624373dfce4b0162f6aea089ac1da9051fb563b7f.da.png)
+        // Now we can ask the AI to do calculations in natural language
+        String response = bot.chat("Calculate the sum of 24.5 and 17.3 using the calculator service");
+        System.out.println(response);
 
----
-**Reference:** [MCP Server Boot Starter Docs](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-server-boot-starter-docs.html)
+        response = bot.chat("What's the square root of 144?");
+        System.out.println(response);
+    }
+}
+```
+
+**Hvad dette gør:**
+1. **Opretter** en AI-modelforbindelse ved hjælp af din GitHub-token
+2. **Forbinder** AI til vores calculator MCP-server
+3. **Giver** AI adgang til alle vores calculator-værktøjer
+4. **Tillader** naturlige sprogforespørgsler som "Beregn summen af 24.5 og 17.3"
+
+**AI gør automatisk følgende:**
+- Forstår, at du vil lægge tal sammen
+- Vælger værktøjet `add`
+- Kalder `add(24.5, 17.3)`
+- Returnerer resultatet i en naturlig respons
+
+## Kør Eksemplerne
+
+### Trin 1: Start Calculator-serveren
+
+Først skal du indstille din GitHub-token (nødvendig for AI-klienten):
+
+**Windows:**
+```cmd
+set GITHUB_TOKEN=your_github_token_here
+```
+
+**Linux/macOS:**
+```bash
+export GITHUB_TOKEN=your_github_token_here
+```
+
+Start serveren:
+```bash
+cd 04-PracticalSamples/mcp/calculator
+mvn spring-boot:run
+```
+
+Serveren starter på `http://localhost:8080`. Du bør se:
+```
+Started McpServerApplication in X.XXX seconds
+```
+
+### Trin 2: Test med Direkte Klient
+
+I en ny terminal:
+```bash
+mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient"
+```
+
+Du vil se output som:
+```
+Available Tools = [add, subtract, multiply, divide, power, squareRoot, modulus, absolute, help]
+Add Result = 5.00 + 3.00 = 8.00
+Square Root Result = √16.00 = 4.00
+```
+
+### Trin 3: Test med AI Klient
+
+```bash
+mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient"
+```
+
+Du vil se, at AI automatisk bruger værktøjer:
+```
+The sum of 24.5 and 17.3 is 41.8.
+The square root of 144 is 12.
+```
+
+## Hvordan Det Hele Fungerer Sammen
+
+Her er den komplette proces, når du spørger AI "Hvad er 5 + 3?":
+
+1. **Du** spørger AI på naturligt sprog
+2. **AI** analyserer din forespørgsel og indser, at du vil lægge tal sammen
+3. **AI** kalder MCP-serveren: `add(5.0, 3.0)`
+4. **Calculator Service** udfører: `5.0 + 3.0 = 8.0`
+5. **Calculator Service** returnerer: `"5.00 + 3.00 = 8.00"`
+6. **AI** modtager resultatet og formaterer en naturlig respons
+7. **Du** får: "Summen af 5 og 3 er 8"
+
+## Næste Skridt
+
+For flere eksempler, se [Kapitel 04: Praktiske eksempler](../../README.md)
 
 **Ansvarsfraskrivelse**:  
-Dette dokument er blevet oversat ved hjælp af AI-oversættelsestjenesten [Co-op Translator](https://github.com/Azure/co-op-translator). Selvom vi bestræber os på nøjagtighed, skal du være opmærksom på, at automatiserede oversættelser kan indeholde fejl eller unøjagtigheder. Det originale dokument på dets oprindelige sprog bør betragtes som den autoritative kilde. For kritisk information anbefales professionel menneskelig oversættelse. Vi er ikke ansvarlige for eventuelle misforståelser eller fejltolkninger, der måtte opstå som følge af brugen af denne oversættelse.
+Dette dokument er blevet oversat ved hjælp af AI-oversættelsestjenesten [Co-op Translator](https://github.com/Azure/co-op-translator). Selvom vi bestræber os på at sikre nøjagtighed, skal du være opmærksom på, at automatiserede oversættelser kan indeholde fejl eller unøjagtigheder. Det originale dokument på dets oprindelige sprog bør betragtes som den autoritative kilde. For kritisk information anbefales professionel menneskelig oversættelse. Vi er ikke ansvarlige for eventuelle misforståelser eller fejltolkninger, der måtte opstå som følge af brugen af denne oversættelse.

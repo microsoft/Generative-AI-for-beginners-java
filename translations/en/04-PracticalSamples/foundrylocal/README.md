@@ -1,215 +1,301 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "a66dad62cdb2e141f05086feaf1a4a39",
-  "translation_date": "2025-07-21T21:16:12+00:00",
+  "original_hash": "2284c54d2a98090a37df0dbef1633ebf",
+  "translation_date": "2025-07-25T10:32:33+00:00",
   "source_file": "04-PracticalSamples/foundrylocal/README.md",
   "language_code": "en"
 }
 -->
-# Foundry Local Command-Line Application
-
->**Note**: This chapter includes a [**Tutorial**](./TUTORIAL.md) that guides you through running the completed examples.
-
-A simple Spring Boot command-line application that demonstrates how to connect to Foundry Local using the OpenAI Java SDK.
-
-## What You'll Learn
-
-- How to integrate Foundry Local with Spring Boot applications using the OpenAI Java SDK
-- Best practices for local AI development and testing
+# Foundry Local Spring Boot Tutorial
 
 ## Table of Contents
 
-- [What You'll Learn](../../../../04-PracticalSamples/foundrylocal)
 - [Prerequisites](../../../../04-PracticalSamples/foundrylocal)
-  - [Installing Foundry Local](../../../../04-PracticalSamples/foundrylocal)
-  - [Verification](../../../../04-PracticalSamples/foundrylocal)
-- [Configuration](../../../../04-PracticalSamples/foundrylocal)
-- [Quick Start](../../../../04-PracticalSamples/foundrylocal)
-- [What the Application Does](../../../../04-PracticalSamples/foundrylocal)
-- [Sample Output](../../../../04-PracticalSamples/foundrylocal)
-- [Architecture](../../../../04-PracticalSamples/foundrylocal)
-- [Code Highlights](../../../../04-PracticalSamples/foundrylocal)
-  - [OpenAI Java SDK Integration](../../../../04-PracticalSamples/foundrylocal)
-  - [Chat Completion API](../../../../04-PracticalSamples/foundrylocal)
+- [Project Overview](../../../../04-PracticalSamples/foundrylocal)
+- [Understanding the Code](../../../../04-PracticalSamples/foundrylocal)
+  - [1. Application Configuration (application.properties)](../../../../04-PracticalSamples/foundrylocal)
+  - [2. Main Application Class (Application.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [3. AI Service Layer (FoundryLocalService.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [4. Project Dependencies (pom.xml)](../../../../04-PracticalSamples/foundrylocal)
+- [How It All Works Together](../../../../04-PracticalSamples/foundrylocal)
+- [Setting Up Foundry Local](../../../../04-PracticalSamples/foundrylocal)
+- [Running the Application](../../../../04-PracticalSamples/foundrylocal)
+- [Expected Output](../../../../04-PracticalSamples/foundrylocal)
+- [Next Steps](../../../../04-PracticalSamples/foundrylocal)
 - [Troubleshooting](../../../../04-PracticalSamples/foundrylocal)
+
 
 ## Prerequisites
 
-> **⚠️ Note**: This application **does not run in the provided devcontainer** as it requires Foundry Local to be installed and running on the host system.
+Before starting this tutorial, ensure you have:
 
-### Installing Foundry Local
+- **Java 21 or higher** installed on your system
+- **Maven 3.6+** for building the project
+- **Foundry Local** installed and running
 
-Before running this application, you need to install and start Foundry Local. Follow these steps:
-
-1. **Ensure your system meets the requirements**:
-   - **Operating System**: Windows 10 (x64), Windows 11 (x64/ARM), Windows Server 2025, or macOS
-   - **Hardware**: 
-     - Minimum: 8GB RAM, 3GB free disk space
-     - Recommended: 16GB RAM, 15GB free disk space
-   - **Network**: Internet connection for initial model download (optional for offline use)
-   - **Acceleration (optional)**: NVIDIA GPU (2,000 series or newer), AMD GPU (6,000 series or newer), Qualcomm Snapdragon X Elite (8GB or more of memory), or Apple silicon
-   - **Permissions**: Administrative privileges to install software on your device
-
-2. **Install Foundry Local**:
-   
-   **For Windows:**
-   ```bash
-   winget install Microsoft.FoundryLocal
-   ```
-   
-   **For macOS:**
-   ```bash
-   brew tap microsoft/foundrylocal
-   brew install foundrylocal
-   ```
-   
-   Alternatively, you can download the installer from the [Foundry Local GitHub repository](https://github.com/microsoft/Foundry-Local).
-
-3. **Start your first model**:
-
-   ```bash
-   foundry model run phi-3.5-mini
-   ```
-
-   The model will download (this may take a few minutes, depending on your internet speed) and then run. Foundry Local automatically selects the best model variant for your system (CUDA for NVIDIA GPUs, CPU version otherwise).
-
-4. **Test the model** by asking a question in the same terminal:
-
-   ```bash
-   Why is the sky blue?
-   ```
-
-   You should see a response from the Phi model explaining why the sky appears blue.
-
-### Verification
-
-You can verify everything is working properly with these commands:
+### **Install Foundry Local:**
 
 ```bash
-# List all available models
-foundry model list
+# Windows
+winget install Microsoft.FoundryLocal
 
-# Check the service status via REST API
-curl http://localhost:5273/v1/models
+# macOS (after installing)
+foundry model run phi-3.5-mini
 ```
 
-You can also visit `http://localhost:5273` in your browser to see the Foundry Local web interface.
+## Project Overview
 
-## Configuration
+This project is made up of four main components:
 
-The application can be configured through `application.properties`:
+1. **Application.java** - The main entry point for the Spring Boot application
+2. **FoundryLocalService.java** - Service layer responsible for AI communication
+3. **application.properties** - Configuration file for connecting to Foundry Local
+4. **pom.xml** - Maven dependencies and project setup
 
-- `foundry.local.base-url` - Base URL for Foundry Local (default: http://localhost:5273)
-- `foundry.local.model` - AI model to use (default: Phi-3.5-mini-instruct-cuda-gpu)
+## Understanding the Code
 
-> **Note**: The model name in the configuration should match the specific variant that Foundry Local downloaded for your system. When you run `foundry model run phi-3.5-mini`, Foundry Local automatically selects and downloads the best variant (CUDA for NVIDIA GPUs, CPU version otherwise). Use `foundry model list` to see the exact model name available in your local instance.
+### 1. Application Configuration (application.properties)
 
-## Quick Start
+**File:** `src/main/resources/application.properties`
 
-### 1. Navigate to the Foundry Local application directory
-```bash
-cd Generative-AI-for-beginners-java/04-PracticalSamples/foundrylocal
+```properties
+foundry.local.base-url=http://localhost:5273
+foundry.local.model=Phi-3.5-mini-instruct-cuda-gpu
 ```
 
-### 2. Run the Application
+**What this does:**
+- **base-url**: Specifies the location where Foundry Local is running (default port 5273)
+- **model**: Defines the AI model to use for text generation
 
-```bash
-mvn spring-boot:run
+**Key concept:** Spring Boot automatically loads these properties and makes them accessible in your application using the `@Value` annotation.
+
+### 2. Main Application Class (Application.java)
+
+**File:** `src/main/java/com/example/Application.java`
+
+```java
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication app = new SpringApplication(Application.class);
+        app.setWebApplicationType(WebApplicationType.NONE);  // No web server needed
+        app.run(args);
+    }
 ```
 
-Or build and run the JAR:
+**What this does:**
+- `@SpringBootApplication` enables Spring Boot's auto-configuration features
+- `WebApplicationType.NONE` indicates that this is a command-line application, not a web server
+- The main method starts the Spring application
 
-```bash
-mvn clean package
-java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+**The Demo Runner:**
+```java
+@Bean
+public CommandLineRunner foundryLocalRunner(FoundryLocalService foundryLocalService) {
+    return args -> {
+        System.out.println("=== Foundry Local Demo ===");
+        
+        String testMessage = "Hello! Can you tell me what you are and what model you're running?";
+        System.out.println("Sending message: " + testMessage);
+        
+        String response = foundryLocalService.chat(testMessage);
+        System.out.println("Response from Foundry Local:");
+        System.out.println(response);
+    };
+}
 ```
 
-### Dependencies
+**What this does:**
+- `@Bean` creates a Spring-managed component
+- `CommandLineRunner` executes code after Spring Boot starts
+- `foundryLocalService` is injected automatically by Spring (dependency injection)
+- Sends a test message to the AI and displays the response
 
-This application uses the OpenAI Java SDK to communicate with Foundry Local. The key dependency is:
+### 3. AI Service Layer (FoundryLocalService.java)
+
+**File:** `src/main/java/com/example/FoundryLocalService.java`
+
+#### Configuration Injection:
+```java
+@Service
+public class FoundryLocalService {
+    
+    @Value("${foundry.local.base-url:http://localhost:5273}")
+    private String baseUrl;
+    
+    @Value("${foundry.local.model:Phi-3.5-mini-instruct-cuda-gpu}")
+    private String model;
+```
+
+**What this does:**
+- `@Service` marks this class as a provider of business logic
+- `@Value` injects configuration values from application.properties
+- The `:default-value` syntax provides fallback values if properties are not set
+
+#### Client Initialization:
+```java
+@PostConstruct
+public void init() {
+    this.openAIClient = OpenAIOkHttpClient.builder()
+            .baseUrl(baseUrl + "/v1")        // Foundry Local uses OpenAI-compatible API
+            .apiKey("unused")                 // Local server doesn't need real API key
+            .build();
+}
+```
+
+**What this does:**
+- `@PostConstruct` ensures this method runs after Spring creates the service
+- Initializes an OpenAI client pointing to your local Foundry Local instance
+- The `/v1` path is required for OpenAI API compatibility
+- API key is set to "unused" since local development does not require authentication
+
+#### Chat Method:
+```java
+public String chat(String message) {
+    try {
+        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
+                .model(model)                    // Which AI model to use
+                .addUserMessage(message)         // Your question/prompt
+                .maxCompletionTokens(150)        // Limit response length
+                .temperature(0.7)                // Control creativity (0.0-1.0)
+                .build();
+        
+        ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
+        
+        // Extract the AI's response from the API result
+        if (chatCompletion.choices() != null && !chatCompletion.choices().isEmpty()) {
+            return chatCompletion.choices().get(0).message().content().orElse("No response found");
+        }
+        
+        return "No response content found";
+    } catch (Exception e) {
+        throw new RuntimeException("Error calling chat completion: " + e.getMessage(), e);
+    }
+}
+```
+
+**What this does:**
+- **ChatCompletionCreateParams**: Configures the AI request
+  - `model`: Specifies the AI model to use
+  - `addUserMessage`: Adds your message to the conversation
+  - `maxCompletionTokens`: Limits the length of the response (to save resources)
+  - `temperature`: Controls randomness (0.0 = deterministic, 1.0 = creative)
+- **API Call**: Sends the request to Foundry Local
+- **Response Handling**: Safely extracts the AI's text response
+- **Error Handling**: Wraps exceptions with helpful error messages
+
+### 4. Project Dependencies (pom.xml)
+
+**Key Dependencies:**
 
 ```xml
+<!-- Spring Boot - Application framework -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+    <version>${spring-boot.version}</version>
+</dependency>
+
+<!-- OpenAI Java SDK - For AI API calls -->
 <dependency>
     <groupId>com.openai</groupId>
     <artifactId>openai-java</artifactId>
     <version>2.12.0</version>
 </dependency>
+
+<!-- Jackson - JSON processing -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.17.0</version>
+</dependency>
 ```
 
-The application is pre-configured to connect to Foundry Local running on the default port.
+**What these do:**
+- **spring-boot-starter**: Provides essential Spring Boot functionality
+- **openai-java**: Official OpenAI Java SDK for API communication
+- **jackson-databind**: Handles JSON serialization/deserialization for API calls
 
-## What the Application Does
+## How It All Works Together
 
-When you run the application:
+Here’s the complete flow when you run the application:
 
-1. **Starts up** as a command-line application (no web server)
-2. **Automatically sends** a test message: "Hello! Can you tell me what you are and what model you're running?"
-3. **Displays the response** from Foundry Local in the console
-4. **Exits cleanly** after the demo
+1. **Startup**: Spring Boot starts and loads `application.properties`
+2. **Service Creation**: Spring creates `FoundryLocalService` and injects configuration values
+3. **Client Setup**: `@PostConstruct` initializes the OpenAI client to connect to Foundry Local
+4. **Demo Execution**: `CommandLineRunner` runs after startup
+5. **AI Call**: The demo calls `foundryLocalService.chat()` with a test message
+6. **API Request**: The service builds and sends an OpenAI-compatible request to Foundry Local
+7. **Response Processing**: The service extracts and returns the AI’s response
+8. **Display**: The application prints the response and exits
 
-## Sample Output
+## Setting Up Foundry Local
+
+To set up Foundry Local, follow these steps:
+
+1. **Install Foundry Local** using the instructions in the [Prerequisites](../../../../04-PracticalSamples/foundrylocal) section.
+2. **Download the AI model** you want to use, such as `phi-3.5-mini`, with the following command:
+   ```bash
+   foundry model run phi-3.5-mini
+   ```
+3. **Configure the application.properties** file to match your Foundry Local settings, especially if you’re using a different port or model.
+
+## Running the Application
+
+### Step 1: Start Foundry Local
+```bash
+foundry model run phi-3.5-mini
+```
+
+### Step 2: Build and Run the Application
+```bash
+mvn clean package
+java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+```
+
+## Expected Output
 
 ```
 === Foundry Local Demo ===
 Calling Foundry Local service...
 Sending message: Hello! Can you tell me what you are and what model you're running?
 Response from Foundry Local:
-Hello! I'm Phi, an AI language model created by Microsoft. I don't have a physical form or a specific hardware model like a smartphone or a computer. I exist purely in software, and I operate on Microsoft's infrastructure...
+Hello! I'm Phi-3.5, a small language model created by Microsoft. I'm currently running 
+as the Phi-3.5-mini-instruct model, which is designed to be helpful, harmless, and honest 
+in my interactions. I can assist with a wide variety of tasks including answering 
+questions, helping with analysis, creative writing, coding, and general conversation. 
+Is there something specific you'd like help with today?
 =========================
 ```
 
-## Architecture
+## Next Steps
 
-- **Application.java** - Main Spring Boot application with CommandLineRunner
-- **FoundryLocalService.java** - Service that uses OpenAI Java SDK to communicate with Foundry Local
-- Uses **OpenAI Java SDK** for type-safe API calls
-- Automatic JSON serialization/deserialization handled by the SDK
-- Clean configuration using Spring's `@Value` and `@PostConstruct` annotations
-
-## Code Highlights
-
-### OpenAI Java SDK Integration
-
-The application uses the OpenAI Java SDK to create a client configured for Foundry Local:
-
-```java
-@PostConstruct
-public void init() {
-    this.openAIClient = OpenAIOkHttpClient.builder()
-            .baseUrl(baseUrl + "/v1")
-            .apiKey("unused") // Local server doesn't require real API key
-            .build();
-}
-```
-
-### Chat Completion API
-
-Making chat completion requests is simple and type-safe:
-
-```java
-ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-        .model(model)
-        .addUserMessage(message)
-        .maxCompletionTokens(150)
-        .temperature(0.7)
-        .build();
-
-ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
-```
+For more examples, see [Chapter 04: Practical samples](../README.md)
 
 ## Troubleshooting
 
-If you see connection errors:
-1. Verify Foundry Local is running on `http://localhost:5273`
-2. Check that a Phi-3.5-mini model variant is available with `foundry model list`
-3. Ensure the model name in `application.properties` matches the exact model name shown in the list
-4. Ensure no firewall is blocking the connection
+### Common Issues
 
-Common issues:
-- **Model not found**: Run `foundry model run phi-3.5-mini` to download and start the model
-- **Service not running**: The Foundry Local service may have stopped; restart it with the model run command
-- **Wrong model name**: Use `foundry model list` to see available models and update your configuration accordingly
+**"Connection refused" or "Service unavailable"**
+- Ensure Foundry Local is running: `foundry model list`
+- Verify the service is on port 5273: Check `application.properties`
+- Restart Foundry Local: `foundry model run phi-3.5-mini`
+
+**"Model not found" errors**
+- Check available models: `foundry model list`
+- Update the model name in `application.properties` to match exactly
+- Download the model if necessary: `foundry model run phi-3.5-mini`
+
+**Maven compilation errors**
+- Confirm Java 21 or higher: `java -version`
+- Clean and rebuild: `mvn clean compile`
+- Check your internet connection for dependency downloads
+
+**Application starts but no output**
+- Verify Foundry Local is responding: Open a browser and navigate to `http://localhost:5273`
+- Check application logs for specific error messages
+- Ensure the model is fully loaded and ready
 
 **Disclaimer**:  
-This document has been translated using the AI translation service [Co-op Translator](https://github.com/Azure/co-op-translator). While we aim for accuracy, please note that automated translations may include errors or inaccuracies. The original document in its native language should be regarded as the authoritative source. For critical information, professional human translation is advised. We are not responsible for any misunderstandings or misinterpretations resulting from the use of this translation.
+This document has been translated using the AI translation service [Co-op Translator](https://github.com/Azure/co-op-translator). While we strive for accuracy, please note that automated translations may contain errors or inaccuracies. The original document in its native language should be regarded as the authoritative source. For critical information, professional human translation is recommended. We are not responsible for any misunderstandings or misinterpretations resulting from the use of this translation.

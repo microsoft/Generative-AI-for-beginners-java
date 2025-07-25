@@ -1,139 +1,352 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "0a27b17f64f598a80b72d93b98b7ed04",
-  "translation_date": "2025-07-21T17:38:45+00:00",
+  "original_hash": "59454ab4ec36d89840df6fcfe7633cbd",
+  "translation_date": "2025-07-25T10:43:27+00:00",
   "source_file": "03-CoreGenerativeAITechniques/README.md",
   "language_code": "ar"
 }
 -->
-# تقنيات الذكاء الاصطناعي التوليدي الأساسية
-
->**ملاحظة**: يتضمن هذا الفصل [**دليلًا تفصيليًا**](./TUTORIAL.md) يوجهك خلال تشغيل النماذج النهائية.
-
-## ما ستتعلمه
-في هذا الفصل، سنستعرض 4 تقنيات أساسية للذكاء الاصطناعي التوليدي من خلال أمثلة عملية:
-- إكمالات LLM وتدفقات المحادثة
-- استدعاء الوظائف
-- التوليد المعزز بالاسترجاع (RAG)
-- تدابير أمان الذكاء الاصطناعي المسؤول
+# دليل تقنيات الذكاء الاصطناعي التوليدي الأساسية
 
 ## جدول المحتويات
 
-- [ما ستتعلمه](../../../03-CoreGenerativeAITechniques)
 - [المتطلبات الأساسية](../../../03-CoreGenerativeAITechniques)
 - [البدء](../../../03-CoreGenerativeAITechniques)
-- [نظرة عامة على الأمثلة](../../../03-CoreGenerativeAITechniques)
-  - [1. إكمالات LLM وتدفقات المحادثة](../../../03-CoreGenerativeAITechniques)
-  - [2. الوظائف والإضافات مع LLMs](../../../03-CoreGenerativeAITechniques)
-  - [3. التوليد المعزز بالاسترجاع (RAG)](../../../03-CoreGenerativeAITechniques)
-  - [4. عرض تدابير أمان الذكاء الاصطناعي المسؤول](../../../03-CoreGenerativeAITechniques)
-- [الملخص](../../../03-CoreGenerativeAITechniques)
+  - [الخطوة 1: ضبط متغير البيئة](../../../03-CoreGenerativeAITechniques)
+  - [الخطوة 2: الانتقال إلى دليل الأمثلة](../../../03-CoreGenerativeAITechniques)
+- [الدرس 1: إكمالات LLM والدردشة](../../../03-CoreGenerativeAITechniques)
+- [الدرس 2: استدعاء الوظائف](../../../03-CoreGenerativeAITechniques)
+- [الدرس 3: RAG (التوليد المعزز بالاسترجاع)](../../../03-CoreGenerativeAITechniques)
+- [الدرس 4: الذكاء الاصطناعي المسؤول](../../../03-CoreGenerativeAITechniques)
+- [أنماط شائعة عبر الأمثلة](../../../03-CoreGenerativeAITechniques)
 - [الخطوات التالية](../../../03-CoreGenerativeAITechniques)
+- [استكشاف الأخطاء وإصلاحها](../../../03-CoreGenerativeAITechniques)
+  - [مشاكل شائعة](../../../03-CoreGenerativeAITechniques)
+
+## نظرة عامة
+
+يوفر هذا الدليل أمثلة عملية لتقنيات الذكاء الاصطناعي التوليدي الأساسية باستخدام Java ونماذج GitHub. ستتعلم كيفية التفاعل مع نماذج اللغة الكبيرة (LLMs)، وتنفيذ استدعاء الوظائف، واستخدام التوليد المعزز بالاسترجاع (RAG)، وتطبيق ممارسات الذكاء الاصطناعي المسؤول.
 
 ## المتطلبات الأساسية
 
-- إكمال الإعداد من [الفصل الثاني](../../../02-SetupDevEnvironment)
+قبل البدء، تأكد من توفر ما يلي:
+- Java 21 أو إصدار أحدث مثبت
+- Maven لإدارة التبعيات
+- حساب GitHub مع رمز وصول شخصي (PAT)
 
 ## البدء
 
-1. **انتقل إلى الأمثلة**:  
+### الخطوة 1: ضبط متغير البيئة
+
+أولاً، تحتاج إلى ضبط رمز GitHub الخاص بك كمتغير بيئة. يتيح لك هذا الرمز الوصول إلى نماذج GitHub مجانًا.
+
+**Windows (Command Prompt):**
+```cmd
+set GITHUB_TOKEN=your_github_token_here
+```
+
+**Windows (PowerShell):**
+```powershell
+$env:GITHUB_TOKEN="your_github_token_here"
+```
+
+**Linux/macOS:**
+```bash
+export GITHUB_TOKEN=your_github_token_here
+```
+
+### الخطوة 2: الانتقال إلى دليل الأمثلة
+
 ```bash
 cd 03-CoreGenerativeAITechniques/examples/
-```  
-2. **قم بتعيين البيئة**:  
-```bash
-export GITHUB_TOKEN=your_token_here
-```  
-3. **قم بتجميع وتشغيل الأمثلة**:  
-```bash
-   # Run completions example
-   mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.completions.LLMCompletionsApp"
-   
-   # Run functions example  
-   mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.functions.FunctionsApp"
-   
-   # Run RAG example
-   mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.rag.SimpleReaderDemo"
-   
-   # Run responsible AI demo
-   mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.responsibleai.ResponsibleGithubModels"
-   ```  
-
-## نظرة عامة على الأمثلة
-
-تم تنظيم الأمثلة في مجلد `examples/` بالهيكل التالي:
-
-```
-examples/
-├── src/main/java/com/example/genai/techniques/
-│   ├── completions/
-│   │   └── LLMCompletionsApp.java        # Basic completions 
-│   ├── functions/
-│   │   └── FunctionsApp.java             # Function calling examples
-│   ├── rag/
-│   │   └── SimpleReaderDemo.java         # Retrieval-Augmented Generation
-│   └── responsibleai/
-│       └── ResponsibleGithubModels.java  # Responsible AI safety demonstration
-├── document.txt                          # Sample document for RAG example
-└── pom.xml                               # Maven configuration
 ```
 
-### 1. إكمالات LLM وتدفقات المحادثة
-**الملف**: `examples/src/main/java/com/example/genai/techniques/completions/LLMCompletionsApp.java`
+## الدرس 1: إكمالات LLM والدردشة
 
-تعلم كيفية بناء ذكاء اصطناعي محادثي مع استجابات متدفقة وإدارة تاريخ المحادثة.
+**الملف:** `src/main/java/com/example/genai/techniques/completions/LLMCompletionsApp.java`
 
-هذا المثال يوضح:
-- إكمال النصوص البسيط باستخدام مطالبات النظام
-- محادثات متعددة الأدوار مع إدارة التاريخ
-- جلسات محادثة تفاعلية
-- تكوين المعلمات (درجة الحرارة، الحد الأقصى للرموز)
+### ما الذي يقدمه هذا المثال
 
-### 2. الوظائف والإضافات مع LLMs
-**الملف**: `examples/src/main/java/com/example/genai/techniques/functions/FunctionsApp.java`
+يوضح هذا المثال الآليات الأساسية للتفاعل مع نماذج اللغة الكبيرة (LLM) من خلال واجهة برمجة تطبيقات OpenAI، بما في ذلك تهيئة العميل باستخدام نماذج GitHub، وأنماط هيكلة الرسائل للمطالبات النظامية والمستخدم، وإدارة حالة المحادثة من خلال تراكم سجل الرسائل، وضبط المعلمات للتحكم في طول الاستجابة ومستوى الإبداع.
 
-قم بتوسيع قدرات الذكاء الاصطناعي من خلال منح النماذج إمكانية الوصول إلى وظائف مخصصة وواجهات برمجة تطبيقات خارجية.
+### مفاهيم الكود الرئيسية
 
-هذا المثال يوضح:
-- دمج وظيفة الطقس
-- تنفيذ وظيفة الآلة الحاسبة  
-- استدعاء وظائف متعددة في محادثة واحدة
-- تعريف الوظائف باستخدام مخططات JSON
+#### 1. إعداد العميل
+```java
+// Create the AI client
+OpenAIClient client = new OpenAIClientBuilder()
+    .endpoint("https://models.inference.ai.azure.com")
+    .credential(new StaticTokenCredential(pat))
+    .buildClient();
+```
 
-### 3. التوليد المعزز بالاسترجاع (RAG)
-**الملف**: `examples/src/main/java/com/example/genai/techniques/rag/SimpleReaderDemo.java`
+هذا ينشئ اتصالاً بنماذج GitHub باستخدام الرمز الخاص بك.
 
-تعلم كيفية دمج الذكاء الاصطناعي مع مستنداتك ومصادر بياناتك للحصول على استجابات دقيقة وواعية بالسياق.
+#### 2. إكمال بسيط
+```java
+List<ChatRequestMessage> messages = List.of(
+    // System message sets AI behavior
+    new ChatRequestSystemMessage("You are a helpful Java expert."),
+    // User message contains the actual question
+    new ChatRequestUserMessage("Explain Java streams briefly.")
+);
 
-هذا المثال يوضح:
-- الإجابة عن الأسئلة بناءً على المستندات باستخدام Azure OpenAI SDK
-- تنفيذ نمط RAG مع نماذج GitHub
+ChatCompletionsOptions options = new ChatCompletionsOptions(messages)
+    .setModel("gpt-4o-mini")
+    .setMaxTokens(200)      // Limit response length
+    .setTemperature(0.7);   // Control creativity (0.0-1.0)
+```
 
-**الاستخدام**: اطرح أسئلة حول المحتوى في `document.txt` واحصل على استجابات الذكاء الاصطناعي بناءً على هذا السياق فقط.
+#### 3. ذاكرة المحادثة
+```java
+// Add AI's response to maintain conversation history
+messages.add(new ChatRequestAssistantMessage(aiResponse));
+messages.add(new ChatRequestUserMessage("Follow-up question"));
+```
 
-### 4. عرض تدابير أمان الذكاء الاصطناعي المسؤول
-**الملف**: `examples/src/main/java/com/example/genai/techniques/responsibleai/ResponsibleGithubModels.java`
+يتذكر الذكاء الاصطناعي الرسائل السابقة فقط إذا قمت بتضمينها في الطلبات اللاحقة.
 
-احصل على معاينة لكيفية عمل تدابير أمان الذكاء الاصطناعي من خلال اختبار قدرات تصفية المحتوى لنماذج GitHub.
+### تشغيل المثال
+```bash
+mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.completions.LLMCompletionsApp"
+```
 
-هذا المثال يوضح:
-- تصفية المحتوى للمطالبات التي قد تكون ضارة
-- التعامل مع استجابات الأمان في التطبيقات
-- فئات مختلفة من المحتوى المحظور (العنف، خطاب الكراهية، المعلومات المضللة)
-- التعامل الصحيح مع الأخطاء الناتجة عن انتهاكات الأمان
+### ما يحدث عند تشغيله
 
-> **تعرف أكثر**: هذه مجرد مقدمة لمفاهيم الذكاء الاصطناعي المسؤول. لمزيد من المعلومات حول الأخلاقيات، تخفيف التحيز، اعتبارات الخصوصية، وأطر الذكاء الاصطناعي المسؤول، راجع [الفصل الخامس: الذكاء الاصطناعي التوليدي المسؤول](../05-ResponsibleGenAI/README.md).
+1. **إكمال بسيط**: يجيب الذكاء الاصطناعي على سؤال Java مع توجيه من النظام
+2. **دردشة متعددة الأدوار**: يحافظ الذكاء الاصطناعي على السياق عبر أسئلة متعددة
+3. **دردشة تفاعلية**: يمكنك إجراء محادثة حقيقية مع الذكاء الاصطناعي
 
-## الملخص
+## الدرس 2: استدعاء الوظائف
 
-في هذا الفصل، استعرضنا إكمالات LLM وتدفقات المحادثة، وطبقنا استدعاء الوظائف لتعزيز قدرات الذكاء الاصطناعي، وأنشأنا نظام توليد معزز بالاسترجاع (RAG)، وعرضنا تدابير أمان الذكاء الاصطناعي المسؤول.
+**الملف:** `src/main/java/com/example/genai/techniques/functions/FunctionsApp.java`
 
-> **ملاحظة**: تعمق أكثر مع [**الدليل المقدم**](./TUTORIAL.md)
+### ما الذي يقدمه هذا المثال
+
+يتيح استدعاء الوظائف لنماذج الذكاء الاصطناعي طلب تنفيذ أدوات وواجهات برمجة تطبيقات خارجية من خلال بروتوكول منظم حيث يحلل النموذج الطلبات الطبيعية، ويحدد استدعاءات الوظائف المطلوبة مع المعلمات المناسبة باستخدام تعريفات JSON Schema، ويعالج النتائج المسترجعة لتوليد استجابات سياقية، بينما يظل تنفيذ الوظائف الفعلي تحت سيطرة المطور لضمان الأمان والموثوقية.
+
+### مفاهيم الكود الرئيسية
+
+#### 1. تعريف الوظيفة
+```java
+ChatCompletionsFunctionToolDefinitionFunction weatherFunction = 
+    new ChatCompletionsFunctionToolDefinitionFunction("get_weather");
+weatherFunction.setDescription("Get current weather information for a city");
+
+// Define parameters using JSON Schema
+weatherFunction.setParameters(BinaryData.fromString("""
+    {
+        "type": "object",
+        "properties": {
+            "city": {
+                "type": "string",
+                "description": "The city name"
+            }
+        },
+        "required": ["city"]
+    }
+    """));
+```
+
+هذا يخبر الذكاء الاصطناعي بالوظائف المتاحة وكيفية استخدامها.
+
+#### 2. تدفق تنفيذ الوظيفة
+```java
+// 1. AI requests a function call
+if (choice.getFinishReason() == CompletionsFinishReason.TOOL_CALLS) {
+    ChatCompletionsFunctionToolCall functionCall = ...;
+    
+    // 2. You execute the function
+    String result = simulateWeatherFunction(functionCall.getFunction().getArguments());
+    
+    // 3. You give the result back to AI
+    messages.add(new ChatRequestToolMessage(result, toolCall.getId()));
+    
+    // 4. AI provides final response with function result
+    ChatCompletions finalResponse = client.getChatCompletions(MODEL, options);
+}
+```
+
+#### 3. تنفيذ الوظيفة
+```java
+private static String simulateWeatherFunction(String arguments) {
+    // Parse arguments and call real weather API
+    // For demo, we return mock data
+    return """
+        {
+            "city": "Seattle",
+            "temperature": "22",
+            "condition": "partly cloudy"
+        }
+        """;
+}
+```
+
+### تشغيل المثال
+```bash
+mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.functions.FunctionsApp"
+```
+
+### ما يحدث عند تشغيله
+
+1. **وظيفة الطقس**: يطلب الذكاء الاصطناعي بيانات الطقس لمدينة سياتل، تقدمها له، ويقوم بتنسيق استجابة
+2. **وظيفة الآلة الحاسبة**: يطلب الذكاء الاصطناعي حساب (15% من 240)، تحسبها له، ويشرح النتيجة
+
+## الدرس 3: RAG (التوليد المعزز بالاسترجاع)
+
+**الملف:** `src/main/java/com/example/genai/techniques/rag/SimpleReaderDemo.java`
+
+### ما الذي يقدمه هذا المثال
+
+يجمع التوليد المعزز بالاسترجاع (RAG) بين استرجاع المعلومات وتوليد اللغة من خلال إدخال سياق مستند خارجي في مطالبات الذكاء الاصطناعي، مما يتيح للنماذج تقديم إجابات دقيقة بناءً على مصادر معرفة محددة بدلاً من بيانات التدريب التي قد تكون قديمة أو غير دقيقة، مع الحفاظ على حدود واضحة بين استفسارات المستخدم والمصادر المعلوماتية الموثوقة من خلال هندسة المطالبات الاستراتيجية.
+
+### مفاهيم الكود الرئيسية
+
+#### 1. تحميل المستند
+```java
+// Load your knowledge source
+String doc = Files.readString(Paths.get("document.txt"));
+```
+
+#### 2. إدخال السياق
+```java
+List<ChatRequestMessage> messages = List.of(
+    new ChatRequestSystemMessage(
+        "Use only the CONTEXT to answer. If not in context, say you cannot find it."
+    ),
+    new ChatRequestUserMessage(
+        "CONTEXT:\n\"\"\"\n" + doc + "\n\"\"\"\n\nQUESTION:\n" + question
+    )
+);
+```
+
+تساعد علامات الاقتباس الثلاثية الذكاء الاصطناعي على التمييز بين السياق والسؤال.
+
+#### 3. التعامل مع الاستجابات بأمان
+```java
+if (response != null && response.getChoices() != null && !response.getChoices().isEmpty()) {
+    String answer = response.getChoices().get(0).getMessage().getContent();
+    System.out.println("Assistant: " + answer);
+} else {
+    System.err.println("Error: No response received from the API.");
+}
+```
+
+تحقق دائمًا من صحة استجابات واجهة برمجة التطبيقات لتجنب الأعطال.
+
+### تشغيل المثال
+```bash
+mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.rag.SimpleReaderDemo"
+```
+
+### ما يحدث عند تشغيله
+
+1. يقوم البرنامج بتحميل `document.txt` (يحتوي على معلومات حول نماذج GitHub)
+2. تسأل سؤالاً حول المستند
+3. يجيب الذكاء الاصطناعي بناءً فقط على محتوى المستند، وليس على معرفته العامة
+
+جرّب أن تسأل: "ما هي نماذج GitHub؟" مقابل "كيف هو الطقس؟"
+
+## الدرس 4: الذكاء الاصطناعي المسؤول
+
+**الملف:** `src/main/java/com/example/genai/techniques/responsibleai/ResponsibleGithubModels.java`
+
+### ما الذي يقدمه هذا المثال
+
+يوضح مثال الذكاء الاصطناعي المسؤول أهمية تنفيذ تدابير السلامة في تطبيقات الذكاء الاصطناعي. يعرض فلاتر السلامة التي تكتشف فئات المحتوى الضار بما في ذلك خطاب الكراهية، والتحرش، وإيذاء النفس، والمحتوى الجنسي، والعنف، مما يوضح كيف يجب أن تتعامل تطبيقات الذكاء الاصطناعي الإنتاجية مع انتهاكات سياسة المحتوى من خلال التعامل الصحيح مع الاستثناءات، وآليات تقديم الملاحظات للمستخدم، واستراتيجيات الاستجابة البديلة.
+
+### مفاهيم الكود الرئيسية
+
+#### 1. إطار اختبار السلامة
+```java
+private void testPromptSafety(String prompt, String category) {
+    try {
+        // Attempt to get AI response
+        ChatCompletions response = client.getChatCompletions(modelId, options);
+        System.out.println("Response generated (content appears safe)");
+        
+    } catch (HttpResponseException e) {
+        if (e.getResponse().getStatusCode() == 400) {
+            System.out.println("[BLOCKED BY SAFETY FILTER]");
+            System.out.println("This is GOOD - safety system working!");
+        }
+    }
+}
+```
+
+#### 2. فئات السلامة التي تم اختبارها
+- تعليمات العنف/الإيذاء
+- خطاب الكراهية
+- انتهاكات الخصوصية
+- المعلومات الطبية المضللة
+- الأنشطة غير القانونية
+
+### تشغيل المثال
+```bash
+mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.responsibleai.ResponsibleGithubModels"
+```
+
+### ما يحدث عند تشغيله
+
+يختبر البرنامج مطالبات ضارة مختلفة ويظهر كيف يقوم نظام أمان الذكاء الاصطناعي:
+1. **بحظر الطلبات الخطرة** مع أخطاء HTTP 400
+2. **يسمح بالمحتوى الآمن** ليتم توليده بشكل طبيعي
+3. **يحمي المستخدمين** من مخرجات الذكاء الاصطناعي الضارة
+
+## أنماط شائعة عبر الأمثلة
+
+### نمط المصادقة
+تستخدم جميع الأمثلة هذا النمط للمصادقة مع نماذج GitHub:
+
+```java
+String pat = System.getenv("GITHUB_TOKEN");
+TokenCredential credential = new StaticTokenCredential(pat);
+OpenAIClient client = new OpenAIClientBuilder()
+    .endpoint("https://models.inference.ai.azure.com")
+    .credential(credential)
+    .buildClient();
+```
+
+### نمط التعامل مع الأخطاء
+```java
+try {
+    // AI operation
+} catch (HttpResponseException e) {
+    // Handle API errors (rate limits, safety filters)
+} catch (Exception e) {
+    // Handle general errors (network, parsing)
+}
+```
+
+### نمط هيكلة الرسائل
+```java
+List<ChatRequestMessage> messages = List.of(
+    new ChatRequestSystemMessage("Set AI behavior"),
+    new ChatRequestUserMessage("User's actual request")
+);
+```
 
 ## الخطوات التالية
 
-[الفصل الرابع: التطبيقات العملية والمشاريع](../04-PracticalSamples/README.md)
+[الفصل 04: أمثلة عملية](../04-PracticalSamples/README.md)
+
+## استكشاف الأخطاء وإصلاحها
+
+### مشاكل شائعة
+
+**"GITHUB_TOKEN غير مضبوط"**
+- تأكد من ضبط متغير البيئة
+- تحقق من أن الرمز الخاص بك يحتوي على نطاق `models:read`
+
+**"لا توجد استجابة من واجهة برمجة التطبيقات"**
+- تحقق من اتصالك بالإنترنت
+- تحقق من صلاحية الرمز الخاص بك
+- تحقق مما إذا كنت قد تجاوزت حدود المعدل
+
+**أخطاء تجميع Maven**
+- تأكد من أن لديك Java 21 أو إصدار أحدث
+- قم بتشغيل `mvn clean compile` لتحديث التبعيات
 
 **إخلاء المسؤولية**:  
-تم ترجمة هذا المستند باستخدام خدمة الترجمة بالذكاء الاصطناعي [Co-op Translator](https://github.com/Azure/co-op-translator). بينما نسعى لتحقيق الدقة، يرجى العلم أن الترجمات الآلية قد تحتوي على أخطاء أو معلومات غير دقيقة. يجب اعتبار المستند الأصلي بلغته الأصلية المصدر الرسمي. للحصول على معلومات حاسمة، يُوصى بالاستعانة بترجمة بشرية احترافية. نحن غير مسؤولين عن أي سوء فهم أو تفسيرات خاطئة تنشأ عن استخدام هذه الترجمة.
+تم ترجمة هذا المستند باستخدام خدمة الترجمة بالذكاء الاصطناعي [Co-op Translator](https://github.com/Azure/co-op-translator). بينما نسعى لتحقيق الدقة، يرجى العلم أن الترجمات الآلية قد تحتوي على أخطاء أو معلومات غير دقيقة. يجب اعتبار المستند الأصلي بلغته الأصلية المصدر الموثوق. للحصول على معلومات حاسمة، يُوصى بالاستعانة بترجمة بشرية احترافية. نحن غير مسؤولين عن أي سوء فهم أو تفسيرات خاطئة تنشأ عن استخدام هذه الترجمة.

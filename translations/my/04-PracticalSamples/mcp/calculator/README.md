@@ -1,137 +1,312 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "7bf9a4a832911269a8bd0decb97ff36c",
-  "translation_date": "2025-07-21T21:30:02+00:00",
+  "original_hash": "8c6c7e9008b114540677f7a65aa9ddad",
+  "translation_date": "2025-07-25T12:25:36+00:00",
   "source_file": "04-PracticalSamples/mcp/calculator/README.md",
   "language_code": "my"
 }
 -->
-# အခြေခံ ကိန်းဂဏန်းတွက်ချက်မှု MCP ဝန်ဆောင်မှု
-
->**Note**: ဒီအခန်းမှာ [**Tutorial**](./TUTORIAL.md) ပါဝင်ပြီး အဆင့်မြင့်နမူနာများကို အကောင်အထည်ဖော်ရန် လမ်းညွှန်ပေးထားပါတယ်။
-
-**Model Context Protocol (MCP)** ကို လက်တွေ့ကျကျ အသုံးပြုနိုင်ဖို့ ကြိုဆိုပါတယ်! အရင်အခန်းတွေမှာ Generative AI အခြေခံအကြောင်းအရာတွေကို လေ့လာပြီး Development Environment ကို ပြင်ဆင်ပြီးသားဖြစ်ပါတယ်။ အခုတော့ လက်တွေ့အသုံးချနိုင်တဲ့ အရာတစ်ခုကို တည်ဆောက်ဖို့ အချိန်ရောက်ပါပြီ။
-
-ဒီကိန်းဂဏန်းတွက်ချက်မှုဝန်ဆောင်မှုက AI မော်ဒယ်တွေ MCP ကို အသုံးပြုပြီး အပြင်ပန်းကိရိယာတွေနဲ့ လုံခြုံစွာ ဆက်သွယ်နိုင်ပုံကို ပြသထားပါတယ်။ AI မော်ဒယ်ရဲ့ တစ်ခါတစ်လေ မမှန်ကန်တဲ့ သင်္ချာတွက်ချက်မှုစွမ်းရည်ကို မူတည်မထားဘဲ၊ AI က အတိအကျတွက်ချက်နိုင်တဲ့ ဝန်ဆောင်မှုတွေကို ခေါ်ယူနိုင်တဲ့ စနစ်တစ်ခုကို တည်ဆောက်ပုံကို ပြသပေးမှာဖြစ်ပါတယ်။
+# MCP Calculator Tutorial for Beginners
 
 ## အကြောင်းအရာများ
 
 - [သင်လေ့လာနိုင်မည့်အရာများ](../../../../../04-PracticalSamples/mcp/calculator)
 - [လိုအပ်ချက်များ](../../../../../04-PracticalSamples/mcp/calculator)
-- [အဓိကအကြောင်းအရာများ](../../../../../04-PracticalSamples/mcp/calculator)
-- [အမြန်စတင်ခြင်း](../../../../../04-PracticalSamples/mcp/calculator)
-- [ရရှိနိုင်သော ကိန်းဂဏန်းတွက်ချက်မှုများ](../../../../../04-PracticalSamples/mcp/calculator)
-- [စမ်းသပ်ရန် Client များ](../../../../../04-PracticalSamples/mcp/calculator)
-  - [1. Direct MCP Client (SDKClient)](../../../../../04-PracticalSamples/mcp/calculator)
-  - [2. AI-Powered Client (LangChain4jClient)](../../../../../04-PracticalSamples/mcp/calculator)
-- [MCP Inspector (Web UI)](../../../../../04-PracticalSamples/mcp/calculator)
-  - [အဆင့်ဆင့် လမ်းညွှန်ချက်များ](../../../../../04-PracticalSamples/mcp/calculator)
+- [ပရောဂျက်ဖွဲ့စည်းပုံကိုနားလည်ခြင်း](../../../../../04-PracticalSamples/mcp/calculator)
+- [အဓိကအစိတ်အပိုင်းများရှင်းလင်းချက်](../../../../../04-PracticalSamples/mcp/calculator)
+  - [1. အဓိကအက်ပလီကေးရှင်း](../../../../../04-PracticalSamples/mcp/calculator)
+  - [2. ကိန်းဂဏန်းဝန်ဆောင်မှု](../../../../../04-PracticalSamples/mcp/calculator)
+  - [3. တိုက်ရိုက် MCP Client](../../../../../04-PracticalSamples/mcp/calculator)
+  - [4. AI-အခြေခံ Client](../../../../../04-PracticalSamples/mcp/calculator)
+- [ဥပမာများကိုအလုပ်လုပ်စေခြင်း](../../../../../04-PracticalSamples/mcp/calculator)
+- [အားလုံးပေါင်းစည်းပြီးအလုပ်လုပ်ပုံ](../../../../../04-PracticalSamples/mcp/calculator)
+- [နောက်တစ်ဆင့်များ](../../../../../04-PracticalSamples/mcp/calculator)
 
 ## သင်လေ့လာနိုင်မည့်အရာများ
 
-ဒီနမူနာကို လေ့လာပြီးနောက်မှာ သင်နားလည်နိုင်မည့်အရာများ:
-- Spring Boot ကို အသုံးပြုပြီး MCP-Compatible ဝန်ဆောင်မှုများကို ဘယ်လိုဖန်တီးရမလဲ
-- Direct Protocol ဆက်သွယ်မှုနဲ့ AI-Powered ဆက်သွယ်မှုကြားက ကွာခြားချက်
-- AI မော်ဒယ်တွေ ဘယ်အချိန်မှာ ဘယ်လို အပြင်ပန်းကိရိယာတွေကို အသုံးပြုရမလဲဆိုတာ ဆုံးဖြတ်ပုံ
-- Tool-Enabled AI Applications တည်ဆောက်ရာမှာ အကောင်းဆုံး လုပ်ဆောင်မှုများ
+ဒီလမ်းညွှန်မှာ Model Context Protocol (MCP) ကိုအသုံးပြုပြီး ကိန်းဂဏန်းဝန်ဆောင်မှုတစ်ခုကို ဘယ်လိုတည်ဆောက်ရမယ်ဆိုတာရှင်းပြထားပါတယ်။ သင်နားလည်နိုင်မယ့်အရာများမှာ:
 
-MCP အကြောင်းအရာများကို စတင်လေ့လာနေတဲ့ Beginner များအတွက် အထူးသင့်လျော်ပြီး AI Tool Integration ကို စတင်တည်ဆောက်ဖို့ အသင့်ဖြစ်စေပါမယ်!
+- AI သုံးပြီး tools အဖြစ်အသုံးပြုနိုင်တဲ့ ဝန်ဆောင်မှုတစ်ခုကို ဘယ်လိုဖန်တီးရမလဲ
+- MCP ဝန်ဆောင်မှုများနှင့် တိုက်ရိုက်ဆက်သွယ်ပုံ
+- AI မော်ဒယ်များက ဘယ် tools ကိုအသုံးပြုရမလဲဆိုတာကို အလိုအလျောက်ရွေးချယ်ပုံ
+- တိုက်ရိုက် protocol calls နဲ့ AI-အကူအညီ interactions ကြားက ကွာခြားချက်
 
 ## လိုအပ်ချက်များ
 
-- Java 21+
-- Maven 3.6+
-- **GitHub Token**: AI-Powered Client အတွက် လိုအပ်ပါတယ်။ သင်ဤအရာကို မပြင်ဆင်ရသေးပါက [Chapter 2: Development Environment ကို ပြင်ဆင်ခြင်း](../../../02-SetupDevEnvironment/README.md) ကို ကြည့်ပါ။
+စတင်ရန်မတိုင်မီ သင်မှာအောက်ပါအရာများရှိရမည်:
+- Java 21 သို့မဟုတ် အထက်ရှိထား
+- Maven ကို dependency management အတွက်အသုံးပြုရန်
+- GitHub အကောင့်နှင့် personal access token (PAT)
+- Java နဲ့ Spring Boot အခြေခံနားလည်မှု
 
-## အဓိကအကြောင်းအရာများ
+## ပရောဂျက်ဖွဲ့စည်းပုံကိုနားလည်ခြင်း
 
-**Model Context Protocol (MCP)** က AI Applications တွေကို အပြင်ပန်းကိရိယာတွေနဲ့ လုံခြုံစွာ ဆက်သွယ်နိုင်စေတဲ့ စံသတ်မှတ်တစ်ခုဖြစ်ပါတယ်။ AI မော်ဒယ်တွေက သင်္ချာတွက်ချက်မှုကို ကိုယ်တိုင်လုပ်ဆောင်ဖို့ (တစ်ခါတစ်လေ မမှန်ကန်နိုင်ပါတယ်) မလိုအပ်ဘဲ၊ ကျွန်တော်တို့ရဲ့ Calculator Service ကို ခေါ်ယူပြီး အတိအကျရလဒ်တွေကို ရယူနိုင်ပါတယ်။ MCP က ဒီဆက်သွယ်မှုကို လုံခြုံစွာနဲ့ စနစ်တကျ ဖြစ်စေပါတယ်။
+ကိန်းဂဏန်းပရောဂျက်မှာ အရေးကြီးတဲ့ဖိုင်များအချို့ပါဝင်ပါတယ်:
 
-**Server-Sent Events (SSE)** က Server နဲ့ Client တွေကြား Real-Time ဆက်သွယ်မှုကို အကောင်းဆုံးဖြစ်စေပါတယ်။ Traditional HTTP Request တွေမှာ တစ်ခါတစ်ရံ အဖြေကို စောင့်ရတတ်ပေမယ့် SSE က Server ကနေ Client ကို အဆက်မပြတ် Update တွေ ပေးနိုင်စေပါတယ်။ AI Applications တွေမှာ Response တွေကို Streaming လုပ်တာမျိုး သို့မဟုတ် အချိန်ယူပြီး Process လုပ်တာမျိုးတွေအတွက် အထူးသင့်လျော်ပါတယ်။
-
-**AI Tools & Function Calling** က AI မော်ဒယ်တွေကို အပြင်ပန်း Function တွေကို အလိုအလျောက် ရွေးချယ်ပြီး အသုံးပြုနိုင်စေပါတယ်။ "15 + 27 ဘယ်လောက်လဲ?" လို့ မေးတဲ့အခါ AI မော်ဒယ်က Addition လုပ်ဖို့လိုတယ်ဆိုတာ နားလည်ပြီး `add` tool ကို Parameter (15, 27) တွေဖြင့် ခေါ်ယူပြီး Natural Language ဖြင့် အဖြေကို ပြန်ပေးနိုင်ပါတယ်။ AI က Intelligent Coordinator အနေနဲ့ Tool တစ်ခုချင်းစီကို ဘယ်အချိန်မှာ ဘယ်လို အသုံးပြုရမလဲဆိုတာ သိထားပါတယ်။
-
-## အမြန်စတင်ခြင်း
-
-### 1. Calculator Application Directory ကို သွားပါ
-```bash
-cd Generative-AI-for-beginners-java/04-PracticalSamples/mcp/calculator
+```
+calculator/
+├── src/main/java/com/microsoft/mcp/sample/server/
+│   ├── McpServerApplication.java          # Main Spring Boot app
+│   └── service/CalculatorService.java     # Calculator operations
+└── src/test/java/com/microsoft/mcp/sample/client/
+    ├── SDKClient.java                     # Direct MCP communication
+    ├── LangChain4jClient.java            # AI-powered client
+    └── Bot.java                          # Simple chat interface
 ```
 
-### 2. Build & Run
-```bash
-mvn clean install -DskipTests
-java -jar target/calculator-server-0.0.1-SNAPSHOT.jar
+## အဓိကအစိတ်အပိုင်းများရှင်းလင်းချက်
+
+### 1. အဓိကအက်ပလီကေးရှင်း
+
+**ဖိုင်:** `McpServerApplication.java`
+
+ဒီဟာက ကိန်းဂဏန်းဝန်ဆောင်မှုရဲ့ entry point ဖြစ်ပါတယ်။ ဒါဟာ ပုံမှန် Spring Boot application တစ်ခုဖြစ်ပြီး အထူး feature တစ်ခုပါဝင်ပါတယ်:
+
+```java
+@SpringBootApplication
+public class McpServerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(McpServerApplication.class, args);
+    }
+    
+    @Bean
+    public ToolCallbackProvider calculatorTools(CalculatorService calculator) {
+        return MethodToolCallbackProvider.builder().toolObjects(calculator).build();
+    }
+}
 ```
 
-### 2. Client များဖြင့် စမ်းသပ်ပါ
-- **SDKClient**: Direct MCP Protocol Interaction
-- **LangChain4jClient**: AI-Powered Natural Language Interaction (GitHub Token လိုအပ်ပါတယ်)
+**ဒီဟာဘာလုပ်သလဲ:**
+- Spring Boot web server ကို port 8080 မှာစတင်
+- `ToolCallbackProvider` ကိုဖန်တီးပြီး ကိန်းဂဏန်းနည်းလမ်းများကို MCP tools အဖြစ်အသုံးပြုနိုင်အောင်လုပ်ဆောင်
+- `@Bean` annotation က Spring ကို ဒီဟာကို component အဖြစ်စီမံခန့်ခွဲရန်ပြောပြ
 
-## ရရှိနိုင်သော ကိန်းဂဏန်းတွက်ချက်မှုများ
+### 2. ကိန်းဂဏန်းဝန်ဆောင်မှု
 
-- `add(a, b)`, `subtract(a, b)`, `multiply(a, b)`, `divide(a, b)`
-- `power(base, exponent)`, `squareRoot(number)`, `absolute(number)`
-- `modulus(a, b)`, `help()`
+**ဖိုင်:** `CalculatorService.java`
 
-## စမ်းသပ်ရန် Client များ
+ဒီနေရာမှာ ကိန်းဂဏန်းဆိုင်ရာ calculation တွေကိုလုပ်ဆောင်ပါတယ်။ `@Tool` နဲ့အမှတ်အသားပြုထားတဲ့ method တစ်ခုစီကို MCP မှတစ်ဆင့်အသုံးပြုနိုင်ပါတယ်:
 
-### 1. Direct MCP Client (SDKClient)
-Raw MCP Protocol ဆက်သွယ်မှုကို စမ်းသပ်ပါ။ Run:
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient" -Dexec.classpathScope=test
+```java
+@Service
+public class CalculatorService {
+
+    @Tool(description = "Add two numbers together")
+    public String add(double a, double b) {
+        double result = a + b;
+        return formatResult(a, "+", b, result);
+    }
+
+    @Tool(description = "Subtract the second number from the first number")
+    public String subtract(double a, double b) {
+        double result = a - b;
+        return formatResult(a, "-", b, result);
+    }
+    
+    // More calculator operations...
+    
+    private String formatResult(double a, String operator, double b, double result) {
+        return String.format("%.2f %s %.2f = %.2f", a, operator, b, result);
+    }
+}
 ```
 
-### 2. AI-Powered Client (LangChain4jClient)
-GitHub Models နဲ့ Natural Language Interaction ကို ပြသထားပါတယ်။ GitHub Token လိုအပ်ပါတယ် ([Prerequisites](../../../../../04-PracticalSamples/mcp/calculator) ကို ကြည့်ပါ)။
+**အဓိကအချက်များ:**
 
-**Run:**
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient" -Dexec.classpathScope=test
+1. **`@Tool` Annotation**: ဒီဟာက MCP ကို ဒီ method ကို အပြင်ဘက် client တွေကခေါ်နိုင်တယ်လို့ပြောပြ
+2. **ရှင်းလင်းတဲ့ဖော်ပြချက်များ**: tool တစ်ခုစီမှာ AI မော်ဒယ်တွေကို ဘယ်အခါအသုံးပြုရမလဲဆိုတာနားလည်စေဖို့ဖော်ပြချက်ပါဝင်
+3. **အမြဲတမ်းတူညီတဲ့ပြန်လည်ပေးပုံ**: အားလုံးက "5.00 + 3.00 = 8.00" လိုမျိုး လူနားလည်နိုင်တဲ့ string format ပြန်ပေး
+4. **အမှားကိုင်တွယ်မှု**: သုညနဲ့စားခြင်းနဲ့ အနုတ်ရင်းအမြစ်တွေမှာ error message ပြန်ပေး
+
+**ရရှိနိုင်တဲ့လုပ်ဆောင်ချက်များ:**
+- `add(a, b)` - နံပါတ်နှစ်ခုကိုပေါင်း
+- `subtract(a, b)` - ဒုတိယနံပါတ်ကိုပထမနံပါတ်ကနုတ်
+- `multiply(a, b)` - နံပါတ်နှစ်ခုကိုမြှောက်
+- `divide(a, b)` - ပထမနံပါတ်ကို ဒုတိယနံပါတ်နဲ့စား (သုညစစ်ဆေးမှုပါဝင်)
+- `power(base, exponent)` - base ကို exponent အတိုင်းမြှောက်
+- `squareRoot(number)` - ရင်းအမြစ်တွက်ချက် (အနုတ်စစ်ဆေးမှုပါဝင်)
+- `modulus(a, b)` - remainder ပြန်ပေး
+- `absolute(number)` - absolute value ပြန်ပေး
+- `help()` - လုပ်ဆောင်ချက်အားလုံးအကြောင်းအရာပြန်ပေး
+
+### 3. တိုက်ရိုက် MCP Client
+
+**ဖိုင်:** `SDKClient.java`
+
+ဒီ client က MCP server နဲ့ AI မသုံးဘဲ တိုက်ရိုက်ဆက်သွယ်ပါတယ်။ အတိအကျ parameter တွေနဲ့ ကိန်းဂဏန်းလုပ်ဆောင်ချက်တွေကိုခေါ်ပါတယ်:
+
+```java
+public class SDKClient {
+    
+    public static void main(String[] args) {
+        var transport = new WebFluxSseClientTransport(
+            WebClient.builder().baseUrl("http://localhost:8080")
+        );
+        new SDKClient(transport).run();
+    }
+    
+    public void run() {
+        var client = McpClient.sync(this.transport).build();
+        client.initialize();
+        
+        // List available tools
+        ListToolsResult toolsList = client.listTools();
+        System.out.println("Available Tools = " + toolsList);
+        
+        // Call specific calculator functions
+        CallToolResult resultAdd = client.callTool(
+            new CallToolRequest("add", Map.of("a", 5.0, "b", 3.0))
+        );
+        System.out.println("Add Result = " + resultAdd);
+        
+        CallToolResult resultSqrt = client.callTool(
+            new CallToolRequest("squareRoot", Map.of("number", 16.0))
+        );
+        System.out.println("Square Root Result = " + resultSqrt);
+        
+        client.closeGracefully();
+    }
+}
 ```
 
-## MCP Inspector (Web UI)
+**ဒီဟာဘာလုပ်သလဲ:**
+1. **ဆက်သွယ်**: `http://localhost:8080` မှာ calculator server နဲ့ဆက်သွယ်
+2. **စာရင်းပြုစု**: ရရှိနိုင်တဲ့ tools (calculator functions) အားလုံးကိုစာရင်းပြုစု
+3. **ခေါ်**: အတိအကျ parameter တွေနဲ့လုပ်ဆောင်ချက်တွေကိုခေါ်
+4. **ရလဒ်ကိုပုံနှိပ်**: ရလဒ်တွေကိုတိုက်ရိုက်ပြ
 
-MCP Inspector က Code မရေးဘဲ MCP Service ကို စမ်းသပ်နိုင်တဲ့ Visual Web Interface တစ်ခုဖြစ်ပါတယ်။ MCP ဘယ်လိုအလုပ်လုပ်တယ်ဆိုတာ နားလည်ဖို့ Beginner များအတွက် အထူးသင့်လျော်ပါတယ်။
+**ဘယ်အခါအသုံးပြုမလဲ:** သင်ဘယ်လို calculation လုပ်ချင်တယ်ဆိုတာသိပြီး programmatically ခေါ်ချင်တဲ့အခါ
 
-### အဆင့်ဆင့် လမ်းညွှန်ချက်များ:
+### 4. AI-အခြေခံ Client
 
-1. **Calculator Server ကို စတင်ပါ** (မစတင်ရသေးပါက):
-   ```bash
-   java -jar target/calculator-server-0.0.1-SNAPSHOT.jar
-   ```
+**ဖိုင်:** `LangChain4jClient.java`
 
-2. **MCP Inspector ကို Terminal အသစ်မှာ Install နဲ့ Run လုပ်ပါ**:
-   ```bash
-   npx @modelcontextprotocol/inspector
-   ```
+ဒီ client က AI မော်ဒယ် (GPT-4o-mini) ကိုအသုံးပြုပြီး calculator tools တွေကိုအလိုအလျောက်ရွေးချယ်နိုင်ပါတယ်:
 
-3. **Web Interface ကို ဖွင့်ပါ**:
-   - "Inspector running at http://localhost:6274" ဆိုတဲ့ Message ကို ရှာပါ
-   - အဲဒီ URL ကို Web Browser မှာ ဖွင့်ပါ
+```java
+public class LangChain4jClient {
+    
+    public static void main(String[] args) throws Exception {
+        // Set up the AI model (using GitHub Models)
+        ChatLanguageModel model = OpenAiOfficialChatModel.builder()
+                .isGitHubModels(true)
+                .apiKey(System.getenv("GITHUB_TOKEN"))
+                .modelName("gpt-4o-mini")
+                .build();
 
-4. **Calculator Service ကို Connect လုပ်ပါ**:
-   - Web Interface မှာ Transport Type ကို "SSE" အဖြစ် သတ်မှတ်ပါ
-   - URL ကို `http://localhost:8080/sse` အဖြစ် သတ်မှတ်ပါ
-   - "Connect" Button ကို Click လုပ်ပါ
+        // Connect to our calculator MCP server
+        McpTransport transport = new HttpMcpTransport.Builder()
+                .sseUrl("http://localhost:8080/sse")
+                .logRequests(true)  // Shows what the AI is doing
+                .logResponses(true)
+                .build();
 
-5. **ရရှိနိုင်သော Tools တွေကို Explore လုပ်ပါ**:
-   - "List Tools" ကို Click လုပ်ပြီး Calculator Operations တွေကို ကြည့်ပါ
-   - `add`, `subtract`, `multiply` စတဲ့ Function တွေကို တွေ့ပါလိမ့်မယ်
+        McpClient mcpClient = new DefaultMcpClient.Builder()
+                .transport(transport)
+                .build();
 
-6. **Calculator Operation တစ်ခုကို စမ်းသပ်ပါ**:
-   - Tool တစ်ခု (ဥပမာ - "add") ကို ရွေးပါ
-   - Parameters (ဥပမာ - `a: 15`, `b: 27`) ကို ထည့်ပါ
-   - "Run Tool" ကို Click လုပ်ပါ
-   - MCP Service က ပြန်ပေးတဲ့ Result ကို ကြည့်ပါ!
+        // Give the AI access to our calculator tools
+        ToolProvider toolProvider = McpToolProvider.builder()
+                .mcpClients(List.of(mcpClient))
+                .build();
 
-ဒီ Visual Approach က MCP Communication ဘယ်လိုအလုပ်လုပ်တယ်ဆိုတာ သင်နားလည်စေပြီး ကိုယ်ပိုင် Client တွေကို တည်ဆောက်ဖို့ အဆင့်မြှင့်စေပါတယ်။
+        // Create an AI bot that can use our calculator
+        Bot bot = AiServices.builder(Bot.class)
+                .chatLanguageModel(model)
+                .toolProvider(toolProvider)
+                .build();
 
-![npx inspector](../../../../../translated_images/tool.214c70103694335c4cfdc2d624373dfce4b0162f6aea089ac1da9051fb563b7f.my.png)
+        // Now we can ask the AI to do calculations in natural language
+        String response = bot.chat("Calculate the sum of 24.5 and 17.3 using the calculator service");
+        System.out.println(response);
 
----
-**Reference:** [MCP Server Boot Starter Docs](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-server-boot-starter-docs.html)
+        response = bot.chat("What's the square root of 144?");
+        System.out.println(response);
+    }
+}
+```
+
+**ဒီဟာဘာလုပ်သလဲ:**
+1. **AI မော်ဒယ်ဆက်သွယ်မှု**: GitHub token ကိုအသုံးပြုပြီး AI မော်ဒယ်နဲ့ဆက်သွယ်
+2. **Calculator MCP server နဲ့ဆက်သွယ်**: AI ကို calculator tools အားလုံးရရှိအောင်လုပ်ဆောင်
+3. **သဘာဝဘာသာစကားတောင်းဆိုမှု**: "24.5 နဲ့ 17.3 ကိုပေါင်းပါ" လို request တွေကိုခွင့်ပြု
+
+**AI အလိုအလျောက်:**
+- သင်နံပါတ်တွေကိုပေါင်းချင်တယ်ဆိုတာနားလည်
+- `add` tool ကိုရွေးချယ်
+- `add(24.5, 17.3)` ကိုခေါ်
+- ရလဒ်ကို သဘာဝအဖြေတစ်ခုအဖြစ်ပြန်ပေး
+
+## ဥပမာများကိုအလုပ်လုပ်စေခြင်း
+
+### အဆင့် 1: Calculator Server ကိုစတင်
+
+အရင်ဆုံး GitHub token ကိုသတ်မှတ်ပါ (AI client အတွက်လိုအပ်):
+
+**Windows:**
+```cmd
+set GITHUB_TOKEN=your_github_token_here
+```
+
+**Linux/macOS:**
+```bash
+export GITHUB_TOKEN=your_github_token_here
+```
+
+Server ကိုစတင်ပါ:
+```bash
+cd 04-PracticalSamples/mcp/calculator
+mvn spring-boot:run
+```
+
+Server က `http://localhost:8080` မှာစတင်ပါလိမ့်မယ်။ သင်မြင်ရမယ့်အရာက:
+```
+Started McpServerApplication in X.XXX seconds
+```
+
+### အဆင့် 2: Direct Client နဲ့စမ်းသပ်
+
+Terminal အသစ်တစ်ခုမှာ:
+```bash
+mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient"
+```
+
+သင်မြင်ရမယ့် output က:
+```
+Available Tools = [add, subtract, multiply, divide, power, squareRoot, modulus, absolute, help]
+Add Result = 5.00 + 3.00 = 8.00
+Square Root Result = √16.00 = 4.00
+```
+
+### အဆင့် 3: AI Client နဲ့စမ်းသပ်
+
+```bash
+mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient"
+```
+
+AI က tools တွေကိုအလိုအလျောက်အသုံးပြုတာကိုသင်မြင်ရမယ်:
+```
+The sum of 24.5 and 17.3 is 41.8.
+The square root of 144 is 12.
+```
+
+## အားလုံးပေါင်းစည်းပြီးအလုပ်လုပ်ပုံ
+
+AI ကို "5 နဲ့ 3 ကိုပေါင်းရင်ဘယ်လောက်လဲ?" လို့မေးတဲ့အခါမှာ:
+
+1. **သင်** AI ကို သဘာဝဘာသာစကားနဲ့မေး
+2. **AI** သင့်တောင်းဆိုမှုကိုခွဲခြမ်းစိတ်ဖြာပြီး addition လုပ်ချင်တယ်ဆိုတာနားလည်
+3. **AI** MCP server ကိုခေါ်: `add(5.0, 3.0)`
+4. **Calculator Service** က `5.0 + 3.0 = 8.0` လုပ်ဆောင်
+5. **Calculator Service** က `"5.00 + 3.00 = 8.00"` ပြန်ပေး
+6. **AI** ရလဒ်ကိုရပြီး သဘာဝအဖြေတစ်ခုအဖြစ် format ပြုလုပ်
+7. **သင်** "5 နဲ့ 3 ကိုပေါင်းရင် 8 ဖြစ်ပါတယ်" ဆိုတဲ့အဖြေကိုရ
+
+## နောက်တစ်ဆင့်များ
+
+ဥပမာများပိုမိုကြည့်ရန် [Chapter 04: Practical samples](../../README.md) ကိုကြည့်ပါ
 
 **အကြောင်းကြားချက်**:  
-ဤစာရွက်စာတမ်းကို AI ဘာသာပြန်ဝန်ဆောင်မှု [Co-op Translator](https://github.com/Azure/co-op-translator) ကို အသုံးပြု၍ ဘာသာပြန်ထားပါသည်။ ကျွန်ုပ်တို့သည် တိကျမှုအတွက် ကြိုးစားနေသော်လည်း၊ အလိုအလျောက် ဘာသာပြန်ခြင်းတွင် အမှားများ သို့မဟုတ် မတိကျမှုများ ပါဝင်နိုင်သည်ကို သတိပြုပါ။ မူရင်းဘာသာစကားဖြင့် ရေးသားထားသော စာရွက်စာတမ်းကို အာဏာတရ အရင်းအမြစ်အဖြစ် သတ်မှတ်သင့်ပါသည်။ အရေးကြီးသော အချက်အလက်များအတွက် လူက ဘာသာပြန်ခြင်းကို အကြံပြုပါသည်။ ဤဘာသာပြန်ကို အသုံးပြုခြင်းမှ ဖြစ်ပေါ်လာသော အလွဲအလွဲအချော်များ သို့မဟုတ် အနားယူမှုများအတွက် ကျွန်ုပ်တို့သည် တာဝန်မယူပါ။
+ဤစာရွက်စာတမ်းကို AI ဘာသာပြန်ဝန်ဆောင်မှု [Co-op Translator](https://github.com/Azure/co-op-translator) ကို အသုံးပြု၍ ဘာသာပြန်ထားပါသည်။ ကျွန်ုပ်တို့သည် တိကျမှုအတွက် ကြိုးစားနေသော်လည်း၊ အလိုအလျောက် ဘာသာပြန်ခြင်းတွင် အမှားများ သို့မဟုတ် မတိကျမှုများ ပါရှိနိုင်သည်ကို သတိပြုပါ။ မူရင်းဘာသာစကားဖြင့် ရေးသားထားသော စာရွက်စာတမ်းကို အာဏာတရ အရင်းအမြစ်အဖြစ် သတ်မှတ်သင့်ပါသည်။ အရေးကြီးသော အချက်အလက်များအတွက် လူ့ဘာသာပြန်ပညာရှင်များမှ ပရော်ဖက်ရှင်နယ် ဘာသာပြန်ခြင်းကို အကြံပြုပါသည်။ ဤဘာသာပြန်ကို အသုံးပြုခြင်းမှ ဖြစ်ပေါ်လာသော အလွဲအလွတ်များ သို့မဟုတ် အနားလွဲမှုများအတွက် ကျွန်ုပ်တို့သည် တာဝန်မယူပါ။

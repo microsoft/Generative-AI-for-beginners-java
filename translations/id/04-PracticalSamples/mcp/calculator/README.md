@@ -1,137 +1,313 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "7bf9a4a832911269a8bd0decb97ff36c",
-  "translation_date": "2025-07-21T20:00:06+00:00",
+  "original_hash": "8c6c7e9008b114540677f7a65aa9ddad",
+  "translation_date": "2025-07-25T11:55:14+00:00",
   "source_file": "04-PracticalSamples/mcp/calculator/README.md",
   "language_code": "id"
 }
 -->
-# Layanan Kalkulator Dasar MCP
-
->**Catatan**: Bab ini mencakup [**Tutorial**](./TUTORIAL.md) yang membimbing Anda menjalankan sampel yang telah selesai.
-
-Selamat datang di pengalaman langsung pertama Anda dengan **Model Context Protocol (MCP)**! Di bab sebelumnya, Anda telah mempelajari dasar-dasar AI generatif dan menyiapkan lingkungan pengembangan Anda. Sekarang saatnya membangun sesuatu yang praktis.
-
-Layanan kalkulator ini menunjukkan bagaimana model AI dapat berinteraksi dengan alat eksternal secara aman menggunakan MCP. Alih-alih mengandalkan kemampuan matematika model AI yang terkadang tidak dapat diandalkan, kami akan menunjukkan cara membangun sistem yang kuat di mana AI dapat memanggil layanan khusus untuk perhitungan yang akurat.
+# Tutorial MCP Calculator untuk Pemula
 
 ## Daftar Isi
 
 - [Apa yang Akan Anda Pelajari](../../../../../04-PracticalSamples/mcp/calculator)
 - [Prasyarat](../../../../../04-PracticalSamples/mcp/calculator)
-- [Konsep Utama](../../../../../04-PracticalSamples/mcp/calculator)
-- [Panduan Cepat](../../../../../04-PracticalSamples/mcp/calculator)
-- [Operasi Kalkulator yang Tersedia](../../../../../04-PracticalSamples/mcp/calculator)
-- [Klien Pengujian](../../../../../04-PracticalSamples/mcp/calculator)
-  - [1. Klien MCP Langsung (SDKClient)](../../../../../04-PracticalSamples/mcp/calculator)
-  - [2. Klien Berbasis AI (LangChain4jClient)](../../../../../04-PracticalSamples/mcp/calculator)
-- [MCP Inspector (Web UI)](../../../../../04-PracticalSamples/mcp/calculator)
-  - [Instruksi Langkah-demi-Langkah](../../../../../04-PracticalSamples/mcp/calculator)
+- [Memahami Struktur Proyek](../../../../../04-PracticalSamples/mcp/calculator)
+- [Penjelasan Komponen Inti](../../../../../04-PracticalSamples/mcp/calculator)
+  - [1. Aplikasi Utama](../../../../../04-PracticalSamples/mcp/calculator)
+  - [2. Layanan Kalkulator](../../../../../04-PracticalSamples/mcp/calculator)
+  - [3. Klien MCP Langsung](../../../../../04-PracticalSamples/mcp/calculator)
+  - [4. Klien Berbasis AI](../../../../../04-PracticalSamples/mcp/calculator)
+- [Menjalankan Contoh](../../../../../04-PracticalSamples/mcp/calculator)
+- [Bagaimana Semua Ini Bekerja Bersama](../../../../../04-PracticalSamples/mcp/calculator)
+- [Langkah Selanjutnya](../../../../../04-PracticalSamples/mcp/calculator)
 
 ## Apa yang Akan Anda Pelajari
 
-Dengan menyelesaikan contoh ini, Anda akan memahami:
-- Cara membuat layanan yang kompatibel dengan MCP menggunakan Spring Boot
-- Perbedaan antara komunikasi protokol langsung dan interaksi berbasis AI
-- Bagaimana model AI memutuskan kapan dan bagaimana menggunakan alat eksternal
-- Praktik terbaik untuk membangun aplikasi AI yang mendukung alat
+Tutorial ini menjelaskan cara membangun layanan kalkulator menggunakan Model Context Protocol (MCP). Anda akan memahami:
 
-Sangat cocok untuk pemula yang mempelajari konsep MCP dan siap membangun integrasi alat AI pertama mereka!
+- Cara membuat layanan yang dapat digunakan AI sebagai alat
+- Cara mengatur komunikasi langsung dengan layanan MCP
+- Bagaimana model AI dapat secara otomatis memilih alat yang akan digunakan
+- Perbedaan antara panggilan protokol langsung dan interaksi yang dibantu AI
 
 ## Prasyarat
 
-- Java 21+
-- Maven 3.6+
-- **GitHub Token**: Diperlukan untuk klien berbasis AI. Jika Anda belum menyiapkannya, lihat [Bab 2: Menyiapkan lingkungan pengembangan Anda](../../../02-SetupDevEnvironment/README.md) untuk instruksi.
+Sebelum memulai, pastikan Anda memiliki:
+- Java 21 atau versi lebih tinggi terinstal
+- Maven untuk manajemen dependensi
+- Akun GitHub dengan personal access token (PAT)
+- Pemahaman dasar tentang Java dan Spring Boot
 
-## Konsep Utama
+## Memahami Struktur Proyek
 
-**Model Context Protocol (MCP)** adalah cara standar bagi aplikasi AI untuk terhubung dengan alat eksternal secara aman. Anggap saja sebagai "jembatan" yang memungkinkan model AI menggunakan layanan eksternal seperti kalkulator kita. Alih-alih model AI mencoba melakukan perhitungan sendiri (yang bisa tidak akurat), ia dapat memanggil layanan kalkulator kita untuk mendapatkan hasil yang akurat. MCP memastikan komunikasi ini terjadi dengan aman dan konsisten.
+Proyek kalkulator memiliki beberapa file penting:
 
-**Server-Sent Events (SSE)** memungkinkan komunikasi waktu nyata antara server dan klien. Berbeda dengan permintaan HTTP tradisional di mana Anda meminta dan menunggu respons, SSE memungkinkan server terus mengirim pembaruan ke klien. Ini sangat cocok untuk aplikasi AI di mana respons mungkin dialirkan atau membutuhkan waktu untuk diproses.
-
-**AI Tools & Function Calling** memungkinkan model AI secara otomatis memilih dan menggunakan fungsi eksternal (seperti operasi kalkulator) berdasarkan permintaan pengguna. Ketika Anda bertanya "Berapa 15 + 27?", model AI memahami bahwa Anda ingin melakukan penjumlahan, secara otomatis memanggil alat `add` dengan parameter yang benar (15, 27), dan mengembalikan hasilnya dalam bahasa alami. AI bertindak sebagai koordinator cerdas yang tahu kapan dan bagaimana menggunakan setiap alat.
-
-## Panduan Cepat
-
-### 1. Arahkan ke direktori aplikasi kalkulator
-```bash
-cd Generative-AI-for-beginners-java/04-PracticalSamples/mcp/calculator
+```
+calculator/
+├── src/main/java/com/microsoft/mcp/sample/server/
+│   ├── McpServerApplication.java          # Main Spring Boot app
+│   └── service/CalculatorService.java     # Calculator operations
+└── src/test/java/com/microsoft/mcp/sample/client/
+    ├── SDKClient.java                     # Direct MCP communication
+    ├── LangChain4jClient.java            # AI-powered client
+    └── Bot.java                          # Simple chat interface
 ```
 
-### 2. Bangun & Jalankan
-```bash
-mvn clean install -DskipTests
-java -jar target/calculator-server-0.0.1-SNAPSHOT.jar
+## Penjelasan Komponen Inti
+
+### 1. Aplikasi Utama
+
+**File:** `McpServerApplication.java`
+
+Ini adalah titik masuk untuk layanan kalkulator kita. Ini adalah aplikasi Spring Boot standar dengan satu tambahan khusus:
+
+```java
+@SpringBootApplication
+public class McpServerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(McpServerApplication.class, args);
+    }
+    
+    @Bean
+    public ToolCallbackProvider calculatorTools(CalculatorService calculator) {
+        return MethodToolCallbackProvider.builder().toolObjects(calculator).build();
+    }
+}
 ```
 
-### 3. Uji dengan Klien
-- **SDKClient**: Interaksi protokol MCP langsung
-- **LangChain4jClient**: Interaksi bahasa alami berbasis AI (memerlukan token GitHub)
+**Apa yang dilakukan:**
+- Memulai server web Spring Boot pada port 8080
+- Membuat `ToolCallbackProvider` yang membuat metode kalkulator kita tersedia sebagai alat MCP
+- Anotasi `@Bean` memberi tahu Spring untuk mengelola ini sebagai komponen yang dapat digunakan oleh bagian lain
 
-## Operasi Kalkulator yang Tersedia
+### 2. Layanan Kalkulator
 
-- `add(a, b)`, `subtract(a, b)`, `multiply(a, b)`, `divide(a, b)`
-- `power(base, exponent)`, `squareRoot(number)`, `absolute(number)`
-- `modulus(a, b)`, `help()`
+**File:** `CalculatorService.java`
 
-## Klien Pengujian
+Di sinilah semua perhitungan matematika dilakukan. Setiap metode diberi tanda `@Tool` agar tersedia melalui MCP:
 
-### 1. Klien MCP Langsung (SDKClient)
-Menguji komunikasi protokol MCP mentah. Jalankan dengan:
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient" -Dexec.classpathScope=test
+```java
+@Service
+public class CalculatorService {
+
+    @Tool(description = "Add two numbers together")
+    public String add(double a, double b) {
+        double result = a + b;
+        return formatResult(a, "+", b, result);
+    }
+
+    @Tool(description = "Subtract the second number from the first number")
+    public String subtract(double a, double b) {
+        double result = a - b;
+        return formatResult(a, "-", b, result);
+    }
+    
+    // More calculator operations...
+    
+    private String formatResult(double a, String operator, double b, double result) {
+        return String.format("%.2f %s %.2f = %.2f", a, operator, b, result);
+    }
+}
 ```
 
-### 2. Klien Berbasis AI (LangChain4jClient)
-Menunjukkan interaksi bahasa alami dengan Model GitHub. Memerlukan token GitHub (lihat [Prasyarat](../../../../../04-PracticalSamples/mcp/calculator)).
+**Fitur utama:**
 
-**Jalankan:**
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient" -Dexec.classpathScope=test
+1. **Anotasi `@Tool`**: Memberi tahu MCP bahwa metode ini dapat dipanggil oleh klien eksternal
+2. **Deskripsi Jelas**: Setiap alat memiliki deskripsi yang membantu model AI memahami kapan harus menggunakannya
+3. **Format Pengembalian Konsisten**: Semua operasi mengembalikan string yang mudah dibaca seperti "5.00 + 3.00 = 8.00"
+4. **Penanganan Kesalahan**: Pembagian dengan nol dan akar kuadrat negatif mengembalikan pesan kesalahan
+
+**Operasi yang Tersedia:**
+- `add(a, b)` - Menjumlahkan dua angka
+- `subtract(a, b)` - Mengurangi angka kedua dari angka pertama
+- `multiply(a, b)` - Mengalikan dua angka
+- `divide(a, b)` - Membagi angka pertama dengan angka kedua (dengan pengecekan nol)
+- `power(base, exponent)` - Menghitung pangkat dari basis
+- `squareRoot(number)` - Menghitung akar kuadrat (dengan pengecekan negatif)
+- `modulus(a, b)` - Mengembalikan sisa pembagian
+- `absolute(number)` - Mengembalikan nilai absolut
+- `help()` - Mengembalikan informasi tentang semua operasi
+
+### 3. Klien MCP Langsung
+
+**File:** `SDKClient.java`
+
+Klien ini berkomunikasi langsung dengan server MCP tanpa menggunakan AI. Klien ini secara manual memanggil fungsi kalkulator tertentu:
+
+```java
+public class SDKClient {
+    
+    public static void main(String[] args) {
+        var transport = new WebFluxSseClientTransport(
+            WebClient.builder().baseUrl("http://localhost:8080")
+        );
+        new SDKClient(transport).run();
+    }
+    
+    public void run() {
+        var client = McpClient.sync(this.transport).build();
+        client.initialize();
+        
+        // List available tools
+        ListToolsResult toolsList = client.listTools();
+        System.out.println("Available Tools = " + toolsList);
+        
+        // Call specific calculator functions
+        CallToolResult resultAdd = client.callTool(
+            new CallToolRequest("add", Map.of("a", 5.0, "b", 3.0))
+        );
+        System.out.println("Add Result = " + resultAdd);
+        
+        CallToolResult resultSqrt = client.callTool(
+            new CallToolRequest("squareRoot", Map.of("number", 16.0))
+        );
+        System.out.println("Square Root Result = " + resultSqrt);
+        
+        client.closeGracefully();
+    }
+}
 ```
 
-## MCP Inspector (Web UI)
+**Apa yang dilakukan:**
+1. **Terhubung** ke server kalkulator di `http://localhost:8080`
+2. **Mendaftar** semua alat yang tersedia (fungsi kalkulator kita)
+3. **Memanggil** fungsi tertentu dengan parameter yang tepat
+4. **Mencetak** hasil secara langsung
 
-MCP Inspector menyediakan antarmuka web visual untuk menguji layanan MCP Anda tanpa menulis kode. Sangat cocok untuk pemula yang ingin memahami cara kerja MCP!
+**Kapan digunakan:** Ketika Anda tahu persis perhitungan yang ingin dilakukan dan ingin memanggilnya secara programatis.
 
-### Instruksi Langkah-demi-Langkah:
+### 4. Klien Berbasis AI
 
-1. **Jalankan server kalkulator** (jika belum berjalan):
-   ```bash
-   java -jar target/calculator-server-0.0.1-SNAPSHOT.jar
-   ```
+**File:** `LangChain4jClient.java`
 
-2. **Instal dan jalankan MCP Inspector** di terminal baru:
-   ```bash
-   npx @modelcontextprotocol/inspector
-   ```
+Klien ini menggunakan model AI (GPT-4o-mini) yang dapat secara otomatis memutuskan alat kalkulator mana yang akan digunakan:
 
-3. **Buka antarmuka web**:
-   - Cari pesan seperti "Inspector running at http://localhost:6274"
-   - Buka URL tersebut di browser Anda
+```java
+public class LangChain4jClient {
+    
+    public static void main(String[] args) throws Exception {
+        // Set up the AI model (using GitHub Models)
+        ChatLanguageModel model = OpenAiOfficialChatModel.builder()
+                .isGitHubModels(true)
+                .apiKey(System.getenv("GITHUB_TOKEN"))
+                .modelName("gpt-4o-mini")
+                .build();
 
-4. **Hubungkan ke layanan kalkulator Anda**:
-   - Di antarmuka web, atur jenis transportasi ke "SSE"
-   - Atur URL ke: `http://localhost:8080/sse`
-   - Klik tombol "Connect"
+        // Connect to our calculator MCP server
+        McpTransport transport = new HttpMcpTransport.Builder()
+                .sseUrl("http://localhost:8080/sse")
+                .logRequests(true)  // Shows what the AI is doing
+                .logResponses(true)
+                .build();
 
-5. **Jelajahi alat yang tersedia**:
-   - Klik "List Tools" untuk melihat semua operasi kalkulator
-   - Anda akan melihat fungsi seperti `add`, `subtract`, `multiply`, dll.
+        McpClient mcpClient = new DefaultMcpClient.Builder()
+                .transport(transport)
+                .build();
 
-6. **Uji operasi kalkulator**:
-   - Pilih alat (misalnya, "add")
-   - Masukkan parameter (misalnya, `a: 15`, `b: 27`)
-   - Klik "Run Tool"
-   - Lihat hasil yang dikembalikan oleh layanan MCP Anda!
+        // Give the AI access to our calculator tools
+        ToolProvider toolProvider = McpToolProvider.builder()
+                .mcpClients(List.of(mcpClient))
+                .build();
 
-Pendekatan visual ini membantu Anda memahami dengan tepat bagaimana komunikasi MCP bekerja sebelum membangun klien Anda sendiri.
+        // Create an AI bot that can use our calculator
+        Bot bot = AiServices.builder(Bot.class)
+                .chatLanguageModel(model)
+                .toolProvider(toolProvider)
+                .build();
 
-![npx inspector](../../../../../translated_images/tool.214c70103694335c4cfdc2d624373dfce4b0162f6aea089ac1da9051fb563b7f.id.png)
+        // Now we can ask the AI to do calculations in natural language
+        String response = bot.chat("Calculate the sum of 24.5 and 17.3 using the calculator service");
+        System.out.println(response);
 
----
-**Referensi:** [Dokumentasi MCP Server Boot Starter](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-server-boot-starter-docs.html)
+        response = bot.chat("What's the square root of 144?");
+        System.out.println(response);
+    }
+}
+```
+
+**Apa yang dilakukan:**
+1. **Membuat** koneksi model AI menggunakan token GitHub Anda
+2. **Terhubung** AI ke server MCP kalkulator kita
+3. **Memberikan** akses AI ke semua alat kalkulator kita
+4. **Memungkinkan** permintaan bahasa alami seperti "Hitung jumlah 24.5 dan 17.3"
+
+**AI secara otomatis:**
+- Memahami bahwa Anda ingin menjumlahkan angka
+- Memilih alat `add`
+- Memanggil `add(24.5, 17.3)`
+- Mengembalikan hasil dalam respons alami
+
+## Menjalankan Contoh
+
+### Langkah 1: Memulai Server Kalkulator
+
+Pertama, atur token GitHub Anda (diperlukan untuk klien AI):
+
+**Windows:**
+```cmd
+set GITHUB_TOKEN=your_github_token_here
+```
+
+**Linux/macOS:**
+```bash
+export GITHUB_TOKEN=your_github_token_here
+```
+
+Mulai server:
+```bash
+cd 04-PracticalSamples/mcp/calculator
+mvn spring-boot:run
+```
+
+Server akan dimulai di `http://localhost:8080`. Anda akan melihat:
+```
+Started McpServerApplication in X.XXX seconds
+```
+
+### Langkah 2: Uji dengan Klien Langsung
+
+Di terminal baru:
+```bash
+mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient"
+```
+
+Anda akan melihat output seperti:
+```
+Available Tools = [add, subtract, multiply, divide, power, squareRoot, modulus, absolute, help]
+Add Result = 5.00 + 3.00 = 8.00
+Square Root Result = √16.00 = 4.00
+```
+
+### Langkah 3: Uji dengan Klien AI
+
+```bash
+mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient"
+```
+
+Anda akan melihat AI secara otomatis menggunakan alat:
+```
+The sum of 24.5 and 17.3 is 41.8.
+The square root of 144 is 12.
+```
+
+## Bagaimana Semua Ini Bekerja Bersama
+
+Berikut alur lengkap ketika Anda bertanya kepada AI "Berapa 5 + 3?":
+
+1. **Anda** bertanya kepada AI dalam bahasa alami
+2. **AI** menganalisis permintaan Anda dan menyadari Anda ingin melakukan penjumlahan
+3. **AI** memanggil server MCP: `add(5.0, 3.0)`
+4. **Layanan Kalkulator** melakukan: `5.0 + 3.0 = 8.0`
+5. **Layanan Kalkulator** mengembalikan: `"5.00 + 3.00 = 8.00"`
+6. **AI** menerima hasil dan memformat respons alami
+7. **Anda** mendapatkan: "Jumlah dari 5 dan 3 adalah 8"
+
+## Langkah Selanjutnya
+
+Untuk lebih banyak contoh, lihat [Bab 04: Contoh Praktis](../../README.md)
 
 **Penafian**:  
-Dokumen ini telah diterjemahkan menggunakan layanan penerjemahan AI [Co-op Translator](https://github.com/Azure/co-op-translator). Meskipun kami berusaha untuk memberikan hasil yang akurat, harap diingat bahwa terjemahan otomatis mungkin mengandung kesalahan atau ketidakakuratan. Dokumen asli dalam bahasa aslinya harus dianggap sebagai sumber yang otoritatif. Untuk informasi yang bersifat kritis, disarankan menggunakan jasa penerjemahan profesional oleh manusia. Kami tidak bertanggung jawab atas kesalahpahaman atau penafsiran yang keliru yang timbul dari penggunaan terjemahan ini.
+Dokumen ini telah diterjemahkan menggunakan layanan penerjemahan AI [Co-op Translator](https://github.com/Azure/co-op-translator). Meskipun kami berupaya untuk memberikan hasil yang akurat, harap diperhatikan bahwa terjemahan otomatis mungkin mengandung kesalahan atau ketidakakuratan. Dokumen asli dalam bahasa aslinya harus dianggap sebagai sumber yang berwenang. Untuk informasi yang bersifat kritis, disarankan menggunakan jasa penerjemahan manusia profesional. Kami tidak bertanggung jawab atas kesalahpahaman atau interpretasi yang keliru yang timbul dari penggunaan terjemahan ini.

@@ -1,139 +1,352 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "0a27b17f64f598a80b72d93b98b7ed04",
-  "translation_date": "2025-07-21T19:10:49+00:00",
+  "original_hash": "59454ab4ec36d89840df6fcfe7633cbd",
+  "translation_date": "2025-07-25T11:35:06+00:00",
   "source_file": "03-CoreGenerativeAITechniques/README.md",
   "language_code": "th"
 }
 -->
-# เทคนิคหลักของ Generative AI
-
->**หมายเหตุ**: บทนี้มี [**บทแนะนำ**](./TUTORIAL.md) ที่อธิบายขั้นตอนการใช้งานตัวอย่างที่เสร็จสมบูรณ์อย่างละเอียด
-
-## สิ่งที่คุณจะได้เรียนรู้
-ในบทนี้ เราจะศึกษาวิธีการหลัก 4 อย่างของ Generative AI ผ่านตัวอย่างที่ใช้งานได้จริง:
-- การเติมข้อความและการสนทนา (LLM completions and chat flows)
-- การเรียกใช้งานฟังก์ชัน
-- การสร้างเนื้อหาโดยใช้การดึงข้อมูลเสริม (Retrieval-Augmented Generation หรือ RAG)
-- มาตรการความปลอดภัยของ AI ที่รับผิดชอบ
+# บทเรียนเทคนิคพื้นฐานของ Generative AI
 
 ## สารบัญ
 
-- [สิ่งที่คุณจะได้เรียนรู้](../../../03-CoreGenerativeAITechniques)
 - [ข้อกำหนดเบื้องต้น](../../../03-CoreGenerativeAITechniques)
 - [เริ่มต้นใช้งาน](../../../03-CoreGenerativeAITechniques)
-- [ภาพรวมของตัวอย่าง](../../../03-CoreGenerativeAITechniques)
-  - [1. การเติมข้อความและการสนทนา (LLM Completions and Chat Flows)](../../../03-CoreGenerativeAITechniques)
-  - [2. ฟังก์ชันและปลั๊กอินกับ LLMs](../../../03-CoreGenerativeAITechniques)
-  - [3. การสร้างเนื้อหาโดยใช้การดึงข้อมูลเสริม (RAG)](../../../03-CoreGenerativeAITechniques)
-  - [4. การสาธิตความปลอดภัยของ AI ที่รับผิดชอบ](../../../03-CoreGenerativeAITechniques)
-- [สรุป](../../../03-CoreGenerativeAITechniques)
+  - [ขั้นตอนที่ 1: ตั้งค่าตัวแปรสภาพแวดล้อม](../../../03-CoreGenerativeAITechniques)
+  - [ขั้นตอนที่ 2: ไปที่ไดเรกทอรีตัวอย่าง](../../../03-CoreGenerativeAITechniques)
+- [บทเรียนที่ 1: การเติมข้อความและแชทด้วย LLM](../../../03-CoreGenerativeAITechniques)
+- [บทเรียนที่ 2: การเรียกใช้ฟังก์ชัน](../../../03-CoreGenerativeAITechniques)
+- [บทเรียนที่ 3: RAG (การสร้างข้อความเสริมด้วยการดึงข้อมูล)](../../../03-CoreGenerativeAITechniques)
+- [บทเรียนที่ 4: AI ที่มีความรับผิดชอบ](../../../03-CoreGenerativeAITechniques)
+- [รูปแบบทั่วไปในตัวอย่าง](../../../03-CoreGenerativeAITechniques)
 - [ขั้นตอนถัดไป](../../../03-CoreGenerativeAITechniques)
+- [การแก้ไขปัญหา](../../../03-CoreGenerativeAITechniques)
+  - [ปัญหาที่พบบ่อย](../../../03-CoreGenerativeAITechniques)
+
+## ภาพรวม
+
+บทเรียนนี้ให้ตัวอย่างการใช้งานจริงของเทคนิคพื้นฐานใน Generative AI โดยใช้ Java และ GitHub Models คุณจะได้เรียนรู้วิธีการโต้ตอบกับ Large Language Models (LLMs) การเรียกใช้ฟังก์ชัน การใช้การสร้างข้อความเสริมด้วยการดึงข้อมูล (RAG) และการนำแนวปฏิบัติของ AI ที่มีความรับผิดชอบไปใช้
 
 ## ข้อกำหนดเบื้องต้น
 
-- การตั้งค่าที่เสร็จสมบูรณ์จาก [บทที่ 2](../../../02-SetupDevEnvironment)
+ก่อนเริ่มต้น ตรวจสอบให้แน่ใจว่าคุณมี:
+- ติดตั้ง Java 21 หรือเวอร์ชันที่สูงกว่า
+- Maven สำหรับการจัดการ dependencies
+- บัญชี GitHub พร้อม Personal Access Token (PAT)
 
 ## เริ่มต้นใช้งาน
 
-1. **ไปที่โฟลเดอร์ตัวอย่าง**:  
+### ขั้นตอนที่ 1: ตั้งค่าตัวแปรสภาพแวดล้อม
+
+ก่อนอื่น คุณต้องตั้งค่า GitHub token เป็นตัวแปรสภาพแวดล้อม Token นี้จะช่วยให้คุณเข้าถึง GitHub Models ได้ฟรี
+
+**Windows (Command Prompt):**
+```cmd
+set GITHUB_TOKEN=your_github_token_here
+```
+
+**Windows (PowerShell):**
+```powershell
+$env:GITHUB_TOKEN="your_github_token_here"
+```
+
+**Linux/macOS:**
+```bash
+export GITHUB_TOKEN=your_github_token_here
+```
+
+### ขั้นตอนที่ 2: ไปที่ไดเรกทอรีตัวอย่าง
+
 ```bash
 cd 03-CoreGenerativeAITechniques/examples/
-```  
-2. **ตั้งค่าสภาพแวดล้อม**:  
-```bash
-export GITHUB_TOKEN=your_token_here
-```  
-3. **คอมไพล์และรันตัวอย่าง**:  
-```bash
-   # Run completions example
-   mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.completions.LLMCompletionsApp"
-   
-   # Run functions example  
-   mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.functions.FunctionsApp"
-   
-   # Run RAG example
-   mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.rag.SimpleReaderDemo"
-   
-   # Run responsible AI demo
-   mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.responsibleai.ResponsibleGithubModels"
-   ```  
-
-## ภาพรวมของตัวอย่าง
-
-ตัวอย่างทั้งหมดถูกจัดเก็บในโฟลเดอร์ `examples/` โดยมีโครงสร้างดังนี้:
-
-```
-examples/
-├── src/main/java/com/example/genai/techniques/
-│   ├── completions/
-│   │   └── LLMCompletionsApp.java        # Basic completions 
-│   ├── functions/
-│   │   └── FunctionsApp.java             # Function calling examples
-│   ├── rag/
-│   │   └── SimpleReaderDemo.java         # Retrieval-Augmented Generation
-│   └── responsibleai/
-│       └── ResponsibleGithubModels.java  # Responsible AI safety demonstration
-├── document.txt                          # Sample document for RAG example
-└── pom.xml                               # Maven configuration
 ```
 
-### 1. การเติมข้อความและการสนทนา (LLM Completions and Chat Flows)
-**ไฟล์**: `examples/src/main/java/com/example/genai/techniques/completions/LLMCompletionsApp.java`
+## บทเรียนที่ 1: การเติมข้อความและแชทด้วย LLM
 
-เรียนรู้การสร้าง AI สำหรับการสนทนาด้วยการตอบกลับแบบสตรีมและการจัดการประวัติการสนทนา
+**ไฟล์:** `src/main/java/com/example/genai/techniques/completions/LLMCompletionsApp.java`
 
-ตัวอย่างนี้แสดงให้เห็น:
-- การเติมข้อความง่ายๆ ด้วยคำสั่งระบบ
-- การสนทนาแบบหลายรอบพร้อมการจัดการประวัติ
-- เซสชันการสนทนาแบบโต้ตอบ
-- การตั้งค่าพารามิเตอร์ (temperature, max tokens)
+### สิ่งที่ตัวอย่างนี้สอน
 
-### 2. ฟังก์ชันและปลั๊กอินกับ LLMs
-**ไฟล์**: `examples/src/main/java/com/example/genai/techniques/functions/FunctionsApp.java`
+ตัวอย่างนี้แสดงให้เห็นถึงกลไกพื้นฐานของการโต้ตอบกับ Large Language Model (LLM) ผ่าน OpenAI API รวมถึงการเริ่มต้น client ด้วย GitHub Models รูปแบบโครงสร้างข้อความสำหรับ system และ user prompts การจัดการสถานะแชทผ่านการสะสมประวัติข้อความ และการปรับแต่งพารามิเตอร์เพื่อควบคุมความยาวและระดับความคิดสร้างสรรค์ของคำตอบ
 
-ขยายความสามารถของ AI โดยให้โมเดลเข้าถึงฟังก์ชันที่กำหนดเองและ API ภายนอก
+### แนวคิดสำคัญในโค้ด
 
-ตัวอย่างนี้แสดงให้เห็น:
-- การผสานรวมฟังก์ชันพยากรณ์อากาศ
-- การใช้งานฟังก์ชันเครื่องคิดเลข  
-- การเรียกใช้งานฟังก์ชันหลายตัวในบทสนทนาเดียว
-- การกำหนดฟังก์ชันด้วย JSON schemas
+#### 1. การตั้งค่า Client
+```java
+// Create the AI client
+OpenAIClient client = new OpenAIClientBuilder()
+    .endpoint("https://models.inference.ai.azure.com")
+    .credential(new StaticTokenCredential(pat))
+    .buildClient();
+```
 
-### 3. การสร้างเนื้อหาโดยใช้การดึงข้อมูลเสริม (RAG)
-**ไฟล์**: `examples/src/main/java/com/example/genai/techniques/rag/SimpleReaderDemo.java`
+นี่คือการสร้างการเชื่อมต่อกับ GitHub Models โดยใช้ token ของคุณ
 
-เรียนรู้วิธีผสมผสาน AI กับเอกสารและแหล่งข้อมูลของคุณเองเพื่อให้ได้คำตอบที่แม่นยำและมีบริบท
+#### 2. การเติมข้อความแบบง่าย
+```java
+List<ChatRequestMessage> messages = List.of(
+    // System message sets AI behavior
+    new ChatRequestSystemMessage("You are a helpful Java expert."),
+    // User message contains the actual question
+    new ChatRequestUserMessage("Explain Java streams briefly.")
+);
 
-ตัวอย่างนี้แสดงให้เห็น:
-- การตอบคำถามตามเอกสารด้วย Azure OpenAI SDK
-- การใช้งานรูปแบบ RAG กับ GitHub Models
+ChatCompletionsOptions options = new ChatCompletionsOptions(messages)
+    .setModel("gpt-4o-mini")
+    .setMaxTokens(200)      // Limit response length
+    .setTemperature(0.7);   // Control creativity (0.0-1.0)
+```
 
-**การใช้งาน**: ถามคำถามเกี่ยวกับเนื้อหาใน `document.txt` และรับคำตอบจาก AI ที่อ้างอิงเฉพาะบริบทนั้น
+#### 3. หน่วยความจำของการสนทนา
+```java
+// Add AI's response to maintain conversation history
+messages.add(new ChatRequestAssistantMessage(aiResponse));
+messages.add(new ChatRequestUserMessage("Follow-up question"));
+```
 
-### 4. การสาธิตความปลอดภัยของ AI ที่รับผิดชอบ
-**ไฟล์**: `examples/src/main/java/com/example/genai/techniques/responsibleai/ResponsibleGithubModels.java`
+AI จะจำข้อความก่อนหน้าได้ก็ต่อเมื่อคุณรวมข้อความเหล่านั้นไว้ในคำขอครั้งถัดไป
 
-ดูตัวอย่างมาตรการความปลอดภัยของ AI โดยการทดสอบความสามารถในการกรองเนื้อหาของ GitHub Models
+### การรันตัวอย่าง
+```bash
+mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.completions.LLMCompletionsApp"
+```
 
-ตัวอย่างนี้แสดงให้เห็น:
-- การกรองเนื้อหาสำหรับคำสั่งที่อาจเป็นอันตราย
-- การจัดการการตอบสนองด้านความปลอดภัยในแอปพลิเคชัน
-- หมวดหมู่ต่างๆ ของเนื้อหาที่ถูกบล็อก (ความรุนแรง, คำพูดแสดงความเกลียดชัง, ข้อมูลที่ผิด)
-- การจัดการข้อผิดพลาดอย่างเหมาะสมสำหรับการละเมิดความปลอดภัย
+### สิ่งที่เกิดขึ้นเมื่อคุณรัน
 
-> **เรียนรู้เพิ่มเติม**: นี่เป็นเพียงการแนะนำแนวคิดเกี่ยวกับ AI ที่รับผิดชอบ สำหรับข้อมูลเพิ่มเติมเกี่ยวกับจริยธรรม การลดอคติ การพิจารณาด้านความเป็นส่วนตัว และกรอบการทำงานของ AI ที่รับผิดชอบ ดู [บทที่ 5: Generative AI ที่รับผิดชอบ](../05-ResponsibleGenAI/README.md)
+1. **การเติมข้อความแบบง่าย**: AI ตอบคำถามเกี่ยวกับ Java โดยมีคำแนะนำจาก system prompt
+2. **การแชทหลายรอบ**: AI รักษาบริบทระหว่างคำถามหลายข้อ
+3. **การแชทแบบโต้ตอบ**: คุณสามารถสนทนากับ AI ได้จริง
 
-## สรุป
+## บทเรียนที่ 2: การเรียกใช้ฟังก์ชัน
 
-ในบทนี้ เราได้สำรวจการเติมข้อความและการสนทนา (LLM completions and chat flows) การเรียกใช้งานฟังก์ชันเพื่อเพิ่มความสามารถของ AI การสร้างระบบ Retrieval-Augmented Generation (RAG) และการสาธิตมาตรการความปลอดภัยของ AI ที่รับผิดชอบ
+**ไฟล์:** `src/main/java/com/example/genai/techniques/functions/FunctionsApp.java`
 
-> **หมายเหตุ**: ศึกษาเพิ่มเติมได้จาก [**บทแนะนำ**](./TUTORIAL.md)
+### สิ่งที่ตัวอย่างนี้สอน
+
+การเรียกใช้ฟังก์ชันช่วยให้โมเดล AI สามารถร้องขอการดำเนินการของเครื่องมือและ API ภายนอกผ่านโปรโตคอลที่มีโครงสร้าง โดยโมเดลจะวิเคราะห์คำขอในภาษาธรรมชาติ กำหนดการเรียกใช้ฟังก์ชันที่จำเป็นพร้อมพารามิเตอร์ที่เหมาะสมโดยใช้ JSON Schema และประมวลผลผลลัพธ์ที่ได้เพื่อสร้างคำตอบที่มีบริบท ขณะที่การดำเนินการของฟังก์ชันยังคงอยู่ภายใต้การควบคุมของนักพัฒนาเพื่อความปลอดภัยและความน่าเชื่อถือ
+
+### แนวคิดสำคัญในโค้ด
+
+#### 1. การกำหนดฟังก์ชัน
+```java
+ChatCompletionsFunctionToolDefinitionFunction weatherFunction = 
+    new ChatCompletionsFunctionToolDefinitionFunction("get_weather");
+weatherFunction.setDescription("Get current weather information for a city");
+
+// Define parameters using JSON Schema
+weatherFunction.setParameters(BinaryData.fromString("""
+    {
+        "type": "object",
+        "properties": {
+            "city": {
+                "type": "string",
+                "description": "The city name"
+            }
+        },
+        "required": ["city"]
+    }
+    """));
+```
+
+นี่คือการบอก AI ว่ามีฟังก์ชันใดบ้างและใช้งานอย่างไร
+
+#### 2. ลำดับการเรียกใช้ฟังก์ชัน
+```java
+// 1. AI requests a function call
+if (choice.getFinishReason() == CompletionsFinishReason.TOOL_CALLS) {
+    ChatCompletionsFunctionToolCall functionCall = ...;
+    
+    // 2. You execute the function
+    String result = simulateWeatherFunction(functionCall.getFunction().getArguments());
+    
+    // 3. You give the result back to AI
+    messages.add(new ChatRequestToolMessage(result, toolCall.getId()));
+    
+    // 4. AI provides final response with function result
+    ChatCompletions finalResponse = client.getChatCompletions(MODEL, options);
+}
+```
+
+#### 3. การใช้งานฟังก์ชัน
+```java
+private static String simulateWeatherFunction(String arguments) {
+    // Parse arguments and call real weather API
+    // For demo, we return mock data
+    return """
+        {
+            "city": "Seattle",
+            "temperature": "22",
+            "condition": "partly cloudy"
+        }
+        """;
+}
+```
+
+### การรันตัวอย่าง
+```bash
+mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.functions.FunctionsApp"
+```
+
+### สิ่งที่เกิดขึ้นเมื่อคุณรัน
+
+1. **ฟังก์ชันสภาพอากาศ**: AI ขอข้อมูลสภาพอากาศของ Seattle คุณให้ข้อมูลนั้น และ AI จัดรูปแบบคำตอบ
+2. **ฟังก์ชันเครื่องคิดเลข**: AI ขอการคำนวณ (15% ของ 240) คุณคำนวณให้ และ AI อธิบายผลลัพธ์
+
+## บทเรียนที่ 3: RAG (การสร้างข้อความเสริมด้วยการดึงข้อมูล)
+
+**ไฟล์:** `src/main/java/com/example/genai/techniques/rag/SimpleReaderDemo.java`
+
+### สิ่งที่ตัวอย่างนี้สอน
+
+การสร้างข้อความเสริมด้วยการดึงข้อมูล (RAG) ผสมผสานการดึงข้อมูลเข้ากับการสร้างข้อความ โดยการเพิ่มบริบทจากเอกสารภายนอกลงใน prompts ของ AI ทำให้โมเดลสามารถให้คำตอบที่แม่นยำโดยอ้างอิงจากแหล่งข้อมูลเฉพาะ แทนที่จะพึ่งพาข้อมูลการฝึกอบรมที่อาจล้าสมัยหรือไม่ถูกต้อง พร้อมทั้งรักษาขอบเขตที่ชัดเจนระหว่างคำถามของผู้ใช้และแหล่งข้อมูลที่เชื่อถือได้ผ่านการออกแบบ prompts อย่างมีกลยุทธ์
+
+### แนวคิดสำคัญในโค้ด
+
+#### 1. การโหลดเอกสาร
+```java
+// Load your knowledge source
+String doc = Files.readString(Paths.get("document.txt"));
+```
+
+#### 2. การเพิ่มบริบท
+```java
+List<ChatRequestMessage> messages = List.of(
+    new ChatRequestSystemMessage(
+        "Use only the CONTEXT to answer. If not in context, say you cannot find it."
+    ),
+    new ChatRequestUserMessage(
+        "CONTEXT:\n\"\"\"\n" + doc + "\n\"\"\"\n\nQUESTION:\n" + question
+    )
+);
+```
+
+เครื่องหมาย triple quotes ช่วยให้ AI แยกแยะระหว่างบริบทและคำถาม
+
+#### 3. การจัดการคำตอบอย่างปลอดภัย
+```java
+if (response != null && response.getChoices() != null && !response.getChoices().isEmpty()) {
+    String answer = response.getChoices().get(0).getMessage().getContent();
+    System.out.println("Assistant: " + answer);
+} else {
+    System.err.println("Error: No response received from the API.");
+}
+```
+
+ตรวจสอบคำตอบจาก API เสมอเพื่อป้องกันข้อผิดพลาด
+
+### การรันตัวอย่าง
+```bash
+mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.rag.SimpleReaderDemo"
+```
+
+### สิ่งที่เกิดขึ้นเมื่อคุณรัน
+
+1. โปรแกรมโหลด `document.txt` (มีข้อมูลเกี่ยวกับ GitHub Models)
+2. คุณถามคำถามเกี่ยวกับเอกสาร
+3. AI ตอบโดยอ้างอิงเฉพาะเนื้อหาในเอกสาร ไม่ใช่ความรู้ทั่วไป
+
+ลองถาม: "GitHub Models คืออะไร?" เทียบกับ "สภาพอากาศเป็นอย่างไร?"
+
+## บทเรียนที่ 4: AI ที่มีความรับผิดชอบ
+
+**ไฟล์:** `src/main/java/com/example/genai/techniques/responsibleai/ResponsibleGithubModels.java`
+
+### สิ่งที่ตัวอย่างนี้สอน
+
+ตัวอย่าง AI ที่มีความรับผิดชอบแสดงให้เห็นถึงความสำคัญของการใช้มาตรการความปลอดภัยในแอปพลิเคชัน AI โดยแสดงตัวกรองความปลอดภัยที่ตรวจจับหมวดหมู่เนื้อหาที่เป็นอันตราย เช่น คำพูดแสดงความเกลียดชัง การคุกคาม การทำร้ายตัวเอง เนื้อหาทางเพศ และความรุนแรง พร้อมทั้งแสดงให้เห็นว่าแอปพลิเคชัน AI สำหรับการใช้งานจริงควรจัดการกับการละเมิดนโยบายเนื้อหาอย่างไรด้วยการจัดการข้อยกเว้น การให้ข้อเสนอแนะแก่ผู้ใช้ และกลยุทธ์การตอบกลับสำรอง
+
+### แนวคิดสำคัญในโค้ด
+
+#### 1. กรอบการทดสอบความปลอดภัย
+```java
+private void testPromptSafety(String prompt, String category) {
+    try {
+        // Attempt to get AI response
+        ChatCompletions response = client.getChatCompletions(modelId, options);
+        System.out.println("Response generated (content appears safe)");
+        
+    } catch (HttpResponseException e) {
+        if (e.getResponse().getStatusCode() == 400) {
+            System.out.println("[BLOCKED BY SAFETY FILTER]");
+            System.out.println("This is GOOD - safety system working!");
+        }
+    }
+}
+```
+
+#### 2. หมวดหมู่ความปลอดภัยที่ทดสอบ
+- คำแนะนำเกี่ยวกับความรุนแรง/การทำร้าย
+- คำพูดแสดงความเกลียดชัง
+- การละเมิดความเป็นส่วนตัว
+- ข้อมูลทางการแพทย์ที่ผิดพลาด
+- กิจกรรมที่ผิดกฎหมาย
+
+### การรันตัวอย่าง
+```bash
+mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.responsibleai.ResponsibleGithubModels"
+```
+
+### สิ่งที่เกิดขึ้นเมื่อคุณรัน
+
+โปรแกรมทดสอบ prompts ที่เป็นอันตรายต่างๆ และแสดงให้เห็นว่าระบบความปลอดภัยของ AI:
+1. **บล็อกคำขอที่อันตราย** ด้วยข้อผิดพลาด HTTP 400
+2. **อนุญาตเนื้อหาที่ปลอดภัย** ให้สร้างได้ตามปกติ
+3. **ปกป้องผู้ใช้** จากผลลัพธ์ AI ที่เป็นอันตราย
+
+## รูปแบบทั่วไปในตัวอย่าง
+
+### รูปแบบการตรวจสอบสิทธิ์
+ตัวอย่างทั้งหมดใช้รูปแบบนี้เพื่อเชื่อมต่อกับ GitHub Models:
+
+```java
+String pat = System.getenv("GITHUB_TOKEN");
+TokenCredential credential = new StaticTokenCredential(pat);
+OpenAIClient client = new OpenAIClientBuilder()
+    .endpoint("https://models.inference.ai.azure.com")
+    .credential(credential)
+    .buildClient();
+```
+
+### รูปแบบการจัดการข้อผิดพลาด
+```java
+try {
+    // AI operation
+} catch (HttpResponseException e) {
+    // Handle API errors (rate limits, safety filters)
+} catch (Exception e) {
+    // Handle general errors (network, parsing)
+}
+```
+
+### รูปแบบโครงสร้างข้อความ
+```java
+List<ChatRequestMessage> messages = List.of(
+    new ChatRequestSystemMessage("Set AI behavior"),
+    new ChatRequestUserMessage("User's actual request")
+);
+```
 
 ## ขั้นตอนถัดไป
 
-[บทที่ 4: การประยุกต์ใช้งานและโปรเจกต์จริง](../04-PracticalSamples/README.md)
+[บทที่ 04: ตัวอย่างการใช้งานจริง](../04-PracticalSamples/README.md)
+
+## การแก้ไขปัญหา
+
+### ปัญหาที่พบบ่อย
+
+**"GITHUB_TOKEN not set"**
+- ตรวจสอบให้แน่ใจว่าคุณตั้งค่าตัวแปรสภาพแวดล้อมแล้ว
+- ยืนยันว่า token ของคุณมี scope `models:read`
+
+**"No response from API"**
+- ตรวจสอบการเชื่อมต่ออินเทอร์เน็ตของคุณ
+- ยืนยันว่า token ของคุณยังใช้งานได้
+- ตรวจสอบว่าคุณถึงขีดจำกัดการใช้งานหรือไม่
+
+**ข้อผิดพลาดในการคอมไพล์ Maven**
+- ตรวจสอบให้แน่ใจว่าคุณมี Java 21 หรือเวอร์ชันที่สูงกว่า
+- รัน `mvn clean compile` เพื่อรีเฟรช dependencies
 
 **ข้อจำกัดความรับผิดชอบ**:  
-เอกสารนี้ได้รับการแปลโดยใช้บริการแปลภาษา AI [Co-op Translator](https://github.com/Azure/co-op-translator) แม้ว่าเราจะพยายามให้การแปลมีความถูกต้องมากที่สุด แต่โปรดทราบว่าการแปลโดยอัตโนมัติอาจมีข้อผิดพลาดหรือความไม่ถูกต้อง เอกสารต้นฉบับในภาษาดั้งเดิมควรถือเป็นแหล่งข้อมูลที่เชื่อถือได้ สำหรับข้อมูลที่สำคัญ ขอแนะนำให้ใช้บริการแปลภาษามืออาชีพ เราไม่รับผิดชอบต่อความเข้าใจผิดหรือการตีความผิดที่เกิดจากการใช้การแปลนี้
+เอกสารนี้ได้รับการแปลโดยใช้บริการแปลภาษา AI [Co-op Translator](https://github.com/Azure/co-op-translator) แม้ว่าเราจะพยายามให้การแปลมีความถูกต้องมากที่สุด แต่โปรดทราบว่าการแปลโดยอัตโนมัติอาจมีข้อผิดพลาดหรือความไม่ถูกต้อง เอกสารต้นฉบับในภาษาดั้งเดิมควรถือเป็นแหล่งข้อมูลที่เชื่อถือได้ สำหรับข้อมูลที่สำคัญ ขอแนะนำให้ใช้บริการแปลภาษาจากผู้เชี่ยวชาญ เราจะไม่รับผิดชอบต่อความเข้าใจผิดหรือการตีความที่ผิดพลาดซึ่งเกิดจากการใช้การแปลนี้

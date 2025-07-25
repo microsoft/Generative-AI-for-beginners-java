@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "0f080f1f2a635610b5f6eff5a58a9590",
-  "translation_date": "2025-07-25T07:48:58+00:00",
+  "original_hash": "a49b35508745c032a0033d914df7901b",
+  "translation_date": "2025-07-25T11:41:56+00:00",
   "source_file": "README.md",
   "language_code": "no"
 }
@@ -12,7 +12,10 @@ CO_OP_TRANSLATOR_METADATA:
 
 ![Generativ AI for Nybegynnere - Java Edition](../../translated_images/beg-genai-series.61edc4a6b2cc54284fa2d70eda26dc0ca2669e26e49655b842ea799cd6e16d2a.no.png)
 
-> **NOTE: Kom i gang raskt**: Hele kurset kan gjennomføres online – Ingen lokal oppsett nødvendig!
+**Tidsforpliktelse**: Hele workshoppen kan fullføres online uten lokal oppsett. Hvis du ønsker å kjøre eksemplene, tar miljøoppsettet 2 minutter, og utforskning av eksemplene krever 1-3 timer avhengig av hvor dypt du går.
+
+> **Hurtigstart**
+
 1. Fork dette repositoriet til din GitHub-konto
 2. Klikk **Code** → **Codespaces**-fanen → **...** → **New with options...**
 3. Bruk standardinnstillingene – dette vil velge utviklingscontaineren som er laget for dette kurset
@@ -24,31 +27,29 @@ CO_OP_TRANSLATOR_METADATA:
 
 ### Støttet via GitHub Action (Automatisk og alltid oppdatert)
 
-[Fransk](../fr/README.md) | [Spansk](../es/README.md) | [Tysk](../de/README.md) | [Russisk](../ru/README.md) | [Arabisk](../ar/README.md) | [Persisk (Farsi)](../fa/README.md) | [Urdu](../ur/README.md) | [Kinesisk (Forenklet)](../zh/README.md) | [Kinesisk (Tradisjonell, Macau)](../mo/README.md) | [Kinesisk (Tradisjonell, Hong Kong)](../hk/README.md) | [Kinesisk (Tradisjonell, Taiwan)](../tw/README.md) | [Japansk](../ja/README.md) | [Koreansk](../ko/README.md) | [Hindi](../hi/README.md) | [Bengali](../bn/README.md) | [Marathi](../mr/README.md) | [Nepali](../ne/README.md) | [Punjabi (Gurmukhi)](../pa/README.md) | [Portugisisk (Portugal)](../pt/README.md) | [Portugisisk (Brasil)](../br/README.md) | [Italiensk](../it/README.md) | [Polsk](../pl/README.md) | [Tyrkisk](../tr/README.md) | [Gresk](../el/README.md) | [Thai](../th/README.md) | [Svensk](../sv/README.md) | [Dansk](../da/README.md) | [Norsk](./README.md) | [Finsk](../fi/README.md) | [Nederlandsk](../nl/README.md) | [Hebraisk](../he/README.md) | [Vietnamesisk](../vi/README.md) | [Indonesisk](../id/README.md) | [Malayisk](../ms/README.md) | [Tagalog (Filippinsk)](../tl/README.md) | [Swahili](../sw/README.md) | [Ungarsk](../hu/README.md) | [Tsjekkisk](../cs/README.md) | [Slovakisk](../sk/README.md) | [Rumensk](../ro/README.md) | [Bulgarsk](../bg/README.md) | [Serbisk (Kyrillisk)](../sr/README.md) | [Kroatisk](../hr/README.md) | [Slovensk](../sl/README.md) | [Ukrainsk](../uk/README.md) | [Burmesisk (Myanmar)](../my/README.md)
+[French](../fr/README.md) | [Spanish](../es/README.md) | [German](../de/README.md) | [Russian](../ru/README.md) | [Arabic](../ar/README.md) | [Persian (Farsi)](../fa/README.md) | [Urdu](../ur/README.md) | [Chinese (Simplified)](../zh/README.md) | [Chinese (Traditional, Macau)](../mo/README.md) | [Chinese (Traditional, Hong Kong)](../hk/README.md) | [Chinese (Traditional, Taiwan)](../tw/README.md) | [Japanese](../ja/README.md) | [Korean](../ko/README.md) | [Hindi](../hi/README.md) | [Bengali](../bn/README.md) | [Marathi](../mr/README.md) | [Nepali](../ne/README.md) | [Punjabi (Gurmukhi)](../pa/README.md) | [Portuguese (Portugal)](../pt/README.md) | [Portuguese (Brazil)](../br/README.md) | [Italian](../it/README.md) | [Polish](../pl/README.md) | [Turkish](../tr/README.md) | [Greek](../el/README.md) | [Thai](../th/README.md) | [Swedish](../sv/README.md) | [Danish](../da/README.md) | [Norwegian](./README.md) | [Finnish](../fi/README.md) | [Dutch](../nl/README.md) | [Hebrew](../he/README.md) | [Vietnamese](../vi/README.md) | [Indonesian](../id/README.md) | [Malay](../ms/README.md) | [Tagalog (Filipino)](../tl/README.md) | [Swahili](../sw/README.md) | [Hungarian](../hu/README.md) | [Czech](../cs/README.md) | [Slovak](../sk/README.md) | [Romanian](../ro/README.md) | [Bulgarian](../bg/README.md) | [Serbian (Cyrillic)](../sr/README.md) | [Croatian](../hr/README.md) | [Slovenian](../sl/README.md) | [Ukrainian](../uk/README.md) | [Burmese (Myanmar)](../my/README.md)
 
 ## Kursstruktur og læringssti
 
-**Tidsbruk**: Oppsett av miljø tar 2 minutter, og eksemplene krever 1-3 timer avhengig av hvor dypt du utforsker. Hele workshopen kan fullføres online uten lokal oppsett.
-
 ### **Kapittel 1: Introduksjon til Generativ AI**
-- **Kjernebegreper**: Forståelse av store språkmodeller, tokens, embeddings og AI-muligheter
+- **Kjernebegreper**: Forstå store språkmodeller, tokens, embeddings og AI-funksjoner
 - **Java AI-økosystem**: Oversikt over Spring AI og OpenAI SDK-er
 - **Model Context Protocol**: Introduksjon til MCP og dens rolle i AI-agentkommunikasjon
-- **Praktiske anvendelser**: Virkelige scenarier som chatbots og innholdsgenerering
+- **Praktiske anvendelser**: Virkelige eksempler som chatbots og innholdsgenerering
 - **[→ Start Kapittel 1](./01-IntroToGenAI/README.md)**
 
 ### **Kapittel 2: Oppsett av utviklingsmiljø**
 - **Konfigurasjon for flere leverandører**: Sett opp GitHub Models, Azure OpenAI og OpenAI Java SDK-integrasjoner
 - **Spring Boot + Spring AI**: Beste praksis for utvikling av AI-applikasjoner for bedrifter
 - **GitHub Models**: Gratis tilgang til AI-modeller for prototyping og læring (ingen kredittkort nødvendig)
-- **Utviklingsverktøy**: Docker-containere, VS Code og GitHub Codespaces-konfigurasjon
+- **Utviklingsverktøy**: Konfigurasjon av Docker-containere, VS Code og GitHub Codespaces
 - **[→ Start Kapittel 2](./02-SetupDevEnvironment/README.md)**
 
 ### **Kapittel 3: Kjerne-teknikker for Generativ AI**
-- **Prompt Engineering**: Teknikker for optimale AI-modellsvar
-- **Embeddings og vektoroperasjoner**: Implementer semantisk søk og likhetsmatching
+- **Prompt Engineering**: Teknikker for optimale AI-modellresponser
+- **Embeddings & Vektoroperasjoner**: Implementer semantisk søk og likhetsmatching
 - **Retrieval-Augmented Generation (RAG)**: Kombiner AI med dine egne datakilder
-- **Funksjonskall**: Utvid AI-muligheter med egendefinerte verktøy og plugins
+- **Funksjonskall**: Utvid AI-funksjoner med tilpassede verktøy og plugins
 - **[→ Start Kapittel 3](./03-CoreGenerativeAITechniques/README.md)**
 
 ### **Kapittel 4: Praktiske anvendelser og prosjekter**
@@ -59,8 +60,8 @@ CO_OP_TRANSLATOR_METADATA:
 
 ### **Kapittel 5: Ansvarlig AI-utvikling**
 - **GitHub Models Sikkerhet**: Test innebygde innholdsfiltre og sikkerhetsmekanismer
-- **Ansvarlig AI-demo**: Praktisk eksempel som viser hvordan AI-sikkerhetsfiltre fungerer i praksis
-- **Beste praksis**: Essensielle retningslinjer for etisk AI-utvikling og distribusjon
+- **Ansvarlig AI-demo**: Praktisk eksempel som viser hvordan AI-sikkerhetsfiltre fungerer
+- **Beste praksis**: Essensielle retningslinjer for etisk AI-utvikling og implementering
 - **[→ Start Kapittel 5](./05-ResponsibleGenAI/README.md)**
 
 ## Ekstra ressurser 
@@ -82,4 +83,4 @@ CO_OP_TRANSLATOR_METADATA:
 - [RAG Chat App med Azure AI-tjenester](https://github.com/Azure-Samples/azure-search-openai-demo-java)
 
 **Ansvarsfraskrivelse**:  
-Dette dokumentet er oversatt ved hjelp av AI-oversettelsestjenesten [Co-op Translator](https://github.com/Azure/co-op-translator). Selv om vi streber etter nøyaktighet, vær oppmerksom på at automatiserte oversettelser kan inneholde feil eller unøyaktigheter. Det originale dokumentet på sitt opprinnelige språk bør anses som den autoritative kilden. For kritisk informasjon anbefales profesjonell menneskelig oversettelse. Vi er ikke ansvarlige for misforståelser eller feiltolkninger som oppstår ved bruk av denne oversettelsen.
+Dette dokumentet er oversatt ved hjelp av AI-oversettelsestjenesten [Co-op Translator](https://github.com/Azure/co-op-translator). Selv om vi tilstreber nøyaktighet, vær oppmerksom på at automatiserte oversettelser kan inneholde feil eller unøyaktigheter. Det originale dokumentet på sitt opprinnelige språk bør anses som den autoritative kilden. For kritisk informasjon anbefales profesjonell menneskelig oversettelse. Vi er ikke ansvarlige for misforståelser eller feiltolkninger som oppstår ved bruk av denne oversettelsen.

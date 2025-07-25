@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "0f080f1f2a635610b5f6eff5a58a9590",
-  "translation_date": "2025-07-25T07:54:16+00:00",
+  "original_hash": "a49b35508745c032a0033d914df7901b",
+  "translation_date": "2025-07-25T12:05:44+00:00",
   "source_file": "README.md",
   "language_code": "cs"
 }
@@ -12,23 +12,24 @@ CO_OP_TRANSLATOR_METADATA:
 
 ![Generativní AI pro začátečníky - Java edice](../../translated_images/beg-genai-series.61edc4a6b2cc54284fa2d70eda26dc0ca2669e26e49655b842ea799cd6e16d2a.cs.png)
 
-> **NOTE: Rychlý start**: Celý kurz lze absolvovat online – není potřeba žádné lokální nastavení!
-1. Forkněte toto úložiště do svého GitHub účtu
+**Časová náročnost**: Celý workshop lze dokončit online bez nutnosti lokálního nastavení. Pokud chcete spustit ukázky, nastavení prostředí zabere 2 minuty, přičemž prozkoumání ukázek vyžaduje 1–3 hodiny v závislosti na hloubce průzkumu.
+
+> **Rychlý start**
+
+1. Forkněte tento repozitář do svého GitHub účtu
 2. Klikněte na **Code** → záložka **Codespaces** → **...** → **New with options...**
-3. Použijte výchozí nastavení – to vybere vývojový kontejner vytvořený pro tento kurz
+3. Použijte výchozí nastavení – tím se vybere vývojový kontejner vytvořený pro tento kurz
 4. Klikněte na **Create codespace**
 5. Počkejte ~2 minuty, než bude prostředí připraveno
 6. Přejděte rovnou na [Vytvoření vašeho GitHub Models Tokenu](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)
 
 ## Podpora více jazyků
 
-### Podporováno prostřednictvím GitHub Action (Automatizované a vždy aktuální)
+### Podporováno prostřednictvím GitHub Action (automatizované a vždy aktuální)
 
 [Francouzština](../fr/README.md) | [Španělština](../es/README.md) | [Němčina](../de/README.md) | [Ruština](../ru/README.md) | [Arabština](../ar/README.md) | [Perština (Fársí)](../fa/README.md) | [Urdu](../ur/README.md) | [Čínština (zjednodušená)](../zh/README.md) | [Čínština (tradiční, Macao)](../mo/README.md) | [Čínština (tradiční, Hongkong)](../hk/README.md) | [Čínština (tradiční, Tchaj-wan)](../tw/README.md) | [Japonština](../ja/README.md) | [Korejština](../ko/README.md) | [Hindština](../hi/README.md) | [Bengálština](../bn/README.md) | [Maráthština](../mr/README.md) | [Nepálština](../ne/README.md) | [Paňdžábština (Gurmukhi)](../pa/README.md) | [Portugalština (Portugalsko)](../pt/README.md) | [Portugalština (Brazílie)](../br/README.md) | [Italština](../it/README.md) | [Polština](../pl/README.md) | [Turečtina](../tr/README.md) | [Řečtina](../el/README.md) | [Thajština](../th/README.md) | [Švédština](../sv/README.md) | [Dánština](../da/README.md) | [Norština](../no/README.md) | [Finština](../fi/README.md) | [Nizozemština](../nl/README.md) | [Hebrejština](../he/README.md) | [Vietnamština](../vi/README.md) | [Indonéština](../id/README.md) | [Malajština](../ms/README.md) | [Tagalog (Filipínština)](../tl/README.md) | [Svahilština](../sw/README.md) | [Maďarština](../hu/README.md) | [Čeština](./README.md) | [Slovenština](../sk/README.md) | [Rumunština](../ro/README.md) | [Bulharština](../bg/README.md) | [Srbština (cyrilice)](../sr/README.md) | [Chorvatština](../hr/README.md) | [Slovinština](../sl/README.md) | [Ukrajinština](../uk/README.md) | [Barmština (Myanmar)](../my/README.md)
 
 ## Struktura kurzu a vzdělávací cesta
-
-**Časová náročnost**: Nastavení prostředí zabere 2 minuty, ukázky vyžadují 1–3 hodiny v závislosti na hloubce průzkumu. Celý workshop lze dokončit online bez lokálního nastavení.
 
 ### **Kapitola 1: Úvod do generativní AI**
 - **Základní koncepty**: Porozumění velkým jazykovým modelům, tokenům, embeddingům a schopnostem AI
@@ -53,7 +54,7 @@ CO_OP_TRANSLATOR_METADATA:
 
 ### **Kapitola 4: Praktické aplikace a projekty**
 - **Generátor příběhů o mazlíčcích** (`petstory/`): Kreativní generování obsahu s GitHub Models
-- **Foundry Local Demo** (`foundrylocal/`): Integrace lokálního AI modelu s OpenAI Java SDK
+- **Foundry Local Demo** (`foundrylocal/`): Integrace lokálních AI modelů s OpenAI Java SDK
 - **MCP Kalkulačka** (`mcp/calculator/`): Základní implementace Model Context Protocol se Spring AI
 - **[→ Začít kapitolu 4](./04-PracticalSamples/README.md)**
 
@@ -82,4 +83,4 @@ CO_OP_TRANSLATOR_METADATA:
 - [RAG Chat App s Azure AI Services](https://github.com/Azure-Samples/azure-search-openai-demo-java)
 
 **Prohlášení:**  
-Tento dokument byl přeložen pomocí služby AI pro překlady [Co-op Translator](https://github.com/Azure/co-op-translator). I když se snažíme o přesnost, mějte prosím na paměti, že automatizované překlady mohou obsahovat chyby nebo nepřesnosti. Původní dokument v jeho původním jazyce by měl být považován za autoritativní zdroj. Pro důležité informace se doporučuje profesionální lidský překlad. Neodpovídáme za žádná nedorozumění nebo nesprávné interpretace vyplývající z použití tohoto překladu.
+Tento dokument byl přeložen pomocí služby pro automatizovaný překlad [Co-op Translator](https://github.com/Azure/co-op-translator). I když se snažíme o přesnost, mějte prosím na paměti, že automatizované překlady mohou obsahovat chyby nebo nepřesnosti. Původní dokument v jeho původním jazyce by měl být považován za autoritativní zdroj. Pro důležité informace se doporučuje profesionální lidský překlad. Neodpovídáme za žádná nedorozumění nebo nesprávné interpretace vyplývající z použití tohoto překladu.

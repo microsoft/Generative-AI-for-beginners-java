@@ -1,137 +1,313 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "7bf9a4a832911269a8bd0decb97ff36c",
-  "translation_date": "2025-07-21T21:26:52+00:00",
+  "original_hash": "8c6c7e9008b114540677f7a65aa9ddad",
+  "translation_date": "2025-07-25T12:04:41+00:00",
   "source_file": "04-PracticalSamples/mcp/calculator/README.md",
   "language_code": "hu"
 }
 -->
-# Alapvető Számológép MCP Szolgáltatás
-
->**Megjegyzés**: Ez a fejezet tartalmaz egy [**Útmutatót**](./TUTORIAL.md), amely végigvezet a kész minták futtatásán.
-
-Üdvözlünk az első gyakorlati tapasztalatodban a **Model Context Protocol (MCP)** használatával! Az előző fejezetekben megismerkedtél a generatív AI alapjaival, és beállítottad a fejlesztési környezetedet. Most itt az ideje, hogy valami gyakorlati dolgot építsünk.
-
-Ez a számológép szolgáltatás bemutatja, hogyan tudnak az AI modellek biztonságosan kommunikálni külső eszközökkel az MCP segítségével. Ahelyett, hogy az AI modell néha megbízhatatlan matematikai képességeire támaszkodnánk, megmutatjuk, hogyan lehet egy olyan robusztus rendszert építeni, amelyben az AI speciális szolgáltatásokat hív meg a pontos számítások érdekében.
+# MCP Kalkulátor Útmutató Kezdőknek
 
 ## Tartalomjegyzék
 
 - [Mit fogsz megtanulni](../../../../../04-PracticalSamples/mcp/calculator)
 - [Előfeltételek](../../../../../04-PracticalSamples/mcp/calculator)
-- [Kulcsfogalmak](../../../../../04-PracticalSamples/mcp/calculator)
-- [Gyors kezdés](../../../../../04-PracticalSamples/mcp/calculator)
-- [Elérhető számológép műveletek](../../../../../04-PracticalSamples/mcp/calculator)
-- [Teszt kliens](../../../../../04-PracticalSamples/mcp/calculator)
-  - [1. Közvetlen MCP kliens (SDKClient)](../../../../../04-PracticalSamples/mcp/calculator)
-  - [2. AI-alapú kliens (LangChain4jClient)](../../../../../04-PracticalSamples/mcp/calculator)
-- [MCP Inspector (Webes felület)](../../../../../04-PracticalSamples/mcp/calculator)
-  - [Lépésről lépésre útmutató](../../../../../04-PracticalSamples/mcp/calculator)
+- [A projekt struktúrájának megértése](../../../../../04-PracticalSamples/mcp/calculator)
+- [Főbb komponensek magyarázata](../../../../../04-PracticalSamples/mcp/calculator)
+  - [1. Fő alkalmazás](../../../../../04-PracticalSamples/mcp/calculator)
+  - [2. Kalkulátor szolgáltatás](../../../../../04-PracticalSamples/mcp/calculator)
+  - [3. Közvetlen MCP kliens](../../../../../04-PracticalSamples/mcp/calculator)
+  - [4. AI-alapú kliens](../../../../../04-PracticalSamples/mcp/calculator)
+- [Példák futtatása](../../../../../04-PracticalSamples/mcp/calculator)
+- [Hogyan működik együtt minden](../../../../../04-PracticalSamples/mcp/calculator)
+- [Következő lépések](../../../../../04-PracticalSamples/mcp/calculator)
 
 ## Mit fogsz megtanulni
 
-Ezen példa végigvitelével megérted:
-- Hogyan hozz létre MCP-kompatibilis szolgáltatásokat Spring Boot segítségével
-- A közvetlen protokollkommunikáció és az AI-alapú interakció közötti különbséget
-- Hogyan dönti el az AI modell, mikor és hogyan használjon külső eszközöket
-- Legjobb gyakorlatokat AI-eszközökkel bővített alkalmazások építéséhez
+Ez az útmutató bemutatja, hogyan építhetsz kalkulátor szolgáltatást a Model Context Protocol (MCP) segítségével. Megérted:
 
-Tökéletes kezdők számára, akik szeretnék megérteni az MCP fogalmait, és készen állnak az első AI-eszköz integrációjuk megépítésére!
+- Hogyan hozhatsz létre egy szolgáltatást, amelyet az AI eszközként használhat
+- Hogyan állíthatsz be közvetlen kommunikációt MCP szolgáltatásokkal
+- Hogyan választhatják ki az AI modellek automatikusan, hogy mely eszközöket használják
+- A közvetlen protokollhívások és az AI által támogatott interakciók közötti különbséget
 
 ## Előfeltételek
 
-- Java 21+
-- Maven 3.6+
-- **GitHub Token**: Szükséges az AI-alapú klienshez. Ha még nem állítottad be, lásd a [2. fejezet: Fejlesztési környezet beállítása](../../../02-SetupDevEnvironment/README.md) című részt az utasításokért.
+Mielőtt elkezdenéd, győződj meg róla, hogy rendelkezel a következőkkel:
+- Telepített Java 21 vagy újabb verzió
+- Maven a függőségkezeléshez
+- GitHub fiók személyes hozzáférési tokennel (PAT)
+- Alapvető ismeretek Java és Spring Boot terén
 
-## Kulcsfogalmak
+## A projekt struktúrájának megértése
 
-**Model Context Protocol (MCP)** egy szabványosított módja annak, hogy az AI alkalmazások biztonságosan csatlakozzanak külső eszközökhöz. Gondolj rá úgy, mint egy "hídra", amely lehetővé teszi az AI modellek számára, hogy külső szolgáltatásokat, például a számológépünket használják. Ahelyett, hogy az AI modell maga próbálna számolni (ami megbízhatatlan lehet), hívhatja a számológép szolgáltatást, hogy pontos eredményeket kapjon. Az MCP biztosítja, hogy ez a kommunikáció biztonságosan és következetesen történjen.
+A kalkulátor projekt több fontos fájlt tartalmaz:
 
-**Server-Sent Events (SSE)** valós idejű kommunikációt tesz lehetővé a szerver és a kliensek között. Ellentétben a hagyományos HTTP kérésekkel, ahol kérsz és vársz a válaszra, az SSE lehetővé teszi, hogy a szerver folyamatosan küldjön frissítéseket a kliensnek. Ez tökéletes AI alkalmazásokhoz, ahol a válaszok folyamatosan érkezhetnek, vagy időbe telhet a feldolgozásuk.
-
-**AI Eszközök és Funkcióhívások** lehetővé teszik az AI modellek számára, hogy automatikusan válasszanak és használjanak külső funkciókat (például számológép műveleteket) a felhasználói kérések alapján. Ha például azt kérdezed: "Mennyi 15 + 27?", az AI modell megérti, hogy összeadást szeretnél, automatikusan meghívja az `add` eszközt a megfelelő paraméterekkel (15, 27), és természetes nyelven visszaadja az eredményt. Az AI intelligens koordinátorként működik, amely tudja, mikor és hogyan használja az egyes eszközöket.
-
-## Gyors kezdés
-
-### 1. Navigálj a számológép alkalmazás könyvtárába
-```bash
-cd Generative-AI-for-beginners-java/04-PracticalSamples/mcp/calculator
+```
+calculator/
+├── src/main/java/com/microsoft/mcp/sample/server/
+│   ├── McpServerApplication.java          # Main Spring Boot app
+│   └── service/CalculatorService.java     # Calculator operations
+└── src/test/java/com/microsoft/mcp/sample/client/
+    ├── SDKClient.java                     # Direct MCP communication
+    ├── LangChain4jClient.java            # AI-powered client
+    └── Bot.java                          # Simple chat interface
 ```
 
-### 2. Építsd meg és futtasd
-```bash
-mvn clean install -DskipTests
-java -jar target/calculator-server-0.0.1-SNAPSHOT.jar
+## Főbb komponensek magyarázata
+
+### 1. Fő alkalmazás
+
+**Fájl:** `McpServerApplication.java`
+
+Ez a kalkulátor szolgáltatás belépési pontja. Egy szabványos Spring Boot alkalmazás, egy különleges kiegészítéssel:
+
+```java
+@SpringBootApplication
+public class McpServerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(McpServerApplication.class, args);
+    }
+    
+    @Bean
+    public ToolCallbackProvider calculatorTools(CalculatorService calculator) {
+        return MethodToolCallbackProvider.builder().toolObjects(calculator).build();
+    }
+}
 ```
 
-### 3. Teszteld a kliensekkel
-- **SDKClient**: Közvetlen MCP protokoll interakció
-- **LangChain4jClient**: AI-alapú természetes nyelvi interakció (GitHub token szükséges)
+**Mit csinál ez:**
+- Elindít egy Spring Boot webszervert a 8080-as porton
+- Létrehoz egy `ToolCallbackProvider`-t, amely elérhetővé teszi a kalkulátor metódusait MCP eszközökként
+- Az `@Bean` annotáció jelzi a Spring számára, hogy ezt komponensként kezelje, amelyet más részek használhatnak
 
-## Elérhető számológép műveletek
+### 2. Kalkulátor szolgáltatás
 
-- `add(a, b)`, `subtract(a, b)`, `multiply(a, b)`, `divide(a, b)`
-- `power(base, exponent)`, `squareRoot(number)`, `absolute(number)`
-- `modulus(a, b)`, `help()`
+**Fájl:** `CalculatorService.java`
 
-## Teszt kliens
+Itt történik minden matematikai művelet. Minden metódus `@Tool` annotációval van ellátva, hogy MCP-n keresztül elérhető legyen:
 
-### 1. Közvetlen MCP kliens (SDKClient)
-Teszteli a nyers MCP protokoll kommunikációt. Futtasd:
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient" -Dexec.classpathScope=test
+```java
+@Service
+public class CalculatorService {
+
+    @Tool(description = "Add two numbers together")
+    public String add(double a, double b) {
+        double result = a + b;
+        return formatResult(a, "+", b, result);
+    }
+
+    @Tool(description = "Subtract the second number from the first number")
+    public String subtract(double a, double b) {
+        double result = a - b;
+        return formatResult(a, "-", b, result);
+    }
+    
+    // More calculator operations...
+    
+    private String formatResult(double a, String operator, double b, double result) {
+        return String.format("%.2f %s %.2f = %.2f", a, operator, b, result);
+    }
+}
 ```
 
-### 2. AI-alapú kliens (LangChain4jClient)
-Bemutatja a természetes nyelvi interakciót GitHub modellekkel. GitHub token szükséges (lásd [Előfeltételek](../../../../../04-PracticalSamples/mcp/calculator)).
+**Főbb jellemzők:**
 
-**Futtatás:**
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient" -Dexec.classpathScope=test
+1. **`@Tool` annotáció**: Ez jelzi az MCP-nek, hogy ez a metódus külső kliensek által hívható
+2. **Egyértelmű leírások**: Minden eszköz rendelkezik egy leírással, amely segíti az AI modelleket a használatuk megértésében
+3. **Konzisztens visszatérési formátum**: Minden művelet ember által olvasható szöveget ad vissza, például "5.00 + 3.00 = 8.00"
+4. **Hibakezelés**: Nullával való osztás és negatív számok négyzetgyöke hibaüzenetet ad vissza
+
+**Elérhető műveletek:**
+- `add(a, b)` - Két szám összeadása
+- `subtract(a, b)` - Második szám kivonása az elsőből
+- `multiply(a, b)` - Két szám szorzása
+- `divide(a, b)` - Első szám osztása a másodikkal (nulla-ellenőrzéssel)
+- `power(base, exponent)` - Alap hatványra emelése
+- `squareRoot(number)` - Négyzetgyök számítása (negatív ellenőrzéssel)
+- `modulus(a, b)` - Osztási maradék visszaadása
+- `absolute(number)` - Abszolút érték visszaadása
+- `help()` - Információ visszaadása az összes műveletről
+
+### 3. Közvetlen MCP kliens
+
+**Fájl:** `SDKClient.java`
+
+Ez a kliens közvetlenül kommunikál az MCP szerverrel AI használata nélkül. Manuálisan hívja meg a kalkulátor funkcióit:
+
+```java
+public class SDKClient {
+    
+    public static void main(String[] args) {
+        var transport = new WebFluxSseClientTransport(
+            WebClient.builder().baseUrl("http://localhost:8080")
+        );
+        new SDKClient(transport).run();
+    }
+    
+    public void run() {
+        var client = McpClient.sync(this.transport).build();
+        client.initialize();
+        
+        // List available tools
+        ListToolsResult toolsList = client.listTools();
+        System.out.println("Available Tools = " + toolsList);
+        
+        // Call specific calculator functions
+        CallToolResult resultAdd = client.callTool(
+            new CallToolRequest("add", Map.of("a", 5.0, "b", 3.0))
+        );
+        System.out.println("Add Result = " + resultAdd);
+        
+        CallToolResult resultSqrt = client.callTool(
+            new CallToolRequest("squareRoot", Map.of("number", 16.0))
+        );
+        System.out.println("Square Root Result = " + resultSqrt);
+        
+        client.closeGracefully();
+    }
+}
 ```
 
-## MCP Inspector (Webes felület)
+**Mit csinál ez:**
+1. **Kapcsolódik** a kalkulátor szerverhez a `http://localhost:8080` címen
+2. **Listázza** az összes elérhető eszközt (a kalkulátor funkcióinkat)
+3. **Meghívja** a konkrét funkciókat pontos paraméterekkel
+4. **Közvetlenül kiírja** az eredményeket
 
-Az MCP Inspector egy vizuális webes felületet biztosít az MCP szolgáltatás teszteléséhez kódírás nélkül. Tökéletes kezdők számára, hogy megértsék, hogyan működik az MCP!
+**Mikor használd ezt:** Ha pontosan tudod, milyen számítást szeretnél elvégezni, és programozottan akarod meghívni.
 
-### Lépésről lépésre útmutató:
+### 4. AI-alapú kliens
 
-1. **Indítsd el a számológép szervert** (ha még nem fut):
-   ```bash
-   java -jar target/calculator-server-0.0.1-SNAPSHOT.jar
-   ```
+**Fájl:** `LangChain4jClient.java`
 
-2. **Telepítsd és futtasd az MCP Inspectort** egy új terminálban:
-   ```bash
-   npx @modelcontextprotocol/inspector
-   ```
+Ez a kliens egy AI modellt (GPT-4o-mini) használ, amely automatikusan eldönti, hogy mely kalkulátor eszközöket használja:
 
-3. **Nyisd meg a webes felületet**:
-   - Keresd meg az üzenetet, például: "Inspector running at http://localhost:6274"
-   - Nyisd meg ezt az URL-t a böngésződben
+```java
+public class LangChain4jClient {
+    
+    public static void main(String[] args) throws Exception {
+        // Set up the AI model (using GitHub Models)
+        ChatLanguageModel model = OpenAiOfficialChatModel.builder()
+                .isGitHubModels(true)
+                .apiKey(System.getenv("GITHUB_TOKEN"))
+                .modelName("gpt-4o-mini")
+                .build();
 
-4. **Csatlakozz a számológép szolgáltatáshoz**:
-   - A webes felületen állítsd be a szállítási típust "SSE"-re
-   - Állítsd be az URL-t: `http://localhost:8080/sse`
-   - Kattints a "Connect" gombra
+        // Connect to our calculator MCP server
+        McpTransport transport = new HttpMcpTransport.Builder()
+                .sseUrl("http://localhost:8080/sse")
+                .logRequests(true)  // Shows what the AI is doing
+                .logResponses(true)
+                .build();
 
-5. **Fedezd fel az elérhető eszközöket**:
-   - Kattints a "List Tools" gombra, hogy lásd az összes számológép műveletet
-   - Olyan funkciókat fogsz látni, mint `add`, `subtract`, `multiply`, stb.
+        McpClient mcpClient = new DefaultMcpClient.Builder()
+                .transport(transport)
+                .build();
 
-6. **Tesztelj egy számológép műveletet**:
-   - Válassz ki egy eszközt (pl. "add")
-   - Add meg a paramétereket (pl. `a: 15`, `b: 27`)
-   - Kattints a "Run Tool" gombra
-   - Nézd meg az eredményt, amit az MCP szolgáltatás visszaad!
+        // Give the AI access to our calculator tools
+        ToolProvider toolProvider = McpToolProvider.builder()
+                .mcpClients(List.of(mcpClient))
+                .build();
 
-Ez a vizuális megközelítés segít megérteni, hogyan működik pontosan az MCP kommunikáció, mielőtt saját klienseket építenél.
+        // Create an AI bot that can use our calculator
+        Bot bot = AiServices.builder(Bot.class)
+                .chatLanguageModel(model)
+                .toolProvider(toolProvider)
+                .build();
 
-![npx inspector](../../../../../translated_images/tool.214c70103694335c4cfdc2d624373dfce4b0162f6aea089ac1da9051fb563b7f.hu.png)
+        // Now we can ask the AI to do calculations in natural language
+        String response = bot.chat("Calculate the sum of 24.5 and 17.3 using the calculator service");
+        System.out.println(response);
 
----
-**Referencia:** [MCP Server Boot Starter Docs](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-server-boot-starter-docs.html)
+        response = bot.chat("What's the square root of 144?");
+        System.out.println(response);
+    }
+}
+```
+
+**Mit csinál ez:**
+1. **Létrehoz** egy AI modellkapcsolatot a GitHub tokened használatával
+2. **Kapcsolódik** az AI a kalkulátor MCP szerverhez
+3. **Hozzáférést biztosít** az AI-nak az összes kalkulátor eszközhöz
+4. **Lehetővé teszi** a természetes nyelvű kéréseket, például "Számold ki 24.5 és 17.3 összegét"
+
+**Az AI automatikusan:**
+- Megérti, hogy összeadást szeretnél
+- Kiválasztja az `add` eszközt
+- Meghívja az `add(24.5, 17.3)` metódust
+- Természetes válaszban adja vissza az eredményt
+
+## Példák futtatása
+
+### 1. lépés: Kalkulátor szerver indítása
+
+Először állítsd be a GitHub tokenedet (szükséges az AI klienshez):
+
+**Windows:**
+```cmd
+set GITHUB_TOKEN=your_github_token_here
+```
+
+**Linux/macOS:**
+```bash
+export GITHUB_TOKEN=your_github_token_here
+```
+
+Indítsd el a szervert:
+```bash
+cd 04-PracticalSamples/mcp/calculator
+mvn spring-boot:run
+```
+
+A szerver elindul a `http://localhost:8080` címen. Ezt kell látnod:
+```
+Started McpServerApplication in X.XXX seconds
+```
+
+### 2. lépés: Tesztelés közvetlen klienssel
+
+Egy új terminálban:
+```bash
+mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient"
+```
+
+Ezt az eredményt fogod látni:
+```
+Available Tools = [add, subtract, multiply, divide, power, squareRoot, modulus, absolute, help]
+Add Result = 5.00 + 3.00 = 8.00
+Square Root Result = √16.00 = 4.00
+```
+
+### 3. lépés: Tesztelés AI klienssel
+
+```bash
+mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient"
+```
+
+Az AI automatikusan használja az eszközöket:
+```
+The sum of 24.5 and 17.3 is 41.8.
+The square root of 144 is 12.
+```
+
+## Hogyan működik együtt minden
+
+Íme a teljes folyamat, amikor megkérdezed az AI-t: "Mennyi 5 + 3?":
+
+1. **Te** természetes nyelven kérdezed az AI-t
+2. **Az AI** elemzi a kérésedet, és felismeri, hogy összeadást szeretnél
+3. **Az AI** hívja az MCP szervert: `add(5.0, 3.0)`
+4. **A Kalkulátor Szolgáltatás** elvégzi: `5.0 + 3.0 = 8.0`
+5. **A Kalkulátor Szolgáltatás** visszaadja: `"5.00 + 3.00 = 8.00"`
+6. **Az AI** megkapja az eredményt, és természetes válaszba formázza
+7. **Te** ezt kapod: "Az 5 és 3 összege 8"
+
+## Következő lépések
+
+További példákért lásd: [4. fejezet: Gyakorlati minták](../../README.md)
 
 **Felelősség kizárása**:  
-Ez a dokumentum az AI fordítási szolgáltatás [Co-op Translator](https://github.com/Azure/co-op-translator) segítségével lett lefordítva. Bár igyekszünk pontosságra törekedni, kérjük, vegye figyelembe, hogy az automatikus fordítások hibákat vagy pontatlanságokat tartalmazhatnak. Az eredeti dokumentum az eredeti nyelvén tekintendő hiteles forrásnak. Fontos információk esetén javasolt professzionális emberi fordítást igénybe venni. Nem vállalunk felelősséget semmilyen félreértésért vagy téves értelmezésért, amely a fordítás használatából eredhet.
+Ez a dokumentum az AI fordítási szolgáltatás [Co-op Translator](https://github.com/Azure/co-op-translator) segítségével lett lefordítva. Bár törekszünk a pontosságra, kérjük, vegye figyelembe, hogy az automatikus fordítások hibákat vagy pontatlanságokat tartalmazhatnak. Az eredeti dokumentum az eredeti nyelvén tekintendő hiteles forrásnak. Kritikus információk esetén javasolt professzionális emberi fordítást igénybe venni. Nem vállalunk felelősséget semmilyen félreértésért vagy téves értelmezésért, amely a fordítás használatából eredhet.

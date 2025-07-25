@@ -1,20 +1,18 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "da1b6d87b8a73306b29f9a1bdd681221",
-  "translation_date": "2025-07-21T19:45:40+00:00",
+  "original_hash": "df269f529a172a0197ef28460bf1da9f",
+  "translation_date": "2025-07-25T11:54:36+00:00",
   "source_file": "04-PracticalSamples/README.md",
   "language_code": "id"
 }
 -->
 # Aplikasi Praktis & Proyek
 
-> Catatan: Setiap contoh juga menyertakan **TUTORIAL.md** yang membimbing Anda menjalankan aplikasi.
-
 ## Apa yang Akan Anda Pelajari
 Di bagian ini, kami akan mendemonstrasikan tiga aplikasi praktis yang menampilkan pola pengembangan AI generatif dengan Java:
 - Membuat Generator Cerita Hewan Peliharaan multi-modal yang menggabungkan AI sisi klien dan sisi server
-- Menerapkan integrasi model AI lokal dengan demo Foundry Local Spring Boot
+- Mengimplementasikan integrasi model AI lokal dengan demo Foundry Local Spring Boot
 - Mengembangkan layanan Model Context Protocol (MCP) dengan contoh Kalkulator
 
 ## Daftar Isi
@@ -33,11 +31,11 @@ Bab ini menampilkan **proyek contoh** yang mendemonstrasikan pola pengembangan A
 
 ### Demo Foundry Local Spring Boot
 
-**[Demo Foundry Local Spring Boot](foundrylocal/README.md)** menunjukkan cara mengintegrasikan model AI lokal menggunakan **OpenAI Java SDK**. Proyek ini menampilkan koneksi ke model **Phi-3.5-mini** yang berjalan di Foundry Local, memungkinkan Anda menjalankan aplikasi AI tanpa bergantung pada layanan cloud.
+**[Demo Foundry Local Spring Boot](foundrylocal/README.md)** menunjukkan cara berintegrasi dengan model AI lokal menggunakan **OpenAI Java SDK**. Demo ini menampilkan koneksi ke model **Phi-3.5-mini** yang berjalan di Foundry Local, memungkinkan Anda menjalankan aplikasi AI tanpa bergantung pada layanan cloud.
 
 ### Generator Cerita Hewan Peliharaan
 
-**[Generator Cerita Hewan Peliharaan](petstory/README.md)** adalah aplikasi web Spring Boot yang menarik, yang mendemonstrasikan **pemrosesan AI multi-modal** untuk menghasilkan cerita kreatif tentang hewan peliharaan. Aplikasi ini menggabungkan kemampuan AI sisi klien dan sisi server menggunakan transformer.js untuk interaksi AI berbasis browser dan OpenAI SDK untuk pemrosesan sisi server.
+**[Generator Cerita Hewan Peliharaan](petstory/README.md)** adalah aplikasi web Spring Boot yang menarik yang mendemonstrasikan **pemrosesan AI multi-modal** untuk menghasilkan cerita kreatif tentang hewan peliharaan. Aplikasi ini menggabungkan kemampuan AI sisi klien dan sisi server menggunakan transformer.js untuk interaksi AI berbasis browser dan OpenAI SDK untuk pemrosesan sisi server.
 
 ### Layanan MCP Kalkulator (Demo MCP Ramah Pemula)
 
@@ -45,7 +43,7 @@ Bab ini menampilkan **proyek contoh** yang mendemonstrasikan pola pengembangan A
 
 ## Progres Pembelajaran
 
-Proyek-proyek ini dirancang untuk membangun konsep dari bab-bab sebelumnya:
+Proyek-proyek ini dirancang untuk membangun konsep dari bab sebelumnya:
 
 1. **Mulai dari yang Sederhana**: Mulailah dengan Demo Foundry Local Spring Boot untuk memahami integrasi AI dasar dengan model lokal
 2. **Tambahkan Interaktivitas**: Lanjutkan ke Generator Cerita Hewan Peliharaan untuk AI multi-modal dan interaksi berbasis web
@@ -55,9 +53,9 @@ Proyek-proyek ini dirancang untuk membangun konsep dari bab-bab sebelumnya:
 
 **Selamat!** Anda telah berhasil:
 
-- **Menciptakan pengalaman AI multi-modal** yang menggabungkan pemrosesan AI sisi klien dan sisi server
-- **Menerapkan integrasi model AI lokal** menggunakan kerangka kerja dan SDK Java modern
-- **Mengembangkan layanan Model Context Protocol** yang mendemonstrasikan pola integrasi alat
+- **Membuat pengalaman AI multi-modal** yang menggabungkan pemrosesan AI sisi klien dan sisi server
+- **Mengimplementasikan integrasi model AI lokal** menggunakan kerangka kerja dan SDK Java modern
+- **Mengembangkan layanan Model Context Protocol** yang menunjukkan pola integrasi alat
 
 ## Langkah Selanjutnya
 

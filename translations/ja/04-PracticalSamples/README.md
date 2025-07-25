@@ -1,25 +1,23 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "da1b6d87b8a73306b29f9a1bdd681221",
-  "translation_date": "2025-07-21T16:31:16+00:00",
+  "original_hash": "df269f529a172a0197ef28460bf1da9f",
+  "translation_date": "2025-07-25T11:01:21+00:00",
   "source_file": "04-PracticalSamples/README.md",
   "language_code": "ja"
 }
 -->
 # 実践的な応用とプロジェクト
 
-> Note: 各例には、アプリケーションの実行方法を案内する**TUTORIAL.md**が含まれています。
-
 ## 学べること
 このセクションでは、Javaを使った生成型AI開発パターンを紹介する3つの実践的なアプリケーションをデモします：
 - クライアント側とサーバー側のAIを組み合わせたマルチモーダルなペットストーリー生成器を作成
 - Foundry Local Spring Bootデモを使用したローカルAIモデルの統合を実装
-- 電卓の例を使ったModel Context Protocol (MCP)サービスを開発
+- 電卓の例を使ったModel Context Protocol (MCP) サービスを開発
 
 ## 目次
 
-- [イントロダクション](../../../04-PracticalSamples)
+- [はじめに](../../../04-PracticalSamples)
   - [Foundry Local Spring Bootデモ](../../../04-PracticalSamples)
   - [ペットストーリー生成器](../../../04-PracticalSamples)
   - [MCP電卓サービス（初心者向けMCPデモ）](../../../04-PracticalSamples)
@@ -27,13 +25,13 @@ CO_OP_TRANSLATOR_METADATA:
 - [まとめ](../../../04-PracticalSamples)
 - [次のステップ](../../../04-PracticalSamples)
 
-## イントロダクション
+## はじめに
 
-この章では、Javaを使った生成型AI開発パターンを示す**サンプルプロジェクト**を紹介します。各プロジェクトは完全に機能し、特定のAI技術、アーキテクチャパターン、ベストプラクティスを示しており、これらを自身のアプリケーションに適用することができます。
+この章では、Javaを使った生成型AI開発パターンを示す**サンプルプロジェクト**を紹介します。各プロジェクトは完全に機能し、特定のAI技術、アーキテクチャパターン、ベストプラクティスを示しており、これらを自身のアプリケーションに応用することができます。
 
 ### Foundry Local Spring Bootデモ
 
-**[Foundry Local Spring Bootデモ](foundrylocal/README.md)**は、**OpenAI Java SDK**を使用してローカルAIモデルと統合する方法を示します。このデモでは、Foundry Local上で動作する**Phi-3.5-mini**モデルに接続し、クラウドサービスに依存せずにAIアプリケーションを実行する方法を紹介します。
+**[Foundry Local Spring Bootデモ](foundrylocal/README.md)**では、**OpenAI Java SDK**を使用してローカルAIモデルと統合する方法を示します。このデモでは、Foundry Local上で動作する**Phi-3.5-mini**モデルに接続し、クラウドサービスに依存せずにAIアプリケーションを実行する方法を紹介します。
 
 ### ペットストーリー生成器
 
@@ -47,9 +45,9 @@ CO_OP_TRANSLATOR_METADATA:
 
 これらのプロジェクトは、前の章で学んだ概念を基に構築されています：
 
-1. **シンプルに始める**: Foundry Local Spring Bootデモから始め、ローカルモデルとの基本的なAI統合を理解
-2. **インタラクティブ性を追加**: ペットストーリー生成器に進み、マルチモーダルAIとウェブベースのインタラクションを学習
-3. **MCPの基本を学ぶ**: MCP電卓サービスを試して、Model Context Protocolの基礎を理解
+1. **シンプルに始める**：Foundry Local Spring Bootデモから始め、ローカルモデルとの基本的なAI統合を理解する
+2. **インタラクティブ性を追加**：ペットストーリー生成器に進み、マルチモーダルAIとウェブベースのインタラクションを学ぶ
+3. **MCPの基本を学ぶ**：MCP電卓サービスを試して、Model Context Protocolの基礎を理解する
 
 ## まとめ
 
@@ -64,4 +62,4 @@ CO_OP_TRANSLATOR_METADATA:
 [第5章: 責任ある生成型AI](../05-ResponsibleGenAI/README.md)
 
 **免責事項**:  
-この文書は、AI翻訳サービス [Co-op Translator](https://github.com/Azure/co-op-translator) を使用して翻訳されています。正確性を追求しておりますが、自動翻訳には誤りや不正確な部分が含まれる可能性があることをご承知ください。元の言語で記載された文書が正式な情報源とみなされるべきです。重要な情報については、専門の人間による翻訳を推奨します。この翻訳の使用に起因する誤解や誤解釈について、当社は責任を負いません。
+この文書は、AI翻訳サービス [Co-op Translator](https://github.com/Azure/co-op-translator) を使用して翻訳されています。正確性を追求しておりますが、自動翻訳には誤りや不正確な部分が含まれる可能性があることをご承知ください。元の言語で記載された文書が正式な情報源とみなされるべきです。重要な情報については、専門の人間による翻訳を推奨します。この翻訳の使用に起因する誤解や誤解釈について、当方は一切の責任を負いません。

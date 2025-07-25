@@ -1,215 +1,300 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "a66dad62cdb2e141f05086feaf1a4a39",
-  "translation_date": "2025-07-21T21:17:19+00:00",
+  "original_hash": "2284c54d2a98090a37df0dbef1633ebf",
+  "translation_date": "2025-07-25T12:06:58+00:00",
   "source_file": "04-PracticalSamples/foundrylocal/README.md",
   "language_code": "cs"
 }
 -->
-# Foundry Local Command-Line Aplikace
-
->**Poznámka**: Tato kapitola obsahuje [**Návod**](./TUTORIAL.md), který vás provede spuštěním hotových ukázek.
-
-Jednoduchá příkazová aplikace Spring Boot, která ukazuje, jak se připojit k Foundry Local pomocí OpenAI Java SDK.
-
-## Co se naučíte
-
-- Jak integrovat Foundry Local do aplikací Spring Boot pomocí OpenAI Java SDK
-- Nejlepší postupy pro lokální vývoj a testování AI
+# Foundry Local Spring Boot Tutorial
 
 ## Obsah
 
-- [Co se naučíte](../../../../04-PracticalSamples/foundrylocal)
 - [Předpoklady](../../../../04-PracticalSamples/foundrylocal)
-  - [Instalace Foundry Local](../../../../04-PracticalSamples/foundrylocal)
-  - [Ověření](../../../../04-PracticalSamples/foundrylocal)
-- [Konfigurace](../../../../04-PracticalSamples/foundrylocal)
-- [Rychlý start](../../../../04-PracticalSamples/foundrylocal)
-- [Co aplikace dělá](../../../../04-PracticalSamples/foundrylocal)
-- [Ukázkový výstup](../../../../04-PracticalSamples/foundrylocal)
-- [Architektura](../../../../04-PracticalSamples/foundrylocal)
-- [Klíčové části kódu](../../../../04-PracticalSamples/foundrylocal)
-  - [Integrace OpenAI Java SDK](../../../../04-PracticalSamples/foundrylocal)
-  - [API pro dokončení chatu](../../../../04-PracticalSamples/foundrylocal)
+- [Přehled projektu](../../../../04-PracticalSamples/foundrylocal)
+- [Porozumění kódu](../../../../04-PracticalSamples/foundrylocal)
+  - [1. Konfigurace aplikace (application.properties)](../../../../04-PracticalSamples/foundrylocal)
+  - [2. Hlavní třída aplikace (Application.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [3. Vrstva AI služby (FoundryLocalService.java)](../../../../04-PracticalSamples/foundrylocal)
+  - [4. Závislosti projektu (pom.xml)](../../../../04-PracticalSamples/foundrylocal)
+- [Jak vše funguje dohromady](../../../../04-PracticalSamples/foundrylocal)
+- [Nastavení Foundry Local](../../../../04-PracticalSamples/foundrylocal)
+- [Spuštění aplikace](../../../../04-PracticalSamples/foundrylocal)
+- [Očekávaný výstup](../../../../04-PracticalSamples/foundrylocal)
+- [Další kroky](../../../../04-PracticalSamples/foundrylocal)
 - [Řešení problémů](../../../../04-PracticalSamples/foundrylocal)
 
 ## Předpoklady
 
-> **⚠️ Poznámka**: Tato aplikace **neběží v dodaném devcontaineru**, protože vyžaduje, aby byl Foundry Local nainstalován a spuštěn na hostitelském systému.
+Než začnete s tímto tutoriálem, ujistěte se, že máte:
 
-### Instalace Foundry Local
+- **Java 21 nebo vyšší** nainstalovanou na vašem systému
+- **Maven 3.6+** pro sestavení projektu
+- **Foundry Local** nainstalovaný a spuštěný
 
-Před spuštěním této aplikace je třeba nainstalovat a spustit Foundry Local. Postupujte podle těchto kroků:
-
-1. **Ujistěte se, že váš systém splňuje požadavky**:
-   - **Operační systém**: Windows 10 (x64), Windows 11 (x64/ARM), Windows Server 2025 nebo macOS
-   - **Hardware**: 
-     - Minimálně: 8 GB RAM, 3 GB volného místa na disku
-     - Doporučeno: 16 GB RAM, 15 GB volného místa na disku
-   - **Síť**: Připojení k internetu pro počáteční stažení modelu (volitelné pro offline použití)
-   - **Akcelerace (volitelné)**: NVIDIA GPU (řada 2000 nebo novější), AMD GPU (řada 6000 nebo novější), Qualcomm Snapdragon X Elite (8 GB nebo více paměti) nebo Apple silicon
-   - **Oprávnění**: Administrátorská práva pro instalaci softwaru na vašem zařízení
-
-2. **Nainstalujte Foundry Local**:
-   
-   **Pro Windows:**
-   ```bash
-   winget install Microsoft.FoundryLocal
-   ```
-   
-   **Pro macOS:**
-   ```bash
-   brew tap microsoft/foundrylocal
-   brew install foundrylocal
-   ```
-   
-   Alternativně si můžete stáhnout instalační program z [Foundry Local GitHub repozitáře](https://github.com/microsoft/Foundry-Local).
-
-3. **Spusťte svůj první model**:
-
-   ```bash
-   foundry model run phi-3.5-mini
-   ```
-
-   Model se stáhne (což může trvat několik minut v závislosti na rychlosti vašeho internetu) a poté se spustí. Foundry Local automaticky vybere nejlepší variantu modelu pro váš systém (CUDA pro NVIDIA GPU, jinak verze pro CPU).
-
-4. **Otestujte model** položením otázky ve stejném terminálu:
-
-   ```bash
-   Why is the sky blue?
-   ```
-
-   Měli byste vidět odpověď od modelu Phi vysvětlující, proč je obloha modrá.
-
-### Ověření
-
-Můžete ověřit, že vše funguje správně, pomocí těchto příkazů:
+### **Instalace Foundry Local:**
 
 ```bash
-# List all available models
-foundry model list
+# Windows
+winget install Microsoft.FoundryLocal
 
-# Check the service status via REST API
-curl http://localhost:5273/v1/models
+# macOS (after installing)
+foundry model run phi-3.5-mini
 ```
 
-Můžete také navštívit `http://localhost:5273` ve svém prohlížeči a zobrazit webové rozhraní Foundry Local.
+## Přehled projektu
 
-## Konfigurace
+Tento projekt se skládá ze čtyř hlavních komponent:
 
-Aplikaci lze konfigurovat prostřednictvím `application.properties`:
+1. **Application.java** - Hlavní vstupní bod aplikace Spring Boot
+2. **FoundryLocalService.java** - Vrstva služby, která zajišťuje komunikaci s AI
+3. **application.properties** - Konfigurace pro připojení k Foundry Local
+4. **pom.xml** - Závislosti Maven a konfigurace projektu
 
-- `foundry.local.base-url` - Základní URL pro Foundry Local (výchozí: http://localhost:5273)
-- `foundry.local.model` - AI model, který se má použít (výchozí: Phi-3.5-mini-instruct-cuda-gpu)
+## Porozumění kódu
 
-> **Poznámka**: Název modelu v konfiguraci by měl odpovídat konkrétní variantě, kterou Foundry Local stáhl pro váš systém. Když spustíte `foundry model run phi-3.5-mini`, Foundry Local automaticky vybere a stáhne nejlepší variantu (CUDA pro NVIDIA GPU, jinak verze pro CPU). Použijte `foundry model list`, abyste viděli přesný název modelu dostupného ve vaší lokální instanci.
+### 1. Konfigurace aplikace (application.properties)
 
-## Rychlý start
+**Soubor:** `src/main/resources/application.properties`
 
-### 1. Přejděte do adresáře aplikace Foundry Local
-```bash
-cd Generative-AI-for-beginners-java/04-PracticalSamples/foundrylocal
+```properties
+foundry.local.base-url=http://localhost:5273
+foundry.local.model=Phi-3.5-mini-instruct-cuda-gpu
 ```
 
-### 2. Spusťte aplikaci
+**Co to dělá:**
+- **base-url**: Určuje, kde běží Foundry Local (výchozí port 5273)
+- **model**: Název AI modelu, který se použije pro generování textu
 
-```bash
-mvn spring-boot:run
+**Klíčový koncept:** Spring Boot automaticky načte tyto vlastnosti a zpřístupní je vaší aplikaci pomocí anotace `@Value`.
+
+### 2. Hlavní třída aplikace (Application.java)
+
+**Soubor:** `src/main/java/com/example/Application.java`
+
+```java
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication app = new SpringApplication(Application.class);
+        app.setWebApplicationType(WebApplicationType.NONE);  // No web server needed
+        app.run(args);
+    }
 ```
 
-Nebo sestavte a spusťte JAR:
+**Co to dělá:**
+- `@SpringBootApplication` povoluje automatickou konfiguraci Spring Boot
+- `WebApplicationType.NONE` říká Springu, že se jedná o aplikaci příkazového řádku, nikoli webový server
+- Hlavní metoda spouští aplikaci Spring
 
-```bash
-mvn clean package
-java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+**Demo Runner:**
+```java
+@Bean
+public CommandLineRunner foundryLocalRunner(FoundryLocalService foundryLocalService) {
+    return args -> {
+        System.out.println("=== Foundry Local Demo ===");
+        
+        String testMessage = "Hello! Can you tell me what you are and what model you're running?";
+        System.out.println("Sending message: " + testMessage);
+        
+        String response = foundryLocalService.chat(testMessage);
+        System.out.println("Response from Foundry Local:");
+        System.out.println(response);
+    };
+}
 ```
 
-### Závislosti
+**Co to dělá:**
+- `@Bean` vytváří komponentu, kterou Spring spravuje
+- `CommandLineRunner` spouští kód po spuštění Spring Boot
+- `foundryLocalService` je automaticky injektována Springem (dependency injection)
+- Posílá testovací zprávu AI a zobrazuje odpověď
 
-Tato aplikace používá OpenAI Java SDK pro komunikaci s Foundry Local. Klíčová závislost je:
+### 3. Vrstva AI služby (FoundryLocalService.java)
+
+**Soubor:** `src/main/java/com/example/FoundryLocalService.java`
+
+#### Injektování konfigurace:
+```java
+@Service
+public class FoundryLocalService {
+    
+    @Value("${foundry.local.base-url:http://localhost:5273}")
+    private String baseUrl;
+    
+    @Value("${foundry.local.model:Phi-3.5-mini-instruct-cuda-gpu}")
+    private String model;
+```
+
+**Co to dělá:**
+- `@Service` říká Springu, že tato třída poskytuje obchodní logiku
+- `@Value` injektuje hodnoty konfigurace z application.properties
+- Syntaxe `:default-value` poskytuje výchozí hodnoty, pokud vlastnosti nejsou nastaveny
+
+#### Inicializace klienta:
+```java
+@PostConstruct
+public void init() {
+    this.openAIClient = OpenAIOkHttpClient.builder()
+            .baseUrl(baseUrl + "/v1")        // Foundry Local uses OpenAI-compatible API
+            .apiKey("unused")                 // Local server doesn't need real API key
+            .build();
+}
+```
+
+**Co to dělá:**
+- `@PostConstruct` spouští tuto metodu po vytvoření služby Springem
+- Vytváří OpenAI klienta, který se připojuje k vaší lokální instanci Foundry Local
+- Cesta `/v1` je vyžadována pro kompatibilitu s OpenAI API
+- API klíč je "nepoužitý", protože lokální vývoj nevyžaduje autentizaci
+
+#### Metoda Chat:
+```java
+public String chat(String message) {
+    try {
+        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
+                .model(model)                    // Which AI model to use
+                .addUserMessage(message)         // Your question/prompt
+                .maxCompletionTokens(150)        // Limit response length
+                .temperature(0.7)                // Control creativity (0.0-1.0)
+                .build();
+        
+        ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
+        
+        // Extract the AI's response from the API result
+        if (chatCompletion.choices() != null && !chatCompletion.choices().isEmpty()) {
+            return chatCompletion.choices().get(0).message().content().orElse("No response found");
+        }
+        
+        return "No response content found";
+    } catch (Exception e) {
+        throw new RuntimeException("Error calling chat completion: " + e.getMessage(), e);
+    }
+}
+```
+
+**Co to dělá:**
+- **ChatCompletionCreateParams**: Konfiguruje požadavek na AI
+  - `model`: Určuje, který AI model se použije
+  - `addUserMessage`: Přidává vaši zprávu do konverzace
+  - `maxCompletionTokens`: Omezuje délku odpovědi (šetří zdroje)
+  - `temperature`: Řídí náhodnost (0.0 = deterministické, 1.0 = kreativní)
+- **API volání**: Posílá požadavek na Foundry Local
+- **Zpracování odpovědi**: Bezpečně extrahuje textovou odpověď AI
+- **Zpracování chyb**: Obaluje výjimky s užitečnými chybovými zprávami
+
+### 4. Závislosti projektu (pom.xml)
+
+**Klíčové závislosti:**
 
 ```xml
+<!-- Spring Boot - Application framework -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+    <version>${spring-boot.version}</version>
+</dependency>
+
+<!-- OpenAI Java SDK - For AI API calls -->
 <dependency>
     <groupId>com.openai</groupId>
     <artifactId>openai-java</artifactId>
     <version>2.12.0</version>
 </dependency>
+
+<!-- Jackson - JSON processing -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.17.0</version>
+</dependency>
 ```
 
-Aplikace je předem nakonfigurována pro připojení k Foundry Local běžícímu na výchozím portu.
+**Co dělají:**
+- **spring-boot-starter**: Poskytuje základní funkce Spring Boot
+- **openai-java**: Oficiální OpenAI Java SDK pro komunikaci s API
+- **jackson-databind**: Zajišťuje serializaci/deserializaci JSON pro API volání
 
-## Co aplikace dělá
+## Jak vše funguje dohromady
 
-Když spustíte aplikaci:
+Zde je kompletní tok, když spustíte aplikaci:
 
-1. **Spustí se** jako příkazová aplikace (bez webového serveru)
-2. **Automaticky odešle** testovací zprávu: "Hello! Can you tell me what you are and what model you're running?"
-3. **Zobrazí odpověď** od Foundry Local v konzoli
-4. **Čistě ukončí** po dokončení ukázky
+1. **Spuštění**: Spring Boot se spustí a načte `application.properties`
+2. **Vytvoření služby**: Spring vytvoří `FoundryLocalService` a injektuje konfigurační hodnoty
+3. **Nastavení klienta**: `@PostConstruct` inicializuje OpenAI klienta pro připojení k Foundry Local
+4. **Spuštění dema**: `CommandLineRunner` se spustí po startu
+5. **Volání AI**: Demo volá `foundryLocalService.chat()` s testovací zprávou
+6. **API požadavek**: Služba sestaví a pošle požadavek kompatibilní s OpenAI na Foundry Local
+7. **Zpracování odpovědi**: Služba extrahuje a vrátí odpověď AI
+8. **Zobrazení**: Aplikace vytiskne odpověď a ukončí se
 
-## Ukázkový výstup
+## Nastavení Foundry Local
+
+Pro nastavení Foundry Local postupujte podle těchto kroků:
+
+1. **Nainstalujte Foundry Local** podle pokynů v sekci [Předpoklady](../../../../04-PracticalSamples/foundrylocal).
+2. **Stáhněte AI model**, který chcete použít, například `phi-3.5-mini`, pomocí následujícího příkazu:
+   ```bash
+   foundry model run phi-3.5-mini
+   ```
+3. **Konfigurujte soubor application.properties**, aby odpovídal vašemu nastavení Foundry Local, zejména pokud používáte jiný port nebo model.
+
+## Spuštění aplikace
+
+### Krok 1: Spusťte Foundry Local
+```bash
+foundry model run phi-3.5-mini
+```
+
+### Krok 2: Sestavte a spusťte aplikaci
+```bash
+mvn clean package
+java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
+```
+
+## Očekávaný výstup
 
 ```
 === Foundry Local Demo ===
 Calling Foundry Local service...
 Sending message: Hello! Can you tell me what you are and what model you're running?
 Response from Foundry Local:
-Hello! I'm Phi, an AI language model created by Microsoft. I don't have a physical form or a specific hardware model like a smartphone or a computer. I exist purely in software, and I operate on Microsoft's infrastructure...
+Hello! I'm Phi-3.5, a small language model created by Microsoft. I'm currently running 
+as the Phi-3.5-mini-instruct model, which is designed to be helpful, harmless, and honest 
+in my interactions. I can assist with a wide variety of tasks including answering 
+questions, helping with analysis, creative writing, coding, and general conversation. 
+Is there something specific you'd like help with today?
 =========================
 ```
 
-## Architektura
+## Další kroky
 
-- **Application.java** - Hlavní aplikace Spring Boot s CommandLineRunner
-- **FoundryLocalService.java** - Služba, která používá OpenAI Java SDK pro komunikaci s Foundry Local
-- Používá **OpenAI Java SDK** pro typově bezpečné API volání
-- Automatická serializace/deserializace JSON zajištěná SDK
-- Čistá konfigurace pomocí Spring anotací `@Value` a `@PostConstruct`
-
-## Klíčové části kódu
-
-### Integrace OpenAI Java SDK
-
-Aplikace používá OpenAI Java SDK k vytvoření klienta nakonfigurovaného pro Foundry Local:
-
-```java
-@PostConstruct
-public void init() {
-    this.openAIClient = OpenAIOkHttpClient.builder()
-            .baseUrl(baseUrl + "/v1")
-            .apiKey("unused") // Local server doesn't require real API key
-            .build();
-}
-```
-
-### API pro dokončení chatu
-
-Vytváření požadavků na dokončení chatu je jednoduché a typově bezpečné:
-
-```java
-ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-        .model(model)
-        .addUserMessage(message)
-        .maxCompletionTokens(150)
-        .temperature(0.7)
-        .build();
-
-ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
-```
+Pro více příkladů si přečtěte [Kapitolu 04: Praktické ukázky](../README.md)
 
 ## Řešení problémů
 
-Pokud se objeví chyby připojení:
-1. Ověřte, že Foundry Local běží na `http://localhost:5273`
-2. Zkontrolujte, zda je model Phi-3.5-mini dostupný pomocí `foundry model list`
-3. Ujistěte se, že název modelu v `application.properties` odpovídá přesnému názvu modelu zobrazenému v seznamu
-4. Ujistěte se, že žádný firewall neblokuje připojení
+### Běžné problémy
 
-Běžné problémy:
-- **Model nenalezen**: Spusťte `foundry model run phi-3.5-mini` pro stažení a spuštění modelu
-- **Služba neběží**: Služba Foundry Local mohla být zastavena; znovu ji spusťte příkazem pro spuštění modelu
-- **Špatný název modelu**: Použijte `foundry model list`, abyste viděli dostupné modely, a aktualizujte svou konfiguraci podle potřeby
+**"Connection refused" nebo "Service unavailable"**
+- Ujistěte se, že Foundry Local běží: `foundry model list`
+- Ověřte, že služba je na portu 5273: Zkontrolujte `application.properties`
+- Zkuste restartovat Foundry Local: `foundry model run phi-3.5-mini`
+
+**"Model not found" chyby**
+- Zkontrolujte dostupné modely: `foundry model list`
+- Aktualizujte název modelu v `application.properties`, aby přesně odpovídal
+- Stáhněte model, pokud je potřeba: `foundry model run phi-3.5-mini`
+
+**Chyby při kompilaci Maven**
+- Ujistěte se, že máte Java 21 nebo vyšší: `java -version`
+- Vyčistěte a znovu sestavte: `mvn clean compile`
+- Zkontrolujte internetové připojení pro stažení závislostí
+
+**Aplikace se spustí, ale žádný výstup**
+- Ověřte, že Foundry Local odpovídá: Otevřete prohlížeč na `http://localhost:5273`
+- Zkontrolujte logy aplikace pro konkrétní chybové zprávy
+- Ujistěte se, že model je plně načtený a připravený
 
 **Prohlášení:**  
-Tento dokument byl přeložen pomocí služby pro automatický překlad [Co-op Translator](https://github.com/Azure/co-op-translator). Ačkoli se snažíme o přesnost, mějte prosím na paměti, že automatické překlady mohou obsahovat chyby nebo nepřesnosti. Původní dokument v jeho původním jazyce by měl být považován za autoritativní zdroj. Pro důležité informace se doporučuje profesionální lidský překlad. Neodpovídáme za žádná nedorozumění nebo nesprávné interpretace vyplývající z použití tohoto překladu.
+Tento dokument byl přeložen pomocí služby pro automatický překlad [Co-op Translator](https://github.com/Azure/co-op-translator). Ačkoli se snažíme o přesnost, mějte prosím na paměti, že automatické překlady mohou obsahovat chyby nebo nepřesnosti. Původní dokument v jeho původním jazyce by měl být považován za autoritativní zdroj. Pro důležité informace se doporučuje profesionální lidský překlad. Nenese odpovědnost za žádné nedorozumění nebo nesprávné interpretace vyplývající z použití tohoto překladu.

@@ -1,26 +1,24 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "da1b6d87b8a73306b29f9a1bdd681221",
-  "translation_date": "2025-07-21T19:45:24+00:00",
+  "original_hash": "df269f529a172a0197ef28460bf1da9f",
+  "translation_date": "2025-07-25T11:52:05+00:00",
   "source_file": "04-PracticalSamples/README.md",
   "language_code": "vi"
 }
 -->
 # Ứng Dụng Thực Tiễn & Dự Án
 
-> Lưu ý: Mỗi ví dụ đều bao gồm một tệp **TUTORIAL.md** hướng dẫn bạn cách chạy ứng dụng.
-
-## Bạn Sẽ Học Được Gì
+## Những Gì Bạn Sẽ Học
 Trong phần này, chúng ta sẽ trình bày ba ứng dụng thực tiễn minh họa các mẫu phát triển AI sinh với Java:
 - Tạo một Trình Tạo Câu Chuyện Về Thú Cưng đa phương thức kết hợp AI phía client và server
-- Triển khai tích hợp mô hình AI cục bộ với bản demo Foundry Local Spring Boot
+- Triển khai tích hợp mô hình AI cục bộ với demo Foundry Local Spring Boot
 - Phát triển dịch vụ Model Context Protocol (MCP) với ví dụ Máy Tính
 
 ## Mục Lục
 
 - [Giới Thiệu](../../../04-PracticalSamples)
-  - [Foundry Local Spring Boot Demo](../../../04-PracticalSamples)
+  - [Demo Foundry Local Spring Boot](../../../04-PracticalSamples)
   - [Trình Tạo Câu Chuyện Về Thú Cưng](../../../04-PracticalSamples)
   - [Dịch Vụ MCP Máy Tính (Demo MCP Dành Cho Người Mới Bắt Đầu)](../../../04-PracticalSamples)
 - [Tiến Trình Học Tập](../../../04-PracticalSamples)
@@ -31,9 +29,9 @@ Trong phần này, chúng ta sẽ trình bày ba ứng dụng thực tiễn minh
 
 Chương này giới thiệu các **dự án mẫu** minh họa các mẫu phát triển AI sinh với Java. Mỗi dự án đều hoạt động đầy đủ và trình bày các công nghệ AI cụ thể, các mẫu kiến trúc, và các thực hành tốt nhất mà bạn có thể áp dụng cho các ứng dụng của riêng mình.
 
-### Foundry Local Spring Boot Demo
+### Demo Foundry Local Spring Boot
 
-**[Foundry Local Spring Boot Demo](foundrylocal/README.md)** minh họa cách tích hợp với các mô hình AI cục bộ bằng cách sử dụng **OpenAI Java SDK**. Nó trình bày cách kết nối với mô hình **Phi-3.5-mini** chạy trên Foundry Local, cho phép bạn chạy các ứng dụng AI mà không cần phụ thuộc vào các dịch vụ đám mây.
+**[Demo Foundry Local Spring Boot](foundrylocal/README.md)** minh họa cách tích hợp với các mô hình AI cục bộ bằng cách sử dụng **OpenAI Java SDK**. Nó trình bày cách kết nối với mô hình **Phi-3.5-mini** chạy trên Foundry Local, cho phép bạn chạy các ứng dụng AI mà không cần phụ thuộc vào các dịch vụ đám mây.
 
 ### Trình Tạo Câu Chuyện Về Thú Cưng
 
@@ -41,21 +39,21 @@ Chương này giới thiệu các **dự án mẫu** minh họa các mẫu phát
 
 ### Dịch Vụ MCP Máy Tính (Demo MCP Dành Cho Người Mới Bắt Đầu)
 
-**[Dịch Vụ MCP Máy Tính](mcp/calculator/README.md)** là một minh họa đơn giản về **Model Context Protocol (MCP)** sử dụng Spring AI. Nó cung cấp một cách tiếp cận thân thiện với người mới bắt đầu để tìm hiểu các khái niệm MCP, cho thấy cách tạo một MCP Server cơ bản tương tác với các MCP client.
+**[Dịch Vụ MCP Máy Tính](mcp/calculator/README.md)** là một minh họa đơn giản về **Model Context Protocol (MCP)** sử dụng Spring AI. Nó cung cấp một giới thiệu dễ hiểu về các khái niệm MCP, cho thấy cách tạo một MCP Server cơ bản tương tác với các MCP client.
 
 ## Tiến Trình Học Tập
 
 Các dự án này được thiết kế để xây dựng dựa trên các khái niệm từ các chương trước:
 
-1. **Bắt Đầu Đơn Giản**: Bắt đầu với Foundry Local Spring Boot Demo để hiểu cách tích hợp AI cơ bản với các mô hình cục bộ
+1. **Bắt Đầu Đơn Giản**: Bắt đầu với Demo Foundry Local Spring Boot để hiểu tích hợp AI cơ bản với các mô hình cục bộ
 2. **Thêm Tính Tương Tác**: Tiến tới Trình Tạo Câu Chuyện Về Thú Cưng để khám phá AI đa phương thức và các tương tác trên web
-3. **Tìm Hiểu Cơ Bản Về MCP**: Thử Dịch Vụ MCP Máy Tính để hiểu các nguyên tắc cơ bản của Model Context Protocol
+3. **Học Cơ Bản Về MCP**: Thử Dịch Vụ MCP Máy Tính để hiểu các nguyên tắc cơ bản của Model Context Protocol
 
 ## Tóm Tắt
 
-**Chúc mừng bạn!** Bạn đã thành công:
+**Chúc mừng bạn!** Bạn đã hoàn thành:
 
-- **Tạo ra các trải nghiệm AI đa phương thức** kết hợp xử lý AI phía client và server
+- **Tạo trải nghiệm AI đa phương thức** kết hợp xử lý AI phía client và server
 - **Triển khai tích hợp mô hình AI cục bộ** bằng cách sử dụng các framework và SDK Java hiện đại
 - **Phát triển các dịch vụ Model Context Protocol** minh họa các mẫu tích hợp công cụ
 

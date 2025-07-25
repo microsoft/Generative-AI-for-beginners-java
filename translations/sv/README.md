@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "0f080f1f2a635610b5f6eff5a58a9590",
-  "translation_date": "2025-07-25T07:47:54+00:00",
+  "original_hash": "a49b35508745c032a0033d914df7901b",
+  "translation_date": "2025-07-25T11:37:17+00:00",
   "source_file": "README.md",
   "language_code": "sv"
 }
@@ -12,10 +12,13 @@ CO_OP_TRANSLATOR_METADATA:
 
 ![Generativ AI för Nybörjare - Java Edition](../../translated_images/beg-genai-series.61edc4a6b2cc54284fa2d70eda26dc0ca2669e26e49655b842ea799cd6e16d2a.sv.png)
 
-> **NOTE: Snabbstart**: Hela kursen kan genomföras online - Ingen lokal installation krävs!
+**Tidsåtgång**: Hela workshopen kan genomföras online utan lokal installation. Om du vill köra exemplen tar miljöinställningen 2 minuter, och att utforska exemplen tar 1-3 timmar beroende på hur djupt du vill gå.
+
+> **Snabbstart**
+
 1. Forka detta repository till ditt GitHub-konto
 2. Klicka på **Code** → fliken **Codespaces** → **...** → **New with options...**
-3. Använd standardinställningarna – detta väljer utvecklingscontainern som skapats för kursen
+3. Använd standardinställningarna – detta väljer utvecklingscontainern som skapats för denna kurs
 4. Klicka på **Create codespace**
 5. Vänta ~2 minuter tills miljön är redo
 6. Gå direkt till [Skapa din GitHub Models Token](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)
@@ -28,8 +31,6 @@ CO_OP_TRANSLATOR_METADATA:
 
 ## Kursstruktur & Lärandebana
 
-**Tidsåtgång**: Miljöinställning tar 2 minuter, och exemplen kräver 1-3 timmar beroende på hur djupt du utforskar. Hela workshopen kan genomföras online utan lokal installation.
-
 ### **Kapitel 1: Introduktion till Generativ AI**
 - **Grundläggande Koncept**: Förstå stora språkmodeller, tokens, inbäddningar och AI-förmågor
 - **Java AI Ekosystem**: Översikt av Spring AI och OpenAI SDKs
@@ -39,7 +40,7 @@ CO_OP_TRANSLATOR_METADATA:
 
 ### **Kapitel 2: Inställning av Utvecklingsmiljö**
 - **Konfiguration för Flera Leverantörer**: Ställ in GitHub Models, Azure OpenAI och OpenAI Java SDK-integrationer
-- **Spring Boot + Spring AI**: Bästa praxis för AI-applikationsutveckling i företag
+- **Spring Boot + Spring AI**: Bästa praxis för utveckling av AI-applikationer för företag
 - **GitHub Models**: Gratis AI-modellåtkomst för prototyper och lärande (ingen kreditkort krävs)
 - **Utvecklingsverktyg**: Docker-containrar, VS Code och GitHub Codespaces-konfiguration
 - **[→ Börja Kapitel 2](./02-SetupDevEnvironment/README.md)**
@@ -54,7 +55,7 @@ CO_OP_TRANSLATOR_METADATA:
 ### **Kapitel 4: Praktiska Tillämpningar & Projekt**
 - **Husdjursberättelsegenerator** (`petstory/`): Kreativ innehållsgenerering med GitHub Models
 - **Foundry Lokal Demo** (`foundrylocal/`): Lokal AI-modellintegration med OpenAI Java SDK
-- **MCP Kalkylator Tjänst** (`mcp/calculator/`): Grundläggande Model Context Protocol-implementering med Spring AI
+- **MCP Kalkylator Tjänst** (`mcp/calculator/`): Grundläggande implementering av Model Context Protocol med Spring AI
 - **[→ Börja Kapitel 4](./04-PracticalSamples/README.md)**
 
 ### **Kapitel 5: Ansvarsfull AI-utveckling**
@@ -78,8 +79,8 @@ CO_OP_TRANSLATOR_METADATA:
 - [XR-utveckling för Nybörjare](https://github.com/microsoft/xr-development-for-beginners)
 - [Bemästra GitHub Copilot för AI-parprogrammering](https://aka.ms/GitHubCopilotAI)
 - [Bemästra GitHub Copilot för C#/.NET-utvecklare](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers)
-- [Välj ditt eget Copilot-äventyr](https://github.com/microsoft/CopilotAdventures)
+- [Välj Ditt Eget Copilot-Äventyr](https://github.com/microsoft/CopilotAdventures)
 - [RAG Chattapp med Azure AI-tjänster](https://github.com/Azure-Samples/azure-search-openai-demo-java)
 
 **Ansvarsfriskrivning**:  
-Detta dokument har översatts med hjälp av AI-översättningstjänsten [Co-op Translator](https://github.com/Azure/co-op-translator). Även om vi strävar efter noggrannhet, bör du vara medveten om att automatiska översättningar kan innehålla fel eller inexaktheter. Det ursprungliga dokumentet på dess originalspråk bör betraktas som den auktoritativa källan. För kritisk information rekommenderas professionell mänsklig översättning. Vi ansvarar inte för eventuella missförstånd eller feltolkningar som uppstår vid användning av denna översättning.
+Detta dokument har översatts med hjälp av AI-översättningstjänsten [Co-op Translator](https://github.com/Azure/co-op-translator). Även om vi strävar efter noggrannhet, bör det noteras att automatiserade översättningar kan innehålla fel eller felaktigheter. Det ursprungliga dokumentet på dess originalspråk bör betraktas som den auktoritativa källan. För kritisk information rekommenderas professionell mänsklig översättning. Vi ansvarar inte för eventuella missförstånd eller feltolkningar som uppstår vid användning av denna översättning.

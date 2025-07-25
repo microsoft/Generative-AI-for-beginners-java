@@ -1,139 +1,351 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "0a27b17f64f598a80b72d93b98b7ed04",
-  "translation_date": "2025-07-21T20:42:34+00:00",
+  "original_hash": "59454ab4ec36d89840df6fcfe7633cbd",
+  "translation_date": "2025-07-25T12:24:03+00:00",
   "source_file": "03-CoreGenerativeAITechniques/README.md",
   "language_code": "my"
 }
 -->
-# အဓိက Generative AI နည်းလမ်းများ
-
->**Note**: ဒီအခန်းမှာ [**Tutorial**](./TUTORIAL.md) တစ်ခုပါဝင်ပြီး နမူနာများကို အပြီးသတ်ပြုလုပ်ရန် လမ်းညွှန်ပေးထားပါတယ်။
-
-## သင်လေ့လာနိုင်မည့်အရာများ
-ဒီအခန်းမှာ ကျွန်ုပ်တို့ ၄ မျိုးသော အဓိက Generative AI နည်းလမ်းများကို လက်တွေ့နမူနာများဖြင့် လေ့လာပါမည်။
-- LLM completions နှင့် chat flows
-- Function calling
-- Retrieval-Augmented Generation (RAG)
-- တာဝန်ရှိသော AI လုံခြုံရေးအတိုင်းအတာများ
+# Core Generative AI Techniques Tutorial
 
 ## အကြောင်းအရာများ
 
-- [သင်လေ့လာနိုင်မည့်အရာများ](../../../03-CoreGenerativeAITechniques)
 - [လိုအပ်ချက်များ](../../../03-CoreGenerativeAITechniques)
-- [စတင်ရန်](../../../03-CoreGenerativeAITechniques)
-- [နမူနာများအကျဉ်းချုပ်](../../../03-CoreGenerativeAITechniques)
-  - [1. LLM Completions နှင့် Chat Flows](../../../03-CoreGenerativeAITechniques)
-  - [2. Functions & Plugins with LLMs](../../../03-CoreGenerativeAITechniques)
-  - [3. Retrieval-Augmented Generation (RAG)](../../../03-CoreGenerativeAITechniques)
-  - [4. တာဝန်ရှိသော AI လုံခြုံရေး ပြသမှု](../../../03-CoreGenerativeAITechniques)
-- [အကျဉ်းချုပ်](../../../03-CoreGenerativeAITechniques)
-- [နောက်တစ်ဆင့်](../../../03-CoreGenerativeAITechniques)
-
-## လိုအပ်ချက်များ
-
-- [Chapter 2](../../../02-SetupDevEnvironment) မှ အခြေခံအဆင့်များ ပြီးစီးထားရမည်။
-
-## စတင်ရန်
-
-1. **နမူနာများသို့ သွားပါ**:  
-```bash
-cd 03-CoreGenerativeAITechniques/examples/
-```  
-2. **ပတ်ဝန်းကျင်ကို သတ်မှတ်ပါ**:  
-```bash
-export GITHUB_TOKEN=your_token_here
-```  
-3. **နမူနာများကို Compile နှင့် Run လုပ်ပါ**:  
-```bash
-   # Run completions example
-   mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.completions.LLMCompletionsApp"
-   
-   # Run functions example  
-   mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.functions.FunctionsApp"
-   
-   # Run RAG example
-   mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.rag.SimpleReaderDemo"
-   
-   # Run responsible AI demo
-   mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.responsibleai.ResponsibleGithubModels"
-   ```  
-
-## နမူနာများအကျဉ်းချုပ်
-
-နမူနာများကို `examples/` ဖိုလ်ဒါအတွင်း အောက်ပါဖွဲ့စည်းမှုဖြင့် စီစဉ်ထားသည်။
-
-```
-examples/
-├── src/main/java/com/example/genai/techniques/
-│   ├── completions/
-│   │   └── LLMCompletionsApp.java        # Basic completions 
-│   ├── functions/
-│   │   └── FunctionsApp.java             # Function calling examples
-│   ├── rag/
-│   │   └── SimpleReaderDemo.java         # Retrieval-Augmented Generation
-│   └── responsibleai/
-│       └── ResponsibleGithubModels.java  # Responsible AI safety demonstration
-├── document.txt                          # Sample document for RAG example
-└── pom.xml                               # Maven configuration
-```
-
-### 1. LLM Completions နှင့် Chat Flows
-**ဖိုင်**: `examples/src/main/java/com/example/genai/techniques/completions/LLMCompletionsApp.java`
-
-Streaming responses နှင့် chat history ကို စီမံခန့်ခွဲပြီး စကားပြော AI တည်ဆောက်ရန် လေ့လာပါ။
-
-ဒီနမူနာမှာ ပြသထားသည်မှာ:
-- System prompts ဖြင့် ရိုးရှင်းသော text completion
-- သမိုင်းစီမံခန့်ခွဲမှုဖြင့် Multi-turn စကားပြောများ
-- အပြန်အလှန် chat session များ
-- Parameter configuration (temperature, max tokens)
-
-### 2. Functions & Plugins with LLMs
-**ဖိုင်**: `examples/src/main/java/com/example/genai/techniques/functions/FunctionsApp.java`
-
-AI ၏ စွမ်းဆောင်ရည်များကို Custom functions နှင့် အပြင်ပ APIs များဖြင့် တိုးချဲ့ပါ။
-
-ဒီနမူနာမှာ ပြသထားသည်မှာ:
-- မိုးလေဝသ function ပေါင်းစည်းမှု
-- Calculator function အကောင်အထည်ဖော်မှု  
-- တစ်ခန်းစကားပြောအတွင်း Function များစွာ ခေါ်ယူမှု
-- JSON schemas ဖြင့် Function သတ်မှတ်မှု
-
-### 3. Retrieval-Augmented Generation (RAG)
-**ဖိုင်**: `examples/src/main/java/com/example/genai/techniques/rag/SimpleReaderDemo.java`
-
-AI ကို သင့်ကိုယ်ပိုင်စာရွက်စာတမ်းများနှင့် ဒေတာရင်းမြစ်များနှင့် ပေါင်းစပ်ပြီး တိကျသော၊ အကြောင်းအရာနှင့် သက်ဆိုင်သော အဖြေများရယူရန် လေ့လာပါ။
-
-ဒီနမူနာမှာ ပြသထားသည်မှာ:
-- Azure OpenAI SDK ဖြင့် စာရွက်စာတမ်းအခြေခံမေးခွန်းအဖြေ
-- GitHub Models ဖြင့် RAG ပုံစံအကောင်အထည်ဖော်မှု
-
-**အသုံးပြုမှု**: `document.txt` အတွင်းပါဝင်သော အကြောင်းအရာများအပေါ် မေးခွန်းများမေးပြီး အဆိုပါအကြောင်းအရာအပေါ်သာ အခြေခံသော AI အဖြေများရယူပါ။
-
-### 4. တာဝန်ရှိသော AI လုံခြုံရေး ပြသမှု
-**ဖိုင်**: `examples/src/main/java/com/example/genai/techniques/responsibleai/ResponsibleGithubModels.java`
-
-GitHub Models ၏ အကြောင်းအရာစစ်ထုတ်နိုင်စွမ်းများကို စမ်းသပ်ခြင်းဖြင့် AI လုံခြုံရေးအတိုင်းအတာများကို ကြိုတင်ကြည့်ရှုပါ။
-
-ဒီနမူနာမှာ ပြသထားသည်မှာ:
-- အန္တရာယ်ရှိနိုင်သော prompts များအတွက် အကြောင်းအရာစစ်ထုတ်မှု
-- လျှောက်လွှာများအတွင်း လုံခြုံရေးတုံ့ပြန်မှုကို ကိုင်တွယ်မှု
-- ပိတ်ပင်ထားသော အကြောင်းအရာအမျိုးအစားများ (အကြမ်းဖက်မှု၊ မုန်းတီးစကား၊ မှားယွင်းသောသတင်း)
-- လုံခြုံရေးချိုးဖောက်မှုများအတွက် မှန်ကန်သော အမှားကိုင်တွယ်မှု
-
-> **Learn More**: ဒီဟာက တာဝန်ရှိသော AI အယူအဆများအတွက် အကျဉ်းချုပ်သာဖြစ်သည်။ အကျင့်သိက္ခာ၊ အလွဲသက်သာရေး၊ ကိုယ်ရေးအချက်အလက်စောင့်ရှောက်မှုနှင့် တာဝန်ရှိသော AI ဖွဲ့စည်းမှုများအကြောင်း အသေးစိတ်ကို [Chapter 5: Responsible Generative AI](../05-ResponsibleGenAI/README.md) တွင် ကြည့်ရှုပါ။
+- [စတင်ခြင်း](../../../03-CoreGenerativeAITechniques)
+  - [အဆင့် ၁: သင့်ပတ်ဝန်းကျင် Variable ကို သတ်မှတ်ပါ](../../../03-CoreGenerativeAITechniques)
+  - [အဆင့် ၂: Examples ဖိုင်တွဲသို့ သွားပါ](../../../03-CoreGenerativeAITechniques)
+- [သင်ခန်းစာ ၁: LLM Completions နှင့် Chat](../../../03-CoreGenerativeAITechniques)
+- [သင်ခန်းစာ ၂: Function Calling](../../../03-CoreGenerativeAITechniques)
+- [သင်ခန်းစာ ၃: RAG (Retrieval-Augmented Generation)](../../../03-CoreGenerativeAITechniques)
+- [သင်ခန်းစာ ၄: တာဝန်ရှိသော AI](../../../03-CoreGenerativeAITechniques)
+- [ဥပမာများအတွက် ပုံမှန် Pattern များ](../../../03-CoreGenerativeAITechniques)
+- [နောက်တစ်ဆင့်များ](../../../03-CoreGenerativeAITechniques)
+- [ပြဿနာဖြေရှင်းခြင်း](../../../03-CoreGenerativeAITechniques)
+  - [ပုံမှန်ပြဿနာများ](../../../03-CoreGenerativeAITechniques)
 
 ## အကျဉ်းချုပ်
 
-ဒီအခန်းမှာ ကျွန်ုပ်တို့ LLM completions နှင့် chat flows ကို လေ့လာခဲ့ပြီး၊ AI ၏ စွမ်းဆောင်ရည်များကို တိုးချဲ့ရန် function calling ကို အကောင်အထည်ဖော်ခဲ့ပြီး၊ Retrieval-Augmented Generation (RAG) စနစ်တစ်ခုကို ဖန်တီးခဲ့ပြီး၊ တာဝန်ရှိသော AI လုံခြုံရေးအတိုင်းအတာများကို ပြသခဲ့ပါသည်။
+ဒီသင်ခန်းစာမှာ Java နှင့် GitHub Models ကို အသုံးပြုပြီး အဓိက Generative AI နည်းလမ်းများကို လက်တွေ့လုပ်ဆောင်နိုင်မယ့် ဥပမာများကို ပေးထားပါတယ်။ သင်သည် Large Language Models (LLMs) နှင့် အပြန်အလှန်ဆက်သွယ်နည်း၊ function calling ကို အကောင်အထည်ဖော်နည်း၊ retrieval-augmented generation (RAG) ကို အသုံးပြုနည်း၊ နှင့် တာဝန်ရှိသော AI လုပ်ဆောင်မှုများကို လေ့လာနိုင်ပါမည်။
 
-> **NOTE**: ပေးထားသော [**Tutorial**](./TUTORIAL.md) ဖြင့် နက်ရှိုင်းစွာ လေ့လာပါ။
+## လိုအပ်ချက်များ
 
-## နောက်တစ်ဆင့်
+စတင်မီ သင်မှာ အောက်ပါအရာများရှိရမည်-
+- Java 21 သို့မဟုတ် အထက်ရှိရမည်
+- Maven ကို dependency များစီမံရန်
+- GitHub အကောင့်နှင့် personal access token (PAT)
 
-[Chapter 4: လက်တွေ့အသုံးချမှုများနှင့် ပရောဂျက်များ](../04-PracticalSamples/README.md)
+## စတင်ခြင်း
+
+### အဆင့် ၁: သင့်ပတ်ဝန်းကျင် Variable ကို သတ်မှတ်ပါ
+
+ပထမဦးစွာ သင်၏ GitHub token ကို environment variable အဖြစ် သတ်မှတ်ရမည်။ ဒီ token က GitHub Models ကို အခမဲ့ အသုံးပြုခွင့်ပေးပါသည်။
+
+**Windows (Command Prompt):**
+```cmd
+set GITHUB_TOKEN=your_github_token_here
+```
+
+**Windows (PowerShell):**
+```powershell
+$env:GITHUB_TOKEN="your_github_token_here"
+```
+
+**Linux/macOS:**
+```bash
+export GITHUB_TOKEN=your_github_token_here
+```
+
+### အဆင့် ၂: Examples ဖိုင်တွဲသို့ သွားပါ
+
+```bash
+cd 03-CoreGenerativeAITechniques/examples/
+```
+
+## သင်ခန်းစာ ၁: LLM Completions နှင့် Chat
+
+**ဖိုင်:** `src/main/java/com/example/genai/techniques/completions/LLMCompletionsApp.java`
+
+### ဒီဥပမာက သင်ကြားပေးမယ့်အရာ
+
+ဒီဥပမာက OpenAI API ကို အသုံးပြုပြီး Large Language Model (LLM) နှင့် အပြန်အလှန်ဆက်သွယ်နည်းကို ပြသပါသည်။ GitHub Models ဖြင့် client initialization, system နှင့် user prompts အတွက် message structure pattern များ, message history accumulation ဖြင့် conversation state ကို စီမံနည်း, နှင့် response length နှင့် creativity level များကို ထိန်းချုပ်ရန် parameter tuning အကြောင်းကို လေ့လာနိုင်ပါမည်။
+
+### အဓိက Code အကြောင်းအရာများ
+
+#### ၁. Client Setup
+```java
+// Create the AI client
+OpenAIClient client = new OpenAIClientBuilder()
+    .endpoint("https://models.inference.ai.azure.com")
+    .credential(new StaticTokenCredential(pat))
+    .buildClient();
+```
+
+GitHub Models နှင့် သင့် token ကို အသုံးပြု၍ ချိတ်ဆက်မှုတစ်ခု ဖန်တီးပါသည်။
+
+#### ၂. ရိုးရှင်းသော Completion
+```java
+List<ChatRequestMessage> messages = List.of(
+    // System message sets AI behavior
+    new ChatRequestSystemMessage("You are a helpful Java expert."),
+    // User message contains the actual question
+    new ChatRequestUserMessage("Explain Java streams briefly.")
+);
+
+ChatCompletionsOptions options = new ChatCompletionsOptions(messages)
+    .setModel("gpt-4o-mini")
+    .setMaxTokens(200)      // Limit response length
+    .setTemperature(0.7);   // Control creativity (0.0-1.0)
+```
+
+#### ၃. Conversation Memory
+```java
+// Add AI's response to maintain conversation history
+messages.add(new ChatRequestAssistantMessage(aiResponse));
+messages.add(new ChatRequestUserMessage("Follow-up question"));
+```
+
+AI သည် ယခင် message များကို သင်ထပ်မံတင်သွင်းပါကသာ မှတ်မိပါသည်။
+
+### ဥပမာကို Run လုပ်ပါ
+```bash
+mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.completions.LLMCompletionsApp"
+```
+
+### Run လုပ်ပြီးနောက် ဖြစ်ပေါ်မည့်အရာများ
+
+1. **ရိုးရှင်းသော Completion**: AI သည် Java အကြောင်းမေးခွန်းကို system prompt အညွှန်းဖြင့် ဖြေကြားသည်။
+2. **Multi-turn Chat**: AI သည် မေးခွန်းများအကြား context ကို ထိန်းသိမ်းထားသည်။
+3. **Interactive Chat**: သင် AI နှင့် တိုက်ရိုက် စကားပြောနိုင်သည်။
+
+## သင်ခန်းစာ ၂: Function Calling
+
+**ဖိုင်:** `src/main/java/com/example/genai/techniques/functions/FunctionsApp.java`
+
+### ဒီဥပမာက သင်ကြားပေးမယ့်အရာ
+
+Function calling သည် AI model များကို natural language request များကို ခွဲခြမ်းစိတ်ဖြာပြီး JSON Schema အညွှန်းများဖြင့် function call များကို သတ်မှတ်နိုင်စေသည်။ function execution ကို developer ထိန်းချုပ်နိုင်သောကြောင့် လုံခြုံမှုနှင့် ယုံကြည်စိတ်ချရမှုရှိစေပါသည်။
+
+### အဓိက Code အကြောင်းအရာများ
+
+#### ၁. Function Definition
+```java
+ChatCompletionsFunctionToolDefinitionFunction weatherFunction = 
+    new ChatCompletionsFunctionToolDefinitionFunction("get_weather");
+weatherFunction.setDescription("Get current weather information for a city");
+
+// Define parameters using JSON Schema
+weatherFunction.setParameters(BinaryData.fromString("""
+    {
+        "type": "object",
+        "properties": {
+            "city": {
+                "type": "string",
+                "description": "The city name"
+            }
+        },
+        "required": ["city"]
+    }
+    """));
+```
+
+AI ကို ဘယ် function များရရှိနိုင်ပြီး ဘယ်လိုအသုံးပြုရမည်ကို ပြောပြပါသည်။
+
+#### ၂. Function Execution Flow
+```java
+// 1. AI requests a function call
+if (choice.getFinishReason() == CompletionsFinishReason.TOOL_CALLS) {
+    ChatCompletionsFunctionToolCall functionCall = ...;
+    
+    // 2. You execute the function
+    String result = simulateWeatherFunction(functionCall.getFunction().getArguments());
+    
+    // 3. You give the result back to AI
+    messages.add(new ChatRequestToolMessage(result, toolCall.getId()));
+    
+    // 4. AI provides final response with function result
+    ChatCompletions finalResponse = client.getChatCompletions(MODEL, options);
+}
+```
+
+#### ၃. Function Implementation
+```java
+private static String simulateWeatherFunction(String arguments) {
+    // Parse arguments and call real weather API
+    // For demo, we return mock data
+    return """
+        {
+            "city": "Seattle",
+            "temperature": "22",
+            "condition": "partly cloudy"
+        }
+        """;
+}
+```
+
+### ဥပမာကို Run လုပ်ပါ
+```bash
+mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.functions.FunctionsApp"
+```
+
+### Run လုပ်ပြီးနောက် ဖြစ်ပေါ်မည့်အရာများ
+
+1. **Weather Function**: AI သည် Seattle ရဲ့ ရာသီဥတုကို မေးမြန်းပြီး သင်ထည့်သွင်းပေးပါက AI သည် အဖြေကို ဖော်ပြသည်။
+2. **Calculator Function**: AI သည် 240 ရဲ့ 15% ကိုတွက်ချက်ရန် မေးမြန်းပြီး သင်တွက်ချက်ပေးပါက AI သည် ရလဒ်ကို ရှင်းပြသည်။
+
+## သင်ခန်းစာ ၃: RAG (Retrieval-Augmented Generation)
+
+**ဖိုင်:** `src/main/java/com/example/genai/techniques/rag/SimpleReaderDemo.java`
+
+### ဒီဥပမာက သင်ကြားပေးမယ့်အရာ
+
+Retrieval-Augmented Generation (RAG) သည် AI model များကို အပြင်မှ အချက်အလက်များထည့်သွင်းပေးပြီး အတိအကျဖြေကြားနိုင်စေသည်။ AI သည် သတ်မှတ်ထားသော အချက်အလက်များကိုသာ အခြေခံပြီး ဖြေကြားမည်ဖြစ်သည်။
+
+### အဓိက Code အကြောင်းအရာများ
+
+#### ၁. Document Loading
+```java
+// Load your knowledge source
+String doc = Files.readString(Paths.get("document.txt"));
+```
+
+#### ၂. Context Injection
+```java
+List<ChatRequestMessage> messages = List.of(
+    new ChatRequestSystemMessage(
+        "Use only the CONTEXT to answer. If not in context, say you cannot find it."
+    ),
+    new ChatRequestUserMessage(
+        "CONTEXT:\n\"\"\"\n" + doc + "\n\"\"\"\n\nQUESTION:\n" + question
+    )
+);
+```
+
+Triple quotes သည် context နှင့် မေးခွန်းကို ခွဲခြားစေသည်။
+
+#### ၃. Safe Response Handling
+```java
+if (response != null && response.getChoices() != null && !response.getChoices().isEmpty()) {
+    String answer = response.getChoices().get(0).getMessage().getContent();
+    System.out.println("Assistant: " + answer);
+} else {
+    System.err.println("Error: No response received from the API.");
+}
+```
+
+API response များကို အမြဲ validate လုပ်ပါ။
+
+### ဥပမာကို Run လုပ်ပါ
+```bash
+mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.rag.SimpleReaderDemo"
+```
+
+### Run လုပ်ပြီးနောက် ဖြစ်ပေါ်မည့်အရာများ
+
+1. `document.txt` (GitHub Models အကြောင်းပါရှိသည်) ကို load လုပ်ပါသည်။
+2. သင် document အကြောင်းမေးပါသည်။
+3. AI သည် document အကြောင်းအရာကိုသာ အခြေခံပြီး ဖြေကြားသည်။
+
+"GitHub Models ဆိုတာဘာလဲ?" နှင့် "ရာသီဥတုကဘယ်လိုလဲ?" ဆိုပြီး မေးကြည့်ပါ။
+
+## သင်ခန်းစာ ၄: တာဝန်ရှိသော AI
+
+**ဖိုင်:** `src/main/java/com/example/genai/techniques/responsibleai/ResponsibleGithubModels.java`
+
+### ဒီဥပမာက သင်ကြားပေးမယ့်အရာ
+
+တာဝန်ရှိသော AI သည် AI application များတွင် လုံခြုံရေးအတိုင်းအတာများကို ထည့်သွင်းရန် အရေးကြီးကြောင်း ပြသသည်။ AI output များအတွက် content policy ကို လိုက်နာစေပြီး user များကို အန္တရာယ်ကင်းစေရန် ကာကွယ်ပေးသည်။
+
+### အဓိက Code အကြောင်းအရာများ
+
+#### ၁. Safety Testing Framework
+```java
+private void testPromptSafety(String prompt, String category) {
+    try {
+        // Attempt to get AI response
+        ChatCompletions response = client.getChatCompletions(modelId, options);
+        System.out.println("Response generated (content appears safe)");
+        
+    } catch (HttpResponseException e) {
+        if (e.getResponse().getStatusCode() == 400) {
+            System.out.println("[BLOCKED BY SAFETY FILTER]");
+            System.out.println("This is GOOD - safety system working!");
+        }
+    }
+}
+```
+
+#### ၂. စစ်ဆေးသော Safety Categories
+- အကြမ်းဖက်မှု/အန္တရာယ်
+- မုန်းတီးစကား
+- ကိုယ်ရေးကိုယ်တာဖော်ထုတ်မှု
+- ဆေးဘက်ဆိုင်ရာမှားယွင်းမှု
+- တရားမဝင်လုပ်ဆောင်မှု
+
+### ဥပမာကို Run လုပ်ပါ
+```bash
+mvn compile exec:java -Dexec.mainClass="com.example.genai.techniques.responsibleai.ResponsibleGithubModels"
+```
+
+### Run လုပ်ပြီးနောက် ဖြစ်ပေါ်မည့်အရာများ
+
+1. **အန္တရာယ်ရှိသော request များကို** HTTP 400 error ဖြင့် ပိတ်ပင်သည်။
+2. **လုံခြုံသောအကြောင်းအရာများကို** ပုံမှန်ဖန်တီးနိုင်သည်။
+3. **User များကို** အန္တရာယ်ရှိသော AI output များမှ ကာကွယ်ပေးသည်။
+
+## ဥပမာများအတွက် ပုံမှန် Pattern များ
+
+### Authentication Pattern
+ဥပမာအားလုံးသည် GitHub Models နှင့် authentication ပြုလုပ်ရန် ဒီ pattern ကို အသုံးပြုသည်-
+
+```java
+String pat = System.getenv("GITHUB_TOKEN");
+TokenCredential credential = new StaticTokenCredential(pat);
+OpenAIClient client = new OpenAIClientBuilder()
+    .endpoint("https://models.inference.ai.azure.com")
+    .credential(credential)
+    .buildClient();
+```
+
+### Error Handling Pattern
+```java
+try {
+    // AI operation
+} catch (HttpResponseException e) {
+    // Handle API errors (rate limits, safety filters)
+} catch (Exception e) {
+    // Handle general errors (network, parsing)
+}
+```
+
+### Message Structure Pattern
+```java
+List<ChatRequestMessage> messages = List.of(
+    new ChatRequestSystemMessage("Set AI behavior"),
+    new ChatRequestUserMessage("User's actual request")
+);
+```
+
+## နောက်တစ်ဆင့်များ
+
+[Chapter 04: Practical samples](../04-PracticalSamples/README.md)
+
+## ပြဿနာဖြေရှင်းခြင်း
+
+### ပုံမှန်ပြဿနာများ
+
+**"GITHUB_TOKEN not set"**
+- သင့် environment variable ကို သတ်မှတ်ထားကြောင်း သေချာပါစေ။
+- သင့် token တွင် `models:read` scope ရှိကြောင်း စစ်ဆေးပါ။
+
+**"No response from API"**
+- သင့်အင်တာနက်ချိတ်ဆက်မှုကို စစ်ဆေးပါ။
+- သင့် token သက်တမ်းမကုန်သေးကြောင်း စစ်ဆေးပါ။
+- Rate limit မကျော်လွန်ကြောင်း စစ်ဆေးပါ။
+
+**Maven compilation errors**
+- Java 21 သို့မဟုတ် အထက်ရှိကြောင်း သေချာပါစေ။
+- `mvn clean compile` ကို run လုပ်ပြီး dependencies များကို refresh လုပ်ပါ။
 
 **အကြောင်းကြားချက်**:  
-ဤစာရွက်စာတမ်းကို AI ဘာသာပြန်ဝန်ဆောင်မှု [Co-op Translator](https://github.com/Azure/co-op-translator) ကို အသုံးပြု၍ ဘာသာပြန်ထားပါသည်။ ကျွန်ုပ်တို့သည် တိကျမှုအတွက် ကြိုးစားနေသော်လည်း၊ အလိုအလျောက် ဘာသာပြန်ခြင်းတွင် အမှားများ သို့မဟုတ် မတိကျမှုများ ပါရှိနိုင်သည်ကို သတိပြုပါ။ မူရင်းစာရွက်စာတမ်းကို ၎င်း၏ မူရင်းဘာသာစကားဖြင့် အာဏာတရားရှိသော အရင်းအမြစ်အဖြစ် သတ်မှတ်သင့်ပါသည်။ အရေးကြီးသော အချက်အလက်များအတွက် လူ့ဘာသာပြန်ပညာရှင်များမှ ပရော်ဖက်ရှင်နယ် ဘာသာပြန်ခြင်းကို အကြံပြုပါသည်။ ဤဘာသာပြန်ကို အသုံးပြုခြင်းမှ ဖြစ်ပေါ်လာသော အလွဲအလွတ်များ သို့မဟုတ် အနားလွဲမှုများအတွက် ကျွန်ုပ်တို့သည် တာဝန်မယူပါ။
+ဤစာရွက်စာတမ်းကို AI ဘာသာပြန်ဝန်ဆောင်မှု [Co-op Translator](https://github.com/Azure/co-op-translator) ကို အသုံးပြု၍ ဘာသာပြန်ထားပါသည်။ ကျွန်ုပ်တို့သည် တိကျမှုအတွက် ကြိုးစားနေသော်လည်း၊ အလိုအလျောက် ဘာသာပြန်မှုများတွင် အမှားများ သို့မဟုတ် မမှန်ကန်မှုများ ပါဝင်နိုင်သည်ကို သတိပြုပါ။ မူရင်းစာရွက်စာတမ်းကို ၎င်း၏ မူလဘာသာစကားဖြင့် အာဏာတရ အရင်းအမြစ်အဖြစ် သတ်မှတ်သင့်ပါသည်။ အရေးကြီးသော အချက်အလက်များအတွက် လူက ဘာသာပြန်မှု ဝန်ဆောင်မှုကို အကြံပြုပါသည်။ ဤဘာသာပြန်မှုကို အသုံးပြုခြင်းမှ ဖြစ်ပေါ်လာသော အလွဲအလွတ်များ သို့မဟုတ် အနားယူမှုများအတွက် ကျွန်ုပ်တို့သည် တာဝန်မယူပါ။

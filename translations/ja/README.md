@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "0f080f1f2a635610b5f6eff5a58a9590",
-  "translation_date": "2025-07-25T07:39:48+00:00",
+  "original_hash": "a49b35508745c032a0033d914df7901b",
+  "translation_date": "2025-07-25T11:00:26+00:00",
   "source_file": "README.md",
   "language_code": "ja"
 }
@@ -12,23 +12,24 @@ CO_OP_TRANSLATOR_METADATA:
 
 ![初心者向け生成AI - Java版](../../translated_images/beg-genai-series.61edc4a6b2cc54284fa2d70eda26dc0ca2669e26e49655b842ea799cd6e16d2a.ja.png)
 
-> **NOTE: クイックスタート**: このコースは完全にオンラインで完結します - ローカル環境のセットアップは不要です！
+**所要時間**: このワークショップはローカル環境のセットアップなしでオンラインで完了できます。サンプルを実行したい場合、環境設定は約2分で完了し、サンプルの探索には深さに応じて1～3時間かかります。
+
+> **クイックスタート**
+
 1. このリポジトリを自分のGitHubアカウントにフォークします
 2. **Code** → **Codespaces** タブ → **...** → **New with options...** をクリックします
-3. デフォルト設定を使用します – これにより、このコース用に作成された開発コンテナが選択されます
+3. デフォルト設定を使用します – このコース用に作成された開発コンテナが選択されます
 4. **Create codespace** をクリックします
 5. 環境が準備されるまで約2分待ちます
-6. [GitHub Models Tokenの作成](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)に進みます
+6. [GitHub Models Tokenの作成](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)に直接進みます
 
-## 多言語対応
+## 多言語サポート
 
-### GitHub Actionによるサポート (自動化 & 常に最新)
+### GitHub Actionによるサポート (自動更新 & 常に最新)
 
 [フランス語](../fr/README.md) | [スペイン語](../es/README.md) | [ドイツ語](../de/README.md) | [ロシア語](../ru/README.md) | [アラビア語](../ar/README.md) | [ペルシャ語 (ファルシ)](../fa/README.md) | [ウルドゥー語](../ur/README.md) | [中国語 (簡体字)](../zh/README.md) | [中国語 (繁体字, マカオ)](../mo/README.md) | [中国語 (繁体字, 香港)](../hk/README.md) | [中国語 (繁体字, 台湾)](../tw/README.md) | [日本語](./README.md) | [韓国語](../ko/README.md) | [ヒンディー語](../hi/README.md) | [ベンガル語](../bn/README.md) | [マラーティー語](../mr/README.md) | [ネパール語](../ne/README.md) | [パンジャブ語 (グルムキー)](../pa/README.md) | [ポルトガル語 (ポルトガル)](../pt/README.md) | [ポルトガル語 (ブラジル)](../br/README.md) | [イタリア語](../it/README.md) | [ポーランド語](../pl/README.md) | [トルコ語](../tr/README.md) | [ギリシャ語](../el/README.md) | [タイ語](../th/README.md) | [スウェーデン語](../sv/README.md) | [デンマーク語](../da/README.md) | [ノルウェー語](../no/README.md) | [フィンランド語](../fi/README.md) | [オランダ語](../nl/README.md) | [ヘブライ語](../he/README.md) | [ベトナム語](../vi/README.md) | [インドネシア語](../id/README.md) | [マレー語](../ms/README.md) | [タガログ語 (フィリピン)](../tl/README.md) | [スワヒリ語](../sw/README.md) | [ハンガリー語](../hu/README.md) | [チェコ語](../cs/README.md) | [スロバキア語](../sk/README.md) | [ルーマニア語](../ro/README.md) | [ブルガリア語](../bg/README.md) | [セルビア語 (キリル文字)](../sr/README.md) | [クロアチア語](../hr/README.md) | [スロベニア語](../sl/README.md) | [ウクライナ語](../uk/README.md) | [ビルマ語 (ミャンマー)](../my/README.md)
 
-## コース構成と学習の流れ
-
-**所要時間**: 環境設定は2分、サンプルの実行は探求の深さに応じて1～3時間。ワークショップ全体はローカル環境のセットアップなしでオンラインで完了可能です。
+## コース構成と学習パス
 
 ### **第1章: 生成AIの概要**
 - **基本概念**: 大規模言語モデル、トークン、埋め込み、AIの能力について理解する
@@ -38,7 +39,7 @@ CO_OP_TRANSLATOR_METADATA:
 - **[→ 第1章を始める](./01-IntroToGenAI/README.md)**
 
 ### **第2章: 開発環境のセットアップ**
-- **マルチプロバイダー設定**: GitHub Models、Azure OpenAI、OpenAI Java SDKの統合を設定
+- **マルチプロバイダー構成**: GitHub Models、Azure OpenAI、OpenAI Java SDKの統合設定
 - **Spring Boot + Spring AI**: エンタープライズAIアプリケーション開発のベストプラクティス
 - **GitHub Models**: クレジットカード不要でプロトタイプや学習に利用可能な無料AIモデル
 - **開発ツール**: Dockerコンテナ、VS Code、GitHub Codespacesの設定
@@ -46,15 +47,15 @@ CO_OP_TRANSLATOR_METADATA:
 
 ### **第3章: 生成AIの主要技術**
 - **プロンプトエンジニアリング**: AIモデルの最適な応答を得るための技術
-- **埋め込みとベクトル操作**: セマンティック検索と類似性マッチングを実装
-- **RAG (Retrieval-Augmented Generation)**: AIと独自のデータソースを組み合わせる
-- **関数呼び出し**: カスタムツールやプラグインでAIの能力を拡張
+- **埋め込みとベクトル操作**: セマンティック検索と類似性マッチングの実装
+- **検索強化生成 (RAG)**: AIを独自のデータソースと組み合わせる
+- **関数呼び出し**: カスタムツールやプラグインでAIの能力を拡張する
 - **[→ 第3章を始める](./03-CoreGenerativeAITechniques/README.md)**
 
 ### **第4章: 実践的な応用とプロジェクト**
-- **ペットストーリー生成器** (`petstory/`): GitHub Modelsを使ったクリエイティブなコンテンツ生成
+- **ペットストーリー生成器** (`petstory/`): GitHub Modelsを使った創造的なコンテンツ生成
 - **Foundryローカルデモ** (`foundrylocal/`): OpenAI Java SDKを使ったローカルAIモデル統合
-- **MCP電卓サービス** (`mcp/calculator/`): Spring AIを使った基本的なモデルコンテキストプロトコルの実装
+- **MCP計算サービス** (`mcp/calculator/`): Spring AIを使った基本的なモデルコンテキストプロトコルの実装
 - **[→ 第4章を始める](./04-PracticalSamples/README.md)**
 
 ### **第5章: 責任あるAI開発**
@@ -76,10 +77,10 @@ CO_OP_TRANSLATOR_METADATA:
 - [初心者向けWeb開発](https://aka.ms/webdev-beginners)
 - [初心者向けIoT](https://aka.ms/iot-beginners)
 - [初心者向けXR開発](https://github.com/microsoft/xr-development-for-beginners)
-- [GitHub Copilotを使ったAIペアプログラミングのマスター](https://aka.ms/GitHubCopilotAI)
-- [C#/.NET開発者向けGitHub Copilotのマスター](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers)
-- [GitHub Copilotの冒険を選ぶ](https://github.com/microsoft/CopilotAdventures)
+- [GitHub Copilotを使ったAIペアプログラミングの習得](https://aka.ms/GitHubCopilotAI)
+- [C#/.NET開発者向けGitHub Copilotの習得](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers)
+- [GitHub Copilotの冒険を選ぼう](https://github.com/microsoft/CopilotAdventures)
 - [Azure AIサービスを使ったRAGチャットアプリ](https://github.com/Azure-Samples/azure-search-openai-demo-java)
 
 **免責事項**:  
-この文書は、AI翻訳サービス [Co-op Translator](https://github.com/Azure/co-op-translator) を使用して翻訳されています。正確性を追求しておりますが、自動翻訳には誤りや不正確な部分が含まれる可能性があることをご承知ください。元の言語で記載された文書が正式な情報源とみなされるべきです。重要な情報については、専門の人間による翻訳を推奨します。この翻訳の使用に起因する誤解や誤認について、当方は一切の責任を負いません。
+この文書は、AI翻訳サービス [Co-op Translator](https://github.com/Azure/co-op-translator) を使用して翻訳されています。正確性を追求しておりますが、自動翻訳には誤りや不正確な部分が含まれる可能性があることをご承知ください。元の言語で記載された文書が正式な情報源とみなされるべきです。重要な情報については、専門の人間による翻訳を推奨します。この翻訳の使用に起因する誤解や誤解釈について、当社は責任を負いません。

@@ -1,21 +1,24 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "0f080f1f2a635610b5f6eff5a58a9590",
-  "translation_date": "2025-07-25T07:33:38+00:00",
+  "original_hash": "a49b35508745c032a0033d914df7901b",
+  "translation_date": "2025-07-25T10:31:37+00:00",
   "source_file": "README.md",
   "language_code": "en"
 }
 -->
 # Generative AI for Beginners - Java Edition
 
-> **NOTE: Quick Start**: The entire course can be completed online—no local setup is necessary!
+**Time Commitment**: You can complete the entire workshop online without needing a local setup. If you want to run the examples, setting up the environment takes about 2 minutes, and exploring the samples can take 1-3 hours depending on how deeply you dive into them.
+
+> **Quick Start**
+
 1. Fork this repository to your GitHub account.
 2. Click **Code** → **Codespaces** tab → **...** → **New with options...**
-3. Use the default settings—this will select the development container created for this course.
+3. Use the default settings – this will select the Development container created for this course.
 4. Click **Create codespace**.
 5. Wait approximately 2 minutes for the environment to be ready.
-6. Proceed directly to [Creating your GitHub Models Token](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token).
+6. Go directly to [Creating your GitHub Models Token](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token).
 
 ## Multi-Language Support
 
@@ -25,24 +28,22 @@ CO_OP_TRANSLATOR_METADATA:
 
 ## Course Structure & Learning Path
 
-**Time Commitment**: Setting up the environment takes 2 minutes, and the sample exercises require 1-3 hours depending on how deeply you explore. The entire workshop can be completed online without any local setup.
-
 ### **Chapter 1: Introduction to Generative AI**
 - **Core Concepts**: Learn about Large Language Models, tokens, embeddings, and AI capabilities.
-- **Java AI Ecosystem**: Overview of Spring AI and OpenAI SDKs.
-- **Model Context Protocol**: Introduction to MCP and its role in AI agent communication.
-- **Practical Applications**: Explore real-world use cases like chatbots and content generation.
+- **Java AI Ecosystem**: Explore Spring AI and OpenAI SDKs.
+- **Model Context Protocol**: Understand MCP and its importance in AI agent communication.
+- **Practical Applications**: Real-world use cases like chatbots and content generation.
 - **[→ Start Chapter 1](./01-IntroToGenAI/README.md)**
 
 ### **Chapter 2: Development Environment Setup**
 - **Multi-Provider Configuration**: Set up integrations for GitHub Models, Azure OpenAI, and OpenAI Java SDK.
-- **Spring Boot + Spring AI**: Best practices for developing enterprise AI applications.
+- **Spring Boot + Spring AI**: Learn best practices for building enterprise AI applications.
 - **GitHub Models**: Access free AI models for prototyping and learning (no credit card required).
 - **Development Tools**: Configure Docker containers, VS Code, and GitHub Codespaces.
 - **[→ Start Chapter 2](./02-SetupDevEnvironment/README.md)**
 
 ### **Chapter 3: Core Generative AI Techniques**
-- **Prompt Engineering**: Learn techniques to optimize AI model responses.
+- **Prompt Engineering**: Learn how to craft prompts for optimal AI responses.
 - **Embeddings & Vector Operations**: Implement semantic search and similarity matching.
 - **Retrieval-Augmented Generation (RAG)**: Combine AI with your own data sources.
 - **Function Calling**: Extend AI capabilities with custom tools and plugins.
@@ -55,7 +56,7 @@ CO_OP_TRANSLATOR_METADATA:
 - **[→ Start Chapter 4](./04-PracticalSamples/README.md)**
 
 ### **Chapter 5: Responsible AI Development**
-- **GitHub Models Safety**: Test built-in content filtering and safety mechanisms.
+- **GitHub Models Safety**: Test built-in content filtering and safety features.
 - **Responsible AI Demo**: Hands-on example demonstrating AI safety filters in action.
 - **Best Practices**: Learn essential guidelines for ethical AI development and deployment.
 - **[→ Start Chapter 5](./05-ResponsibleGenAI/README.md)**

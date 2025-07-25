@@ -1,137 +1,313 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "7bf9a4a832911269a8bd0decb97ff36c",
-  "translation_date": "2025-07-21T19:59:03+00:00",
+  "original_hash": "8c6c7e9008b114540677f7a65aa9ddad",
+  "translation_date": "2025-07-25T11:48:08+00:00",
   "source_file": "04-PracticalSamples/mcp/calculator/README.md",
   "language_code": "nl"
 }
 -->
-# Basis Rekenmachine MCP Service
-
->**Opmerking**: Dit hoofdstuk bevat een [**Tutorial**](./TUTORIAL.md) die je begeleidt bij het uitvoeren van de voltooide voorbeelden.
-
-Welkom bij je eerste praktische ervaring met het **Model Context Protocol (MCP)**! In de vorige hoofdstukken heb je de basisprincipes van generatieve AI geleerd en je ontwikkelomgeving opgezet. Nu is het tijd om iets praktisch te bouwen.
-
-Deze rekenmachineservice laat zien hoe AI-modellen veilig kunnen communiceren met externe tools via MCP. In plaats van te vertrouwen op de soms onbetrouwbare rekenvaardigheden van AI-modellen, laten we zien hoe je een robuust systeem kunt bouwen waarin AI gespecialiseerde services kan aanroepen voor nauwkeurige berekeningen.
+# MCP Calculator Tutorial voor Beginners
 
 ## Inhoudsopgave
 
 - [Wat Je Gaat Leren](../../../../../04-PracticalSamples/mcp/calculator)
 - [Vereisten](../../../../../04-PracticalSamples/mcp/calculator)
-- [Belangrijke Concepten](../../../../../04-PracticalSamples/mcp/calculator)
-- [Snelle Start](../../../../../04-PracticalSamples/mcp/calculator)
-- [Beschikbare Rekenmachinebewerkingen](../../../../../04-PracticalSamples/mcp/calculator)
-- [Testclients](../../../../../04-PracticalSamples/mcp/calculator)
-  - [1. Directe MCP Client (SDKClient)](../../../../../04-PracticalSamples/mcp/calculator)
-  - [2. AI-gestuurde Client (LangChain4jClient)](../../../../../04-PracticalSamples/mcp/calculator)
-- [MCP Inspector (Web UI)](../../../../../04-PracticalSamples/mcp/calculator)
-  - [Stapsgewijze Instructies](../../../../../04-PracticalSamples/mcp/calculator)
+- [De Projectstructuur Begrijpen](../../../../../04-PracticalSamples/mcp/calculator)
+- [Uitleg van Kerncomponenten](../../../../../04-PracticalSamples/mcp/calculator)
+  - [1. Hoofdapplicatie](../../../../../04-PracticalSamples/mcp/calculator)
+  - [2. Calculator Service](../../../../../04-PracticalSamples/mcp/calculator)
+  - [3. Directe MCP Client](../../../../../04-PracticalSamples/mcp/calculator)
+  - [4. AI-gestuurde Client](../../../../../04-PracticalSamples/mcp/calculator)
+- [Voorbeelden Uitvoeren](../../../../../04-PracticalSamples/mcp/calculator)
+- [Hoe Alles Samenwerkt](../../../../../04-PracticalSamples/mcp/calculator)
+- [Volgende Stappen](../../../../../04-PracticalSamples/mcp/calculator)
 
 ## Wat Je Gaat Leren
 
-Door dit voorbeeld te doorlopen, leer je:
-- Hoe je MCP-compatibele services maakt met Spring Boot
-- Het verschil tussen directe protocolcommunicatie en AI-gestuurde interactie
-- Hoe AI-modellen beslissen wanneer en hoe ze externe tools gebruiken
-- Best practices voor het bouwen van AI-toepassingen met tools
+Deze tutorial legt uit hoe je een calculatorservice bouwt met het Model Context Protocol (MCP). Je leert:
 
-Perfect voor beginners die MCP-concepten willen leren en klaar zijn om hun eerste AI-toolintegratie te bouwen!
+- Hoe je een service maakt die door AI als hulpmiddel kan worden gebruikt
+- Hoe je directe communicatie met MCP-services instelt
+- Hoe AI-modellen automatisch kunnen kiezen welke tools ze moeten gebruiken
+- Het verschil tussen directe protocoloproepen en AI-ondersteunde interacties
 
 ## Vereisten
 
-- Java 21+
-- Maven 3.6+
-- **GitHub Token**: Vereist voor de AI-gestuurde client. Als je dit nog niet hebt ingesteld, zie [Hoofdstuk 2: Je ontwikkelomgeving instellen](../../../02-SetupDevEnvironment/README.md) voor instructies.
+Voordat je begint, zorg ervoor dat je:
+- Java 21 of hoger hebt geïnstalleerd
+- Maven gebruikt voor dependency management
+- Een GitHub-account hebt met een persoonlijke toegangstoken (PAT)
+- Basiskennis hebt van Java en Spring Boot
 
-## Belangrijke Concepten
+## De Projectstructuur Begrijpen
 
-**Model Context Protocol (MCP)** is een gestandaardiseerde manier voor AI-toepassingen om veilig verbinding te maken met externe tools. Zie het als een "brug" waarmee AI-modellen externe services zoals onze rekenmachine kunnen gebruiken. In plaats van dat het AI-model zelf wiskunde probeert te doen (wat onbetrouwbaar kan zijn), kan het onze rekenmachineservice aanroepen om nauwkeurige resultaten te krijgen. MCP zorgt ervoor dat deze communicatie veilig en consistent verloopt.
+Het calculatorproject bevat verschillende belangrijke bestanden:
 
-**Server-Sent Events (SSE)** maakt realtime communicatie mogelijk tussen de server en clients. In tegenstelling tot traditionele HTTP-verzoeken, waarbij je vraagt en wacht op een antwoord, stelt SSE de server in staat om continu updates naar de client te sturen. Dit is ideaal voor AI-toepassingen waarbij antwoorden gestreamd kunnen worden of tijd nodig hebben om te verwerken.
-
-**AI Tools & Functieaanroepen** stellen AI-modellen in staat om automatisch externe functies (zoals rekenmachinebewerkingen) te kiezen en te gebruiken op basis van gebruikersverzoeken. Als je vraagt "Wat is 15 + 27?", begrijpt het AI-model dat je optelling wilt, roept automatisch onze `add`-tool aan met de juiste parameters (15, 27) en geeft het resultaat terug in natuurlijke taal. De AI fungeert als een intelligente coördinator die weet wanneer en hoe elke tool te gebruiken.
-
-## Snelle Start
-
-### 1. Navigeer naar de map van de rekenmachine-applicatie
-```bash
-cd Generative-AI-for-beginners-java/04-PracticalSamples/mcp/calculator
+```
+calculator/
+├── src/main/java/com/microsoft/mcp/sample/server/
+│   ├── McpServerApplication.java          # Main Spring Boot app
+│   └── service/CalculatorService.java     # Calculator operations
+└── src/test/java/com/microsoft/mcp/sample/client/
+    ├── SDKClient.java                     # Direct MCP communication
+    ├── LangChain4jClient.java            # AI-powered client
+    └── Bot.java                          # Simple chat interface
 ```
 
-### 2. Bouwen & Uitvoeren
-```bash
-mvn clean install -DskipTests
-java -jar target/calculator-server-0.0.1-SNAPSHOT.jar
+## Uitleg van Kerncomponenten
+
+### 1. Hoofdapplicatie
+
+**Bestand:** `McpServerApplication.java`
+
+Dit is het startpunt van onze calculatorservice. Het is een standaard Spring Boot-applicatie met één speciale toevoeging:
+
+```java
+@SpringBootApplication
+public class McpServerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(McpServerApplication.class, args);
+    }
+    
+    @Bean
+    public ToolCallbackProvider calculatorTools(CalculatorService calculator) {
+        return MethodToolCallbackProvider.builder().toolObjects(calculator).build();
+    }
+}
 ```
 
-### 3. Testen met Clients
-- **SDKClient**: Directe MCP-protocolinteractie
-- **LangChain4jClient**: AI-gestuurde natuurlijke taalinteractie (vereist GitHub-token)
+**Wat dit doet:**
+- Start een Spring Boot-webserver op poort 8080
+- Creëert een `ToolCallbackProvider` die onze calculatormethoden beschikbaar maakt als MCP-tools
+- De `@Bean`-annotatie vertelt Spring om dit te beheren als een component die door andere onderdelen kan worden gebruikt
 
-## Beschikbare Rekenmachinebewerkingen
+### 2. Calculator Service
 
-- `add(a, b)`, `subtract(a, b)`, `multiply(a, b)`, `divide(a, b)`
-- `power(base, exponent)`, `squareRoot(number)`, `absolute(number)`
-- `modulus(a, b)`, `help()`
+**Bestand:** `CalculatorService.java`
 
-## Testclients
+Hier vindt alle berekening plaats. Elke methode is gemarkeerd met `@Tool` om deze via MCP beschikbaar te maken:
 
-### 1. Directe MCP Client (SDKClient)
-Test de ruwe MCP-protocolcommunicatie. Voer uit met:
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient" -Dexec.classpathScope=test
+```java
+@Service
+public class CalculatorService {
+
+    @Tool(description = "Add two numbers together")
+    public String add(double a, double b) {
+        double result = a + b;
+        return formatResult(a, "+", b, result);
+    }
+
+    @Tool(description = "Subtract the second number from the first number")
+    public String subtract(double a, double b) {
+        double result = a - b;
+        return formatResult(a, "-", b, result);
+    }
+    
+    // More calculator operations...
+    
+    private String formatResult(double a, String operator, double b, double result) {
+        return String.format("%.2f %s %.2f = %.2f", a, operator, b, result);
+    }
+}
 ```
 
-### 2. AI-gestuurde Client (LangChain4jClient)
-Toont natuurlijke taalinteractie met GitHub-modellen. Vereist een GitHub-token (zie [Vereisten](../../../../../04-PracticalSamples/mcp/calculator)).
+**Belangrijke kenmerken:**
 
-**Uitvoeren:**
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient" -Dexec.classpathScope=test
+1. **`@Tool`-annotatie**: Geeft aan dat deze methode door externe clients kan worden aangeroepen via MCP
+2. **Duidelijke beschrijvingen**: Elke tool heeft een beschrijving die AI-modellen helpt te begrijpen wanneer ze deze moeten gebruiken
+3. **Consistente retourformaten**: Alle operaties retourneren menselijk leesbare strings zoals "5.00 + 3.00 = 8.00"
+4. **Foutafhandeling**: Delen door nul en negatieve vierkantswortels geven foutmeldingen terug
+
+**Beschikbare operaties:**
+- `add(a, b)` - Optelt twee getallen
+- `subtract(a, b)` - Aftrekt het tweede getal van het eerste
+- `multiply(a, b)` - Vermenigvuldigt twee getallen
+- `divide(a, b)` - Deelt het eerste getal door het tweede (met controle op nul)
+- `power(base, exponent)` - Verheft de basis tot de macht van de exponent
+- `squareRoot(number)` - Berekent de vierkantswortel (met controle op negatieve waarden)
+- `modulus(a, b)` - Geeft de rest van een deling
+- `absolute(number)` - Geeft de absolute waarde
+- `help()` - Geeft informatie over alle operaties
+
+### 3. Directe MCP Client
+
+**Bestand:** `SDKClient.java`
+
+Deze client communiceert rechtstreeks met de MCP-server zonder gebruik te maken van AI. Het roept handmatig specifieke calculatorfuncties aan:
+
+```java
+public class SDKClient {
+    
+    public static void main(String[] args) {
+        var transport = new WebFluxSseClientTransport(
+            WebClient.builder().baseUrl("http://localhost:8080")
+        );
+        new SDKClient(transport).run();
+    }
+    
+    public void run() {
+        var client = McpClient.sync(this.transport).build();
+        client.initialize();
+        
+        // List available tools
+        ListToolsResult toolsList = client.listTools();
+        System.out.println("Available Tools = " + toolsList);
+        
+        // Call specific calculator functions
+        CallToolResult resultAdd = client.callTool(
+            new CallToolRequest("add", Map.of("a", 5.0, "b", 3.0))
+        );
+        System.out.println("Add Result = " + resultAdd);
+        
+        CallToolResult resultSqrt = client.callTool(
+            new CallToolRequest("squareRoot", Map.of("number", 16.0))
+        );
+        System.out.println("Square Root Result = " + resultSqrt);
+        
+        client.closeGracefully();
+    }
+}
 ```
 
-## MCP Inspector (Web UI)
+**Wat dit doet:**
+1. **Verbindt** met de calculatorserver op `http://localhost:8080`
+2. **Lijst** alle beschikbare tools (onze calculatorfuncties)
+3. **Roept** specifieke functies aan met exacte parameters
+4. **Print** de resultaten direct
 
-MCP Inspector biedt een visuele webinterface om je MCP-service te testen zonder code te schrijven. Perfect voor beginners om te begrijpen hoe MCP werkt!
+**Wanneer te gebruiken:** Wanneer je precies weet welke berekening je wilt uitvoeren en dit programmatisch wilt aanroepen.
 
-### Stapsgewijze Instructies:
+### 4. AI-gestuurde Client
 
-1. **Start de rekenmachineserver** (als deze nog niet draait):
-   ```bash
-   java -jar target/calculator-server-0.0.1-SNAPSHOT.jar
-   ```
+**Bestand:** `LangChain4jClient.java`
 
-2. **Installeer en voer MCP Inspector uit** in een nieuwe terminal:
-   ```bash
-   npx @modelcontextprotocol/inspector
-   ```
+Deze client gebruikt een AI-model (GPT-4o-mini) dat automatisch kan beslissen welke calculatortools te gebruiken:
 
-3. **Open de webinterface**:
-   - Zoek naar een bericht zoals "Inspector running at http://localhost:6274"
-   - Open die URL in je webbrowser
+```java
+public class LangChain4jClient {
+    
+    public static void main(String[] args) throws Exception {
+        // Set up the AI model (using GitHub Models)
+        ChatLanguageModel model = OpenAiOfficialChatModel.builder()
+                .isGitHubModels(true)
+                .apiKey(System.getenv("GITHUB_TOKEN"))
+                .modelName("gpt-4o-mini")
+                .build();
 
-4. **Verbind met je rekenmachineservice**:
-   - Stel in de webinterface het transporttype in op "SSE"
-   - Stel de URL in op: `http://localhost:8080/sse`
-   - Klik op de knop "Connect"
+        // Connect to our calculator MCP server
+        McpTransport transport = new HttpMcpTransport.Builder()
+                .sseUrl("http://localhost:8080/sse")
+                .logRequests(true)  // Shows what the AI is doing
+                .logResponses(true)
+                .build();
 
-5. **Verken beschikbare tools**:
-   - Klik op "List Tools" om alle rekenmachinebewerkingen te zien
-   - Je ziet functies zoals `add`, `subtract`, `multiply`, enz.
+        McpClient mcpClient = new DefaultMcpClient.Builder()
+                .transport(transport)
+                .build();
 
-6. **Test een rekenmachinebewerking**:
-   - Selecteer een tool (bijv. "add")
-   - Voer parameters in (bijv. `a: 15`, `b: 27`)
-   - Klik op "Run Tool"
-   - Bekijk het resultaat dat door je MCP-service wordt geretourneerd!
+        // Give the AI access to our calculator tools
+        ToolProvider toolProvider = McpToolProvider.builder()
+                .mcpClients(List.of(mcpClient))
+                .build();
 
-Deze visuele aanpak helpt je precies te begrijpen hoe MCP-communicatie werkt voordat je je eigen clients bouwt.
+        // Create an AI bot that can use our calculator
+        Bot bot = AiServices.builder(Bot.class)
+                .chatLanguageModel(model)
+                .toolProvider(toolProvider)
+                .build();
 
-![npx inspector](../../../../../translated_images/tool.214c70103694335c4cfdc2d624373dfce4b0162f6aea089ac1da9051fb563b7f.nl.png)
+        // Now we can ask the AI to do calculations in natural language
+        String response = bot.chat("Calculate the sum of 24.5 and 17.3 using the calculator service");
+        System.out.println(response);
 
----
-**Referentie:** [MCP Server Boot Starter Docs](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-server-boot-starter-docs.html)
+        response = bot.chat("What's the square root of 144?");
+        System.out.println(response);
+    }
+}
+```
 
-**Disclaimer**:  
-Dit document is vertaald met behulp van de AI-vertalingsservice [Co-op Translator](https://github.com/Azure/co-op-translator). Hoewel we streven naar nauwkeurigheid, dient u zich ervan bewust te zijn dat geautomatiseerde vertalingen fouten of onnauwkeurigheden kunnen bevatten. Het originele document in de oorspronkelijke taal moet worden beschouwd als de gezaghebbende bron. Voor cruciale informatie wordt professionele menselijke vertaling aanbevolen. Wij zijn niet aansprakelijk voor eventuele misverstanden of verkeerde interpretaties die voortvloeien uit het gebruik van deze vertaling.
+**Wat dit doet:**
+1. **Creëert** een verbinding met het AI-model met behulp van je GitHub-token
+2. **Verbindt** de AI met onze calculator MCP-server
+3. **Geeft** de AI toegang tot al onze calculatortools
+4. **Maakt** natuurlijke taalverzoeken mogelijk zoals "Bereken de som van 24.5 en 17.3"
+
+**De AI doet automatisch:**
+- Begrijpt dat je getallen wilt optellen
+- Kiest de `add`-tool
+- Roept `add(24.5, 17.3)` aan
+- Geeft het resultaat terug in een natuurlijke reactie
+
+## Voorbeelden Uitvoeren
+
+### Stap 1: Start de Calculatorserver
+
+Stel eerst je GitHub-token in (nodig voor de AI-client):
+
+**Windows:**
+```cmd
+set GITHUB_TOKEN=your_github_token_here
+```
+
+**Linux/macOS:**
+```bash
+export GITHUB_TOKEN=your_github_token_here
+```
+
+Start de server:
+```bash
+cd 04-PracticalSamples/mcp/calculator
+mvn spring-boot:run
+```
+
+De server start op `http://localhost:8080`. Je zou het volgende moeten zien:
+```
+Started McpServerApplication in X.XXX seconds
+```
+
+### Stap 2: Test met Directe Client
+
+Open een nieuwe terminal:
+```bash
+mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient"
+```
+
+Je ziet output zoals:
+```
+Available Tools = [add, subtract, multiply, divide, power, squareRoot, modulus, absolute, help]
+Add Result = 5.00 + 3.00 = 8.00
+Square Root Result = √16.00 = 4.00
+```
+
+### Stap 3: Test met AI Client
+
+```bash
+mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient"
+```
+
+Je ziet dat de AI automatisch tools gebruikt:
+```
+The sum of 24.5 and 17.3 is 41.8.
+The square root of 144 is 12.
+```
+
+## Hoe Alles Samenwerkt
+
+Hier is de volledige flow wanneer je de AI vraagt "Wat is 5 + 3?":
+
+1. **Jij** vraagt de AI in natuurlijke taal
+2. **AI** analyseert je verzoek en begrijpt dat je optelling wilt
+3. **AI** roept de MCP-server aan: `add(5.0, 3.0)`
+4. **Calculator Service** voert uit: `5.0 + 3.0 = 8.0`
+5. **Calculator Service** retourneert: `"5.00 + 3.00 = 8.00"`
+6. **AI** ontvangt het resultaat en formatteert een natuurlijke reactie
+7. **Jij** krijgt: "De som van 5 en 3 is 8"
+
+## Volgende Stappen
+
+Voor meer voorbeelden, zie [Hoofdstuk 04: Praktische voorbeelden](../../README.md)
+
+**Disclaimer (Vrijwaring)**:  
+Dit document is vertaald met behulp van de AI-vertalingsservice [Co-op Translator](https://github.com/Azure/co-op-translator). Hoewel we streven naar nauwkeurigheid, dient u zich ervan bewust te zijn dat geautomatiseerde vertalingen fouten of onnauwkeurigheden kunnen bevatten. Het originele document in de oorspronkelijke taal moet worden beschouwd als de gezaghebbende bron. Voor cruciale informatie wordt professionele menselijke vertaling aanbevolen. Wij zijn niet aansprakelijk voor misverstanden of verkeerde interpretaties die voortvloeien uit het gebruik van deze vertaling.
