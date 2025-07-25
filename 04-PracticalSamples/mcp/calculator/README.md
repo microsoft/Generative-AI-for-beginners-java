@@ -262,7 +262,7 @@ Started McpServerApplication in X.XXX seconds
 
 In a new terminal:
 ```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient"
+mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient" -Dexec.classpathScope=test
 ```
 
 You'll see output like:
@@ -275,7 +275,7 @@ Square Root Result = √16.00 = 4.00
 ### Step 3: Test with AI Client
 
 ```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient"
+mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient" -Dexec.classpathScope=test
 ```
 
 You'll see the AI automatically using tools:
