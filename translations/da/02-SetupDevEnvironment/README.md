@@ -1,15 +1,15 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "c670445516e119888d8aaaa207bbee34",
-  "translation_date": "2025-07-27T13:12:45+00:00",
+  "original_hash": "c2a244c959e00da1ae1613d2ebfdac65",
+  "translation_date": "2025-07-29T15:37:05+00:00",
   "source_file": "02-SetupDevEnvironment/README.md",
   "language_code": "da"
 }
 -->
-# Opsætning af udviklingsmiljø for Generativ AI til Java
+# Opsætning af udviklingsmiljø til Generativ AI for Java
 
-> **Hurtig start**: Kod i skyen på 2 minutter - Gå til [GitHub Codespaces Setup](../../../02-SetupDevEnvironment) - ingen lokal installation nødvendig og bruger GitHub-modeller!
+> **Hurtig start**: Kod i skyen på 2 minutter - Gå til [GitHub Codespaces Opsætning](../../../02-SetupDevEnvironment) - ingen lokal installation nødvendig og bruger GitHub-modeller!
 
 > **Interesseret i Azure OpenAI?**, se vores [Azure OpenAI Opsætningsguide](getting-started-azure-openai.md) med trin til at oprette en ny Azure OpenAI-ressource.
 
@@ -25,7 +25,7 @@ CO_OP_TRANSLATOR_METADATA:
 - [Introduktion](../../../02-SetupDevEnvironment)
 - [Trin 1: Opsæt Dit Udviklingsmiljø](../../../02-SetupDevEnvironment)
   - [Mulighed A: GitHub Codespaces (Anbefalet)](../../../02-SetupDevEnvironment)
-  - [Mulighed B: Lokal Dev Container](../../../02-SetupDevEnvironment)
+  - [Mulighed B: Lokal Dev-Container](../../../02-SetupDevEnvironment)
   - [Mulighed C: Brug Din Eksisterende Lokale Installation](../../../02-SetupDevEnvironment)
 - [Trin 2: Opret GitHub Personal Access Token](../../../02-SetupDevEnvironment)
 - [Trin 3: Test Din Opsætning](../../../02-SetupDevEnvironment)
@@ -35,19 +35,19 @@ CO_OP_TRANSLATOR_METADATA:
 
 ## Introduktion
 
-Dette kapitel vil guide dig gennem opsætningen af et udviklingsmiljø. Vi bruger **GitHub-modeller** som vores primære eksempel, fordi det er gratis, nemt at opsætte med blot en GitHub-konto, kræver ikke et kreditkort og giver adgang til flere modeller til eksperimentering.
+Dette kapitel guider dig gennem opsætningen af et udviklingsmiljø. Vi bruger **GitHub-modeller** som vores primære eksempel, fordi det er gratis, nemt at opsætte med kun en GitHub-konto, kræver ikke et kreditkort og giver adgang til flere modeller til eksperimentering.
 
-**Ingen lokal opsætning nødvendig!** Du kan begynde at kode med det samme ved at bruge GitHub Codespaces, som giver et fuldt udviklingsmiljø direkte i din browser.
+**Ingen lokal opsætning nødvendig!** Du kan starte med at kode med det samme ved at bruge GitHub Codespaces, som giver et fuldt udviklingsmiljø i din browser.
 
 <img src="./images/models.webp" alt="Skærmbillede: GitHub-modeller" width="50%">
 
 Vi anbefaler at bruge [**GitHub-modeller**](https://github.com/marketplace?type=models) til dette kursus, fordi det er:
 - **Gratis** at komme i gang
-- **Nem** at opsætte med blot en GitHub-konto
-- **Ingen kreditkort** nødvendig
+- **Nemt** at opsætte med kun en GitHub-konto
+- **Ingen kreditkort** kræves
 - **Flere modeller** tilgængelige til eksperimentering
 
-> **Bemærk**: GitHub-modellerne, der bruges i denne træning, har følgende gratis begrænsninger:
+> **Bemærk**: GitHub-modellerne, der bruges i denne træning, har følgende gratis grænser:
 > - 15 forespørgsler pr. minut (150 pr. dag)
 > - ~8.000 ord ind, ~4.000 ord ud pr. forespørgsel
 > - 5 samtidige forespørgsler
@@ -58,27 +58,27 @@ Vi anbefaler at bruge [**GitHub-modeller**](https://github.com/marketplace?type=
 
 <a name="quick-start-cloud"></a>
 
-Vi har oprettet en forudkonfigureret udviklingscontainer for at minimere opsætningstiden og sikre, at du har alle nødvendige værktøjer til dette Generativ AI til Java-kursus. Vælg din foretrukne udviklingsmetode:
+Vi har oprettet en forudkonfigureret udviklingscontainer for at minimere opsætningstiden og sikre, at du har alle nødvendige værktøjer til dette Generativ AI for Java-kursus. Vælg din foretrukne udviklingsmetode:
 
 ### Miljøopsætningsmuligheder:
 
 #### Mulighed A: GitHub Codespaces (Anbefalet)
 
-**Begynd at kode på 2 minutter - ingen lokal opsætning nødvendig!**
+**Start med at kode på 2 minutter - ingen lokal opsætning nødvendig!**
 
 1. Fork denne repository til din GitHub-konto
    > **Bemærk**: Hvis du vil redigere den grundlæggende konfiguration, kan du kigge på [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
-2. Klik på **Code** → **Codespaces** fanen → **...** → **New with options...**
-3. Brug standardindstillingerne – dette vil vælge **Dev container configuration**: **Generative AI Java Development Environment** specialtilpasset devcontainer oprettet til dette kursus
+2. Klik på **Code** → **Codespaces**-fanen → **...** → **New with options...**
+3. Brug standardindstillingerne – dette vælger **Dev container configuration**: **Generative AI Java Development Environment**, en brugerdefineret devcontainer oprettet til dette kursus
 4. Klik på **Create codespace**
-5 Vent ~2 minutter på, at miljøet er klar
+5. Vent ~2 minutter på, at miljøet er klar
 6. Fortsæt til [Trin 2: Opret GitHub Token](../../../02-SetupDevEnvironment)
 
 <img src="./images/codespaces.png" alt="Skærmbillede: Codespaces undermenu" width="50%">
 
 <img src="./images/image.png" alt="Skærmbillede: New with options" width="50%">
 
-<img src="./images/codespaces-create.png" alt="Skærmbillede: Create codespace options" width="50%">
+<img src="./images/codespaces-create.png" alt="Skærmbillede: Opret codespace muligheder" width="50%">
 
 > **Fordele ved Codespaces**:
 > - Ingen lokal installation nødvendig
@@ -87,7 +87,7 @@ Vi har oprettet en forudkonfigureret udviklingscontainer for at minimere opsætn
 > - Gratis 60 timer pr. måned for personlige konti
 > - Konsistent miljø for alle deltagere
 
-#### Mulighed B: Lokal Dev Container
+#### Mulighed B: Lokal Dev-Container
 
 **For udviklere, der foretrækker lokal udvikling med Docker**
 
@@ -118,27 +118,27 @@ Trin:
 2. Åbn projektet i din IDE
 3. Fortsæt til [Trin 2: Opret GitHub Token](../../../02-SetupDevEnvironment)
 
-> **Pro Tip**: Hvis du har en lav-spec maskine, men vil have VS Code lokalt, brug GitHub Codespaces! Du kan forbinde din lokale VS Code til en cloud-hostet Codespace for det bedste fra begge verdener.
+> **Pro Tip**: Hvis du har en maskine med lav ydeevne, men ønsker VS Code lokalt, brug GitHub Codespaces! Du kan forbinde din lokale VS Code til en cloud-hostet Codespace for det bedste fra begge verdener.
 
-<img src="./images/image-2.png" alt="Skærmbillede: oprettet lokal devcontainer instans" width="50%">
+<img src="./images/image-2.png" alt="Skærmbillede: oprettet lokal devcontainer-instans" width="50%">
 
 ## Trin 2: Opret GitHub Personal Access Token
 
-1. Naviger til [GitHub Settings](https://github.com/settings/profile) og vælg **Settings** fra din profilmenu.
-2. I venstre sidebar, klik på **Developer settings** (normalt nederst).
+1. Gå til [GitHub Indstillinger](https://github.com/settings/profile) og vælg **Settings** fra din profilmenu.
+2. I venstre sidebjælke, klik på **Developer settings** (normalt nederst).
 3. Under **Personal access tokens**, klik på **Fine-grained tokens** (eller følg dette direkte [link](https://github.com/settings/personal-access-tokens)).
 4. Klik på **Generate new token**.
-5. Under "Token name", giv et beskrivende navn (f.eks. `GenAI-Java-Course-Token`).
+5. Under "Token name", angiv et beskrivende navn (f.eks. `GenAI-Java-Course-Token`).
 6. Angiv en udløbsdato (anbefalet: 7 dage for bedste sikkerhedspraksis).
 7. Under "Resource owner", vælg din brugerkonto.
-8. Under "Repository access", vælg de repositories, du vil bruge med GitHub-modeller (eller "All repositories" hvis nødvendigt).
+8. Under "Repository access", vælg de repositories, du vil bruge med GitHub-modeller (eller "All repositories", hvis nødvendigt).
 9. Under "Repository permissions", find **Models** og sæt det til **Read and write**.
 10. Klik på **Generate token**.
 11. **Kopiér og gem dit token nu** – du vil ikke kunne se det igen!
 
-> **Sikkerhedstip**: Brug den mindst nødvendige adgang og kortest praktiske udløbstid for dine adgangstokens.
+> **Sikkerhedstip**: Brug det minimum nødvendige omfang og den kortest praktiske udløbstid for dine adgangstokens.
 
-## Trin 3: Test Din Opsætning med Eksemplet GitHub-modeller
+## Trin 3: Test Din Opsætning med GitHub-modeller Eksemplet
 
 Når dit udviklingsmiljø er klar, lad os teste GitHub-modeller integrationen med vores eksempelapplikation i [`02-SetupDevEnvironment/examples/github-models`](../../../02-SetupDevEnvironment/examples/github-models).
 
@@ -177,7 +177,7 @@ Lad os først forstå, hvad vi lige har kørt. Eksemplet under `examples/github-
 
 **Hvad denne kode gør:**
 - **Forbinder** til GitHub-modeller ved hjælp af dit personlige adgangstoken
-- **Sender** en simpel "Sig Hej Verden!" besked til AI-modellen
+- **Sender** en simpel "Say Hello World!" besked til AI-modellen
 - **Modtager** og viser AI'ens svar
 - **Validerer**, at din opsætning fungerer korrekt
 
@@ -212,16 +212,16 @@ System.out.println("Response: " + response.choices().get(0).message().content().
 
 ## Opsummering
 
-**Tillykke!** Du har med succes:
+Fantastisk! Du har nu alt opsat:
 
-- **Oprettet et GitHub Personal Access Token** med korrekte tilladelser til AI-modeladgang
-- **Opsat dit Java-udviklingsmiljø** ved hjælp af Codespaces, dev-containere eller lokal installation
-- **Forbundet til GitHub-modeller** ved hjælp af OpenAI Java SDK for gratis AI-udviklingsadgang
-- **Testet integrationen** med en fungerende eksempelapplikation, der kommunikerer med AI-modeller
+- Oprettet et GitHub Personal Access Token med de rette tilladelser til AI-modeladgang
+- Fået dit Java-udviklingsmiljø op at køre (uanset om det er Codespaces, dev-containere eller lokalt)
+- Forbundet til GitHub-modeller ved hjælp af OpenAI Java SDK til gratis AI-udvikling
+- Testet, at det hele fungerer med et simpelt eksempel, der kommunikerer med AI-modeller
 
 ## Næste Skridt
 
-[Kapitel 3: Core Generative AI Techniques](../03-CoreGenerativeAITechniques/README.md)
+[Kapitel 3: Kerne Generative AI Teknikker](../03-CoreGenerativeAITechniques/README.md)
 
 ## Fejlfinding
 
@@ -234,8 +234,8 @@ Har du problemer? Her er almindelige problemer og løsninger:
 
 - **Maven ikke fundet?** 
   - Hvis du bruger dev-containere/Codespaces, bør Maven være forudinstalleret
-  - For lokal opsætning, sørg for, at Java 21+ og Maven 3.9+ er installeret
-  - Prøv `mvn --version` for at verificere installationen
+  - Til lokal opsætning, sørg for, at Java 21+ og Maven 3.9+ er installeret
+  - Prøv `mvn --version` for at bekræfte installationen
 
 - **Forbindelsesproblemer?** 
   - Tjek din internetforbindelse
@@ -243,14 +243,14 @@ Har du problemer? Her er almindelige problemer og løsninger:
   - Sørg for, at du ikke er bag en firewall, der blokerer GitHub-modeller endpoint
 
 - **Dev-container starter ikke?** 
-  - Sørg for, at Docker Desktop kører (for lokal udvikling)
+  - Sørg for, at Docker Desktop kører (til lokal udvikling)
   - Prøv at genopbygge containeren: `Ctrl+Shift+P` → "Dev Containers: Rebuild Container"
 
-- **Applikationskompilationsfejl?**
+- **Applikationskompileringsfejl?**
   - Sørg for, at du er i den korrekte mappe: `02-SetupDevEnvironment/examples/github-models`
   - Prøv at rense og genopbygge: `mvn clean compile`
 
-> **Brug for hjælp?**: Har du stadig problemer? Åbn en issue i repositoryen, og vi hjælper dig.
+> **Brug for hjælp?**: Har du stadig problemer? Opret en issue i repositoryet, så hjælper vi dig.
 
 **Ansvarsfraskrivelse**:  
-Dette dokument er blevet oversat ved hjælp af AI-oversættelsestjenesten [Co-op Translator](https://github.com/Azure/co-op-translator). Selvom vi bestræber os på nøjagtighed, skal du være opmærksom på, at automatiserede oversættelser kan indeholde fejl eller unøjagtigheder. Det originale dokument på dets oprindelige sprog bør betragtes som den autoritative kilde. For kritisk information anbefales professionel menneskelig oversættelse. Vi påtager os intet ansvar for misforståelser eller fejltolkninger, der måtte opstå som følge af brugen af denne oversættelse.
+Dette dokument er blevet oversat ved hjælp af AI-oversættelsestjenesten [Co-op Translator](https://github.com/Azure/co-op-translator). Selvom vi bestræber os på nøjagtighed, skal du være opmærksom på, at automatiserede oversættelser kan indeholde fejl eller unøjagtigheder. Det originale dokument på dets oprindelige sprog bør betragtes som den autoritative kilde. For kritisk information anbefales professionel menneskelig oversættelse. Vi påtager os ikke ansvar for eventuelle misforståelser eller fejltolkninger, der opstår som følge af brugen af denne oversættelse.

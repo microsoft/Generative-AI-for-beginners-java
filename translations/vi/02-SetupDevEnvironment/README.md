@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "c670445516e119888d8aaaa207bbee34",
-  "translation_date": "2025-07-27T13:17:48+00:00",
+  "original_hash": "c2a244c959e00da1ae1613d2ebfdac65",
+  "translation_date": "2025-07-29T15:52:56+00:00",
   "source_file": "02-SetupDevEnvironment/README.md",
   "language_code": "vi"
 }
@@ -13,41 +13,41 @@ CO_OP_TRANSLATOR_METADATA:
 
 > **Quan tâm đến Azure OpenAI?**, xem [Hướng Dẫn Thiết Lập Azure OpenAI](getting-started-azure-openai.md) với các bước tạo tài nguyên Azure OpenAI mới.
 
-## Những Gì Bạn Sẽ Học
+## Bạn Sẽ Học Được Gì
 
 - Thiết lập môi trường phát triển Java cho các ứng dụng AI
 - Chọn và cấu hình môi trường phát triển ưa thích của bạn (ưu tiên đám mây với Codespaces, container phát triển cục bộ, hoặc thiết lập hoàn toàn cục bộ)
-- Kiểm tra thiết lập của bạn bằng cách kết nối với các mô hình GitHub
+- Kiểm tra thiết lập của bạn bằng cách kết nối với các Mô Hình GitHub
 
 ## Mục Lục
 
-- [Những Gì Bạn Sẽ Học](../../../02-SetupDevEnvironment)
+- [Bạn Sẽ Học Được Gì](../../../02-SetupDevEnvironment)
 - [Giới Thiệu](../../../02-SetupDevEnvironment)
 - [Bước 1: Thiết Lập Môi Trường Phát Triển](../../../02-SetupDevEnvironment)
   - [Lựa Chọn A: GitHub Codespaces (Khuyến Nghị)](../../../02-SetupDevEnvironment)
   - [Lựa Chọn B: Container Phát Triển Cục Bộ](../../../02-SetupDevEnvironment)
   - [Lựa Chọn C: Sử Dụng Cài Đặt Cục Bộ Hiện Có](../../../02-SetupDevEnvironment)
 - [Bước 2: Tạo GitHub Personal Access Token](../../../02-SetupDevEnvironment)
-- [Bước 3: Kiểm Tra Thiết Lập](../../../02-SetupDevEnvironment)
+- [Bước 3: Kiểm Tra Thiết Lập của Bạn](../../../02-SetupDevEnvironment)
 - [Khắc Phục Sự Cố](../../../02-SetupDevEnvironment)
 - [Tóm Tắt](../../../02-SetupDevEnvironment)
 - [Các Bước Tiếp Theo](../../../02-SetupDevEnvironment)
 
 ## Giới Thiệu
 
-Chương này sẽ hướng dẫn bạn thiết lập môi trường phát triển. Chúng ta sẽ sử dụng **GitHub Models** làm ví dụ chính vì nó miễn phí, dễ thiết lập chỉ với tài khoản GitHub, không yêu cầu thẻ tín dụng, và cung cấp quyền truy cập vào nhiều mô hình để thử nghiệm.
+Chương này sẽ hướng dẫn bạn thiết lập môi trường phát triển. Chúng ta sẽ sử dụng **Mô Hình GitHub** làm ví dụ chính vì nó miễn phí, dễ thiết lập chỉ với tài khoản GitHub, không yêu cầu thẻ tín dụng, và cung cấp quyền truy cập vào nhiều mô hình để thử nghiệm.
 
 **Không cần thiết lập cục bộ!** Bạn có thể bắt đầu lập trình ngay lập tức bằng GitHub Codespaces, cung cấp một môi trường phát triển đầy đủ trong trình duyệt của bạn.
 
-<img src="./images/models.webp" alt="Ảnh chụp màn hình: GitHub Models" width="50%">
+<img src="./images/models.webp" alt="Ảnh chụp màn hình: Mô Hình GitHub" width="50%">
 
-Chúng tôi khuyến nghị sử dụng [**GitHub Models**](https://github.com/marketplace?type=models) cho khóa học này vì:
+Chúng tôi khuyến nghị sử dụng [**Mô Hình GitHub**](https://github.com/marketplace?type=models) cho khóa học này vì:
 - **Miễn phí** để bắt đầu
 - **Dễ dàng** thiết lập chỉ với tài khoản GitHub
-- **Không cần thẻ tín dụng**
+- **Không yêu cầu thẻ tín dụng**
 - **Nhiều mô hình** có sẵn để thử nghiệm
 
-> **Lưu ý**: Các mô hình GitHub được sử dụng trong khóa học này có các giới hạn miễn phí sau:
+> **Lưu ý**: Các Mô Hình GitHub được sử dụng trong khóa học này có các giới hạn miễn phí sau:
 > - 15 yêu cầu mỗi phút (150 mỗi ngày)
 > - ~8,000 từ đầu vào, ~4,000 từ đầu ra mỗi yêu cầu
 > - 5 yêu cầu đồng thời
@@ -69,7 +69,7 @@ Chúng tôi đã tạo một container phát triển được cấu hình sẵn 
 1. Fork repository này vào tài khoản GitHub của bạn
    > **Lưu ý**: Nếu bạn muốn chỉnh sửa cấu hình cơ bản, vui lòng xem [Cấu Hình Container Phát Triển](../../../.devcontainer/devcontainer.json)
 2. Nhấp vào **Code** → tab **Codespaces** → **...** → **New with options...**
-3. Sử dụng các tùy chọn mặc định – điều này sẽ chọn **Cấu hình container phát triển**: **Generative AI Java Development Environment** container phát triển tùy chỉnh được tạo cho khóa học này
+3. Sử dụng các tùy chọn mặc định – điều này sẽ chọn **Cấu hình container phát triển**: **Môi Trường Phát Triển AI Tạo Sinh Java** container phát triển tùy chỉnh được tạo cho khóa học này
 4. Nhấp vào **Create codespace**
 5. Chờ ~2 phút để môi trường sẵn sàng
 6. Tiếp tục đến [Bước 2: Tạo GitHub Token](../../../02-SetupDevEnvironment)
@@ -79,7 +79,6 @@ Chúng tôi đã tạo một container phát triển được cấu hình sẵn 
 <img src="./images/image.png" alt="Ảnh chụp màn hình: New with options" width="50%">
 
 <img src="./images/codespaces-create.png" alt="Ảnh chụp màn hình: Tùy chọn tạo codespace" width="50%">
-
 
 > **Lợi ích của Codespaces**:
 > - Không cần cài đặt cục bộ
@@ -119,33 +118,32 @@ Các bước:
 2. Mở dự án trong IDE của bạn
 3. Tiếp tục đến [Bước 2: Tạo GitHub Token](../../../02-SetupDevEnvironment)
 
-> **Mẹo Chuyên Nghiệp**: Nếu bạn có máy cấu hình thấp nhưng muốn sử dụng VS Code cục bộ, hãy sử dụng GitHub Codespaces! Bạn có thể kết nối VS Code cục bộ của mình với Codespace được lưu trữ trên đám mây để có sự kết hợp tốt nhất.
+> **Mẹo Chuyên Nghiệp**: Nếu bạn có máy cấu hình thấp nhưng muốn sử dụng VS Code cục bộ, hãy sử dụng GitHub Codespaces! Bạn có thể kết nối VS Code cục bộ của mình với Codespace được lưu trữ trên đám mây để có trải nghiệm tốt nhất.
 
 <img src="./images/image-2.png" alt="Ảnh chụp màn hình: Tạo instance container phát triển cục bộ" width="50%">
-
 
 ## Bước 2: Tạo GitHub Personal Access Token
 
 1. Điều hướng đến [GitHub Settings](https://github.com/settings/profile) và chọn **Settings** từ menu hồ sơ của bạn.
-2. Trong thanh bên trái, nhấp vào **Developer settings** (thường ở cuối).
+2. Trong thanh bên trái, nhấp vào **Developer settings** (thường ở dưới cùng).
 3. Dưới **Personal access tokens**, nhấp vào **Fine-grained tokens** (hoặc theo liên kết trực tiếp [này](https://github.com/settings/personal-access-tokens)).
 4. Nhấp vào **Generate new token**.
 5. Dưới "Token name", cung cấp một tên mô tả (ví dụ: `GenAI-Java-Course-Token`).
 6. Đặt ngày hết hạn (khuyến nghị: 7 ngày để đảm bảo an toàn).
 7. Dưới "Resource owner", chọn tài khoản người dùng của bạn.
-8. Dưới "Repository access", chọn các repository bạn muốn sử dụng với GitHub Models (hoặc "All repositories" nếu cần).
+8. Dưới "Repository access", chọn các repository bạn muốn sử dụng với Mô Hình GitHub (hoặc "All repositories" nếu cần).
 9. Dưới "Repository permissions", tìm **Models** và đặt thành **Read and write**.
 10. Nhấp vào **Generate token**.
-11. **Sao chép và lưu token của bạn ngay bây giờ** – bạn sẽ không thể xem lại nó!
+11. **Sao chép và lưu token của bạn ngay bây giờ** – bạn sẽ không thấy nó lần nữa!
 
 > **Mẹo Bảo Mật**: Sử dụng phạm vi yêu cầu tối thiểu và thời gian hết hạn ngắn nhất có thể cho các token truy cập của bạn.
 
-## Bước 3: Kiểm Tra Thiết Lập với Ví Dụ GitHub Models
+## Bước 3: Kiểm Tra Thiết Lập của Bạn với Ví Dụ Mô Hình GitHub
 
-Khi môi trường phát triển của bạn đã sẵn sàng, hãy kiểm tra tích hợp GitHub Models với ứng dụng ví dụ của chúng tôi trong [`02-SetupDevEnvironment/examples/github-models`](../../../02-SetupDevEnvironment/examples/github-models).
+Khi môi trường phát triển của bạn đã sẵn sàng, hãy kiểm tra tích hợp Mô Hình GitHub với ứng dụng ví dụ của chúng tôi trong [`02-SetupDevEnvironment/examples/github-models`](../../../02-SetupDevEnvironment/examples/github-models).
 
 1. Mở terminal trong môi trường phát triển của bạn.
-2. Điều hướng đến ví dụ GitHub Models:
+2. Điều hướng đến ví dụ Mô Hình GitHub:
    ```bash
    cd 02-SetupDevEnvironment/examples/github-models
    ```
@@ -175,10 +173,10 @@ Response: Hello World!
 
 ### Hiểu Mã Ví Dụ
 
-Trước tiên, hãy hiểu những gì chúng ta vừa chạy. Ví dụ trong `examples/github-models` sử dụng OpenAI Java SDK để kết nối với GitHub Models:
+Đầu tiên, hãy hiểu những gì bạn vừa chạy. Ví dụ trong `examples/github-models` sử dụng OpenAI Java SDK để kết nối với Mô Hình GitHub:
 
 **Những gì mã này làm:**
-- **Kết nối** với GitHub Models bằng token truy cập cá nhân của bạn
+- **Kết nối** với Mô Hình GitHub bằng token truy cập cá nhân của bạn
 - **Gửi** một thông điệp đơn giản "Say Hello World!" đến mô hình AI
 - **Nhận** và hiển thị phản hồi của AI
 - **Xác thực** thiết lập của bạn hoạt động chính xác
@@ -214,12 +212,12 @@ System.out.println("Response: " + response.choices().get(0).message().content().
 
 ## Tóm Tắt
 
-**Chúc mừng!** Bạn đã thành công:
+Tuyệt vời! Bạn đã thiết lập mọi thứ:
 
-- **Tạo GitHub Personal Access Token** với quyền phù hợp để truy cập mô hình AI
-- **Thiết lập môi trường phát triển Java** bằng Codespaces, container phát triển, hoặc cài đặt cục bộ
-- **Kết nối với GitHub Models** bằng OpenAI Java SDK để truy cập phát triển AI miễn phí
-- **Kiểm tra tích hợp** với ứng dụng ví dụ hoạt động giao tiếp với mô hình AI
+- Tạo GitHub Personal Access Token với quyền phù hợp để truy cập mô hình AI
+- Có môi trường phát triển Java hoạt động (dù là Codespaces, container phát triển, hay cục bộ)
+- Kết nối với Mô Hình GitHub bằng OpenAI Java SDK để phát triển AI miễn phí
+- Kiểm tra mọi thứ hoạt động với một ví dụ đơn giản giao tiếp với mô hình AI
 
 ## Các Bước Tiếp Theo
 
@@ -232,9 +230,9 @@ Gặp vấn đề? Dưới đây là các vấn đề phổ biến và cách gi�
 - **Token không hoạt động?** 
   - Đảm bảo bạn đã sao chép toàn bộ token mà không có khoảng trắng thừa
   - Xác minh token được đặt chính xác làm biến môi trường
-  - Kiểm tra rằng token của bạn có quyền đúng (Models: Read and write)
+  - Kiểm tra token của bạn có quyền chính xác (Models: Read and write)
 
-- **Maven không tìm thấy?** 
+- **Không tìm thấy Maven?** 
   - Nếu sử dụng container phát triển/Codespaces, Maven nên được cài đặt sẵn
   - Đối với thiết lập cục bộ, đảm bảo Java 21+ và Maven 3.9+ được cài đặt
   - Thử `mvn --version` để xác minh cài đặt
@@ -242,7 +240,7 @@ Gặp vấn đề? Dưới đây là các vấn đề phổ biến và cách gi�
 - **Vấn đề kết nối?** 
   - Kiểm tra kết nối internet của bạn
   - Xác minh GitHub có thể truy cập từ mạng của bạn
-  - Đảm bảo bạn không bị tường lửa chặn endpoint GitHub Models
+  - Đảm bảo bạn không bị tường lửa chặn endpoint Mô Hình GitHub
 
 - **Container phát triển không khởi động?** 
   - Đảm bảo Docker Desktop đang chạy (đối với phát triển cục bộ)

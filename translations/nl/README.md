@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "b4c05c53b67571aee42e9532404f2fb8",
-  "translation_date": "2025-07-28T10:56:20+00:00",
+  "original_hash": "63b6426b88f6f56398ca3f1fbfc30889",
+  "translation_date": "2025-07-29T15:45:14+00:00",
   "source_file": "README.md",
   "language_code": "nl"
 }
@@ -12,9 +12,9 @@ CO_OP_TRANSLATOR_METADATA:
 
 ![Generatieve AI voor Beginners - Java Editie](../../translated_images/beg-genai-series.8b48be9951cc574c25f8a3accba949bfd03c2f008e2c613283a1b47316fbee68.nl.png)
 
-**Tijdsinvestering**: De hele workshop kan online worden voltooid zonder lokale installatie. Het instellen van de omgeving duurt 2 minuten, en het verkennen van de voorbeelden neemt 1-3 uur in beslag, afhankelijk van de diepgang van de verkenning.
+**Tijdsinvestering**: De hele workshop kan online worden voltooid zonder lokale installatie. Het instellen van de omgeving duurt 2 minuten, en het verkennen van de voorbeelden kost 1-3 uur, afhankelijk van de diepgang.
 
-> **Snelstartgids**
+> **Snelle Start** 
 
 1. Fork deze repository naar je GitHub-account
 2. Klik op **Code** → Tabblad **Codespaces** → **...** → **Nieuw met opties...**
@@ -39,17 +39,17 @@ CO_OP_TRANSLATOR_METADATA:
 - **[→ Start Hoofdstuk 1](./01-IntroToGenAI/README.md)**
 
 ### **Hoofdstuk 2: Ontwikkelomgeving Instellen**
-- **Multi-Provider Configuratie**: Stel GitHub Models, Azure OpenAI en OpenAI Java SDK-integraties in
+- **Multi-Provider Configuratie**: GitHub Models, Azure OpenAI en OpenAI Java SDK-integraties instellen
 - **Spring Boot + Spring AI**: Best practices voor het ontwikkelen van AI-toepassingen voor bedrijven
 - **GitHub Models**: Gratis toegang tot AI-modellen voor prototyping en leren (geen creditcard nodig)
-- **Ontwikkeltools**: Configuratie van Docker-containers, VS Code en GitHub Codespaces
+- **Ontwikkeltools**: Docker-containers, VS Code en GitHub Codespaces configureren
 - **[→ Start Hoofdstuk 2](./02-SetupDevEnvironment/README.md)**
 
 ### **Hoofdstuk 3: Kerntechnieken van Generatieve AI**
 - **Prompt Engineering**: Technieken voor optimale AI-modelreacties
-- **Embeddings & Vectorbewerkingen**: Implementeer semantisch zoeken en gelijkenisvergelijking
-- **Retrieval-Augmented Generation (RAG)**: Combineer AI met je eigen gegevensbronnen
-- **Functieaanroepen**: Breid AI-mogelijkheden uit met aangepaste tools en plug-ins
+- **Embeddings & Vectorbewerkingen**: Semantisch zoeken en overeenkomsten implementeren
+- **Retrieval-Augmented Generation (RAG)**: AI combineren met je eigen gegevensbronnen
+- **Functieaanroepen**: AI-mogelijkheden uitbreiden met aangepaste tools en plug-ins
 - **[→ Start Hoofdstuk 3](./03-CoreGenerativeAITechniques/README.md)**
 
 ### **Hoofdstuk 4: Praktische Toepassingen & Projecten**
@@ -59,12 +59,12 @@ CO_OP_TRANSLATOR_METADATA:
 - **[→ Start Hoofdstuk 4](./04-PracticalSamples/README.md)**
 
 ### **Hoofdstuk 5: Verantwoordelijke AI-ontwikkeling**
-- **GitHub Models Veiligheid**: Test ingebouwde contentfilters en veiligheidsmechanismen
-- **Verantwoordelijke AI Demo**: Hands-on voorbeeld dat laat zien hoe AI-veiligheidsfilters in de praktijk werken
+- **GitHub Models Veiligheid**: Test ingebouwde contentfiltering en veiligheidsmechanismen (harde blokkades en zachte weigeringen)
+- **Verantwoordelijke AI Demo**: Hands-on voorbeeld dat laat zien hoe moderne AI-veiligheidssystemen in de praktijk werken
 - **Best Practices**: Essentiële richtlijnen voor ethische AI-ontwikkeling en -implementatie
 - **[→ Start Hoofdstuk 5](./05-ResponsibleGenAI/README.md)**
 
-## Aanvullende Bronnen
+## Aanvullende Bronnen 
 
 - [AI Agents For Beginners](https://github.com/microsoft/ai-agents-for-beginners)
 - [Generatieve AI voor Beginners met .NET](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)

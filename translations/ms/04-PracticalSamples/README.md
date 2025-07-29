@@ -1,17 +1,17 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "d45b8e2291ab1357592c904c103cbc81",
-  "translation_date": "2025-07-28T11:02:01+00:00",
+  "original_hash": "14c0a61ecc1cd2012a9c129236dfdf71",
+  "translation_date": "2025-07-29T15:58:44+00:00",
   "source_file": "04-PracticalSamples/README.md",
   "language_code": "ms"
 }
 -->
 # Aplikasi Praktikal & Projek
 
-## Apa Yang Akan Anda Pelajari
+## Apa Yang Anda Akan Pelajari
 Dalam bahagian ini, kami akan menunjukkan tiga aplikasi praktikal yang mempamerkan corak pembangunan AI generatif dengan Java:
-- Mencipta Penjana Cerita Haiwan Peliharaan multi-modal yang menggabungkan AI sisi klien dan sisi pelayan
+- Mencipta Penjana Cerita Haiwan Peliharaan multi-modal yang menggabungkan AI di sisi klien dan pelayan
 - Melaksanakan integrasi model AI tempatan dengan demo Foundry Local Spring Boot
 - Membangunkan perkhidmatan Model Context Protocol (MCP) dengan contoh Kalkulator
 
@@ -35,7 +35,7 @@ Bab ini mempamerkan **projek sampel** yang menunjukkan corak pembangunan AI gene
 
 ### Penjana Cerita Haiwan Peliharaan
 
-**[Penjana Cerita Haiwan Peliharaan](petstory/README.md)** ialah aplikasi web Spring Boot yang menarik yang mempamerkan **pemprosesan AI multi-modal** untuk menjana cerita haiwan peliharaan yang kreatif. Ia menggabungkan keupayaan AI sisi klien dan sisi pelayan menggunakan transformer.js untuk interaksi AI berasaskan pelayar dan OpenAI SDK untuk pemprosesan sisi pelayan.
+**[Penjana Cerita Haiwan Peliharaan](petstory/README.md)** ialah aplikasi web Spring Boot yang menarik yang mempamerkan **pemprosesan AI multi-modal** untuk menjana cerita haiwan peliharaan yang kreatif. Ia menggabungkan keupayaan AI di sisi klien dan pelayan menggunakan transformer.js untuk interaksi AI berasaskan pelayar dan OpenAI SDK untuk pemprosesan di sisi pelayan.
 
 ### Perkhidmatan MCP Kalkulator (Demo MCP Mesra Pemula)
 
@@ -45,21 +45,21 @@ Bab ini mempamerkan **projek sampel** yang menunjukkan corak pembangunan AI gene
 
 Projek-projek ini direka untuk membina konsep daripada bab-bab sebelumnya:
 
-1. **Mulakan Dengan Mudah**: Bermula dengan Demo Foundry Local Spring Boot untuk memahami integrasi AI asas dengan model tempatan
-2. **Tambah Interaktiviti**: Beralih kepada Penjana Cerita Haiwan Peliharaan untuk AI multi-modal dan interaksi berasaskan web
+1. **Mulakan Dengan Mudah**: Mulakan dengan Demo Foundry Local Spring Boot untuk memahami integrasi AI asas dengan model tempatan
+2. **Tambah Interaktiviti**: Teruskan ke Penjana Cerita Haiwan Peliharaan untuk AI multi-modal dan interaksi berasaskan web
 3. **Belajar Asas MCP**: Cuba Perkhidmatan MCP Kalkulator untuk memahami asas-asas Model Context Protocol
 
 ## Ringkasan
 
-**Tahniah!** Anda telah berjaya:
+Kerja yang bagus! Anda kini telah meneroka beberapa aplikasi sebenar:
 
-- **Mencipta pengalaman AI multi-modal** yang menggabungkan pemprosesan AI sisi klien dan sisi pelayan
-- **Melaksanakan integrasi model AI tempatan** menggunakan rangka kerja dan SDK Java moden
-- **Membangunkan perkhidmatan Model Context Protocol** yang mempamerkan corak integrasi alat
+- Pengalaman AI multi-modal yang berfungsi di pelayar dan pelayan
+- Integrasi model AI tempatan menggunakan rangka kerja dan SDK Java moden
+- Perkhidmatan Model Context Protocol pertama anda untuk melihat bagaimana alat berintegrasi dengan AI
 
 ## Langkah Seterusnya
 
-[Bab 5: AI Generatif Bertanggungjawab](../05-ResponsibleGenAI/README.md)
+[Bab 5: AI Generatif yang Bertanggungjawab](../05-ResponsibleGenAI/README.md)
 
 **Penafian**:  
 Dokumen ini telah diterjemahkan menggunakan perkhidmatan terjemahan AI [Co-op Translator](https://github.com/Azure/co-op-translator). Walaupun kami berusaha untuk memastikan ketepatan, sila ambil perhatian bahawa terjemahan automatik mungkin mengandungi kesilapan atau ketidaktepatan. Dokumen asal dalam bahasa asalnya harus dianggap sebagai sumber yang berwibawa. Untuk maklumat yang kritikal, terjemahan manusia profesional adalah disyorkan. Kami tidak bertanggungjawab atas sebarang salah faham atau salah tafsir yang timbul daripada penggunaan terjemahan ini.

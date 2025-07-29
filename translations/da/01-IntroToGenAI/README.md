@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "006866db93a268a8769bb55f2e324291",
-  "translation_date": "2025-07-28T10:53:09+00:00",
+  "original_hash": "75bfb080ca725e8a9aa9c80cae25fba1",
+  "translation_date": "2025-07-29T15:38:05+00:00",
   "source_file": "01-IntroToGenAI/README.md",
   "language_code": "da"
 }
@@ -18,7 +18,7 @@ CO_OP_TRANSLATOR_METADATA:
 ## Indholdsfortegnelse
 
 - [Introduktion](../../../01-IntroToGenAI)
-- [En hurtig genopfriskning af generativ AI-koncepter](../../../01-IntroToGenAI)
+- [En hurtig genopfriskning af generativ AI-konceptet](../../../01-IntroToGenAI)
 - [Gennemgang af prompt engineering](../../../01-IntroToGenAI)
 - [Tokens, embeddings og agenter](../../../01-IntroToGenAI)
 - [AI-udviklingsværktøjer og biblioteker til Java](../../../01-IntroToGenAI)
@@ -30,9 +30,9 @@ CO_OP_TRANSLATOR_METADATA:
 
 ## Introduktion
 
-Velkommen til det første kapitel af Generativ AI for Begyndere - Java Edition! Denne grundlæggende lektion introducerer dig til de centrale begreber inden for generativ AI og hvordan du arbejder med dem ved hjælp af Java. Du vil lære om de essentielle byggesten i AI-applikationer, herunder Large Language Models (LLM'er), tokens, embeddings og AI-agenter. Vi vil også udforske de primære Java-værktøjer, du vil bruge gennem hele kurset.
+Velkommen til det første kapitel i Generativ AI for Begyndere - Java Edition! Denne grundlæggende lektion introducerer dig til de centrale begreber inden for generativ AI og hvordan du arbejder med dem ved hjælp af Java. Du vil lære om de essentielle byggesten i AI-applikationer, herunder Large Language Models (LLMs), tokens, embeddings og AI-agenter. Vi vil også udforske de primære Java-værktøjer, du vil bruge gennem hele kurset.
 
-### En hurtig genopfriskning af generativ AI-koncepter
+### En hurtig genopfriskning af generativ AI-konceptet
 
 Generativ AI er en type kunstig intelligens, der skaber nyt indhold, såsom tekst, billeder eller kode, baseret på mønstre og relationer lært fra data. Generative AI-modeller kan generere menneskelignende svar, forstå kontekst og nogle gange endda skabe indhold, der virker menneskeligt.
 
@@ -42,11 +42,11 @@ Når du udvikler dine Java AI-applikationer, vil du arbejde med **generative AI-
 - **Billedgenerering og analyse**: Producere realistiske billeder, forbedre fotos og identificere objekter.
 - **Kodegenerering**: Skrive kodeuddrag eller scripts.
 
-Der findes specifikke typer modeller, der er optimeret til forskellige opgaver. For eksempel kan både **Small Language Models (SLM'er)** og **Large Language Models (LLM'er)** håndtere tekstgenerering, hvor LLM'er typisk tilbyder bedre ydeevne til komplekse opgaver. Til billedrelaterede opgaver vil du bruge specialiserede visionsmodeller eller multimodale modeller.
+Der findes specifikke typer modeller, der er optimeret til forskellige opgaver. For eksempel kan både **Small Language Models (SLMs)** og **Large Language Models (LLMs)** håndtere tekstgenerering, hvor LLM'er typisk giver bedre ydeevne til komplekse opgaver. Til billedrelaterede opgaver vil du bruge specialiserede visionsmodeller eller multimodale modeller.
 
-![Figur: Typer af generative AI-modeller og deres anvendelsesområder.](../../../translated_images/llms.225ca2b8a0d344738419defc5ae14bba2fd3388b94f09fd4e8be8ce2a720ae51.da.png)
+![Figur: Typer af generative AI-modeller og anvendelsesområder.](../../../translated_images/llms.225ca2b8a0d344738419defc5ae14bba2fd3388b94f09fd4e8be8ce2a720ae51.da.png)
 
-Selvfølgelig er svarene fra disse modeller ikke altid perfekte. Du har sikkert hørt om modeller, der "hallucinerer" eller genererer forkerte oplysninger på en autoritativ måde. Men du kan hjælpe med at styre modellen til at generere bedre svar ved at give klare instruktioner og kontekst. Det er her, **prompt engineering** kommer ind i billedet.
+Selvfølgelig er svarene fra disse modeller ikke altid perfekte. Du har sikkert hørt om modeller, der "hallucinerer" eller genererer forkerte oplysninger på en autoritativ måde. Men du kan hjælpe med at styre modellen til at generere bedre svar ved at give klare instruktioner og kontekst. Det er her **prompt engineering** kommer ind i billedet.
 
 #### Gennemgang af prompt engineering
 
@@ -69,11 +69,11 @@ Når du udvikler applikationer, vil du arbejde med forskellige typer prompts:
 
 Når du arbejder med generative AI-modeller, vil du støde på begreber som **tokens**, **embeddings**, **agenter** og **Model Context Protocol (MCP)**. Her er en detaljeret oversigt over disse begreber:
 
-- **Tokens**: Tokens er de mindste enheder af tekst i en model. De kan være ord, tegn eller underord. Tokens bruges til at repræsentere tekstdata i et format, som modellen kan forstå. For eksempel kan sætningen "The quick brown fox jumped over the lazy dog" blive tokeniseret som ["The", " quick", " brown", " fox", " jumped", " over", " the", " lazy", " dog"] eller ["The", " qu", "ick", " br", "own", " fox", " jump", "ed", " over", " the", " la", "zy", " dog"] afhængigt af tokeniseringsstrategien.
+- **Tokens**: Tokens er den mindste enhed af tekst i en model. De kan være ord, tegn eller delord. Tokens bruges til at repræsentere tekstdata i et format, som modellen kan forstå. For eksempel kan sætningen "The quick brown fox jumped over the lazy dog" blive tokeniseret som ["The", " quick", " brown", " fox", " jumped", " over", " the", " lazy", " dog"] eller ["The", " qu", "ick", " br", "own", " fox", " jump", "ed", " over", " the", " la", "zy", " dog"] afhængigt af tokeniseringsstrategien.
 
-![Figur: Eksempel på tokens i generativ AI, der bryder ord ned i tokens](../../../01-IntroToGenAI/images/tokens.webp)
+![Figur: Eksempel på tokens i generativ AI, der opdeler ord i tokens](../../../01-IntroToGenAI/images/tokens.webp)
 
-Tokenisering er processen med at bryde tekst ned i disse mindre enheder. Dette er afgørende, fordi modeller opererer på tokens frem for rå tekst. Antallet af tokens i en prompt påvirker modellens svarlængde og kvalitet, da modeller har tokenbegrænsninger for deres kontekstvindue (f.eks. 128K tokens for GPT-4o's samlede kontekst, inklusive både input og output).
+Tokenisering er processen med at opdele tekst i disse mindre enheder. Dette er afgørende, fordi modeller opererer på tokens frem for rå tekst. Antallet af tokens i en prompt påvirker modellens svarlængde og kvalitet, da modeller har tokenbegrænsninger for deres kontekstvindue (f.eks. 128K tokens for GPT-4o's samlede kontekst, inklusive både input og output).
 
   I Java kan du bruge biblioteker som OpenAI SDK til automatisk at håndtere tokenisering, når du sender forespørgsler til AI-modeller.
 
@@ -81,19 +81,19 @@ Tokenisering er processen med at bryde tekst ned i disse mindre enheder. Dette e
 
 ![Figur: Embeddings](../../../translated_images/embedding.398e50802c0037f931c725fd0113747831ea7776434d2b3ba3eb2e7a1a20ab1f.da.png)
 
-  I Java kan du generere embeddings ved hjælp af OpenAI SDK eller andre biblioteker, der understøtter embedding-generering. Disse embeddings er essentielle for opgaver som semantisk søgning, hvor du vil finde lignende indhold baseret på betydning frem for præcise tekstmatch.
+  I Java kan du generere embeddings ved hjælp af OpenAI SDK eller andre biblioteker, der understøtter embedding-generering. Disse embeddings er essentielle for opgaver som semantisk søgning, hvor du ønsker at finde lignende indhold baseret på betydning frem for præcise tekstmatch.
 
-- **Vektordatabaser**: Vektordatabaser er specialiserede lagringssystemer optimeret til embeddings. De muliggør effektiv søgning efter ligheder og er afgørende for Retrieval-Augmented Generation (RAG)-mønstre, hvor du skal finde relevant information fra store datasæt baseret på semantisk lighed frem for præcise match.
+- **Vektordatabaser**: Vektordatabaser er specialiserede lagringssystemer optimeret til embeddings. De muliggør effektiv lighedssøgning og er afgørende for Retrieval-Augmented Generation (RAG)-mønstre, hvor du skal finde relevant information fra store datasæt baseret på semantisk lighed frem for præcise match.
 
 ![Figur: Vektordatabasens arkitektur, der viser, hvordan embeddings gemmes og hentes til lighedssøgning.](../../../translated_images/vector.f12f114934e223dff971b01ca371e85a41a540f3af2ffdd49fb3acec6c6652f2.da.png)
 
-> **Bemærk**: I dette kursus vil vi ikke dække vektordatabaser, men de er værd at nævne, da de ofte bruges i virkelige applikationer.
+> **Note**: I dette kursus dækker vi ikke vektordatabaser, men de er værd at nævne, da de ofte bruges i virkelige applikationer.
 
 - **Agenter & MCP**: AI-komponenter, der autonomt interagerer med modeller, værktøjer og eksterne systemer. Model Context Protocol (MCP) giver en standardiseret måde for agenter at få sikker adgang til eksterne datakilder og værktøjer. Læs mere i vores [MCP for Begyndere](https://github.com/microsoft/mcp-for-beginners)-kursus.
 
-I Java AI-applikationer vil du bruge tokens til tekstbehandling, embeddings til semantisk søgning og RAG, vektordatabaser til datahentning og agenter med MCP til at bygge intelligente, værktøjsbrugende systemer.
+I Java AI-applikationer vil du bruge tokens til tekstbehandling, embeddings til semantisk søgning og RAG, vektordatabaser til datahentning og agenter med MCP til at bygge intelligente systemer, der bruger værktøjer.
 
-![Figur: Hvordan en prompt bliver til et svar—tokens, vektorer, valgfri RAG-opslag, LLM-tænkning og en MCP-agent samlet i én hurtig proces.](../../../translated_images/flow.f4ef62c3052d12a88b1d216eb2cd0e2ea3293c806d0defa7921dd1786dcb8516.da.png)
+![Figur: Hvordan en prompt bliver til et svar—tokens, vektorer, valgfri RAG-opslag, LLM-tænkning og en MCP-agent i én hurtig proces.](../../../translated_images/flow.f4ef62c3052d12a88b1d216eb2cd0e2ea3293c806d0defa7921dd1786dcb8516.da.png)
 
 ### AI-udviklingsværktøjer og biblioteker til Java
 
@@ -136,19 +136,19 @@ I Kapitel 4 vil du bygge en simpel MCP-beregningstjeneste, der demonstrerer grun
 
 Azure OpenAI-klientbiblioteket til Java er en tilpasning af OpenAI's REST API'er, der giver en idiomatisk grænseflade og integration med resten af Azure SDK-økosystemet. I Kapitel 3 vil du bygge applikationer ved hjælp af Azure OpenAI SDK, herunder chatapplikationer, funktionkald og RAG (Retrieval-Augmented Generation)-mønstre.
 
-> Bemærk: Azure OpenAI SDK halter efter OpenAI Java SDK med hensyn til funktioner, så til fremtidige projekter bør du overveje at bruge OpenAI Java SDK.
+> Note: Azure OpenAI SDK halter efter OpenAI Java SDK med hensyn til funktioner, så til fremtidige projekter bør du overveje at bruge OpenAI Java SDK.
 
 ## Opsummering
 
-**Tillykke!** Du har med succes:
+Det afslutter grundlaget! Du forstår nu:
 
-- **Lært om grundlæggende generativ AI**, herunder LLM'er, prompt engineering, tokens, embeddings og vektordatabaser
-- **Sammenlignet Java AI-udviklingsværktøjer**, herunder Azure OpenAI SDK, Spring AI og OpenAI Java SDK
-- **Opdaget Model Context Protocol** og dens rolle i AI-agentkommunikation
+- De centrale begreber bag generativ AI - fra LLM'er og prompt engineering til tokens, embeddings og vektordatabaser
+- Dine værktøjsmuligheder for Java AI-udvikling: Azure OpenAI SDK, Spring AI og OpenAI Java SDK
+- Hvad Model Context Protocol er, og hvordan det gør det muligt for AI-agenter at arbejde med eksterne værktøjer
 
 ## Næste Skridt
 
 [Kapitel 2: Opsætning af udviklingsmiljøet](../02-SetupDevEnvironment/README.md)
 
 **Ansvarsfraskrivelse**:  
-Dette dokument er blevet oversat ved hjælp af AI-oversættelsestjenesten [Co-op Translator](https://github.com/Azure/co-op-translator). Selvom vi bestræber os på nøjagtighed, skal det bemærkes, at automatiserede oversættelser kan indeholde fejl eller unøjagtigheder. Det originale dokument på dets oprindelige sprog bør betragtes som den autoritative kilde. For kritisk information anbefales professionel menneskelig oversættelse. Vi er ikke ansvarlige for eventuelle misforståelser eller fejltolkninger, der måtte opstå som følge af brugen af denne oversættelse.
+Dette dokument er blevet oversat ved hjælp af AI-oversættelsestjenesten [Co-op Translator](https://github.com/Azure/co-op-translator). Selvom vi bestræber os på nøjagtighed, skal du være opmærksom på, at automatiserede oversættelser kan indeholde fejl eller unøjagtigheder. Det originale dokument på dets oprindelige sprog bør betragtes som den autoritative kilde. For kritisk information anbefales professionel menneskelig oversættelse. Vi påtager os intet ansvar for misforståelser eller fejltolkninger, der måtte opstå som følge af brugen af denne oversættelse.

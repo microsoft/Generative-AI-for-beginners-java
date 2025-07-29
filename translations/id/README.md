@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "b4c05c53b67571aee42e9532404f2fb8",
-  "translation_date": "2025-07-28T11:00:23+00:00",
+  "original_hash": "63b6426b88f6f56398ca3f1fbfc30889",
+  "translation_date": "2025-07-29T15:54:25+00:00",
   "source_file": "README.md",
   "language_code": "id"
 }
@@ -12,13 +12,13 @@ CO_OP_TRANSLATOR_METADATA:
 
 ![Generative AI untuk Pemula - Edisi Java](../../translated_images/beg-genai-series.8b48be9951cc574c25f8a3accba949bfd03c2f008e2c613283a1b47316fbee68.id.png)
 
-**Komitmen Waktu**: Seluruh workshop dapat diselesaikan secara online tanpa perlu pengaturan lokal. Pengaturan lingkungan memakan waktu 2 menit, dengan eksplorasi sampel membutuhkan 1-3 jam tergantung pada tingkat eksplorasi.
+**Komitmen Waktu**: Seluruh workshop dapat diselesaikan secara online tanpa pengaturan lokal. Pengaturan lingkungan memerlukan waktu 2 menit, dengan eksplorasi sampel membutuhkan 1-3 jam tergantung pada tingkat eksplorasi.
 
 > **Mulai Cepat**
 
 1. Fork repositori ini ke akun GitHub Anda
 2. Klik **Code** → tab **Codespaces** → **...** → **New with options...**
-3. Gunakan pengaturan default – ini akan memilih kontainer Pengembangan yang dibuat untuk kursus ini
+3. Gunakan pengaturan default – ini akan memilih container Development yang dibuat untuk kursus ini
 4. Klik **Create codespace**
 5. Tunggu sekitar 2 menit hingga lingkungan siap
 6. Langsung ke [Contoh pertama](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)
@@ -32,9 +32,9 @@ CO_OP_TRANSLATOR_METADATA:
 ## Struktur Kursus & Jalur Pembelajaran
 
 ### **Bab 1: Pengantar Generative AI**
-- **Konsep Inti**: Memahami Large Language Models, token, embedding, dan kemampuan AI
-- **Ekosistem AI Java**: Gambaran umum Spring AI dan OpenAI SDK
-- **Protokol Konteks Model**: Pengenalan MCP dan perannya dalam komunikasi agen AI
+- **Konsep Inti**: Memahami Large Language Models, token, embeddings, dan kemampuan AI
+- **Ekosistem AI Java**: Gambaran umum tentang Spring AI dan OpenAI SDKs
+- **Model Context Protocol**: Pengantar MCP dan perannya dalam komunikasi agen AI
 - **Aplikasi Praktis**: Skenario dunia nyata termasuk chatbot dan pembuatan konten
 - **[→ Mulai Bab 1](./01-IntroToGenAI/README.md)**
 
@@ -42,12 +42,12 @@ CO_OP_TRANSLATOR_METADATA:
 - **Konfigurasi Multi-Penyedia**: Mengatur integrasi GitHub Models, Azure OpenAI, dan OpenAI Java SDK
 - **Spring Boot + Spring AI**: Praktik terbaik untuk pengembangan aplikasi AI perusahaan
 - **GitHub Models**: Akses model AI gratis untuk prototipe dan pembelajaran (tanpa kartu kredit)
-- **Alat Pengembangan**: Konfigurasi kontainer Docker, VS Code, dan GitHub Codespaces
+- **Alat Pengembangan**: Konfigurasi Docker containers, VS Code, dan GitHub Codespaces
 - **[→ Mulai Bab 2](./02-SetupDevEnvironment/README.md)**
 
 ### **Bab 3: Teknik Inti Generative AI**
 - **Prompt Engineering**: Teknik untuk respons model AI yang optimal
-- **Embedding & Operasi Vektor**: Menerapkan pencarian semantik dan pencocokan kesamaan
+- **Embeddings & Operasi Vektor**: Menerapkan pencarian semantik dan pencocokan kesamaan
 - **Retrieval-Augmented Generation (RAG)**: Menggabungkan AI dengan sumber data Anda sendiri
 - **Function Calling**: Memperluas kemampuan AI dengan alat dan plugin khusus
 - **[→ Mulai Bab 3](./03-CoreGenerativeAITechniques/README.md)**
@@ -55,12 +55,12 @@ CO_OP_TRANSLATOR_METADATA:
 ### **Bab 4: Aplikasi Praktis & Proyek**
 - **Pet Story Generator** (`petstory/`): Pembuatan konten kreatif dengan GitHub Models
 - **Foundry Local Demo** (`foundrylocal/`): Integrasi model AI lokal dengan OpenAI Java SDK
-- **MCP Calculator Service** (`calculator/`): Implementasi dasar Protokol Konteks Model dengan Spring AI
+- **MCP Calculator Service** (`calculator/`): Implementasi dasar Model Context Protocol dengan Spring AI
 - **[→ Mulai Bab 4](./04-PracticalSamples/README.md)**
 
 ### **Bab 5: Pengembangan AI yang Bertanggung Jawab**
-- **Keamanan GitHub Models**: Menguji penyaringan konten bawaan dan mekanisme keamanan
-- **Demo AI yang Bertanggung Jawab**: Contoh langsung yang menunjukkan cara kerja filter keamanan AI
+- **Keamanan GitHub Models**: Uji penyaringan konten bawaan dan mekanisme keamanan (blok keras dan penolakan lunak)
+- **Demo AI yang Bertanggung Jawab**: Contoh langsung yang menunjukkan cara kerja sistem keamanan AI modern
 - **Praktik Terbaik**: Pedoman penting untuk pengembangan dan penerapan AI yang etis
 - **[→ Mulai Bab 5](./05-ResponsibleGenAI/README.md)**
 
@@ -83,4 +83,4 @@ CO_OP_TRANSLATOR_METADATA:
 - [Aplikasi Chat RAG dengan Azure AI Services](https://github.com/Azure-Samples/azure-search-openai-demo-java)
 
 **Penafian**:  
-Dokumen ini telah diterjemahkan menggunakan layanan penerjemahan AI [Co-op Translator](https://github.com/Azure/co-op-translator). Meskipun kami berusaha untuk memberikan hasil yang akurat, harap diperhatikan bahwa terjemahan otomatis mungkin mengandung kesalahan atau ketidakakuratan. Dokumen asli dalam bahasa aslinya harus dianggap sebagai sumber yang otoritatif. Untuk informasi yang bersifat kritis, disarankan menggunakan jasa penerjemahan profesional oleh manusia. Kami tidak bertanggung jawab atas kesalahpahaman atau penafsiran yang keliru yang timbul dari penggunaan terjemahan ini.
+Dokumen ini telah diterjemahkan menggunakan layanan penerjemahan AI [Co-op Translator](https://github.com/Azure/co-op-translator). Meskipun kami berusaha untuk memberikan hasil yang akurat, harap diingat bahwa terjemahan otomatis mungkin mengandung kesalahan atau ketidakakuratan. Dokumen asli dalam bahasa aslinya harus dianggap sebagai sumber yang otoritatif. Untuk informasi yang bersifat kritis, disarankan menggunakan jasa penerjemahan profesional oleh manusia. Kami tidak bertanggung jawab atas kesalahpahaman atau penafsiran yang keliru yang timbul dari penggunaan terjemahan ini.

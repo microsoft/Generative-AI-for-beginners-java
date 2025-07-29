@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "c670445516e119888d8aaaa207bbee34",
-  "translation_date": "2025-07-27T13:11:56+00:00",
+  "original_hash": "c2a244c959e00da1ae1613d2ebfdac65",
+  "translation_date": "2025-07-29T15:33:50+00:00",
   "source_file": "02-SetupDevEnvironment/README.md",
   "language_code": "sv"
 }
@@ -15,8 +15,8 @@ CO_OP_TRANSLATOR_METADATA:
 
 ## Vad du kommer att lära dig
 
-- Ställ in en Java-utvecklingsmiljö för AI-applikationer
-- Välj och konfigurera din föredragna utvecklingsmiljö (molnbaserad med Codespaces, lokal utvecklingscontainer eller fullständig lokal installation)
+- Ställa in en Java-utvecklingsmiljö för AI-applikationer
+- Välja och konfigurera din föredragna utvecklingsmiljö (molnbaserad med Codespaces, lokal utvecklingscontainer eller fullständig lokal installation)
 - Testa din installation genom att ansluta till GitHub-modeller
 
 ## Innehållsförteckning
@@ -58,7 +58,7 @@ Vi rekommenderar att använda [**GitHub-modeller**](https://github.com/marketpla
 
 <a name="quick-start-cloud"></a>
 
-Vi har skapat en förkonfigurerad utvecklingscontainer för att minimera installationstiden och säkerställa att du har alla nödvändiga verktyg för denna Generativ AI för Java-kurs. Välj din föredragna utvecklingsmetod:
+Vi har skapat en förkonfigurerad utvecklingscontainer för att minimera installationstiden och säkerställa att du har alla nödvändiga verktyg för denna kurs om Generativ AI för Java. Välj din föredragna utvecklingsmetod:
 
 ### Alternativ för miljöinställning:
 
@@ -122,7 +122,7 @@ Steg:
 
 <img src="./images/image-2.png" alt="Skärmdump: skapad lokal devcontainer-instans" width="50%">
 
-## Steg 2: Skapa GitHub Personal Access Token
+## Steg 2: Skapa en GitHub Personal Access Token
 
 1. Navigera till [GitHub Settings](https://github.com/settings/profile) och välj **Settings** från din profilmeny.
 2. I vänstra sidofältet, klicka på **Developer settings** (vanligtvis längst ner).
@@ -134,11 +134,11 @@ Steg:
 8. Under "Repository access", välj de repositories du vill använda med GitHub-modeller (eller "All repositories" om det behövs).
 9. Under "Repository permissions", hitta **Models** och ställ in det på **Read and write**.
 10. Klicka på **Generate token**.
-11. **Kopiera och spara ditt token nu** – du kommer inte att se det igen!
+11. **Kopiera och spara din token nu** – du kommer inte att se den igen!
 
 > **Säkerhetstips**: Använd den minsta nödvändiga omfattningen och kortaste praktiska utgångstiden för dina åtkomsttokens.
 
-## Steg 3: Testa din installation med GitHub-modeller
+## Steg 3: Testa din installation med GitHub-modeller-exemplet
 
 När din utvecklingsmiljö är redo, låt oss testa GitHub-modeller-integrationen med vårt exempelprogram i [`02-SetupDevEnvironment/examples/github-models`](../../../02-SetupDevEnvironment/examples/github-models).
 
@@ -147,7 +147,7 @@ När din utvecklingsmiljö är redo, låt oss testa GitHub-modeller-integratione
    ```bash
    cd 02-SetupDevEnvironment/examples/github-models
    ```
-3. Ställ in ditt GitHub-token som en miljövariabel:
+3. Ställ in din GitHub-token som en miljövariabel:
    ```bash
    # macOS/Linux
    export GITHUB_TOKEN=your_token_here
@@ -159,7 +159,7 @@ När din utvecklingsmiljö är redo, låt oss testa GitHub-modeller-integratione
    $env:GITHUB_TOKEN="your_token_here"
    ```
 
-4. Kör applikationen:
+4. Kör programmet:
    ```bash
    mvn compile exec:java -Dexec.mainClass="com.example.githubmodels.App"
    ```
@@ -176,12 +176,12 @@ Response: Hello World!
 Låt oss först förstå vad vi just körde. Exemplet under `examples/github-models` använder OpenAI Java SDK för att ansluta till GitHub-modeller:
 
 **Vad denna kod gör:**
-- **Ansluter** till GitHub-modeller med ditt personliga åtkomsttoken
-- **Skickar** ett enkelt meddelande "Say Hello World!" till AI-modellen
+- **Ansluter** till GitHub-modeller med din personliga åtkomsttoken
+- **Skickar** ett enkelt "Say Hello World!"-meddelande till AI-modellen
 - **Tar emot** och visar AI:s svar
 - **Validerar** att din installation fungerar korrekt
 
-**Viktig beroende** (i `pom.xml`):
+**Viktigt beroende** (i `pom.xml`):
 ```xml
 <dependency>
     <groupId>com.openai</groupId>
@@ -212,12 +212,12 @@ System.out.println("Response: " + response.choices().get(0).message().content().
 
 ## Sammanfattning
 
-**Grattis!** Du har framgångsrikt:
+Bra jobbat! Du har nu allt uppsatt:
 
-- **Skapat ett GitHub Personal Access Token** med rätt behörigheter för AI-modellåtkomst
-- **Ställt in din Java-utvecklingsmiljö** med Codespaces, utvecklingscontainers eller lokal installation
-- **Anslutit till GitHub-modeller** med OpenAI Java SDK för gratis AI-utvecklingsåtkomst
-- **Testat integrationen** med ett fungerande exempelprogram som kommunicerar med AI-modeller
+- Skapat en GitHub Personal Access Token med rätt behörigheter för AI-modellåtkomst
+- Fått din Java-utvecklingsmiljö att fungera (oavsett om det är Codespaces, utvecklingscontainers eller lokalt)
+- Anslutit till GitHub-modeller med OpenAI Java SDK för gratis AI-utveckling
+- Testat att allt fungerar med ett enkelt exempel som pratar med AI-modeller
 
 ## Nästa steg
 
@@ -229,8 +229,8 @@ Har du problem? Här är vanliga problem och lösningar:
 
 - **Token fungerar inte?** 
   - Kontrollera att du kopierade hela token utan extra mellanslag
-  - Verifiera att token är korrekt inställt som en miljövariabel
-  - Kontrollera att ditt token har rätt behörigheter (Models: Read and write)
+  - Verifiera att token är korrekt inställd som en miljövariabel
+  - Kontrollera att din token har rätt behörigheter (Models: Read and write)
 
 - **Maven hittas inte?** 
   - Om du använder utvecklingscontainers/Codespaces, bör Maven vara förinstallerat
@@ -246,7 +246,7 @@ Har du problem? Här är vanliga problem och lösningar:
   - Kontrollera att Docker Desktop körs (för lokal utveckling)
   - Testa att bygga om containern: `Ctrl+Shift+P` → "Dev Containers: Rebuild Container"
 
-- **Applikationskompilationsfel?**
+- **Kompileringsfel i applikationen?**
   - Kontrollera att du är i rätt katalog: `02-SetupDevEnvironment/examples/github-models`
   - Testa att rensa och bygga om: `mvn clean compile`
 

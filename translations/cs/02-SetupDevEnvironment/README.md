@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "c670445516e119888d8aaaa207bbee34",
-  "translation_date": "2025-07-27T13:23:10+00:00",
+  "original_hash": "c2a244c959e00da1ae1613d2ebfdac65",
+  "translation_date": "2025-07-29T16:10:39+00:00",
   "source_file": "02-SetupDevEnvironment/README.md",
   "language_code": "cs"
 }
@@ -15,8 +15,8 @@ CO_OP_TRANSLATOR_METADATA:
 
 ## Co se naučíte
 
-- Nastavit vývojové prostředí pro AI aplikace v Javě
-- Vybrat a nakonfigurovat preferované vývojové prostředí (cloudové prostředí s Codespaces, lokální dev kontejner nebo plně lokální nastavení)
+- Nastavit vývojové prostředí pro aplikace AI v Javě
+- Vybrat a nakonfigurovat preferované vývojové prostředí (cloudové s Codespaces, lokální dev kontejner nebo plně lokální nastavení)
 - Otestovat nastavení připojením k modelům GitHubu
 
 ## Obsah
@@ -37,15 +37,15 @@ CO_OP_TRANSLATOR_METADATA:
 
 Tato kapitola vás provede nastavením vývojového prostředí. Jako hlavní příklad použijeme **modely GitHubu**, protože jsou zdarma, snadno nastavitelné pouze s GitHub účtem, nevyžadují kreditní kartu a poskytují přístup k několika modelům pro experimentování.
 
-**Není potřeba žádné lokální nastavení!** Můžete začít programovat okamžitě pomocí GitHub Codespaces, které poskytuje plné vývojové prostředí přímo ve vašem prohlížeči.
+**Není potřeba žádné lokální nastavení!** Můžete začít programovat okamžitě pomocí GitHub Codespaces, které poskytují plné vývojové prostředí přímo ve vašem prohlížeči.
 
-<img src="./images/models.webp" alt="Screenshot: GitHub Models" width="50%">
+<img src="./images/models.webp" alt="Snímek obrazovky: Modely GitHubu" width="50%">
 
 Doporučujeme používat [**modely GitHubu**](https://github.com/marketplace?type=models) pro tento kurz, protože:
 - Jsou **zdarma** na začátek
 - **Snadno** nastavitelné pouze s GitHub účtem
 - **Nejsou potřeba** žádné kreditní karty
-- Poskytují **více modelů** pro experimentování
+- **Více modelů** dostupných pro experimentování
 
 > **Poznámka**: Modely GitHubu používané v tomto školení mají tyto bezplatné limity:
 > - 15 požadavků za minutu (150 za den)
@@ -58,7 +58,7 @@ Doporučujeme používat [**modely GitHubu**](https://github.com/marketplace?typ
 
 <a name="quick-start-cloud"></a>
 
-Vytvořili jsme předkonfigurovaný vývojový kontejner, abychom minimalizovali dobu nastavení a zajistili, že budete mít všechny potřebné nástroje pro tento kurz Generativní AI v Javě. Vyberte si preferovaný přístup k nastavení:
+Vytvořili jsme předkonfigurovaný vývojový kontejner, abychom minimalizovali čas na nastavení a zajistili, že budete mít všechny potřebné nástroje pro tento kurz Generativní AI v Javě. Vyberte si preferovaný přístup k vývoji:
 
 ### Možnosti nastavení prostředí:
 
@@ -69,16 +69,16 @@ Vytvořili jsme předkonfigurovaný vývojový kontejner, abychom minimalizovali
 1. Forkněte toto úložiště do svého GitHub účtu
    > **Poznámka**: Pokud chcete upravit základní konfiguraci, podívejte se na [Konfiguraci dev kontejneru](../../../.devcontainer/devcontainer.json)
 2. Klikněte na **Code** → záložka **Codespaces** → **...** → **New with options...**
-3. Použijte výchozí nastavení – to vybere **konfiguraci dev kontejneru**: **Generative AI Java Development Environment**, speciální dev kontejner vytvořený pro tento kurz
+3. Použijte výchozí nastavení – to vybere **Konfiguraci dev kontejneru**: **Generative AI Java Development Environment**, speciální dev kontejner vytvořený pro tento kurz
 4. Klikněte na **Create codespace**
 5. Počkejte ~2 minuty, než bude prostředí připraveno
 6. Pokračujte na [Krok 2: Vytvoření GitHub tokenu](../../../02-SetupDevEnvironment)
 
-<img src="./images/codespaces.png" alt="Screenshot: Codespaces submenu" width="50%">
+<img src="./images/codespaces.png" alt="Snímek obrazovky: Podnabídka Codespaces" width="50%">
 
-<img src="./images/image.png" alt="Screenshot: New with options" width="50%">
+<img src="./images/image.png" alt="Snímek obrazovky: Nové s možnostmi" width="50%">
 
-<img src="./images/codespaces-create.png" alt="Screenshot: Create codespace options" width="50%">
+<img src="./images/codespaces-create.png" alt="Snímek obrazovky: Možnosti vytvoření Codespace" width="50%">
 
 > **Výhody Codespaces**:
 > - Není potřeba žádná lokální instalace
@@ -96,17 +96,17 @@ Vytvořili jsme předkonfigurovaný vývojový kontejner, abychom minimalizovali
 2. Nainstalujte [Docker Desktop](https://www.docker.com/products/docker-desktop/) a [VS Code](https://code.visualstudio.com/)
 3. Nainstalujte rozšíření [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) ve VS Code
 4. Otevřete složku úložiště ve VS Code
-5. Po zobrazení výzvy klikněte na **Reopen in Container** (nebo použijte `Ctrl+Shift+P` → "Dev Containers: Reopen in Container")
+5. Když budete vyzváni, klikněte na **Reopen in Container** (nebo použijte `Ctrl+Shift+P` → "Dev Containers: Reopen in Container")
 6. Počkejte, než se kontejner sestaví a spustí
 7. Pokračujte na [Krok 2: Vytvoření GitHub tokenu](../../../02-SetupDevEnvironment)
 
-<img src="./images/devcontainer.png" alt="Screenshot: Dev container setup" width="50%">
+<img src="./images/devcontainer.png" alt="Snímek obrazovky: Nastavení dev kontejneru" width="50%">
 
-<img src="./images/image-3.png" alt="Screenshot: Dev container build complete" width="50%">
+<img src="./images/image-3.png" alt="Snímek obrazovky: Dokončení sestavení dev kontejneru" width="50%">
 
 #### Možnost C: Použití stávající lokální instalace
 
-**Pro vývojáře s existujícím prostředím pro Javu**
+**Pro vývojáře s existujícími prostředími pro Javu**
 
 Předpoklady:
 - [Java 21+](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html) 
@@ -118,9 +118,9 @@ Kroky:
 2. Otevřete projekt ve svém IDE
 3. Pokračujte na [Krok 2: Vytvoření GitHub tokenu](../../../02-SetupDevEnvironment)
 
-> **Tip pro profesionály**: Pokud máte počítač s nízkým výkonem, ale chcete používat VS Code lokálně, využijte GitHub Codespaces! Můžete připojit svůj lokální VS Code k cloudovému Codespace a získat to nejlepší z obou světů.
+> **Tip pro pokročilé**: Máte-li počítač s nízkým výkonem, ale chcete VS Code lokálně, použijte GitHub Codespaces! Můžete připojit svůj lokální VS Code ke cloudovému Codespace a získat to nejlepší z obou světů.
 
-<img src="./images/image-2.png" alt="Screenshot: created local devcontainer instance" width="50%">
+<img src="./images/image-2.png" alt="Snímek obrazovky: Vytvořený lokální dev kontejner" width="50%">
 
 ## Krok 2: Vytvoření osobního přístupového tokenu GitHub
 
@@ -131,7 +131,7 @@ Kroky:
 5. Pod "Token name" zadejte popisný název (např. `GenAI-Java-Course-Token`).
 6. Nastavte datum vypršení platnosti (doporučeno: 7 dní pro bezpečnostní osvědčené postupy).
 7. Pod "Resource owner" vyberte svůj uživatelský účet.
-8. Pod "Repository access" vyberte úložiště, která chcete používat s modely GitHubu (nebo "All repositories", pokud je to potřeba).
+8. Pod "Repository access" vyberte repozitáře, které chcete používat s modely GitHubu (nebo "All repositories", pokud je to potřeba).
 9. Pod "Repository permissions" najděte **Models** a nastavte na **Read and write**.
 10. Klikněte na **Generate token**.
 11. **Zkopírujte a uložte svůj token nyní** – později jej už neuvidíte!
@@ -140,7 +140,7 @@ Kroky:
 
 ## Krok 3: Otestování nastavení s příkladem modelů GitHubu
 
-Jakmile je vaše vývojové prostředí připraveno, otestujeme integraci modelů GitHubu s naší ukázkovou aplikací v [`02-SetupDevEnvironment/examples/github-models`](../../../02-SetupDevEnvironment/examples/github-models).
+Jakmile je vaše vývojové prostředí připraveno, otestujeme integraci modelů GitHubu s naším ukázkovým programem v [`02-SetupDevEnvironment/examples/github-models`](../../../02-SetupDevEnvironment/examples/github-models).
 
 1. Otevřete terminál ve svém vývojovém prostředí.
 2. Přejděte do složky s příkladem modelů GitHubu:
@@ -212,12 +212,12 @@ System.out.println("Response: " + response.choices().get(0).message().content().
 
 ## Shrnutí
 
-**Gratulujeme!** Úspěšně jste:
+Skvělé! Nyní máte vše nastaveno:
 
-- **Vytvořili osobní přístupový token GitHub** s odpovídajícími oprávněními pro přístup k modelům AI
-- **Nastavili vývojové prostředí pro Javu** pomocí Codespaces, dev kontejnerů nebo lokální instalace
-- **Připojili se k modelům GitHubu** pomocí OpenAI Java SDK pro bezplatný přístup k AI vývoji
-- **Otestovali integraci** s funkční ukázkovou aplikací, která komunikuje s modely AI
+- Vytvořili jste osobní přístupový token GitHub s potřebnými oprávněními pro přístup k modelům AI
+- Spustili jste své vývojové prostředí pro Javu (ať už Codespaces, dev kontejnery nebo lokálně)
+- Připojili jste se k modelům GitHubu pomocí OpenAI Java SDK pro vývoj AI zdarma
+- Otestovali jste, že vše funguje, pomocí jednoduchého příkladu, který komunikuje s modely AI
 
 ## Další kroky
 
@@ -250,7 +250,7 @@ Máte problémy? Zde jsou běžné problémy a jejich řešení:
   - Ujistěte se, že jste ve správném adresáři: `02-SetupDevEnvironment/examples/github-models`
   - Zkuste vyčistit a znovu sestavit: `mvn clean compile`
 
-> **Potřebujete pomoc?**: Stále máte problémy? Otevřete issue v úložišti a my vám pomůžeme.
+> **Potřebujete pomoc?**: Stále máte problémy? Otevřete issue v repozitáři a my vám pomůžeme.
 
 **Prohlášení:**  
-Tento dokument byl přeložen pomocí služby pro automatický překlad [Co-op Translator](https://github.com/Azure/co-op-translator). Ačkoli se snažíme o přesnost, mějte na paměti, že automatické překlady mohou obsahovat chyby nebo nepřesnosti. Původní dokument v jeho původním jazyce by měl být považován za autoritativní zdroj. Pro důležité informace se doporučuje profesionální lidský překlad. Neodpovídáme za žádná nedorozumění nebo nesprávné interpretace vyplývající z použití tohoto překladu.
+Tento dokument byl přeložen pomocí služby pro automatický překlad [Co-op Translator](https://github.com/Azure/co-op-translator). Ačkoli se snažíme o přesnost, mějte prosím na paměti, že automatické překlady mohou obsahovat chyby nebo nepřesnosti. Původní dokument v jeho původním jazyce by měl být považován za autoritativní zdroj. Pro důležité informace se doporučuje profesionální lidský překlad. Neodpovídáme za žádné nedorozumění nebo nesprávné interpretace vyplývající z použití tohoto překladu.

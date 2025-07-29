@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "006866db93a268a8769bb55f2e324291",
-  "translation_date": "2025-07-28T11:05:10+00:00",
+  "original_hash": "75bfb080ca725e8a9aa9c80cae25fba1",
+  "translation_date": "2025-07-29T16:04:53+00:00",
   "source_file": "01-IntroToGenAI/README.md",
   "language_code": "sw"
 }
@@ -12,7 +12,7 @@ CO_OP_TRANSLATOR_METADATA:
 ## Kile Utakachojifunza
 
 - **Misingi ya AI Jenereta** ikijumuisha LLMs, uhandisi wa maelekezo (prompt engineering), tokeni, embeddings, na hifadhidata za vekta  
-- **Kulinganisha zana za maendeleo ya AI kwa Java** ikijumuisha Azure OpenAI SDK, Spring AI, na OpenAI Java SDK  
+- **Kulinganisha zana za maendeleo ya AI kwa Java** ikiwemo Azure OpenAI SDK, Spring AI, na OpenAI Java SDK  
 - **Kugundua Itifaki ya Muktadha wa Mfano (Model Context Protocol)** na jukumu lake katika mawasiliano ya mawakala wa AI  
 
 ## Jedwali la Yaliyomo
@@ -30,7 +30,7 @@ CO_OP_TRANSLATOR_METADATA:
 
 ## Utangulizi
 
-Karibu kwenye sura ya kwanza ya AI Jenereta kwa Kompyuta - Toleo la Java! Somo hili la msingi litakutambulisha kwenye dhana kuu za AI jenereta na jinsi ya kuzitumia kwa Java. Utajifunza kuhusu vipengele muhimu vya programu za AI, ikijumuisha Miundo Mikubwa ya Lugha (LLMs), tokeni, embeddings, na mawakala wa AI. Pia tutachunguza zana kuu za Java utakazotumia katika kozi hii.
+Karibu kwenye sura ya kwanza ya AI Jenereta kwa Anzia - Toleo la Java! Somo hili la msingi litakutambulisha kwenye dhana kuu za AI jenereta na jinsi ya kuzitumia kwa Java. Utajifunza kuhusu vipengele vya msingi vya programu za AI, ikijumuisha Miundo Mikubwa ya Lugha (LLMs), tokeni, embeddings, na mawakala wa AI. Pia tutachunguza zana kuu za Java utakazotumia katika kozi hii.
 
 ### Muhtasari wa haraka wa dhana za AI Jenereta
 
@@ -54,22 +54,22 @@ Uhandisi wa maelekezo ni mazoezi ya kubuni pembejeo bora ili kuongoza miundo ya 
 
 - **Uwazi**: Kufanya maelekezo yawe wazi na yasiyo na utata.  
 - **Muktadha**: Kutoa taarifa muhimu za msingi.  
-- **Vikwazo**: Kueleza mapungufu au miundo yoyote.  
+- **Vikwazo**: Kueleza vizuizi au miundo yoyote.  
 
-Baadhi ya mbinu bora za uhandisi wa maelekezo ni pamoja na kubuni maelekezo, maelekezo wazi, kuvunja kazi, kujifunza kwa mfano mmoja na mifano michache, na kurekebisha maelekezo. Kupima maelekezo tofauti ni muhimu ili kupata kile kinachofanya kazi vyema kwa matumizi yako maalum.
+Baadhi ya mbinu bora za uhandisi wa maelekezo ni pamoja na kubuni maelekezo, maelekezo wazi, kuvunja kazi, kujifunza kwa mfano mmoja na michache, na kurekebisha maelekezo. Kupima maelekezo tofauti ni muhimu ili kupata kile kinachofanya kazi vyema kwa matumizi yako maalum.
 
 Unapounda programu, utatumia aina tofauti za maelekezo:  
 - **Maelekezo ya Mfumo**: Weka sheria za msingi na muktadha wa tabia ya muundo  
 - **Maelekezo ya Mtumiaji**: Data ya pembejeo kutoka kwa watumiaji wa programu yako  
 - **Maelekezo ya Msaidizi**: Majibu ya muundo kulingana na maelekezo ya mfumo na mtumiaji  
 
-> **Jifunze zaidi**: Jifunze zaidi kuhusu uhandisi wa maelekezo katika [Sura ya Uhandisi wa Maelekezo ya kozi ya GenAI kwa Kompyuta](https://github.com/microsoft/generative-ai-for-beginners/tree/main/04-prompt-engineering-fundamentals)
+> **Jifunze zaidi**: Jifunze zaidi kuhusu uhandisi wa maelekezo katika [Sura ya Uhandisi wa Maelekezo ya kozi ya GenAI kwa Anzia](https://github.com/microsoft/generative-ai-for-beginners/tree/main/04-prompt-engineering-fundamentals)
 
 #### Tokeni, embeddings, na mawakala
 
 Unapofanya kazi na miundo ya AI jenereta, utakutana na maneno kama **tokeni**, **embeddings**, **mawakala**, na **Itifaki ya Muktadha wa Mfano (MCP)**. Hapa kuna muhtasari wa kina wa dhana hizi:
 
-- **Tokeni**: Tokeni ni kipande kidogo zaidi cha maandishi katika muundo. Inaweza kuwa maneno, herufi, au sehemu za maneno. Tokeni hutumika kuwakilisha data ya maandishi katika muundo ambao muundo unaweza kuelewa. Kwa mfano, sentensi "The quick brown fox jumped over the lazy dog" inaweza kugawanywa kama ["The", " quick", " brown", " fox", " jumped", " over", " the", " lazy", " dog"] au ["The", " qu", "ick", " br", "own", " fox", " jump", "ed", " over", " the", " la", "zy", " dog"] kulingana na mkakati wa kugawanya.
+- **Tokeni**: Tokeni ni kipande kidogo zaidi cha maandishi katika muundo. Inaweza kuwa maneno, herufi, au sehemu za maneno. Tokeni hutumika kuwakilisha data ya maandishi kwa muundo kuelewa. Kwa mfano, sentensi "The quick brown fox jumped over the lazy dog" inaweza kugawanywa kama ["The", " quick", " brown", " fox", " jumped", " over", " the", " lazy", " dog"] au ["The", " qu", "ick", " br", "own", " fox", " jump", "ed", " over", " the", " la", "zy", " dog"] kulingana na mkakati wa kugawanya.
 
 ![Mchoro: Mfano wa tokeni za AI jenereta ukionyesha jinsi maneno yanavyogawanywa kuwa tokeni](../../../01-IntroToGenAI/images/tokens.webp)
 
@@ -77,27 +77,27 @@ Mchakato wa kugawanya maandishi kuwa vipande vidogo hivi huitwa tokenization. Hi
 
   Katika Java, unaweza kutumia maktaba kama OpenAI SDK kushughulikia tokenization kiotomatiki unapowasilisha maombi kwa miundo ya AI.
 
-- **Embeddings**: Embeddings ni uwakilishi wa vekta wa tokeni unaokamata maana ya kisemantiki. Ni uwakilishi wa nambari (kawaida safu za nambari za nukta za kuelea) unaoruhusu miundo kuelewa uhusiano kati ya maneno na kutoa majibu yanayofaa kwa muktadha. Maneno yanayofanana yana embeddings zinazofanana, kuwezesha muundo kuelewa dhana kama visawe na uhusiano wa kisemantiki.
+- **Embeddings**: Embeddings ni uwakilishi wa vekta wa tokeni unaokamata maana ya kisemantiki. Ni uwakilishi wa nambari (kawaida safu za nambari za desimali) unaoruhusu miundo kuelewa uhusiano kati ya maneno na kutoa majibu yanayofaa kwa muktadha. Maneno yanayofanana yana embeddings zinazofanana, kuwezesha muundo kuelewa dhana kama visawe na uhusiano wa kisemantiki.
 
 ![Mchoro: Embeddings](../../../translated_images/embedding.398e50802c0037f931c725fd0113747831ea7776434d2b3ba3eb2e7a1a20ab1f.sw.png)
 
   Katika Java, unaweza kuunda embeddings ukitumia OpenAI SDK au maktaba nyingine zinazounga mkono uundaji wa embeddings. Embeddings hizi ni muhimu kwa kazi kama utafutaji wa kisemantiki, ambapo unataka kupata maudhui yanayofanana kulingana na maana badala ya mechi halisi ya maandishi.
 
-- **Hifadhidata za vekta**: Hifadhidata za vekta ni mifumo maalum ya kuhifadhi iliyoboreshwa kwa embeddings. Zinawawezesha utafutaji wa kufanana kwa ufanisi na ni muhimu kwa mifumo ya Uundaji wa Urejeshaji (RAG) ambapo unahitaji kupata taarifa muhimu kutoka kwa seti kubwa za data kulingana na kufanana kwa kisemantiki badala ya mechi halisi.
+- **Hifadhidata za vekta**: Hifadhidata za vekta ni mifumo maalum ya kuhifadhi iliyoboreshwa kwa embeddings. Zinawawezesha utafutaji wa kufanana kwa ufanisi na ni muhimu kwa mifumo ya RAG (Retrieval-Augmented Generation) ambapo unahitaji kupata taarifa muhimu kutoka kwa seti kubwa za data kulingana na kufanana kwa kisemantiki badala ya mechi halisi.
 
-![Mchoro: Usanifu wa hifadhidata ya vekta unaoonyesha jinsi embeddings zinavyohifadhiwa na kurejeshwa kwa utafutaji wa kufanana.](../../../translated_images/vector.f12f114934e223dff971b01ca371e85a41a540f3af2ffdd49fb3acec6c6652f2.sw.png)
+![Mchoro: Usanifu wa hifadhidata ya vekta unaoonyesha jinsi embeddings zinavyohifadhiwa na kupatikana kwa utafutaji wa kufanana.](../../../translated_images/vector.f12f114934e223dff971b01ca371e85a41a540f3af2ffdd49fb3acec6c6652f2.sw.png)
 
 > **Kumbuka**: Katika kozi hii, hatutashughulikia hifadhidata za vekta lakini tunadhani ni muhimu kuzitaja kwani zinatumiwa sana katika programu za ulimwengu halisi.
 
-- **Mawakala & MCP**: Vipengele vya AI vinavyoshirikiana kiotomatiki na miundo, zana, na mifumo ya nje. Itifaki ya Muktadha wa Mfano (MCP) hutoa njia sanifu kwa mawakala kufikia vyanzo vya data vya nje na zana kwa usalama. Jifunze zaidi katika kozi yetu ya [MCP kwa Kompyuta](https://github.com/microsoft/mcp-for-beginners).
+- **Mawakala & MCP**: Vipengele vya AI vinavyoshirikiana kwa uhuru na miundo, zana, na mifumo ya nje. Itifaki ya Muktadha wa Mfano (MCP) hutoa njia sanifu kwa mawakala kufikia vyanzo vya data vya nje na zana kwa usalama. Jifunze zaidi katika kozi yetu ya [MCP kwa Anzia](https://github.com/microsoft/mcp-for-beginners).
 
-Katika programu za AI za Java, utatumia tokeni kwa usindikaji wa maandishi, embeddings kwa utafutaji wa kisemantiki na RAG, hifadhidata za vekta kwa urejeshaji wa data, na mawakala na MCP kwa kujenga mifumo ya akili inayotumia zana.
+Katika programu za AI za Java, utatumia tokeni kwa usindikaji wa maandishi, embeddings kwa utafutaji wa kisemantiki na RAG, hifadhidata za vekta kwa upatikanaji wa data, na mawakala na MCP kwa kujenga mifumo ya akili inayotumia zana.
 
 ![Mchoro: jinsi maelekezo yanavyokuwa jibu—tokeni, vekta, utafutaji wa hiari wa RAG, fikra za LLM, na wakala wa MCP vyote katika mtiririko mmoja wa haraka.](../../../translated_images/flow.f4ef62c3052d12a88b1d216eb2cd0e2ea3293c806d0defa7921dd1786dcb8516.sw.png)
 
 ### Zana na Maktaba za Maendeleo ya AI kwa Java
 
-Java inatoa zana bora kwa maendeleo ya AI. Kuna maktaba kuu tatu ambazo tutachunguza katika kozi hii - OpenAI Java SDK, Azure OpenAI SDK, na Spring AI.
+Java inatoa zana bora kwa maendeleo ya AI. Kuna maktaba kuu tatu tutakazochunguza katika kozi hii - OpenAI Java SDK, Azure OpenAI SDK, na Spring AI.
 
 Hapa kuna jedwali la kumbukumbu ya haraka linaloonyesha ni SDK gani inatumiwa katika mifano ya kila sura:
 
@@ -118,37 +118,37 @@ Hapa kuna jedwali la kumbukumbu ya haraka linaloonyesha ni SDK gani inatumiwa ka
 
 #### OpenAI Java SDK
 
-OpenAI SDK ni maktaba rasmi ya Java kwa API ya OpenAI. Inatoa kiolesura rahisi na thabiti cha kuingiliana na miundo ya OpenAI, na kuifanya iwe rahisi kuingiza uwezo wa AI katika programu za Java. Mfano wa GitHub Models wa Sura ya 2, programu ya Pet Story ya Sura ya 4, na mfano wa Foundry Local zinaonyesha mbinu ya OpenAI SDK.
+OpenAI SDK ni maktaba rasmi ya Java kwa API ya OpenAI. Inatoa kiolesura rahisi na thabiti kwa kushirikiana na miundo ya OpenAI, na kuifanya iwe rahisi kuingiza uwezo wa AI katika programu za Java. Mfano wa GitHub Models wa Sura ya 2, programu ya Pet Story ya Sura ya 4, na mfano wa Foundry Local zinaonyesha mbinu ya OpenAI SDK.
 
 #### Spring AI
 
-Spring AI ni mfumo wa kina unaoleta uwezo wa AI kwa programu za Spring, ukitoa safu thabiti ya unyumbufu kwa watoa huduma tofauti wa AI. Inaunganishwa bila mshono na mfumo wa Spring, na kuifanya kuwa chaguo bora kwa programu za Java za biashara zinazohitaji uwezo wa AI.
+Spring AI ni mfumo wa kina unaoleta uwezo wa AI kwa programu za Spring, ukitoa safu thabiti ya unyumbufu kwa watoa huduma tofauti wa AI. Inajumuika bila mshono na mfumo wa Spring, na kuifanya kuwa chaguo bora kwa programu za Java za biashara zinazohitaji uwezo wa AI.
 
-Nguvu ya Spring AI iko katika ujumuishaji wake bila mshono na mfumo wa Spring, na kuifanya iwe rahisi kujenga programu za AI tayari kwa uzalishaji kwa kutumia mifumo ya kawaida ya Spring kama sindano ya utegemezi, usimamizi wa usanidi, na mifumo ya majaribio. Utatumia Spring AI katika Sura ya 2 na 4 kujenga programu zinazotumia maktaba za OpenAI na Itifaki ya Muktadha wa Mfano (MCP) za Spring AI.
+Nguvu ya Spring AI iko katika ujumuishaji wake wa moja kwa moja na mfumo wa Spring, na kuifanya iwe rahisi kujenga programu za AI tayari kwa uzalishaji kwa kutumia mifumo ya kawaida ya Spring kama sindano ya utegemezi, usimamizi wa usanidi, na mifumo ya majaribio. Utatumia Spring AI katika Sura ya 2 na 4 kujenga programu zinazotumia maktaba za OpenAI na Itifaki ya Muktadha wa Mfano (MCP) za Spring AI.
 
 ##### Itifaki ya Muktadha wa Mfano (MCP)
 
-[Itifaki ya Muktadha wa Mfano (MCP)](https://modelcontextprotocol.io/) ni kiwango kinachojitokeza kinachowezesha programu za AI kuingiliana kwa usalama na vyanzo vya data vya nje na zana. MCP hutoa njia sanifu kwa miundo ya AI kufikia taarifa za muktadha na kutekeleza vitendo katika programu zako.
+[Itifaki ya Muktadha wa Mfano (MCP)](https://modelcontextprotocol.io/) ni kiwango kinachochipukia kinachowezesha programu za AI kushirikiana kwa usalama na vyanzo vya data vya nje na zana. MCP hutoa njia sanifu kwa miundo ya AI kufikia taarifa ya muktadha na kutekeleza vitendo katika programu zako.
 
-Katika Sura ya 4, utajenga huduma rahisi ya kikokotoo ya MCP inayoonyesha misingi ya Itifaki ya Muktadha wa Mfano kwa kutumia Spring AI, ikionyesha jinsi ya kuunda ujumuishaji wa zana za msingi na usanifu wa huduma.
+Katika Sura ya 4, utajenga huduma rahisi ya kikokotoo cha MCP inayoonyesha misingi ya Itifaki ya Muktadha wa Mfano kwa kutumia Spring AI, ikionyesha jinsi ya kuunda ujumuishaji wa zana za msingi na usanifu wa huduma.
 
 #### Azure OpenAI Java SDK
 
-Maktaba ya mteja ya Azure OpenAI kwa Java ni marekebisho ya API za REST za OpenAI zinazotoa kiolesura cha kawaida na ujumuishaji na mfumo wa SDK wa Azure. Katika Sura ya 3, utajenga programu ukitumia Azure OpenAI SDK, ikijumuisha programu za mazungumzo, kupiga kazi, na mifumo ya RAG (Uundaji wa Urejeshaji).
+Maktaba ya mteja ya Azure OpenAI kwa Java ni marekebisho ya API za REST za OpenAI zinazotoa kiolesura cha kawaida na ujumuishaji na mfumo wa Azure SDK. Katika Sura ya 3, utajenga programu ukitumia Azure OpenAI SDK, ikijumuisha programu za mazungumzo, kupiga kazi, na mifumo ya RAG (Retrieval-Augmented Generation).
 
 > Kumbuka: Azure OpenAI SDK iko nyuma ya OpenAI Java SDK kwa suala la vipengele, hivyo kwa miradi ya baadaye, zingatia kutumia OpenAI Java SDK.
 
 ## Muhtasari
 
-**Hongera!** Umefanikiwa:  
+Hiyo inahitimisha misingi! Sasa unaelewa:
 
-- **Kujifunza kuhusu misingi ya AI jenereta** ikijumuisha LLMs, uhandisi wa maelekezo, tokeni, embeddings, na hifadhidata za vekta  
-- **Kulinganisha zana za maendeleo ya AI kwa Java** ikijumuisha Azure OpenAI SDK, Spring AI, na OpenAI Java SDK  
-- **Kugundua Itifaki ya Muktadha wa Mfano** na jukumu lake katika mawasiliano ya mawakala wa AI  
+- Dhana kuu nyuma ya AI jenereta - kutoka LLMs na uhandisi wa maelekezo hadi tokeni, embeddings, na hifadhidata za vekta  
+- Chaguo zako za zana kwa maendeleo ya AI kwa Java: Azure OpenAI SDK, Spring AI, na OpenAI Java SDK  
+- Itifaki ya Muktadha wa Mfano ni nini na jinsi inavyowezesha mawakala wa AI kufanya kazi na zana za nje  
 
 ## Hatua Zifuatazo
 
 [Sura ya 2: Kuweka Mazingira ya Maendeleo](../02-SetupDevEnvironment/README.md)  
 
 **Kanusho**:  
-Hati hii imetafsiriwa kwa kutumia huduma ya tafsiri ya AI [Co-op Translator](https://github.com/Azure/co-op-translator). Ingawa tunajitahidi kuhakikisha usahihi, tafadhali fahamu kuwa tafsiri za kiotomatiki zinaweza kuwa na makosa au kutokuwa sahihi. Hati ya asili katika lugha yake ya awali inapaswa kuzingatiwa kama chanzo cha mamlaka. Kwa taarifa muhimu, tafsiri ya kitaalamu ya binadamu inapendekezwa. Hatutawajibika kwa kutoelewana au tafsiri zisizo sahihi zinazotokana na matumizi ya tafsiri hii.
+Hati hii imetafsiriwa kwa kutumia huduma ya kutafsiri ya AI [Co-op Translator](https://github.com/Azure/co-op-translator). Ingawa tunajitahidi kuhakikisha usahihi, tafadhali fahamu kuwa tafsiri za kiotomatiki zinaweza kuwa na makosa au kutokuwa sahihi. Hati ya asili katika lugha yake ya awali inapaswa kuzingatiwa kama chanzo cha mamlaka. Kwa taarifa muhimu, tafsiri ya kitaalamu ya binadamu inapendekezwa. Hatutawajibika kwa kutoelewana au tafsiri zisizo sahihi zinazotokana na matumizi ya tafsiri hii.

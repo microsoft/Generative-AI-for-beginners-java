@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "b4c05c53b67571aee42e9532404f2fb8",
-  "translation_date": "2025-07-28T10:42:51+00:00",
+  "original_hash": "63b6426b88f6f56398ca3f1fbfc30889",
+  "translation_date": "2025-07-29T15:15:15+00:00",
   "source_file": "README.md",
   "language_code": "it"
 }
@@ -12,7 +12,7 @@ CO_OP_TRANSLATOR_METADATA:
 
 ![Generative AI per Principianti - Edizione Java](../../translated_images/beg-genai-series.8b48be9951cc574c25f8a3accba949bfd03c2f008e2c613283a1b47316fbee68.it.png)
 
-**Impegno di Tempo**: L'intero workshop può essere completato online senza configurazione locale. L'impostazione dell'ambiente richiede 2 minuti, mentre l'esplorazione degli esempi richiede da 1 a 3 ore a seconda della profondità di esplorazione.
+**Impegno di Tempo**: L'intero workshop può essere completato online senza configurazione locale. L'impostazione dell'ambiente richiede 2 minuti, mentre l'esplorazione degli esempi richiede 1-3 ore a seconda della profondità di esplorazione.
 
 > **Avvio Rapido**
 
@@ -27,41 +27,41 @@ CO_OP_TRANSLATOR_METADATA:
 
 ### Supportato tramite GitHub Action (Automatizzato e Sempre Aggiornato)
 
-[Francese](../fr/README.md) | [Spagnolo](../es/README.md) | [Tedesco](../de/README.md) | [Russo](../ru/README.md) | [Arabo](../ar/README.md) | [Persiano (Farsi)](../fa/README.md) | [Urdu](../ur/README.md) | [Cinese (Semplificato)](../zh/README.md) | [Cinese (Tradizionale, Macao)](../mo/README.md) | [Cinese (Tradizionale, Hong Kong)](../hk/README.md) | [Cinese (Tradizionale, Taiwan)](../tw/README.md) | [Giapponese](../ja/README.md) | [Coreano](../ko/README.md) | [Hindi](../hi/README.md) | [Bengalese](../bn/README.md) | [Marathi](../mr/README.md) | [Nepalese](../ne/README.md) | [Punjabi (Gurmukhi)](../pa/README.md) | [Portoghese (Portogallo)](../pt/README.md) | [Portoghese (Brasile)](../br/README.md) | [Italiano](./README.md) | [Polacco](../pl/README.md) | [Turco](../tr/README.md) | [Greco](../el/README.md) | [Tailandese](../th/README.md) | [Svedese](../sv/README.md) | [Danese](../da/README.md) | [Norvegese](../no/README.md) | [Finlandese](../fi/README.md) | [Olandese](../nl/README.md) | [Ebraico](../he/README.md) | [Vietnamita](../vi/README.md) | [Indonesiano](../id/README.md) | [Malese](../ms/README.md) | [Tagalog (Filippino)](../tl/README.md) | [Swahili](../sw/README.md) | [Ungherese](../hu/README.md) | [Ceco](../cs/README.md) | [Slovacco](../sk/README.md) | [Rumeno](../ro/README.md) | [Bulgaro](../bg/README.md) | [Serbo (Cirillico)](../sr/README.md) | [Croato](../hr/README.md) | [Sloveno](../sl/README.md) | [Ucraino](../uk/README.md) | [Birmano (Myanmar)](../my/README.md)
+[French](../fr/README.md) | [Spanish](../es/README.md) | [German](../de/README.md) | [Russian](../ru/README.md) | [Arabic](../ar/README.md) | [Persian (Farsi)](../fa/README.md) | [Urdu](../ur/README.md) | [Chinese (Simplified)](../zh/README.md) | [Chinese (Traditional, Macau)](../mo/README.md) | [Chinese (Traditional, Hong Kong)](../hk/README.md) | [Chinese (Traditional, Taiwan)](../tw/README.md) | [Japanese](../ja/README.md) | [Korean](../ko/README.md) | [Hindi](../hi/README.md) | [Bengali](../bn/README.md) | [Marathi](../mr/README.md) | [Nepali](../ne/README.md) | [Punjabi (Gurmukhi)](../pa/README.md) | [Portuguese (Portugal)](../pt/README.md) | [Portuguese (Brazil)](../br/README.md) | [Italian](./README.md) | [Polish](../pl/README.md) | [Turkish](../tr/README.md) | [Greek](../el/README.md) | [Thai](../th/README.md) | [Swedish](../sv/README.md) | [Danish](../da/README.md) | [Norwegian](../no/README.md) | [Finnish](../fi/README.md) | [Dutch](../nl/README.md) | [Hebrew](../he/README.md) | [Vietnamese](../vi/README.md) | [Indonesian](../id/README.md) | [Malay](../ms/README.md) | [Tagalog (Filipino)](../tl/README.md) | [Swahili](../sw/README.md) | [Hungarian](../hu/README.md) | [Czech](../cs/README.md) | [Slovak](../sk/README.md) | [Romanian](../ro/README.md) | [Bulgarian](../bg/README.md) | [Serbian (Cyrillic)](../sr/README.md) | [Croatian](../hr/README.md) | [Slovenian](../sl/README.md) | [Ukrainian](../uk/README.md) | [Burmese (Myanmar)](../my/README.md)
 
 ## Struttura del Corso e Percorso di Apprendimento
 
 ### **Capitolo 1: Introduzione alla Generative AI**
-- **Concetti Fondamentali**: Comprendere i Large Language Models, i token, gli embeddings e le capacità dell'AI
+- **Concetti Fondamentali**: Comprendere i modelli linguistici di grandi dimensioni, i token, gli embeddings e le capacità dell'AI
 - **Ecosistema AI in Java**: Panoramica su Spring AI e OpenAI SDKs
-- **Model Context Protocol**: Introduzione al MCP e al suo ruolo nella comunicazione degli agenti AI
+- **Protocollo di Contesto del Modello**: Introduzione a MCP e al suo ruolo nella comunicazione degli agenti AI
 - **Applicazioni Pratiche**: Scenari reali, inclusi chatbot e generazione di contenuti
 - **[→ Inizia il Capitolo 1](./01-IntroToGenAI/README.md)**
 
 ### **Capitolo 2: Configurazione dell'Ambiente di Sviluppo**
-- **Configurazione Multi-Provider**: Configura GitHub Models, Azure OpenAI e le integrazioni con OpenAI Java SDK
+- **Configurazione Multi-Provider**: Configura modelli GitHub, Azure OpenAI e integrazioni OpenAI Java SDK
 - **Spring Boot + Spring AI**: Best practice per lo sviluppo di applicazioni AI aziendali
-- **GitHub Models**: Accesso gratuito ai modelli AI per prototipazione e apprendimento (senza necessità di carta di credito)
-- **Strumenti di Sviluppo**: Configurazione di Docker containers, VS Code e GitHub Codespaces
+- **Modelli GitHub**: Accesso gratuito ai modelli AI per prototipazione e apprendimento (senza carta di credito)
+- **Strumenti di Sviluppo**: Configurazione di container Docker, VS Code e GitHub Codespaces
 - **[→ Inizia il Capitolo 2](./02-SetupDevEnvironment/README.md)**
 
 ### **Capitolo 3: Tecniche Fondamentali di Generative AI**
-- **Prompt Engineering**: Tecniche per ottenere risposte ottimali dai modelli AI
-- **Embeddings e Operazioni sui Vettori**: Implementazione di ricerca semantica e confronto di similarità
-- **Retrieval-Augmented Generation (RAG)**: Combina l'AI con le tue fonti di dati
-- **Function Calling**: Estendi le capacità dell'AI con strumenti e plugin personalizzati
+- **Prompt Engineering**: Tecniche per risposte ottimali dai modelli AI
+- **Embeddings e Operazioni su Vettori**: Implementa ricerca semantica e corrispondenza di similarità
+- **Generazione Augmentata dal Recupero (RAG)**: Combina AI con le tue fonti di dati
+- **Chiamata di Funzioni**: Estendi le capacità dell'AI con strumenti e plugin personalizzati
 - **[→ Inizia il Capitolo 3](./03-CoreGenerativeAITechniques/README.md)**
 
 ### **Capitolo 4: Applicazioni Pratiche e Progetti**
-- **Generatore di Storie per Animali Domestici** (`petstory/`): Generazione creativa di contenuti con GitHub Models
-- **Demo Locale Foundry** (`foundrylocal/`): Integrazione di modelli AI locali con OpenAI Java SDK
-- **Servizio MCP Calculator** (`calculator/`): Implementazione base del Model Context Protocol con Spring AI
+- **Generatore di Storie per Animali Domestici** (`petstory/`): Generazione creativa di contenuti con i modelli GitHub
+- **Demo Locale Foundry** (`foundrylocal/`): Integrazione locale di modelli AI con OpenAI Java SDK
+- **Servizio Calcolatrice MCP** (`calculator/`): Implementazione base del Protocollo di Contesto del Modello con Spring AI
 - **[→ Inizia il Capitolo 4](./04-PracticalSamples/README.md)**
 
 ### **Capitolo 5: Sviluppo Responsabile dell'AI**
-- **Sicurezza dei GitHub Models**: Testa i meccanismi di filtraggio dei contenuti e di sicurezza integrati
-- **Demo AI Responsabile**: Esempio pratico che mostra come funzionano i filtri di sicurezza dell'AI
-- **Best Practice**: Linee guida essenziali per uno sviluppo e un'implementazione etica dell'AI
+- **Sicurezza dei Modelli GitHub**: Testa i meccanismi di filtraggio dei contenuti e sicurezza integrati (blocchi rigidi e rifiuti morbidi)
+- **Demo AI Responsabile**: Esempio pratico che mostra come funzionano i moderni sistemi di sicurezza AI
+- **Best Practice**: Linee guida essenziali per uno sviluppo e una distribuzione etica dell'AI
 - **[→ Inizia il Capitolo 5](./05-ResponsibleGenAI/README.md)**
 
 ## Risorse Aggiuntive

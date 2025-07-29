@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "c670445516e119888d8aaaa207bbee34",
-  "translation_date": "2025-07-27T12:48:37+00:00",
+  "original_hash": "c2a244c959e00da1ae1613d2ebfdac65",
+  "translation_date": "2025-07-29T14:15:44+00:00",
   "source_file": "02-SetupDevEnvironment/README.md",
   "language_code": "es"
 }
@@ -17,7 +17,7 @@ CO_OP_TRANSLATOR_METADATA:
 
 - Configurar un entorno de desarrollo en Java para aplicaciones de IA
 - Elegir y configurar tu entorno de desarrollo preferido (primero en la nube con Codespaces, contenedor de desarrollo local o configuración local completa)
-- Probar tu configuración conectándote a los modelos de GitHub
+- Probar tu configuración conectándote a los Modelos de GitHub
 
 ## Tabla de Contenidos
 
@@ -35,19 +35,19 @@ CO_OP_TRANSLATOR_METADATA:
 
 ## Introducción
 
-Este capítulo te guiará en la configuración de un entorno de desarrollo. Usaremos **GitHub Models** como nuestro ejemplo principal porque es gratuito, fácil de configurar con solo una cuenta de GitHub, no requiere tarjeta de crédito y proporciona acceso a múltiples modelos para experimentar.
+Este capítulo te guiará en la configuración de un entorno de desarrollo. Usaremos **Modelos de GitHub** como nuestro ejemplo principal porque es gratuito, fácil de configurar con solo una cuenta de GitHub, no requiere tarjeta de crédito y proporciona acceso a múltiples modelos para experimentar.
 
 **¡No se requiere configuración local!** Puedes comenzar a programar de inmediato usando GitHub Codespaces, que ofrece un entorno de desarrollo completo en tu navegador.
 
-<img src="./images/models.webp" alt="Captura de pantalla: GitHub Models" width="50%">
+<img src="./images/models.webp" alt="Captura de pantalla: Modelos de GitHub" width="50%">
 
-Recomendamos usar [**GitHub Models**](https://github.com/marketplace?type=models) para este curso porque es:
+Recomendamos usar [**Modelos de GitHub**](https://github.com/marketplace?type=models) para este curso porque es:
 - **Gratuito** para comenzar
 - **Fácil** de configurar con solo una cuenta de GitHub
 - **Sin tarjeta de crédito** requerida
 - **Múltiples modelos** disponibles para experimentar
 
-> **Nota**: Los modelos de GitHub utilizados en este entrenamiento tienen estos límites gratuitos:
+> **Nota**: Los Modelos de GitHub utilizados en este entrenamiento tienen estos límites gratuitos:
 > - 15 solicitudes por minuto (150 por día)
 > - ~8,000 palabras de entrada, ~4,000 palabras de salida por solicitud
 > - 5 solicitudes concurrentes
@@ -69,7 +69,7 @@ Hemos creado un contenedor de desarrollo preconfigurado para minimizar el tiempo
 1. Haz un fork de este repositorio en tu cuenta de GitHub  
    > **Nota**: Si deseas editar la configuración básica, consulta la [Configuración del Contenedor de Desarrollo](../../../.devcontainer/devcontainer.json)
 2. Haz clic en **Code** → pestaña **Codespaces** → **...** → **New with options...**
-3. Usa los valores predeterminados: esto seleccionará la **Configuración del contenedor de desarrollo**: **Entorno de Desarrollo Generative AI Java** creado específicamente para este curso
+3. Usa los valores predeterminados: esto seleccionará la **Configuración del contenedor de desarrollo**: **Entorno de Desarrollo de Generative AI con Java** creado específicamente para este curso
 4. Haz clic en **Create codespace**
 5. Espera ~2 minutos para que el entorno esté listo
 6. Continúa con [Paso 2: Crea un Token de GitHub](../../../02-SetupDevEnvironment)
@@ -106,7 +106,7 @@ Hemos creado un contenedor de desarrollo preconfigurado para minimizar el tiempo
 
 #### Opción C: Usa Tu Instalación Local Existente
 
-**Para desarrolladores con entornos Java existentes**
+**Para desarrolladores con entornos Java ya configurados**
 
 Requisitos previos:
 - [Java 21+](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html) 
@@ -118,7 +118,7 @@ Pasos:
 2. Abre el proyecto en tu IDE
 3. Continúa con [Paso 2: Crea un Token de GitHub](../../../02-SetupDevEnvironment)
 
-> **Consejo Pro**: Si tienes una máquina con pocos recursos pero quieres usar VS Code localmente, ¡usa GitHub Codespaces! Puedes conectar tu VS Code local a un Codespace alojado en la nube para obtener lo mejor de ambos mundos.
+> **Consejo Pro**: Si tienes una máquina con pocos recursos pero quieres usar VS Code localmente, ¡usa GitHub Codespaces! Puedes conectar tu VS Code local a un Codespace alojado en la nube para lo mejor de ambos mundos.
 
 <img src="./images/image-2.png" alt="Captura de pantalla: Instancia local del contenedor de desarrollo creada" width="50%">
 
@@ -131,19 +131,19 @@ Pasos:
 5. En "Token name", proporciona un nombre descriptivo (por ejemplo, `GenAI-Java-Course-Token`).
 6. Establece una fecha de expiración (recomendado: 7 días por seguridad).
 7. En "Resource owner", selecciona tu cuenta de usuario.
-8. En "Repository access", selecciona los repositorios que deseas usar con GitHub Models (o "All repositories" si es necesario).
-9. En "Repository permissions", encuentra **Models** y configúralo en **Read and write**.
+8. En "Repository access", selecciona los repositorios que deseas usar con los Modelos de GitHub (o "All repositories" si es necesario).
+9. En "Repository permissions", busca **Models** y configúralo en **Read and write**.
 10. Haz clic en **Generate token**.
 11. **Copia y guarda tu token ahora** – no podrás verlo nuevamente.
 
 > **Consejo de Seguridad**: Usa el alcance mínimo requerido y el tiempo de expiración más corto posible para tus tokens de acceso.
 
-## Paso 3: Prueba Tu Configuración con el Ejemplo de GitHub Models
+## Paso 3: Prueba Tu Configuración con el Ejemplo de Modelos de GitHub
 
-Una vez que tu entorno de desarrollo esté listo, probemos la integración con GitHub Models usando nuestra aplicación de ejemplo en [`02-SetupDevEnvironment/examples/github-models`](../../../02-SetupDevEnvironment/examples/github-models).
+Una vez que tu entorno de desarrollo esté listo, probemos la integración con los Modelos de GitHub usando nuestra aplicación de ejemplo en [`02-SetupDevEnvironment/examples/github-models`](../../../02-SetupDevEnvironment/examples/github-models).
 
 1. Abre la terminal en tu entorno de desarrollo.
-2. Navega al ejemplo de GitHub Models:
+2. Navega al ejemplo de Modelos de GitHub:
    ```bash
    cd 02-SetupDevEnvironment/examples/github-models
    ```
@@ -173,10 +173,10 @@ Response: Hello World!
 
 ### Entendiendo el Código de Ejemplo
 
-Primero, entendamos lo que acabamos de ejecutar. El ejemplo bajo `examples/github-models` usa el SDK de OpenAI para Java para conectarse a GitHub Models:
+Primero, entendamos lo que acabamos de ejecutar. El ejemplo bajo `examples/github-models` utiliza el SDK de OpenAI para Java para conectarse a los Modelos de GitHub:
 
 **Qué hace este código:**
-- **Se conecta** a GitHub Models usando tu token de acceso personal
+- **Conecta** con los Modelos de GitHub usando tu token de acceso personal
 - **Envía** un mensaje simple "Say Hello World!" al modelo de IA
 - **Recibe** y muestra la respuesta de la IA
 - **Valida** que tu configuración funciona correctamente
@@ -212,12 +212,12 @@ System.out.println("Response: " + response.choices().get(0).message().content().
 
 ## Resumen
 
-**¡Felicidades!** Has logrado:
+¡Genial! Ahora tienes todo configurado:
 
-- **Crear un Token de Acceso Personal de GitHub** con los permisos adecuados para acceder a modelos de IA
-- **Configurar tu entorno de desarrollo en Java** usando Codespaces, contenedores de desarrollo o instalación local
-- **Conectarte a GitHub Models** usando el SDK de OpenAI para Java para acceso gratuito al desarrollo de IA
-- **Probar la integración** con una aplicación de ejemplo funcional que se comunica con modelos de IA
+- Creaste un Token de Acceso Personal de GitHub con los permisos correctos para acceder a los modelos de IA
+- Configuraste tu entorno de desarrollo en Java (ya sea con Codespaces, contenedores de desarrollo o localmente)
+- Te conectaste a los Modelos de GitHub usando el SDK de OpenAI para Java para desarrollo de IA gratuito
+- Probaste que todo funciona con un ejemplo simple que interactúa con modelos de IA
 
 ## Próximos Pasos
 
@@ -240,7 +240,7 @@ System.out.println("Response: " + response.choices().get(0).message().content().
 - **¿Problemas de conexión?** 
   - Verifica tu conexión a internet
   - Asegúrate de que GitHub sea accesible desde tu red
-  - Comprueba que no estés detrás de un firewall que bloquee el endpoint de GitHub Models
+  - Comprueba que no estés detrás de un firewall que bloquee el endpoint de los Modelos de GitHub
 
 - **¿El contenedor de desarrollo no inicia?** 
   - Asegúrate de que Docker Desktop esté ejecutándose (para desarrollo local)
@@ -253,4 +253,4 @@ System.out.println("Response: " + response.choices().get(0).message().content().
 > **¿Necesitas ayuda?**: ¿Sigues teniendo problemas? Abre un issue en el repositorio y te ayudaremos.
 
 **Descargo de responsabilidad**:  
-Este documento ha sido traducido utilizando el servicio de traducción automática [Co-op Translator](https://github.com/Azure/co-op-translator). Aunque nos esforzamos por garantizar la precisión, tenga en cuenta que las traducciones automatizadas pueden contener errores o imprecisiones. El documento original en su idioma nativo debe considerarse como la fuente autorizada. Para información crítica, se recomienda una traducción profesional realizada por humanos. No nos hacemos responsables de ningún malentendido o interpretación errónea que surja del uso de esta traducción.
+Este documento ha sido traducido utilizando el servicio de traducción automática [Co-op Translator](https://github.com/Azure/co-op-translator). Aunque nos esforzamos por garantizar la precisión, tenga en cuenta que las traducciones automáticas pueden contener errores o imprecisiones. El documento original en su idioma nativo debe considerarse como la fuente autorizada. Para información crítica, se recomienda una traducción profesional realizada por humanos. No nos hacemos responsables de malentendidos o interpretaciones erróneas que puedan surgir del uso de esta traducción.

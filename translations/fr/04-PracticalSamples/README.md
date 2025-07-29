@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "d45b8e2291ab1357592c904c103cbc81",
-  "translation_date": "2025-07-28T10:13:49+00:00",
+  "original_hash": "14c0a61ecc1cd2012a9c129236dfdf71",
+  "translation_date": "2025-07-29T14:13:37+00:00",
   "source_file": "04-PracticalSamples/README.md",
   "language_code": "fr"
 }
@@ -10,10 +10,10 @@ CO_OP_TRANSLATOR_METADATA:
 # Applications Pratiques & Projets
 
 ## Ce que vous allez apprendre
-Dans cette section, nous allons présenter trois applications pratiques illustrant des modèles de développement d'IA générative avec Java :
+Dans cette section, nous présenterons trois applications pratiques illustrant les modèles de développement d'IA générative avec Java :
 - Créer un générateur d'histoires pour animaux de compagnie multi-modal combinant IA côté client et côté serveur
-- Intégrer un modèle d'IA local avec la démo Foundry Local Spring Boot
-- Développer un service Model Context Protocol (MCP) avec l'exemple de la calculatrice
+- Implémenter l'intégration de modèles d'IA locaux avec la démo Foundry Local Spring Boot
+- Développer un service Model Context Protocol (MCP) avec l'exemple de calculatrice
 
 ## Table des matières
 
@@ -27,7 +27,7 @@ Dans cette section, nous allons présenter trois applications pratiques illustra
 
 ## Introduction
 
-Ce chapitre présente des **projets exemples** illustrant des modèles de développement d'IA générative avec Java. Chaque projet est entièrement fonctionnel et met en avant des technologies d'IA spécifiques, des modèles architecturaux et des bonnes pratiques que vous pouvez adapter à vos propres applications.
+Ce chapitre présente des **projets exemples** qui illustrent les modèles de développement d'IA générative avec Java. Chaque projet est entièrement fonctionnel et met en avant des technologies spécifiques d'IA, des modèles architecturaux et des bonnes pratiques que vous pouvez adapter à vos propres applications.
 
 ### Démo Foundry Local Spring Boot
 
@@ -39,7 +39,7 @@ Le **[Générateur d'histoires pour animaux de compagnie](petstory/README.md)** 
 
 ### Service MCP Calculatrice (Démo MCP pour débutants)
 
-Le **[Service MCP Calculatrice](calculator/README.md)** est une démonstration simple du **Model Context Protocol (MCP)** utilisant Spring AI. Il offre une introduction accessible aux concepts MCP, montrant comment créer un serveur MCP de base qui interagit avec des clients MCP.
+Le **[Service MCP Calculatrice](calculator/README.md)** est une démonstration simple du **Model Context Protocol (MCP)** utilisant Spring AI. Il offre une introduction accessible aux concepts MCP, montrant comment créer un serveur MCP basique qui interagit avec des clients MCP.
 
 ## Progression d'apprentissage
 
@@ -51,15 +51,15 @@ Ces projets sont conçus pour s'appuyer sur les concepts des chapitres précéde
 
 ## Résumé
 
-**Félicitations !** Vous avez réussi à :
+Bravo ! Vous avez maintenant exploré des applications concrètes :
 
-- **Créer des expériences d'IA multi-modales** combinant traitement IA côté client et côté serveur
-- **Mettre en œuvre l'intégration de modèles d'IA locaux** en utilisant des frameworks et SDK Java modernes
-- **Développer des services Model Context Protocol** illustrant des modèles d'intégration d'outils
+- Expériences d'IA multi-modales fonctionnant à la fois dans le navigateur et sur le serveur
+- Intégration de modèles d'IA locaux en utilisant des frameworks et SDK modernes pour Java
+- Votre premier service Model Context Protocol pour voir comment les outils s'intègrent avec l'IA
 
 ## Prochaines étapes
 
-[Chapitre 5 : IA Générative Responsable](../05-ResponsibleGenAI/README.md)
+[Chapitre 5 : IA générative responsable](../05-ResponsibleGenAI/README.md)
 
 **Avertissement** :  
-Ce document a été traduit à l'aide du service de traduction automatique [Co-op Translator](https://github.com/Azure/co-op-translator). Bien que nous nous efforcions d'assurer l'exactitude, veuillez noter que les traductions automatisées peuvent contenir des erreurs ou des inexactitudes. Le document original dans sa langue d'origine doit être considéré comme la source faisant autorité. Pour des informations critiques, il est recommandé de recourir à une traduction professionnelle réalisée par un humain. Nous ne sommes pas responsables des malentendus ou des interprétations erronées résultant de l'utilisation de cette traduction.
+Ce document a été traduit à l'aide du service de traduction automatique [Co-op Translator](https://github.com/Azure/co-op-translator). Bien que nous nous efforcions d'assurer l'exactitude, veuillez noter que les traductions automatisées peuvent contenir des erreurs ou des inexactitudes. Le document original dans sa langue d'origine doit être considéré comme la source faisant autorité. Pour des informations critiques, il est recommandé de faire appel à une traduction humaine professionnelle. Nous déclinons toute responsabilité en cas de malentendus ou d'interprétations erronées résultant de l'utilisation de cette traduction.

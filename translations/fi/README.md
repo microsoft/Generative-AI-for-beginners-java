@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "b4c05c53b67571aee42e9532404f2fb8",
-  "translation_date": "2025-07-28T10:54:59+00:00",
+  "original_hash": "63b6426b88f6f56398ca3f1fbfc30889",
+  "translation_date": "2025-07-29T15:41:46+00:00",
   "source_file": "README.md",
   "language_code": "fi"
 }
@@ -12,16 +12,16 @@ CO_OP_TRANSLATOR_METADATA:
 
 ![Generatiivinen AI aloittelijoille - Java-versio](../../translated_images/beg-genai-series.8b48be9951cc574c25f8a3accba949bfd03c2f008e2c613283a1b47316fbee68.fi.png)
 
-**Aikavaatimukset**: Koko työpaja voidaan suorittaa verkossa ilman paikallista asennusta. Ympäristön asennus kestää 2 minuuttia, ja esimerkkien tutkimiseen kuluu 1–3 tuntia riippuen tutkimisen syvyydestä.
+**Aikataulu**: Koko työpaja voidaan suorittaa verkossa ilman paikallista asennusta. Ympäristön asennus kestää 2 minuuttia, ja esimerkkien tutkimiseen kuluu 1–3 tuntia riippuen tutkimisen syvyydestä.
 
 > **Pika-aloitus** 
 
-1. Haaroita tämä arkisto GitHub-tilillesi
+1. Haarauta tämä arkisto GitHub-tilillesi
 2. Klikkaa **Code** → **Codespaces**-välilehti → **...** → **New with options...**
 3. Käytä oletusasetuksia – tämä valitsee tämän kurssin kehityskontin
 4. Klikkaa **Create codespace**
 5. Odota noin 2 minuuttia, että ympäristö on valmis
-6. Siirry suoraan kohtaan [Ensimmäinen esimerkki](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)
+6. Siirry suoraan [Ensimmäiseen esimerkkiin](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)
 
 ## Monikielinen tuki
 
@@ -32,35 +32,35 @@ CO_OP_TRANSLATOR_METADATA:
 ## Kurssin rakenne ja oppimispolku
 
 ### **Luku 1: Johdatus generatiiviseen tekoälyyn**
-- **Keskeiset käsitteet**: Suurten kielimallien, tokenien, upotusten ja tekoälyominaisuuksien ymmärtäminen
-- **Java AI -ekosysteemi**: Katsaus Spring AI- ja OpenAI-SDK:ihin
+- **Keskeiset käsitteet**: Suurten kielimallien, tokenien, upotusten ja tekoälykykyjen ymmärtäminen
+- **Java AI -ekosysteemi**: Katsaus Spring AI:hin ja OpenAI SDK:ihin
 - **Model Context Protocol**: Johdatus MCP:hen ja sen rooliin tekoälyagenttien viestinnässä
-- **Käytännön sovellukset**: Reaaliaikaisia esimerkkejä, kuten chatbotit ja sisällöntuotanto
+- **Käytännön sovellukset**: Reaaliaikaiset esimerkit, kuten chatbotit ja sisällöntuotanto
 - **[→ Aloita luku 1](./01-IntroToGenAI/README.md)**
 
 ### **Luku 2: Kehitysympäristön asennus**
-- **Monitoimittajakonfiguraatio**: GitHub Models-, Azure OpenAI- ja OpenAI Java SDK -integraatioiden asennus
+- **Monipalveluntarjoajan konfigurointi**: GitHub Models-, Azure OpenAI- ja OpenAI Java SDK -integraatioiden asennus
 - **Spring Boot + Spring AI**: Parhaat käytännöt yritystason tekoälysovellusten kehittämiseen
-- **GitHub Models**: Ilmainen pääsy tekoälymalleihin prototyyppien ja oppimisen tueksi (ei luottokorttia vaadita)
-- **Kehitystyökalut**: Docker-kontit, VS Code ja GitHub Codespaces -konfiguraatio
+- **GitHub Models**: Ilmainen tekoälymallien käyttö prototyyppien ja oppimisen tueksi (ei luottokorttia vaadita)
+- **Kehitystyökalut**: Docker-kontit, VS Code ja GitHub Codespaces -konfigurointi
 - **[→ Aloita luku 2](./02-SetupDevEnvironment/README.md)**
 
 ### **Luku 3: Generatiivisen tekoälyn ydintekniikat**
 - **Prompt Engineering**: Tekniikat optimaalisten tekoälymallivastausten saamiseksi
-- **Upotukset ja vektorilaskenta**: Semanttisen haun ja samankaltaisuuden tunnistuksen toteutus
+- **Upotukset ja vektorilaskenta**: Semanttisen haun ja samankaltaisuusvertailun toteuttaminen
 - **Retrieval-Augmented Generation (RAG)**: Tekoälyn yhdistäminen omiin tietolähteisiin
 - **Toimintokutsut**: Tekoälyn laajentaminen mukautetuilla työkaluilla ja lisäosilla
 - **[→ Aloita luku 3](./03-CoreGenerativeAITechniques/README.md)**
 
 ### **Luku 4: Käytännön sovellukset ja projektit**
 - **Lemmikkitarinageneraattori** (`petstory/`): Luova sisällöntuotanto GitHub Models -malleilla
-- **Foundry Local Demo** (`foundrylocal/`): Paikallisten tekoälymallien integrointi OpenAI Java SDK:lla
+- **Foundry Local Demo** (`foundrylocal/`): Paikallisen tekoälymallin integrointi OpenAI Java SDK:lla
 - **MCP-laskinpalvelu** (`calculator/`): Perustason Model Context Protocol -toteutus Spring AI:lla
 - **[→ Aloita luku 4](./04-PracticalSamples/README.md)**
 
 ### **Luku 5: Vastuullinen tekoälyn kehitys**
-- **GitHub Models -turvallisuus**: Sisäänrakennettujen sisällönsuodatus- ja turvallisuusmekanismien testaaminen
-- **Vastuullisen tekoälyn demo**: Käytännön esimerkki tekoälyn turvallisuussuodattimien toiminnasta
+- **GitHub Models -turvallisuus**: Sisäänrakennetun sisällönsuodatuksen ja turvallisuusmekanismien testaaminen (kovat estot ja pehmeät kieltäytymiset)
+- **Vastuullisen tekoälyn demo**: Käytännön esimerkki siitä, miten modernit tekoälyturvajärjestelmät toimivat
 - **Parhaat käytännöt**: Keskeiset ohjeet eettiseen tekoälyn kehittämiseen ja käyttöönottoon
 - **[→ Aloita luku 5](./05-ResponsibleGenAI/README.md)**
 
@@ -83,4 +83,4 @@ CO_OP_TRANSLATOR_METADATA:
 - [RAG Chat App with Azure AI Services](https://github.com/Azure-Samples/azure-search-openai-demo-java)
 
 **Vastuuvapauslauseke**:  
-Tämä asiakirja on käännetty käyttämällä AI-käännöspalvelua [Co-op Translator](https://github.com/Azure/co-op-translator). Vaikka pyrimme tarkkuuteen, huomioithan, että automaattiset käännökset voivat sisältää virheitä tai epätarkkuuksia. Alkuperäistä asiakirjaa sen alkuperäisellä kielellä tulisi pitää ensisijaisena lähteenä. Kriittisen tiedon osalta suositellaan ammattimaista ihmiskäännöstä. Emme ole vastuussa väärinkäsityksistä tai virhetulkinnoista, jotka johtuvat tämän käännöksen käytöstä.
+Tämä asiakirja on käännetty käyttämällä tekoälypohjaista käännöspalvelua [Co-op Translator](https://github.com/Azure/co-op-translator). Pyrimme tarkkuuteen, mutta huomioithan, että automaattiset käännökset voivat sisältää virheitä tai epätarkkuuksia. Alkuperäistä asiakirjaa sen alkuperäisellä kielellä tulisi pitää ensisijaisena lähteenä. Kriittisen tiedon osalta suositellaan ammattimaista ihmiskääntämistä. Emme ole vastuussa väärinkäsityksistä tai virhetulkinnoista, jotka johtuvat tämän käännöksen käytöstä.

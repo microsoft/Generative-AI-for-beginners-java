@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "c670445516e119888d8aaaa207bbee34",
-  "translation_date": "2025-07-27T13:05:57+00:00",
+  "original_hash": "c2a244c959e00da1ae1613d2ebfdac65",
+  "translation_date": "2025-07-29T15:13:53+00:00",
   "source_file": "02-SetupDevEnvironment/README.md",
   "language_code": "br"
 }
@@ -27,7 +27,7 @@ CO_OP_TRANSLATOR_METADATA:
   - [Opção A: GitHub Codespaces (Recomendado)](../../../02-SetupDevEnvironment)
   - [Opção B: Contêiner Local](../../../02-SetupDevEnvironment)
   - [Opção C: Usar Sua Instalação Local Existente](../../../02-SetupDevEnvironment)
-- [Passo 2: Crie um Token de Acesso Pessoal do GitHub](../../../02-SetupDevEnvironment)
+- [Passo 2: Crie um Token de Acesso Pessoal no GitHub](../../../02-SetupDevEnvironment)
 - [Passo 3: Teste Sua Configuração](../../../02-SetupDevEnvironment)
 - [Solução de Problemas](../../../02-SetupDevEnvironment)
 - [Resumo](../../../02-SetupDevEnvironment)
@@ -43,7 +43,7 @@ Este capítulo irá guiá-lo na configuração de um ambiente de desenvolvimento
 
 Recomendamos usar [**Modelos do GitHub**](https://github.com/marketplace?type=models) para este curso porque:
 - É **gratuito** para começar
-- É **fácil** de configurar com apenas uma conta do GitHub
+- **Fácil** de configurar com apenas uma conta do GitHub
 - **Não exige cartão de crédito**
 - **Vários modelos** disponíveis para experimentação
 
@@ -60,7 +60,7 @@ Recomendamos usar [**Modelos do GitHub**](https://github.com/marketplace?type=mo
 
 Criamos um contêiner de desenvolvimento pré-configurado para minimizar o tempo de configuração e garantir que você tenha todas as ferramentas necessárias para este curso de IA Generativa em Java. Escolha sua abordagem de desenvolvimento preferida:
 
-### Opções de Configuração de Ambiente:
+### Opções de Configuração do Ambiente:
 
 #### Opção A: GitHub Codespaces (Recomendado)
 
@@ -71,8 +71,8 @@ Criamos um contêiner de desenvolvimento pré-configurado para minimizar o tempo
 2. Clique em **Code** → aba **Codespaces** → **...** → **New with options...**
 3. Use os padrões – isso selecionará a **Configuração do Contêiner de Desenvolvimento**: **Ambiente de Desenvolvimento Java para IA Generativa** criado para este curso
 4. Clique em **Create codespace**
-5. Aguarde ~2 minutos para o ambiente ficar pronto
-6. Prossiga para [Passo 2: Crie o Token do GitHub](../../../02-SetupDevEnvironment)
+5. Aguarde ~2 minutos para o ambiente estar pronto
+6. Prossiga para [Passo 2: Criar Token do GitHub](../../../02-SetupDevEnvironment)
 
 <img src="./images/codespaces.png" alt="Captura de tela: submenu Codespaces" width="50%">
 
@@ -98,7 +98,7 @@ Criamos um contêiner de desenvolvimento pré-configurado para minimizar o tempo
 4. Abra a pasta do repositório no VS Code
 5. Quando solicitado, clique em **Reopen in Container** (ou use `Ctrl+Shift+P` → "Dev Containers: Reopen in Container")
 6. Aguarde o contêiner ser construído e iniciado
-7. Prossiga para [Passo 2: Crie o Token do GitHub](../../../02-SetupDevEnvironment)
+7. Prossiga para [Passo 2: Criar Token do GitHub](../../../02-SetupDevEnvironment)
 
 <img src="./images/devcontainer.png" alt="Captura de tela: configuração do contêiner de desenvolvimento" width="50%">
 
@@ -116,19 +116,19 @@ Pré-requisitos:
 Passos:
 1. Clone este repositório para sua máquina local
 2. Abra o projeto no seu IDE
-3. Prossiga para [Passo 2: Crie o Token do GitHub](../../../02-SetupDevEnvironment)
+3. Prossiga para [Passo 2: Criar Token do GitHub](../../../02-SetupDevEnvironment)
 
 > **Dica Pro**: Se você tem uma máquina com especificações baixas, mas quer usar o VS Code localmente, utilize o GitHub Codespaces! Você pode conectar seu VS Code local a um Codespace hospedado na nuvem para o melhor dos dois mundos.
 
 <img src="./images/image-2.png" alt="Captura de tela: instância local do contêiner de desenvolvimento criada" width="50%">
 
-## Passo 2: Crie um Token de Acesso Pessoal do GitHub
+## Passo 2: Crie um Token de Acesso Pessoal no GitHub
 
 1. Navegue até [Configurações do GitHub](https://github.com/settings/profile) e selecione **Settings** no menu do seu perfil.
 2. Na barra lateral esquerda, clique em **Developer settings** (geralmente no final).
 3. Em **Personal access tokens**, clique em **Fine-grained tokens** (ou siga este [link direto](https://github.com/settings/personal-access-tokens)).
 4. Clique em **Generate new token**.
-5. Em "Token name", forneça um nome descritivo (ex.: `Token-Curso-GenAI-Java`).
+5. Em "Token name", forneça um nome descritivo (ex.: `GenAI-Java-Course-Token`).
 6. Defina uma data de expiração (recomendado: 7 dias para melhores práticas de segurança).
 7. Em "Resource owner", selecione sua conta de usuário.
 8. Em "Repository access", selecione os repositórios que você deseja usar com os Modelos do GitHub (ou "All repositories", se necessário).
@@ -140,7 +140,7 @@ Passos:
 
 ## Passo 3: Teste Sua Configuração com o Exemplo dos Modelos do GitHub
 
-Depois que seu ambiente de desenvolvimento estiver pronto, vamos testar a integração dos Modelos do GitHub com nosso aplicativo de exemplo em [`02-SetupDevEnvironment/examples/github-models`](../../../02-SetupDevEnvironment/examples/github-models).
+Depois que seu ambiente de desenvolvimento estiver pronto, vamos testar a integração com os Modelos do GitHub usando nosso aplicativo de exemplo em [`02-SetupDevEnvironment/examples/github-models`](../../../02-SetupDevEnvironment/examples/github-models).
 
 1. Abra o terminal no seu ambiente de desenvolvimento.
 2. Navegue até o exemplo dos Modelos do GitHub:
@@ -212,12 +212,12 @@ System.out.println("Response: " + response.choices().get(0).message().content().
 
 ## Resumo
 
-**Parabéns!** Você conseguiu:
+Ótimo! Agora você tem tudo configurado:
 
-- **Criar um Token de Acesso Pessoal do GitHub** com permissões adequadas para acesso a modelos de IA
-- **Configurar seu ambiente de desenvolvimento Java** usando Codespaces, contêineres de desenvolvimento ou instalação local
-- **Conectar-se aos Modelos do GitHub** usando o SDK Java do OpenAI para acesso gratuito ao desenvolvimento de IA
-- **Testar a integração** com um aplicativo de exemplo funcional que se comunica com modelos de IA
+- Criou um Token de Acesso Pessoal no GitHub com as permissões corretas para acesso aos modelos de IA
+- Configurou seu ambiente de desenvolvimento Java (seja Codespaces, contêineres ou local)
+- Conectou-se aos Modelos do GitHub usando o SDK Java do OpenAI para desenvolvimento de IA gratuito
+- Testou tudo com um exemplo simples que interage com modelos de IA
 
 ## Próximos Passos
 
@@ -230,10 +230,10 @@ Está enfrentando problemas? Aqui estão problemas comuns e soluções:
 - **Token não funciona?** 
   - Certifique-se de copiar o token inteiro sem espaços extras
   - Verifique se o token foi definido corretamente como uma variável de ambiente
-  - Confirme que seu token possui as permissões corretas (Models: Read and write)
+  - Confirme que seu token tem as permissões corretas (Models: Read and write)
 
 - **Maven não encontrado?** 
-  - Se estiver usando contêineres de desenvolvimento/Codespaces, o Maven deve estar pré-instalado
+  - Se estiver usando contêineres/Codespaces, o Maven deve estar pré-instalado
   - Para configuração local, certifique-se de que Java 21+ e Maven 3.9+ estão instalados
   - Tente `mvn --version` para verificar a instalação
 

@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "d45b8e2291ab1357592c904c103cbc81",
-  "translation_date": "2025-07-28T10:52:53+00:00",
+  "original_hash": "14c0a61ecc1cd2012a9c129236dfdf71",
+  "translation_date": "2025-07-29T15:37:40+00:00",
   "source_file": "04-PracticalSamples/README.md",
   "language_code": "da"
 }
@@ -10,10 +10,10 @@ CO_OP_TRANSLATOR_METADATA:
 # Praktiske Anvendelser & Projekter
 
 ## Hvad Du Vil Lære
-I dette afsnit vil vi demonstrere tre praktiske anvendelser, der viser udviklingsmønstre for generativ AI med Java:
+I denne sektion vil vi demonstrere tre praktiske anvendelser, der viser udviklingsmønstre for generativ AI med Java:
 - Opret en multi-modal Pet Story Generator, der kombinerer AI på klient- og serversiden
 - Implementer integration af lokale AI-modeller med Foundry Local Spring Boot-demoen
-- Udvikl en Model Context Protocol (MCP)-tjeneste med Calculator-eksemplet
+- Udvikl en Model Context Protocol (MCP)-tjeneste med eksemplet Calculator
 
 ## Indholdsfortegnelse
 
@@ -31,11 +31,11 @@ Dette kapitel præsenterer **eksempelprojekter**, der demonstrerer udviklingsmø
 
 ### Foundry Local Spring Boot Demo
 
-**[Foundry Local Spring Boot Demo](foundrylocal/README.md)** demonstrerer, hvordan man integrerer med lokale AI-modeller ved hjælp af **OpenAI Java SDK**. Den viser, hvordan man forbinder til **Phi-3.5-mini**-modellen, der kører på Foundry Local, hvilket gør det muligt at køre AI-applikationer uden afhængighed af cloud-tjenester.
+**[Foundry Local Spring Boot Demo](foundrylocal/README.md)** viser, hvordan man integrerer med lokale AI-modeller ved hjælp af **OpenAI Java SDK**. Den demonstrerer forbindelsen til **Phi-3.5-mini**-modellen, der kører på Foundry Local, hvilket gør det muligt at køre AI-applikationer uden afhængighed af cloud-tjenester.
 
 ### Pet Story Generator
 
-**[Pet Story Generator](petstory/README.md)** er en engagerende Spring Boot-webapplikation, der demonstrerer **multi-modal AI-behandling** til at generere kreative kæledyrshistorier. Den kombinerer AI-funktioner på klient- og serversiden ved hjælp af transformer.js til browserbaserede AI-interaktioner og OpenAI SDK til serverbehandling.
+**[Pet Story Generator](petstory/README.md)** er en engagerende Spring Boot-webapplikation, der demonstrerer **multi-modal AI-behandling** til at generere kreative historier om kæledyr. Den kombinerer AI-funktioner på klient- og serversiden ved hjælp af transformer.js til browserbaserede AI-interaktioner og OpenAI SDK til serverbehandling.
 
 ### MCP Calculator Service (Begynder-Venlig MCP Demo)
 
@@ -46,20 +46,20 @@ Dette kapitel præsenterer **eksempelprojekter**, der demonstrerer udviklingsmø
 Disse projekter er designet til at bygge videre på koncepter fra tidligere kapitler:
 
 1. **Start Simpelt**: Begynd med Foundry Local Spring Boot Demo for at forstå grundlæggende AI-integration med lokale modeller
-2. **Tilføj Interaktivitet**: Gå videre til Pet Story Generator for multi-modal AI og webbaserede interaktioner
-3. **Lær MCP-Grundprincipper**: Prøv MCP Calculator Service for at forstå de grundlæggende principper i Model Context Protocol
+2. **Tilføj Interaktivitet**: Gå videre til Pet Story Generator for at udforske multi-modal AI og webbaserede interaktioner
+3. **Lær MCP-Grundprincipper**: Prøv MCP Calculator Service for at forstå de fundamentale begreber i Model Context Protocol
 
 ## Opsummering
 
-**Tillykke!** Du har med succes:
+Godt arbejde! Du har nu udforsket nogle reelle anvendelser:
 
-- **Skabt multi-modale AI-oplevelser**, der kombinerer AI-behandling på klient- og serversiden
-- **Implementeret integration af lokale AI-modeller** ved hjælp af moderne Java-rammeværk og SDK'er
-- **Udviklet Model Context Protocol-tjenester**, der demonstrerer mønstre for værktøjsintegration
+- Multi-modale AI-oplevelser, der fungerer både i browseren og på serveren
+- Integration af lokale AI-modeller ved hjælp af moderne Java-rammeværk og SDK'er
+- Din første Model Context Protocol-tjeneste, der viser, hvordan værktøjer integreres med AI
 
 ## Næste Skridt
 
 [Kapitel 5: Ansvarlig Generativ AI](../05-ResponsibleGenAI/README.md)
 
 **Ansvarsfraskrivelse**:  
-Dette dokument er blevet oversat ved hjælp af AI-oversættelsestjenesten [Co-op Translator](https://github.com/Azure/co-op-translator). Selvom vi bestræber os på nøjagtighed, skal du være opmærksom på, at automatiserede oversættelser kan indeholde fejl eller unøjagtigheder. Det originale dokument på dets oprindelige sprog bør betragtes som den autoritative kilde. For kritisk information anbefales professionel menneskelig oversættelse. Vi påtager os intet ansvar for misforståelser eller fejltolkninger, der måtte opstå som følge af brugen af denne oversættelse.
+Dette dokument er blevet oversat ved hjælp af AI-oversættelsestjenesten [Co-op Translator](https://github.com/Azure/co-op-translator). Selvom vi bestræber os på nøjagtighed, skal du være opmærksom på, at automatiserede oversættelser kan indeholde fejl eller unøjagtigheder. Det originale dokument på dets oprindelige sprog bør betragtes som den autoritative kilde. For kritisk information anbefales professionel menneskelig oversættelse. Vi er ikke ansvarlige for eventuelle misforståelser eller fejltolkninger, der måtte opstå som følge af brugen af denne oversættelse.

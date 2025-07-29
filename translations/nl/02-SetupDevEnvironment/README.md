@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "c670445516e119888d8aaaa207bbee34",
-  "translation_date": "2025-07-27T13:15:44+00:00",
+  "original_hash": "c2a244c959e00da1ae1613d2ebfdac65",
+  "translation_date": "2025-07-29T15:46:42+00:00",
   "source_file": "02-SetupDevEnvironment/README.md",
   "language_code": "nl"
 }
@@ -16,7 +16,7 @@ CO_OP_TRANSLATOR_METADATA:
 ## Wat Je Gaat Leren
 
 - Een Java-ontwikkelomgeving instellen voor AI-toepassingen
-- Je voorkeursontwikkelomgeving kiezen en configureren (cloud-first met Codespaces, lokale dev-container of volledige lokale setup)
+- Je voorkeursontwikkelomgeving kiezen en configureren (cloud-first met Codespaces, lokale dev-container, of volledige lokale setup)
 - Je setup testen door verbinding te maken met GitHub-modellen
 
 ## Inhoudsopgave
@@ -35,7 +35,7 @@ CO_OP_TRANSLATOR_METADATA:
 
 ## Introductie
 
-In dit hoofdstuk begeleiden we je bij het instellen van een ontwikkelomgeving. We gebruiken **GitHub-modellen** als ons primaire voorbeeld omdat het gratis is, eenvoudig in te stellen met alleen een GitHub-account, geen creditcard vereist en toegang biedt tot meerdere modellen om mee te experimenteren.
+In dit hoofdstuk begeleiden we je bij het instellen van een ontwikkelomgeving. We gebruiken **GitHub-modellen** als ons primaire voorbeeld omdat het gratis is, eenvoudig in te stellen met alleen een GitHub-account, geen creditcard vereist, en toegang biedt tot meerdere modellen om mee te experimenteren.
 
 **Geen lokale setup nodig!** Je kunt direct beginnen met coderen via GitHub Codespaces, dat een volledige ontwikkelomgeving in je browser biedt.
 
@@ -118,9 +118,9 @@ Stappen:
 2. Open het project in je IDE
 3. Ga verder naar [Stap 2: Maak GitHub Token](../../../02-SetupDevEnvironment)
 
-> **Pro Tip**: Als je een computer met lage specificaties hebt maar toch VS Code lokaal wilt gebruiken, gebruik dan GitHub Codespaces! Je kunt je lokale VS Code verbinden met een cloud-hosted Codespace voor het beste van beide werelden.
+> **Pro Tip**: Als je een computer met lage specificaties hebt maar toch lokaal VS Code wilt gebruiken, gebruik dan GitHub Codespaces! Je kunt je lokale VS Code verbinden met een cloud-hosted Codespace voor het beste van beide werelden.
 
-<img src="./images/image-2.png" alt="Screenshot: lokaal gemaakte devcontainer-instantie" width="50%">
+<img src="./images/image-2.png" alt="Screenshot: lokaal devcontainer exemplaar gemaakt" width="50%">
 
 ## Stap 2: Maak een GitHub Personal Access Token
 
@@ -128,17 +128,17 @@ Stappen:
 2. Klik in de linkerzijbalk op **Developer settings** (meestal onderaan).
 3. Onder **Personal access tokens**, klik op **Fine-grained tokens** (of volg deze directe [link](https://github.com/settings/personal-access-tokens)).
 4. Klik op **Genereer nieuw token**.
-5. Geef onder "Tokennaam" een beschrijvende naam op (bijv. `GenAI-Java-Course-Token`).
+5. Geef onder "Token name" een beschrijvende naam op (bijv. `GenAI-Java-Course-Token`).
 6. Stel een vervaldatum in (aanbevolen: 7 dagen voor beveiligingsbest practices).
-7. Onder "Resource owner" selecteer je je gebruikersaccount.
-8. Onder "Repository access" selecteer je de repositories die je wilt gebruiken met GitHub-modellen (of "Alle repositories" indien nodig).
-9. Onder "Repository permissions" zoek je **Models** en stel je deze in op **Lezen en schrijven**.
+7. Onder "Resource owner", selecteer je gebruikersaccount.
+8. Onder "Repository access", selecteer de repositories die je wilt gebruiken met GitHub-modellen (of "Alle repositories" indien nodig).
+9. Onder "Repository permissions", zoek **Models** en stel deze in op **Lezen en schrijven**.
 10. Klik op **Genereer token**.
-11. **Kopieer en sla je token nu op** – je ziet het niet meer terug!
+11. **Kopieer en sla je token nu op** – je ziet het niet opnieuw!
 
 > **Beveiligingstip**: Gebruik de minimaal vereiste scope en de kortst mogelijke vervaltijd voor je toegangstokens.
 
-## Stap 3: Test Je Setup met het GitHub-modellenvoorbeeld
+## Stap 3: Test Je Setup met het GitHub-modellen Voorbeeld
 
 Zodra je ontwikkelomgeving klaar is, testen we de GitHub-modellenintegratie met onze voorbeeldapplicatie in [`02-SetupDevEnvironment/examples/github-models`](../../../02-SetupDevEnvironment/examples/github-models).
 
@@ -171,9 +171,9 @@ Sending request to GitHub Models...
 Response: Hello World!
 ```
 
-### Begrijpen van de Voorbeeldcode
+### Het Voorbeeld Begrijpen
 
-Laten we eerst begrijpen wat we zojuist hebben uitgevoerd. Het voorbeeld onder `examples/github-models` gebruikt de OpenAI Java SDK om verbinding te maken met GitHub-modellen:
+Laten we eerst begrijpen wat we zojuist hebben uitgevoerd. Het voorbeeld in `examples/github-models` gebruikt de OpenAI Java SDK om verbinding te maken met GitHub-modellen:
 
 **Wat deze code doet:**
 - **Maakt verbinding** met GitHub-modellen met behulp van je persoonlijke toegangstoken
@@ -212,12 +212,12 @@ System.out.println("Response: " + response.choices().get(0).message().content().
 
 ## Samenvatting
 
-**Gefeliciteerd!** Je hebt met succes:
+Goed gedaan! Je hebt nu alles ingesteld:
 
-- **Een GitHub Personal Access Token gemaakt** met de juiste rechten voor AI-modeltoegang
-- **Je Java-ontwikkelomgeving ingesteld** met Codespaces, dev-containers of lokale installatie
-- **Verbonden met GitHub-modellen** met behulp van de OpenAI Java SDK voor gratis AI-ontwikkeltoegang
-- **De integratie getest** met een werkende voorbeeldapplicatie die communiceert met AI-modellen
+- Een GitHub Personal Access Token gemaakt met de juiste rechten voor AI-modeltoegang
+- Je Java-ontwikkelomgeving draaiend gekregen (of dat nu Codespaces, dev-containers of lokaal is)
+- Verbinding gemaakt met GitHub-modellen met behulp van de OpenAI Java SDK voor gratis AI-ontwikkeling
+- Alles getest met een eenvoudig voorbeeld dat communiceert met AI-modellen
 
 ## Volgende Stappen
 
@@ -240,17 +240,17 @@ Heb je problemen? Hier zijn veelvoorkomende problemen en oplossingen:
 - **Verbindingsproblemen?** 
   - Controleer je internetverbinding
   - Controleer of GitHub toegankelijk is vanaf je netwerk
-  - Zorg ervoor dat je niet achter een firewall zit die het GitHub-modellenendpoint blokkeert
+  - Zorg ervoor dat je niet achter een firewall zit die het GitHub-modellen eindpunt blokkeert
 
 - **Dev-container start niet?** 
-  - Zorg ervoor dat Docker Desktop actief is (voor lokale ontwikkeling)
+  - Zorg ervoor dat Docker Desktop draait (voor lokale ontwikkeling)
   - Probeer de container opnieuw te bouwen: `Ctrl+Shift+P` → "Dev Containers: Rebuild Container"
 
 - **Applicatie compileerfouten?**
   - Zorg ervoor dat je in de juiste map zit: `02-SetupDevEnvironment/examples/github-models`
-  - Probeer schoonmaken en opnieuw bouwen: `mvn clean compile`
+  - Probeer schoon te maken en opnieuw te bouwen: `mvn clean compile`
 
 > **Hulp nodig?**: Nog steeds problemen? Open een issue in de repository en we helpen je verder.
 
 **Disclaimer**:  
-Dit document is vertaald met behulp van de AI-vertalingsservice [Co-op Translator](https://github.com/Azure/co-op-translator). Hoewel we streven naar nauwkeurigheid, dient u zich ervan bewust te zijn dat geautomatiseerde vertalingen fouten of onnauwkeurigheden kunnen bevatten. Het originele document in de oorspronkelijke taal moet worden beschouwd als de gezaghebbende bron. Voor cruciale informatie wordt professionele menselijke vertaling aanbevolen. Wij zijn niet aansprakelijk voor eventuele misverstanden of verkeerde interpretaties die voortvloeien uit het gebruik van deze vertaling.
+Dit document is vertaald met behulp van de AI-vertalingsservice [Co-op Translator](https://github.com/Azure/co-op-translator). Hoewel we streven naar nauwkeurigheid, willen we u erop wijzen dat geautomatiseerde vertalingen fouten of onnauwkeurigheden kunnen bevatten. Het originele document in de oorspronkelijke taal moet worden beschouwd als de gezaghebbende bron. Voor kritieke informatie wordt professionele menselijke vertaling aanbevolen. Wij zijn niet aansprakelijk voor misverstanden of verkeerde interpretaties die voortvloeien uit het gebruik van deze vertaling.

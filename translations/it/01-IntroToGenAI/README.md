@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "006866db93a268a8769bb55f2e324291",
-  "translation_date": "2025-07-28T10:43:28+00:00",
+  "original_hash": "75bfb080ca725e8a9aa9c80cae25fba1",
+  "translation_date": "2025-07-29T15:17:28+00:00",
   "source_file": "01-IntroToGenAI/README.md",
   "language_code": "it"
 }
@@ -34,7 +34,7 @@ Benvenuto al primo capitolo di AI Generativa per Principianti - Edizione Java! Q
 
 ### Un rapido ripasso sui concetti di AI Generativa
 
-L'AI Generativa è un tipo di intelligenza artificiale che crea nuovi contenuti, come testo, immagini o codice, basandosi su schemi e relazioni appresi dai dati. I modelli di AI generativa possono generare risposte simili a quelle umane, comprendere il contesto e talvolta creare contenuti che sembrano umani.
+L'AI generativa è un tipo di intelligenza artificiale che crea nuovi contenuti, come testo, immagini o codice, basandosi su schemi e relazioni appresi dai dati. I modelli di AI generativa possono generare risposte simili a quelle umane, comprendere il contesto e talvolta creare contenuti che sembrano umani.
 
 Sviluppando applicazioni AI in Java, lavorerai con **modelli di AI generativa** per creare contenuti. Alcune capacità dei modelli di AI generativa includono:
 
@@ -81,9 +81,9 @@ La tokenizzazione è il processo di suddivisione del testo in queste unità più
 
 ![Figura: Embedding](../../../translated_images/embedding.398e50802c0037f931c725fd0113747831ea7776434d2b3ba3eb2e7a1a20ab1f.it.png)
 
-  In Java, puoi generare embedding utilizzando l'OpenAI SDK o altre librerie che supportano la generazione di embedding. Questi embedding sono essenziali per attività come la ricerca semantica, dove vuoi trovare contenuti simili basati sul significato piuttosto che su corrispondenze testuali esatte.
+  In Java, puoi generare embedding utilizzando l'OpenAI SDK o altre librerie che supportano la generazione di embedding. Questi embedding sono essenziali per attività come la ricerca semantica, dove vuoi trovare contenuti simili basandoti sul significato piuttosto che su corrispondenze testuali esatte.
 
-- **Database vettoriali**: I database vettoriali sono sistemi di archiviazione specializzati ottimizzati per gli embedding. Consentono una ricerca per similarità efficiente e sono cruciali per i pattern di Generazione Arricchita dal Recupero (RAG), dove è necessario trovare informazioni rilevanti da grandi dataset basandosi sulla similarità semantica piuttosto che su corrispondenze esatte.
+- **Database vettoriali**: I database vettoriali sono sistemi di archiviazione specializzati ottimizzati per gli embedding. Consentono una ricerca per similarità efficiente e sono cruciali per i pattern di Retrieval-Augmented Generation (RAG), dove è necessario trovare informazioni rilevanti da grandi dataset basandosi sulla similarità semantica piuttosto che su corrispondenze esatte.
 
 ![Figura: Architettura di un database vettoriale che mostra come gli embedding vengono archiviati e recuperati per la ricerca di similarità.](../../../translated_images/vector.f12f114934e223dff971b01ca371e85a41a540f3af2ffdd49fb3acec6c6652f2.it.png)
 
@@ -118,7 +118,7 @@ Ecco una tabella di riferimento rapido che mostra quale SDK viene utilizzato neg
 
 #### OpenAI Java SDK
 
-L'OpenAI SDK è la libreria Java ufficiale per l'API di OpenAI. Fornisce un'interfaccia semplice e coerente per interagire con i modelli di OpenAI, rendendo facile integrare le capacità AI nelle applicazioni Java. L'esempio GitHub Models del Capitolo 2, l'applicazione Pet Story del Capitolo 4 e l'esempio Foundry Local dimostrano l'approccio con l'OpenAI SDK.
+L'OpenAI SDK è la libreria Java ufficiale per l'API di OpenAI. Fornisce un'interfaccia semplice e coerente per interagire con i modelli di OpenAI, rendendo facile integrare le capacità AI nelle applicazioni Java. L'esempio GitHub Models del Capitolo 2, l'applicazione Pet Story e l'esempio Foundry Local del Capitolo 4 dimostrano l'approccio con l'OpenAI SDK.
 
 #### Spring AI
 
@@ -140,15 +140,15 @@ La libreria client Azure OpenAI per Java è un adattamento delle API REST di Ope
 
 ## Riepilogo
 
-**Congratulazioni!** Hai imparato con successo:
+Ecco cosa hai imparato:
 
-- **I fondamenti dell'AI Generativa**, inclusi LLM, prompt engineering, token, embedding e database vettoriali
-- **Il confronto tra strumenti di sviluppo AI in Java**, come Azure OpenAI SDK, Spring AI e OpenAI Java SDK
-- **La scoperta del Model Context Protocol** e del suo ruolo nella comunicazione tra agenti AI
+- I concetti fondamentali dell'AI generativa - dagli LLM al prompt engineering, ai token, embedding e database vettoriali
+- Le opzioni di strumenti per lo sviluppo AI in Java: Azure OpenAI SDK, Spring AI e OpenAI Java SDK
+- Cos'è il Model Context Protocol e come consente agli agenti AI di lavorare con strumenti esterni
 
 ## Prossimi Passi
 
 [Capitolo 2: Configurazione dell'Ambiente di Sviluppo](../02-SetupDevEnvironment/README.md)
 
 **Disclaimer**:  
-Questo documento è stato tradotto utilizzando il servizio di traduzione automatica [Co-op Translator](https://github.com/Azure/co-op-translator). Sebbene ci impegniamo per garantire l'accuratezza, si prega di notare che le traduzioni automatiche possono contenere errori o imprecisioni. Il documento originale nella sua lingua nativa dovrebbe essere considerato la fonte autorevole. Per informazioni critiche, si raccomanda una traduzione professionale effettuata da un traduttore umano. Non siamo responsabili per eventuali fraintendimenti o interpretazioni errate derivanti dall'uso di questa traduzione.
+Questo documento è stato tradotto utilizzando il servizio di traduzione automatica [Co-op Translator](https://github.com/Azure/co-op-translator). Sebbene ci impegniamo per garantire l'accuratezza, si prega di notare che le traduzioni automatiche potrebbero contenere errori o imprecisioni. Il documento originale nella sua lingua nativa dovrebbe essere considerato la fonte autorevole. Per informazioni critiche, si raccomanda una traduzione professionale effettuata da un traduttore umano. Non siamo responsabili per eventuali incomprensioni o interpretazioni errate derivanti dall'uso di questa traduzione.

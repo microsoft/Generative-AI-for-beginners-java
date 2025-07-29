@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "b4c05c53b67571aee42e9532404f2fb8",
-  "translation_date": "2025-07-28T10:51:04+00:00",
+  "original_hash": "63b6426b88f6f56398ca3f1fbfc30889",
+  "translation_date": "2025-07-29T15:32:12+00:00",
   "source_file": "README.md",
   "language_code": "sv"
 }
@@ -32,8 +32,8 @@ CO_OP_TRANSLATOR_METADATA:
 ## Kursstruktur & Inlärningsväg
 
 ### **Kapitel 1: Introduktion till Generativ AI**
-- **Grundläggande Koncept**: Förstå stora språkmodeller, tokens, embeddings och AI-förmågor
-- **Java AI Ekosystem**: Översikt av Spring AI och OpenAI SDKs
+- **Grundläggande Koncept**: Förstå stora språkmodeller, tokens, inbäddningar och AI-förmågor
+- **Java AI Ekosystem**: Översikt av Spring AI och OpenAI SDK:er
 - **Model Context Protocol**: Introduktion till MCP och dess roll i AI-agentkommunikation
 - **Praktiska Tillämpningar**: Verkliga scenarier inklusive chattbotar och innehållsgenerering
 - **[→ Börja Kapitel 1](./01-IntroToGenAI/README.md)**
@@ -47,9 +47,9 @@ CO_OP_TRANSLATOR_METADATA:
 
 ### **Kapitel 3: Kärntekniker för Generativ AI**
 - **Prompt Engineering**: Tekniker för optimala AI-modellsvar
-- **Embeddings & Vektoroperationer**: Implementera semantisk sökning och likhetsmatchning
+- **Inbäddningar & Vektoroperationer**: Implementera semantisk sökning och likhetsmatchning
 - **Retrieval-Augmented Generation (RAG)**: Kombinera AI med dina egna datakällor
-- **Function Calling**: Utöka AI-förmågor med anpassade verktyg och plugins
+- **Funktionsanrop**: Utöka AI-förmågor med anpassade verktyg och plugins
 - **[→ Börja Kapitel 3](./03-CoreGenerativeAITechniques/README.md)**
 
 ### **Kapitel 4: Praktiska Tillämpningar & Projekt**
@@ -59,8 +59,8 @@ CO_OP_TRANSLATOR_METADATA:
 - **[→ Börja Kapitel 4](./04-PracticalSamples/README.md)**
 
 ### **Kapitel 5: Ansvarsfull AI-utveckling**
-- **GitHub Models Säkerhet**: Testa inbyggd innehållsfiltrering och säkerhetsmekanismer
-- **Ansvarsfull AI Demo**: Praktiskt exempel som visar hur AI-säkerhetsfilter fungerar
+- **GitHub Models Säkerhet**: Testa inbyggd innehållsfiltrering och säkerhetsmekanismer (hårda blockeringar och mjuka avslag)
+- **Ansvarsfull AI Demo**: Praktiskt exempel som visar hur moderna AI-säkerhetssystem fungerar i praktiken
 - **Bästa Praxis**: Viktiga riktlinjer för etisk AI-utveckling och implementering
 - **[→ Börja Kapitel 5](./05-ResponsibleGenAI/README.md)**
 
@@ -79,7 +79,7 @@ CO_OP_TRANSLATOR_METADATA:
 - [XR-utveckling för Nybörjare](https://github.com/microsoft/xr-development-for-beginners)
 - [Bemästra GitHub Copilot för AI-parprogrammering](https://aka.ms/GitHubCopilotAI)
 - [Bemästra GitHub Copilot för C#/.NET-utvecklare](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers)
-- [Välj Ditt Eget Copilot-Äventyr](https://github.com/microsoft/CopilotAdventures)
+- [Välj ditt eget Copilot-äventyr](https://github.com/microsoft/CopilotAdventures)
 - [RAG Chattapp med Azure AI-tjänster](https://github.com/Azure-Samples/azure-search-openai-demo-java)
 
 **Ansvarsfriskrivning**:  

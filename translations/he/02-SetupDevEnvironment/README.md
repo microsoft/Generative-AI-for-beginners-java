@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "c670445516e119888d8aaaa207bbee34",
-  "translation_date": "2025-07-27T13:16:42+00:00",
+  "original_hash": "c2a244c959e00da1ae1613d2ebfdac65",
+  "translation_date": "2025-07-29T15:49:42+00:00",
   "source_file": "02-SetupDevEnvironment/README.md",
   "language_code": "he"
 }
@@ -16,8 +16,8 @@ CO_OP_TRANSLATOR_METADATA:
 ## מה תלמדו
 
 - להגדיר סביבת פיתוח Java עבור יישומי AI
-- לבחור ולהגדיר את סביבת הפיתוח המועדפת עליכם (קודם כל בענן עם Codespaces, מכולת פיתוח מקומית, או התקנה מלאה מקומית)
-- לבדוק את ההגדרה שלכם על ידי חיבור למודלים של GitHub
+- לבחור ולהגדיר את סביבת הפיתוח המועדפת עליכם (קודם כל בענן עם Codespaces, מכולת פיתוח מקומית, או התקנה מקומית מלאה)
+- לבדוק את ההגדרה שלכם על ידי התחברות למודלים של GitHub
 
 ## תוכן עניינים
 
@@ -47,7 +47,7 @@ CO_OP_TRANSLATOR_METADATA:
 - **אין צורך בכרטיס אשראי**
 - **מספר מודלים** זמינים לניסויים
 
-> **הערה**: למודלים של GitHub המשמשים בהדרכה זו יש מגבלות חינמיות:
+> **הערה**: למודלים של GitHub המשמשים באימון זה יש מגבלות חינמיות:
 > - 15 בקשות לדקה (150 ביום)
 > - ~8,000 מילים נכנסות, ~4,000 מילים יוצאות לכל בקשה
 > - 5 בקשות בו-זמניות
@@ -66,17 +66,17 @@ CO_OP_TRANSLATOR_METADATA:
 
 **התחילו לכתוב קוד תוך 2 דקות - אין צורך בהגדרה מקומית!**
 
-1. בצעו Fork למאגר זה לחשבון GitHub שלכם  
+1. עשו Fork למאגר זה לחשבון GitHub שלכם  
    > **הערה**: אם ברצונכם לערוך את ההגדרה הבסיסית, עיינו ב-[תצורת מכולת הפיתוח](../../../.devcontainer/devcontainer.json)
 2. לחצו על **Code** → לשונית **Codespaces** → **...** → **New with options...**
-3. השתמשו בברירות המחדל – זה יבחר את **תצורת מכולת הפיתוח**: **Generative AI Java Development Environment** מכולת פיתוח מותאמת שנוצרה עבור קורס זה
+3. השתמשו בברירות המחדל – זה יבחר את **תצורת מכולת הפיתוח**: **Generative AI Java Development Environment** מכולת פיתוח מותאמת אישית שנוצרה עבור קורס זה
 4. לחצו על **Create codespace**
 5. המתינו ~2 דקות עד שהסביבה תהיה מוכנה
 6. המשיכו ל-[שלב 2: יצירת אסימון GitHub](../../../02-SetupDevEnvironment)
 
 <img src="./images/codespaces.png" alt="צילום מסך: תפריט משנה של Codespaces" width="50%">
 
-<img src="./images/image.png" alt="צילום מסך: New with options" width="50%">
+<img src="./images/image.png" alt="צילום מסך: חדש עם אפשרויות" width="50%">
 
 <img src="./images/codespaces-create.png" alt="צילום מסך: אפשרויות יצירת Codespace" width="50%">
 
@@ -91,9 +91,9 @@ CO_OP_TRANSLATOR_METADATA:
 
 **עבור מפתחים שמעדיפים פיתוח מקומי עם Docker**
 
-1. בצעו Fork ו-clone למאגר זה למחשב המקומי שלכם  
+1. עשו Fork ו-clone למאגר זה למחשב המקומי שלכם  
    > **הערה**: אם ברצונכם לערוך את ההגדרה הבסיסית, עיינו ב-[תצורת מכולת הפיתוח](../../../.devcontainer/devcontainer.json)
-2. התקינו את [Docker Desktop](https://www.docker.com/products/docker-desktop/) ואת [VS Code](https://code.visualstudio.com/)
+2. התקינו [Docker Desktop](https://www.docker.com/products/docker-desktop/) ו-[VS Code](https://code.visualstudio.com/)
 3. התקינו את [הרחבת Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) ב-VS Code
 4. פתחו את תיקיית המאגר ב-VS Code
 5. כאשר תתבקשו, לחצו על **Reopen in Container** (או השתמשו ב-`Ctrl+Shift+P` → "Dev Containers: Reopen in Container")
@@ -114,11 +114,11 @@ CO_OP_TRANSLATOR_METADATA:
 - [VS Code](https://code.visualstudio.com) או IDE מועדף
 
 שלבים:
-1. בצעו clone למאגר זה למחשב המקומי שלכם
+1. עשו Clone למאגר זה למחשב המקומי שלכם
 2. פתחו את הפרויקט ב-IDE שלכם
 3. המשיכו ל-[שלב 2: יצירת אסימון GitHub](../../../02-SetupDevEnvironment)
 
-> **טיפ מקצועי**: אם יש לכם מחשב עם מפרט נמוך אך אתם רוצים להשתמש ב-VS Code מקומי, השתמשו ב-GitHub Codespaces! ניתן לחבר את VS Code המקומי שלכם ל-Codespace בענן כדי ליהנות משני העולמות.
+> **טיפ מקצועי**: אם יש לכם מחשב עם מפרט נמוך אך רוצים להשתמש ב-VS Code מקומי, השתמשו ב-GitHub Codespaces! ניתן לחבר את VS Code המקומי שלכם ל-Codespace בענן כדי ליהנות משני העולמות.
 
 <img src="./images/image-2.png" alt="צילום מסך: יצירת מופע מכולת פיתוח מקומי" width="50%">
 
@@ -212,12 +212,12 @@ System.out.println("Response: " + response.choices().get(0).message().content().
 
 ## סיכום
 
-**ברכות!** הצלחתם:
+מעולה! עכשיו יש לכם הכל מוגדר:
 
-- **ליצור אסימון גישה אישי ל-GitHub** עם הרשאות מתאימות לגישה למודל AI
-- **להגדיר את סביבת הפיתוח שלכם ב-Java** באמצעות Codespaces, מכולות פיתוח, או התקנה מקומית
-- **להתחבר למודלים של GitHub** באמצעות SDK של OpenAI Java לגישה חינמית לפיתוח AI
-- **לבדוק את האינטגרציה** עם יישום דוגמה עובד שמתקשר עם מודלים של AI
+- יצרתם אסימון גישה אישי ל-GitHub עם ההרשאות הנכונות לגישה למודל AI
+- הפעלתם את סביבת הפיתוח שלכם ב-Java (בין אם זה Codespaces, מכולות פיתוח, או מקומי)
+- התחברתם למודלים של GitHub באמצעות SDK של OpenAI Java לפיתוח AI חינמי
+- בדקתם שהכל עובד עם דוגמה פשוטה שמתקשרת עם מודלים של AI
 
 ## השלבים הבאים
 
@@ -253,4 +253,4 @@ System.out.println("Response: " + response.choices().get(0).message().content().
 > **זקוקים לעזרה?**: עדיין יש בעיות? פתחו בעיה במאגר ואנו נעזור לכם.
 
 **כתב ויתור**:  
-מסמך זה תורגם באמצעות שירות תרגום מבוסס בינה מלאכותית [Co-op Translator](https://github.com/Azure/co-op-translator). למרות שאנו שואפים לדיוק, יש לקחת בחשבון שתרגומים אוטומטיים עשויים להכיל שגיאות או אי דיוקים. המסמך המקורי בשפתו המקורית צריך להיחשב כמקור הסמכותי. עבור מידע קריטי, מומלץ להשתמש בתרגום מקצועי על ידי אדם. אנו לא נושאים באחריות לאי הבנות או לפרשנויות שגויות הנובעות משימוש בתרגום זה.
+מסמך זה תורגם באמצעות שירות תרגום מבוסס בינה מלאכותית [Co-op Translator](https://github.com/Azure/co-op-translator). למרות שאנו שואפים לדיוק, יש לקחת בחשבון שתרגומים אוטומטיים עשויים להכיל שגיאות או אי דיוקים. המסמך המקורי בשפתו המקורית צריך להיחשב כמקור סמכותי. עבור מידע קריטי, מומלץ להשתמש בתרגום מקצועי על ידי אדם. איננו נושאים באחריות לאי הבנות או לפרשנויות שגויות הנובעות משימוש בתרגום זה.

@@ -1,17 +1,17 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "c670445516e119888d8aaaa207bbee34",
-  "translation_date": "2025-07-27T12:47:09+00:00",
+  "original_hash": "c2a244c959e00da1ae1613d2ebfdac65",
+  "translation_date": "2025-07-29T14:10:19+00:00",
   "source_file": "02-SetupDevEnvironment/README.md",
   "language_code": "en"
 }
 -->
 # Setting Up the Development Environment for Generative AI for Java
 
-> **Quick Start**: Code in the Cloud in 2 minutes - Jump to [GitHub Codespaces Setup](../../../02-SetupDevEnvironment) - no local installation required and uses GitHub models!
+> **Quick Start**: Code in the Cloud in 2 minutes - Jump to [GitHub Codespaces Setup](../../../02-SetupDevEnvironment) - no local installation required and uses GitHub Models!
 
-> **Interested in Azure OpenAI?** See our [Azure OpenAI Setup Guide](getting-started-azure-openai.md) with steps to create a new Azure OpenAI resource.
+> **Interested in Azure OpenAI?** See our [Azure OpenAI Setup Guide](getting-started-azure-openai.md) for steps to create a new Azure OpenAI resource.
 
 ## What You'll Learn
 
@@ -35,7 +35,7 @@ CO_OP_TRANSLATOR_METADATA:
 
 ## Introduction
 
-This chapter will walk you through setting up a development environment. We'll use **GitHub Models** as our primary example because it's free, easy to set up with just a GitHub account, requires no credit card, and provides access to multiple models for experimentation.
+This chapter will guide you through setting up a development environment. We'll use **GitHub Models** as our primary example because it's free, easy to set up with just a GitHub account, requires no credit card, and provides access to multiple models for experimentation.
 
 **No local setup required!** You can start coding immediately using GitHub Codespaces, which provides a full development environment in your browser.
 
@@ -66,8 +66,8 @@ We've created a preconfigured development container to minimize setup time and e
 
 **Start coding in 2 minutes - no local setup required!**
 
-1. Fork this repository to your GitHub account
-   > **Note**: If you want to edit the basic config, please check the [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
+1. Fork this repository to your GitHub account  
+   > **Note**: If you want to edit the basic config, check the [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
 2. Click **Code** → **Codespaces** tab → **...** → **New with options...**
 3. Use the defaults – this will select the **Dev container configuration**: **Generative AI Java Development Environment** custom devcontainer created for this course
 4. Click **Create codespace**
@@ -91,8 +91,8 @@ We've created a preconfigured development container to minimize setup time and e
 
 **For developers who prefer local development with Docker**
 
-1. Fork and clone this repository to your local machine
-   > **Note**: If you want to edit the basic config, please check the [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
+1. Fork and clone this repository to your local machine  
+   > **Note**: If you want to edit the basic config, check the [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
 2. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and [VS Code](https://code.visualstudio.com/)
 3. Install the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) in VS Code
 4. Open the repository folder in VS Code
@@ -212,12 +212,12 @@ System.out.println("Response: " + response.choices().get(0).message().content().
 
 ## Summary
 
-**Congratulations!** You have successfully:
+Great! You now have everything set up:
 
-- **Created a GitHub Personal Access Token** with proper permissions for AI model access
-- **Set up your Java development environment** using Codespaces, dev containers, or local installation
-- **Connected to GitHub Models** using the OpenAI Java SDK for free AI development access
-- **Tested the integration** with a working example application that communicates with AI models
+- Created a GitHub Personal Access Token with the right permissions for AI model access
+- Got your Java development environment running (whether that's Codespaces, dev containers, or local)
+- Connected to GitHub Models using the OpenAI Java SDK for free AI development
+- Tested it all works with a simple example that talks to AI models
 
 ## Next Steps
 
@@ -253,4 +253,4 @@ Having issues? Here are common problems and solutions:
 > **Need help?**: Still having issues? Open an issue in the repository and we'll help you out.
 
 **Disclaimer**:  
-This document has been translated using the AI translation service [Co-op Translator](https://github.com/Azure/co-op-translator). While we strive for accuracy, please note that automated translations may contain errors or inaccuracies. The original document in its native language should be regarded as the authoritative source. For critical information, professional human translation is recommended. We are not responsible for any misunderstandings or misinterpretations resulting from the use of this translation.
+This document has been translated using the AI translation service [Co-op Translator](https://github.com/Azure/co-op-translator). While we aim for accuracy, please note that automated translations may include errors or inaccuracies. The original document in its native language should be regarded as the authoritative source. For critical information, professional human translation is advised. We are not responsible for any misunderstandings or misinterpretations resulting from the use of this translation.

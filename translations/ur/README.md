@@ -1,15 +1,15 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "b4c05c53b67571aee42e9532404f2fb8",
-  "translation_date": "2025-07-28T10:22:04+00:00",
+  "original_hash": "63b6426b88f6f56398ca3f1fbfc30889",
+  "translation_date": "2025-07-29T14:30:14+00:00",
   "source_file": "README.md",
   "language_code": "ur"
 }
 -->
 # ابتدائی افراد کے لیے جنریٹو اے آئی - جاوا ایڈیشن
 
-**وقت کی ضرورت**: یہ ورکشاپ مکمل طور پر آن لائن مکمل کی جا سکتی ہے، مقامی سیٹ اپ کی ضرورت نہیں۔ ماحول کی ترتیب میں 2 منٹ لگتے ہیں، جبکہ نمونوں کو دریافت کرنے میں 1-3 گھنٹے لگ سکتے ہیں، یہ آپ کی دلچسپی کی گہرائی پر منحصر ہے۔
+**وقت کی ضرورت**: یہ ورکشاپ مکمل طور پر آن لائن مکمل کی جا سکتی ہے، بغیر کسی مقامی سیٹ اپ کے۔ ماحول کی ترتیب میں 2 منٹ لگتے ہیں، جبکہ نمونوں کو دریافت کرنے میں 1-3 گھنٹے لگ سکتے ہیں، یہ آپ کی دلچسپی کی گہرائی پر منحصر ہے۔
 
 > **فوری آغاز**
 
@@ -17,12 +17,12 @@ CO_OP_TRANSLATOR_METADATA:
 2. **Code** پر کلک کریں → **Codespaces** ٹیب → **...** → **New with options...**
 3. ڈیفالٹس استعمال کریں – یہ اس کورس کے لیے تیار کردہ ڈیولپمنٹ کنٹینر کو منتخب کرے گا
 4. **Create codespace** پر کلک کریں
-5. ماحول تیار ہونے کے لیے تقریباً 2 منٹ انتظار کریں
-6. سیدھے [پہلے مثال](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token) پر جائیں
+5. ماحول کے تیار ہونے کے لیے تقریباً 2 منٹ انتظار کریں
+6. سیدھا [پہلے مثال](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token) پر جائیں
 
 ## کثیر زبان کی حمایت
 
-### GitHub ایکشن کے ذریعے سپورٹ (خودکار اور ہمیشہ تازہ ترین)
+### GitHub Action کے ذریعے سپورٹ (خودکار اور ہمیشہ تازہ ترین)
 
 [French](../fr/README.md) | [Spanish](../es/README.md) | [German](../de/README.md) | [Russian](../ru/README.md) | [Arabic](../ar/README.md) | [Persian (Farsi)](../fa/README.md) | [Urdu](./README.md) | [Chinese (Simplified)](../zh/README.md) | [Chinese (Traditional, Macau)](../mo/README.md) | [Chinese (Traditional, Hong Kong)](../hk/README.md) | [Chinese (Traditional, Taiwan)](../tw/README.md) | [Japanese](../ja/README.md) | [Korean](../ko/README.md) | [Hindi](../hi/README.md) | [Bengali](../bn/README.md) | [Marathi](../mr/README.md) | [Nepali](../ne/README.md) | [Punjabi (Gurmukhi)](../pa/README.md) | [Portuguese (Portugal)](../pt/README.md) | [Portuguese (Brazil)](../br/README.md) | [Italian](../it/README.md) | [Polish](../pl/README.md) | [Turkish](../tr/README.md) | [Greek](../el/README.md) | [Thai](../th/README.md) | [Swedish](../sv/README.md) | [Danish](../da/README.md) | [Norwegian](../no/README.md) | [Finnish](../fi/README.md) | [Dutch](../nl/README.md) | [Hebrew](../he/README.md) | [Vietnamese](../vi/README.md) | [Indonesian](../id/README.md) | [Malay](../ms/README.md) | [Tagalog (Filipino)](../tl/README.md) | [Swahili](../sw/README.md) | [Hungarian](../hu/README.md) | [Czech](../cs/README.md) | [Slovak](../sk/README.md) | [Romanian](../ro/README.md) | [Bulgarian](../bg/README.md) | [Serbian (Cyrillic)](../sr/README.md) | [Croatian](../hr/README.md) | [Slovenian](../sl/README.md) | [Ukrainian](../uk/README.md) | [Burmese (Myanmar)](../my/README.md)
 
@@ -44,21 +44,21 @@ CO_OP_TRANSLATOR_METADATA:
 
 ### **باب 3: جنریٹو اے آئی کی بنیادی تکنیکیں**
 - **پرومپٹ انجینئرنگ**: اے آئی ماڈل کے بہترین جوابات کے لیے تکنیکیں
-- **ایمبیڈنگز اور ویکٹر آپریشنز**: سیمینٹک سرچ اور مماثلت کا نفاذ
-- **ریٹریول-اگمینٹڈ جنریشن (RAG)**: اے آئی کو اپنے ڈیٹا ذرائع کے ساتھ جوڑنا
-- **فنکشن کالنگ**: کسٹم ٹولز اور پلگ انز کے ساتھ اے آئی کی صلاحیتوں کو بڑھانا
+- **ایمبیڈنگز اور ویکٹر آپریشنز**: سیمینٹک سرچ اور مماثلت کے ملاپ کو نافذ کریں
+- **ریٹریول-اگمینٹڈ جنریشن (RAG)**: اے آئی کو اپنے ڈیٹا ذرائع کے ساتھ جوڑیں
+- **فنکشن کالنگ**: کسٹم ٹولز اور پلگ انز کے ساتھ اے آئی کی صلاحیتوں کو بڑھائیں
 - **[→ باب 3 شروع کریں](./03-CoreGenerativeAITechniques/README.md)**
 
 ### **باب 4: عملی اطلاقات اور پروجیکٹس**
 - **پالتو کہانی جنریٹر** (`petstory/`): GitHub Models کے ساتھ تخلیقی مواد کی تخلیق
-- **Foundry لوکل ڈیمو** (`foundrylocal/`): OpenAI Java SDK کے ساتھ مقامی اے آئی ماڈل انٹیگریشن
+- **Foundry لوکل ڈیمو** (`foundrylocal/`): OpenAI Java SDK کے ساتھ لوکل اے آئی ماڈل انٹیگریشن
 - **MCP کیلکولیٹر سروس** (`calculator/`): Spring AI کے ساتھ بنیادی ماڈل کانٹیکسٹ پروٹوکول کا نفاذ
 - **[→ باب 4 شروع کریں](./04-PracticalSamples/README.md)**
 
-### **باب 5: ذمہ دار اے آئی کی ترقی**
-- **GitHub Models سیفٹی**: بلٹ ان مواد فلٹرنگ اور سیفٹی میکانزمز کی جانچ
-- **ذمہ دار اے آئی ڈیمو**: عملی مثال جو دکھاتی ہے کہ اے آئی سیفٹی فلٹرز کیسے کام کرتے ہیں
-- **بہترین طریقے**: اخلاقی اے آئی کی ترقی اور تعیناتی کے لیے ضروری رہنما اصول
+### **باب 5: ذمہ دار اے آئی ڈیولپمنٹ**
+- **GitHub Models سیفٹی**: بلٹ ان مواد فلٹرنگ اور سیفٹی میکانزمز (سخت بلاکس اور نرم انکار) کو ٹیسٹ کریں
+- **ذمہ دار اے آئی ڈیمو**: عملی مثال دکھاتی ہے کہ جدید اے آئی سیفٹی سسٹمز کیسے کام کرتے ہیں
+- **بہترین طریقے**: اخلاقی اے آئی ڈیولپمنٹ اور تعیناتی کے لیے ضروری رہنما اصول
 - **[→ باب 5 شروع کریں](./05-ResponsibleGenAI/README.md)**
 
 ## اضافی وسائل
@@ -67,17 +67,17 @@ CO_OP_TRANSLATOR_METADATA:
 - [ابتدائی افراد کے لیے جنریٹو اے آئی (.NET استعمال کرتے ہوئے)](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)
 - [ابتدائی افراد کے لیے جنریٹو اے آئی (JavaScript استعمال کرتے ہوئے)](https://github.com/microsoft/generative-ai-with-javascript)
 - [ابتدائی افراد کے لیے جنریٹو اے آئی](https://github.com/microsoft/generative-ai-for-beginners)
-- [مشین لرننگ کے لیے ابتدائی افراد](https://aka.ms/ml-beginners)
-- [ڈیٹا سائنس کے لیے ابتدائی افراد](https://aka.ms/datascience-beginners)
-- [اے آئی کے لیے ابتدائی افراد](https://aka.ms/ai-beginners)
-- [سائبر سیکیورٹی کے لیے ابتدائی افراد](https://github.com/microsoft/Security-101)
-- [ویب ڈیولپمنٹ کے لیے ابتدائی افراد](https://aka.ms/webdev-beginners)
-- [IoT کے لیے ابتدائی افراد](https://aka.ms/iot-beginners)
+- [ابتدائی افراد کے لیے مشین لرننگ](https://aka.ms/ml-beginners)
+- [ابتدائی افراد کے لیے ڈیٹا سائنس](https://aka.ms/datascience-beginners)
+- [ابتدائی افراد کے لیے اے آئی](https://aka.ms/ai-beginners)
+- [ابتدائی افراد کے لیے سائبر سیکیورٹی](https://github.com/microsoft/Security-101)
+- [ابتدائی افراد کے لیے ویب ڈیولپمنٹ](https://aka.ms/webdev-beginners)
+- [ابتدائی افراد کے لیے IoT](https://aka.ms/iot-beginners)
 - [ابتدائی افراد کے لیے XR ڈیولپمنٹ](https://github.com/microsoft/xr-development-for-beginners)
 - [GitHub Copilot کے ساتھ اے آئی پیئرڈ پروگرامنگ میں مہارت حاصل کریں](https://aka.ms/GitHubCopilotAI)
 - [C#/.NET ڈیولپرز کے لیے GitHub Copilot میں مہارت حاصل کریں](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers)
-- [اپنا Copilot ایڈونچر منتخب کریں](https://github.com/microsoft/CopilotAdventures)
+- [اپنی Copilot ایڈونچر کا انتخاب کریں](https://github.com/microsoft/CopilotAdventures)
 - [Azure AI Services کے ساتھ RAG چیٹ ایپ](https://github.com/Azure-Samples/azure-search-openai-demo-java)
 
 **ڈسکلیمر**:  
-یہ دستاویز AI ترجمہ سروس [Co-op Translator](https://github.com/Azure/co-op-translator) کا استعمال کرتے ہوئے ترجمہ کی گئی ہے۔ ہم درستگی کے لیے پوری کوشش کرتے ہیں، لیکن براہ کرم آگاہ رہیں کہ خودکار ترجمے میں غلطیاں یا خامیاں ہو سکتی ہیں۔ اصل دستاویز کو اس کی اصل زبان میں مستند ذریعہ سمجھا جانا چاہیے۔ اہم معلومات کے لیے، پیشہ ور انسانی ترجمہ کی سفارش کی جاتی ہے۔ اس ترجمے کے استعمال سے پیدا ہونے والی کسی بھی غلط فہمی یا غلط تشریح کے لیے ہم ذمہ دار نہیں ہیں۔
+یہ دستاویز AI ترجمہ سروس [Co-op Translator](https://github.com/Azure/co-op-translator) کا استعمال کرتے ہوئے ترجمہ کی گئی ہے۔ ہم درستگی کے لیے کوشش کرتے ہیں، لیکن براہ کرم آگاہ رہیں کہ خودکار ترجمے میں غلطیاں یا غیر درستیاں ہو سکتی ہیں۔ اصل دستاویز کو اس کی اصل زبان میں مستند ذریعہ سمجھا جانا چاہیے۔ اہم معلومات کے لیے، پیشہ ور انسانی ترجمہ کی سفارش کی جاتی ہے۔ ہم اس ترجمے کے استعمال سے پیدا ہونے والی کسی بھی غلط فہمی یا غلط تشریح کے ذمہ دار نہیں ہیں۔

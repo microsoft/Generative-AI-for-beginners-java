@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "b4c05c53b67571aee42e9532404f2fb8",
-  "translation_date": "2025-07-28T11:02:51+00:00",
+  "original_hash": "63b6426b88f6f56398ca3f1fbfc30889",
+  "translation_date": "2025-07-29T15:59:30+00:00",
   "source_file": "README.md",
   "language_code": "tl"
 }
@@ -14,14 +14,14 @@ CO_OP_TRANSLATOR_METADATA:
 
 **Oras na Kakailanganin**: Ang buong workshop ay maaaring matapos online nang walang lokal na setup. Ang pag-set up ng environment ay tumatagal ng 2 minuto, habang ang pag-explore ng mga halimbawa ay nangangailangan ng 1-3 oras depende sa lalim ng pag-aaral.
 
-> **Mabilisang Simula** 
+> **Mabilisang Simula**
 
-1. I-fork ang repository na ito sa iyong GitHub account  
-2. I-click ang **Code** → **Codespaces** tab → **...** → **New with options...**  
-3. Gamitin ang default settings – ito ang pipili ng Development container na ginawa para sa kursong ito  
-4. I-click ang **Create codespace**  
-5. Maghintay ng ~2 minuto para maging handa ang environment  
-6. Tumungo agad sa [Unang Halimbawa](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)  
+1. I-fork ang repository na ito sa iyong GitHub account
+2. I-click ang **Code** → **Codespaces** tab → **...** → **New with options...**
+3. Gamitin ang default settings – ito ang pipili ng Development container na ginawa para sa kursong ito
+4. I-click ang **Create codespace**
+5. Maghintay ng ~2 minuto para maging handa ang environment
+6. Tumungo agad sa [Unang Halimbawa](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)
 
 ## Suporta sa Maraming Wika
 
@@ -32,55 +32,55 @@ CO_OP_TRANSLATOR_METADATA:
 ## Estruktura ng Kurso at Landas ng Pagkatuto
 
 ### **Kabanata 1: Panimula sa Generative AI**
-- **Pangunahing Konsepto**: Pag-unawa sa Large Language Models, tokens, embeddings, at kakayahan ng AI  
-- **Java AI Ecosystem**: Pangkalahatang ideya ng Spring AI at OpenAI SDKs  
-- **Model Context Protocol**: Panimula sa MCP at ang papel nito sa komunikasyon ng AI agent  
-- **Praktikal na Aplikasyon**: Mga totoong halimbawa tulad ng chatbots at content generation  
-- **[→ Simulan ang Kabanata 1](./01-IntroToGenAI/README.md)**  
+- **Pangunahing Konsepto**: Pag-unawa sa Large Language Models, tokens, embeddings, at kakayahan ng AI
+- **Java AI Ecosystem**: Pangkalahatang ideya ng Spring AI at OpenAI SDKs
+- **Model Context Protocol**: Panimula sa MCP at ang papel nito sa komunikasyon ng AI agent
+- **Praktikal na Aplikasyon**: Mga totoong halimbawa tulad ng chatbots at content generation
+- **[→ Simulan ang Kabanata 1](./01-IntroToGenAI/README.md)**
 
 ### **Kabanata 2: Pag-set up ng Development Environment**
-- **Multi-Provider Configuration**: Pag-set up ng GitHub Models, Azure OpenAI, at OpenAI Java SDK integrations  
-- **Spring Boot + Spring AI**: Mga pinakamahusay na kasanayan para sa enterprise AI application development  
-- **GitHub Models**: Libreng access sa AI models para sa prototyping at pag-aaral (walang kinakailangang credit card)  
-- **Mga Kasangkapan sa Pag-develop**: Docker containers, VS Code, at GitHub Codespaces configuration  
-- **[→ Simulan ang Kabanata 2](./02-SetupDevEnvironment/README.md)**  
+- **Multi-Provider Configuration**: Pag-set up ng GitHub Models, Azure OpenAI, at OpenAI Java SDK integrations
+- **Spring Boot + Spring AI**: Mga pinakamahusay na kasanayan para sa enterprise AI application development
+- **GitHub Models**: Libreng access sa AI models para sa prototyping at pag-aaral (walang kinakailangang credit card)
+- **Mga Kasangkapan sa Pag-develop**: Docker containers, VS Code, at GitHub Codespaces configuration
+- **[→ Simulan ang Kabanata 2](./02-SetupDevEnvironment/README.md)**
 
 ### **Kabanata 3: Mga Pangunahing Teknik sa Generative AI**
-- **Prompt Engineering**: Mga teknik para sa pinakamainam na tugon ng AI model  
-- **Embeddings at Vector Operations**: Pag-implement ng semantic search at similarity matching  
-- **Retrieval-Augmented Generation (RAG)**: Pagsasama ng AI sa sarili mong data sources  
-- **Function Calling**: Pagpapalawak ng kakayahan ng AI gamit ang custom tools at plugins  
-- **[→ Simulan ang Kabanata 3](./03-CoreGenerativeAITechniques/README.md)**  
+- **Prompt Engineering**: Mga teknik para sa pinakamainam na tugon ng AI model
+- **Embeddings at Vector Operations**: Pagpapatupad ng semantic search at similarity matching
+- **Retrieval-Augmented Generation (RAG)**: Pagsasama ng AI sa sarili mong data sources
+- **Function Calling**: Pagpapalawak ng kakayahan ng AI gamit ang custom tools at plugins
+- **[→ Simulan ang Kabanata 3](./03-CoreGenerativeAITechniques/README.md)**
 
 ### **Kabanata 4: Praktikal na Aplikasyon at Mga Proyekto**
-- **Pet Story Generator** (`petstory/`): Paglikha ng malikhaing nilalaman gamit ang GitHub Models  
-- **Foundry Local Demo** (`foundrylocal/`): Lokal na integrasyon ng AI model gamit ang OpenAI Java SDK  
-- **MCP Calculator Service** (`calculator/`): Pangunahing implementasyon ng Model Context Protocol gamit ang Spring AI  
-- **[→ Simulan ang Kabanata 4](./04-PracticalSamples/README.md)**  
+- **Pet Story Generator** (`petstory/`): Paglikha ng malikhaing nilalaman gamit ang GitHub Models
+- **Foundry Local Demo** (`foundrylocal/`): Lokal na integrasyon ng AI model gamit ang OpenAI Java SDK
+- **MCP Calculator Service** (`calculator/`): Pangunahing implementasyon ng Model Context Protocol gamit ang Spring AI
+- **[→ Simulan ang Kabanata 4](./04-PracticalSamples/README.md)**
 
 ### **Kabanata 5: Responsableng Pag-develop ng AI**
-- **Kaligtasan ng GitHub Models**: Subukan ang built-in na content filtering at safety mechanisms  
-- **Responsableng AI Demo**: Hands-on na halimbawa kung paano gumagana ang AI safety filters sa praktika  
-- **Mga Pinakamahusay na Kasanayan**: Mahahalagang gabay para sa etikal na pag-develop at pag-deploy ng AI  
-- **[→ Simulan ang Kabanata 5](./05-ResponsibleGenAI/README.md)**  
+- **Kaligtasan ng GitHub Models**: Subukan ang built-in na content filtering at safety mechanisms (hard blocks at soft refusals)
+- **Responsableng AI Demo**: Hands-on na halimbawa kung paano gumagana ang modernong AI safety systems
+- **Mga Pinakamahusay na Kasanayan**: Mahahalagang gabay para sa etikal na pag-develop at pag-deploy ng AI
+- **[→ Simulan ang Kabanata 5](./05-ResponsibleGenAI/README.md)**
 
-## Karagdagang Mga Mapagkukunan 
+## Karagdagang Mga Mapagkukunan
 
-- [AI Agents Para sa Mga Baguhan](https://github.com/microsoft/ai-agents-for-beginners)  
-- [Generative AI para sa Mga Baguhan gamit ang .NET](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)  
-- [Generative AI para sa Mga Baguhan gamit ang JavaScript](https://github.com/microsoft/generative-ai-with-javascript)  
-- [Generative AI para sa Mga Baguhan](https://github.com/microsoft/generative-ai-for-beginners)  
-- [ML para sa Mga Baguhan](https://aka.ms/ml-beginners)  
-- [Data Science para sa Mga Baguhan](https://aka.ms/datascience-beginners)  
-- [AI para sa Mga Baguhan](https://aka.ms/ai-beginners)  
-- [Cybersecurity para sa Mga Baguhan](https://github.com/microsoft/Security-101)  
-- [Web Dev para sa Mga Baguhan](https://aka.ms/webdev-beginners)  
-- [IoT para sa Mga Baguhan](https://aka.ms/iot-beginners)  
-- [XR Development para sa Mga Baguhan](https://github.com/microsoft/xr-development-for-beginners)  
-- [Mastering GitHub Copilot para sa AI Paired Programming](https://aka.ms/GitHubCopilotAI)  
-- [Mastering GitHub Copilot para sa C#/.NET Developers](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers)  
-- [Piliin ang Iyong Sariling Copilot Adventure](https://github.com/microsoft/CopilotAdventures)  
-- [RAG Chat App gamit ang Azure AI Services](https://github.com/Azure-Samples/azure-search-openai-demo-java)  
+- [AI Agents For Beginners](https://github.com/microsoft/ai-agents-for-beginners)
+- [Generative AI for Beginners using .NET](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)
+- [Generative AI for Beginners using JavaScript](https://github.com/microsoft/generative-ai-with-javascript)
+- [Generative AI for Beginners](https://github.com/microsoft/generative-ai-for-beginners)
+- [ML for Beginners](https://aka.ms/ml-beginners)
+- [Data Science for Beginners](https://aka.ms/datascience-beginners)
+- [AI for Beginners](https://aka.ms/ai-beginners)
+- [Cybersecurity for Beginners](https://github.com/microsoft/Security-101)
+- [Web Dev for Beginners](https://aka.ms/webdev-beginners)
+- [IoT for Beginners](https://aka.ms/iot-beginners)
+- [XR Development for Beginners](https://github.com/microsoft/xr-development-for-beginners)
+- [Mastering GitHub Copilot for AI Paired Programming](https://aka.ms/GitHubCopilotAI)
+- [Mastering GitHub Copilot for C#/.NET Developers](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers)
+- [Choose Your Own Copilot Adventure](https://github.com/microsoft/CopilotAdventures)
+- [RAG Chat App with Azure AI Services](https://github.com/Azure-Samples/azure-search-openai-demo-java)
 
 **Paunawa**:  
 Ang dokumentong ito ay isinalin gamit ang AI translation service na [Co-op Translator](https://github.com/Azure/co-op-translator). Bagama't sinisikap naming maging tumpak, pakitandaan na ang mga awtomatikong pagsasalin ay maaaring maglaman ng mga pagkakamali o hindi pagkakatugma. Ang orihinal na dokumento sa kanyang katutubong wika ang dapat ituring na opisyal na sanggunian. Para sa mahalagang impormasyon, inirerekomenda ang propesyonal na pagsasalin ng tao. Hindi kami mananagot sa anumang hindi pagkakaunawaan o maling interpretasyon na maaaring magmula sa paggamit ng pagsasaling ito.

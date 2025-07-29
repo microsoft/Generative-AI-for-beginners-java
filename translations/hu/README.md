@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "b4c05c53b67571aee42e9532404f2fb8",
-  "translation_date": "2025-07-28T11:05:57+00:00",
+  "original_hash": "63b6426b88f6f56398ca3f1fbfc30889",
+  "translation_date": "2025-07-29T16:05:35+00:00",
   "source_file": "README.md",
   "language_code": "hu"
 }
@@ -27,7 +27,7 @@ CO_OP_TRANSLATOR_METADATA:
 
 ### GitHub Action által támogatott (Automatikus és mindig naprakész)
 
-[Francia](../fr/README.md) | [Spanyol](../es/README.md) | [Német](../de/README.md) | [Orosz](../ru/README.md) | [Arab](../ar/README.md) | [Perzsa (Fárszi)](../fa/README.md) | [Urdu](../ur/README.md) | [Kínai (Egyszerűsített)](../zh/README.md) | [Kínai (Hagyományos, Makaó)](../mo/README.md) | [Kínai (Hagyományos, Hongkong)](../hk/README.md) | [Kínai (Hagyományos, Tajvan)](../tw/README.md) | [Japán](../ja/README.md) | [Koreai](../ko/README.md) | [Hindi](../hi/README.md) | [Bengáli](../bn/README.md) | [Maráthi](../mr/README.md) | [Nepáli](../ne/README.md) | [Pandzsábi (Gurmukhi)](../pa/README.md) | [Portugál (Portugália)](../pt/README.md) | [Portugál (Brazília)](../br/README.md) | [Olasz](../it/README.md) | [Lengyel](../pl/README.md) | [Török](../tr/README.md) | [Görög](../el/README.md) | [Thai](../th/README.md) | [Svéd](../sv/README.md) | [Dán](../da/README.md) | [Norvég](../no/README.md) | [Finn](../fi/README.md) | [Holland](../nl/README.md) | [Héber](../he/README.md) | [Vietnámi](../vi/README.md) | [Indonéz](../id/README.md) | [Maláj](../ms/README.md) | [Tagalog (Filippínó)](../tl/README.md) | [Szuahéli](../sw/README.md) | [Magyar](./README.md) | [Cseh](../cs/README.md) | [Szlovák](../sk/README.md) | [Román](../ro/README.md) | [Bolgár](../bg/README.md) | [Szerb (Cirill)](../sr/README.md) | [Horvát](../hr/README.md) | [Szlovén](../sl/README.md) | [Ukrán](../uk/README.md) | [Burmai (Mianmar)](../my/README.md)
+[Francia](../fr/README.md) | [Spanyol](../es/README.md) | [Német](../de/README.md) | [Orosz](../ru/README.md) | [Arab](../ar/README.md) | [Perzsa (Farsi)](../fa/README.md) | [Urdu](../ur/README.md) | [Kínai (Egyszerűsített)](../zh/README.md) | [Kínai (Hagyományos, Makaó)](../mo/README.md) | [Kínai (Hagyományos, Hongkong)](../hk/README.md) | [Kínai (Hagyományos, Tajvan)](../tw/README.md) | [Japán](../ja/README.md) | [Koreai](../ko/README.md) | [Hindi](../hi/README.md) | [Bengáli](../bn/README.md) | [Maráthi](../mr/README.md) | [Nepáli](../ne/README.md) | [Pandzsábi (Gurmukhi)](../pa/README.md) | [Portugál (Portugália)](../pt/README.md) | [Portugál (Brazília)](../br/README.md) | [Olasz](../it/README.md) | [Lengyel](../pl/README.md) | [Török](../tr/README.md) | [Görög](../el/README.md) | [Thai](../th/README.md) | [Svéd](../sv/README.md) | [Dán](../da/README.md) | [Norvég](../no/README.md) | [Finn](../fi/README.md) | [Holland](../nl/README.md) | [Héber](../he/README.md) | [Vietnámi](../vi/README.md) | [Indonéz](../id/README.md) | [Maláj](../ms/README.md) | [Tagalog (Filippínó)](../tl/README.md) | [Szuahéli](../sw/README.md) | [Magyar](./README.md) | [Cseh](../cs/README.md) | [Szlovák](../sk/README.md) | [Román](../ro/README.md) | [Bolgár](../bg/README.md) | [Szerb (Cirill)](../sr/README.md) | [Horvát](../hr/README.md) | [Szlovén](../sl/README.md) | [Ukrán](../uk/README.md) | [Burmai (Mianmar)](../my/README.md)
 
 ## Tanfolyam felépítése és tanulási útvonal
 
@@ -40,7 +40,7 @@ CO_OP_TRANSLATOR_METADATA:
 
 ### **2. fejezet: Fejlesztési környezet beállítása**
 - **Több szolgáltató konfigurációja**: GitHub Modellek, Azure OpenAI és OpenAI Java SDK integrációk beállítása
-- **Spring Boot + Spring AI**: Legjobb gyakorlatok vállalati AI alkalmazásfejlesztéshez
+- **Spring Boot + Spring AI**: Legjobb gyakorlatok vállalati AI alkalmazások fejlesztéséhez
 - **GitHub Modellek**: Ingyenes AI modell hozzáférés prototípus készítéshez és tanuláshoz (hitelkártya nem szükséges)
 - **Fejlesztési eszközök**: Docker konténerek, VS Code és GitHub Codespaces konfiguráció
 - **[→ Kezdés a 2. fejezettel](./02-SetupDevEnvironment/README.md)**
@@ -55,12 +55,12 @@ CO_OP_TRANSLATOR_METADATA:
 ### **4. fejezet: Gyakorlati alkalmazások és projektek**
 - **Háziállat történet generátor** (`petstory/`): Kreatív tartalomgenerálás GitHub Modellek segítségével
 - **Foundry helyi demó** (`foundrylocal/`): Helyi AI modell integráció az OpenAI Java SDK-val
-- **MCP kalkulátor szolgáltatás** (`calculator/`): Alapvető Model Context Protocol megvalósítás Spring AI-val
+- **MCP kalkulátor szolgáltatás** (`calculator/`): Alapvető Model Context Protocol megvalósítás Spring AI-vel
 - **[→ Kezdés a 4. fejezettel](./04-PracticalSamples/README.md)**
 
 ### **5. fejezet: Felelős AI fejlesztés**
-- **GitHub Modellek biztonsága**: Beépített tartalomszűrés és biztonsági mechanizmusok tesztelése
-- **Felelős AI demó**: Gyakorlati példa, amely bemutatja, hogyan működnek az AI biztonsági szűrők
+- **GitHub Modellek biztonsága**: Beépített tartalomszűrés és biztonsági mechanizmusok tesztelése (kemény blokkok és puha elutasítások)
+- **Felelős AI demó**: Gyakorlati példa, amely bemutatja, hogyan működnek a modern AI biztonsági rendszerek
 - **Legjobb gyakorlatok**: Alapvető irányelvek az etikus AI fejlesztéshez és telepítéshez
 - **[→ Kezdés az 5. fejezettel](./05-ResponsibleGenAI/README.md)**
 
@@ -83,4 +83,4 @@ CO_OP_TRANSLATOR_METADATA:
 - [RAG Chat App az Azure AI szolgáltatásokkal](https://github.com/Azure-Samples/azure-search-openai-demo-java)
 
 **Felelősség kizárása**:  
-Ez a dokumentum az AI fordítási szolgáltatás [Co-op Translator](https://github.com/Azure/co-op-translator) segítségével lett lefordítva. Bár törekszünk a pontosságra, kérjük, vegye figyelembe, hogy az automatikus fordítások hibákat vagy pontatlanságokat tartalmazhatnak. Az eredeti dokumentum az eredeti nyelvén tekintendő hiteles forrásnak. Fontos információk esetén javasolt professzionális emberi fordítást igénybe venni. Nem vállalunk felelősséget semmilyen félreértésért vagy téves értelmezésért, amely a fordítás használatából eredhet.
+Ez a dokumentum az AI fordítási szolgáltatás [Co-op Translator](https://github.com/Azure/co-op-translator) segítségével lett lefordítva. Bár törekszünk a pontosságra, kérjük, vegye figyelembe, hogy az automatikus fordítások hibákat vagy pontatlanságokat tartalmazhatnak. Az eredeti dokumentum az eredeti nyelvén tekintendő hiteles forrásnak. Kritikus információk esetén javasolt professzionális emberi fordítást igénybe venni. Nem vállalunk felelősséget semmilyen félreértésért vagy téves értelmezésért, amely a fordítás használatából eredhet.

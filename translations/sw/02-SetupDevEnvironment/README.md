@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "c670445516e119888d8aaaa207bbee34",
-  "translation_date": "2025-07-27T13:21:19+00:00",
+  "original_hash": "c2a244c959e00da1ae1613d2ebfdac65",
+  "translation_date": "2025-07-29T16:04:05+00:00",
   "source_file": "02-SetupDevEnvironment/README.md",
   "language_code": "sw"
 }
@@ -13,33 +13,33 @@ CO_OP_TRANSLATOR_METADATA:
 
 > **Unavutiwa na Azure OpenAI?**, angalia [Mwongozo wetu wa Usanidi wa Azure OpenAI](getting-started-azure-openai.md) kwa hatua za kuunda rasilimali mpya ya Azure OpenAI.
 
-## Utajifunza Nini
+## Utakachojifunza
 
-- Jinsi ya kuweka mazingira ya maendeleo ya Java kwa programu za AI
-- Chagua na usanidi mazingira yako ya maendeleo unayopendelea (kipaumbele kwa wingu na Codespaces, kontena la ndani la maendeleo, au usanidi kamili wa ndani)
-- Jaribu usanidi wako kwa kuunganisha na Mifano ya GitHub
+- Kuweka mazingira ya maendeleo ya Java kwa programu za AI
+- Kuchagua na kusanidi mazingira yako ya maendeleo unayopendelea (mtandaoni kwa kutumia Codespaces, kontena la ndani, au usanidi kamili wa ndani)
+- Kupima usanidi wako kwa kuunganisha na Mifano ya GitHub
 
 ## Jedwali la Yaliyomo
 
-- [Utajifunza Nini](../../../02-SetupDevEnvironment)
+- [Utakachojifunza](../../../02-SetupDevEnvironment)
 - [Utangulizi](../../../02-SetupDevEnvironment)
-- [Hatua ya 1: Weka Mazingira Yako ya Maendeleo](../../../02-SetupDevEnvironment)
+- [Hatua ya 1: Sanidi Mazingira Yako ya Maendeleo](../../../02-SetupDevEnvironment)
   - [Chaguo A: GitHub Codespaces (Inapendekezwa)](../../../02-SetupDevEnvironment)
-  - [Chaguo B: Kontena la Maendeleo la Ndani](../../../02-SetupDevEnvironment)
+  - [Chaguo B: Kontena la Ndani](../../../02-SetupDevEnvironment)
   - [Chaguo C: Tumia Usanidi Wako wa Ndani Uliopo](../../../02-SetupDevEnvironment)
 - [Hatua ya 2: Unda Token ya Kibinafsi ya GitHub](../../../02-SetupDevEnvironment)
-- [Hatua ya 3: Jaribu Usanidi Wako](../../../02-SetupDevEnvironment)
-- [Utatuzi wa Shida](../../../02-SetupDevEnvironment)
+- [Hatua ya 3: Pima Usanidi Wako](../../../02-SetupDevEnvironment)
+- [Kutatua Shida](../../../02-SetupDevEnvironment)
 - [Muhtasari](../../../02-SetupDevEnvironment)
 - [Hatua Zifuatazo](../../../02-SetupDevEnvironment)
 
 ## Utangulizi
 
-Sura hii itakuongoza jinsi ya kuweka mazingira ya maendeleo. Tutatumia **Mifano ya GitHub** kama mfano wetu wa msingi kwa sababu ni bure, rahisi kusanidi kwa akaunti ya GitHub pekee, haihitaji kadi ya mkopo, na inatoa ufikiaji wa mifano mingi kwa majaribio.
+Sura hii itakuongoza jinsi ya kusanidi mazingira ya maendeleo. Tutatumia **Mifano ya GitHub** kama mfano wetu mkuu kwa sababu ni bure, rahisi kusanidi kwa akaunti ya GitHub pekee, haihitaji kadi ya mkopo, na inatoa ufikiaji wa mifano mingi ya kujaribu.
 
-**Hakuna usanidi wa ndani unaohitajika!** Unaweza kuanza kuandika msimbo mara moja ukitumia GitHub Codespaces, ambayo inatoa mazingira kamili ya maendeleo kwenye kivinjari chako.
+**Hakuna usanidi wa ndani unaohitajika!** Unaweza kuanza kuandika msimbo mara moja kwa kutumia GitHub Codespaces, ambayo hutoa mazingira kamili ya maendeleo kwenye kivinjari chako.
 
-<img src="./images/models.webp" alt="Picha ya skrini: Mifano ya GitHub" width="50%">
+<img src="./images/models.webp" alt="Screenshot: GitHub Models" width="50%">
 
 Tunapendekeza kutumia [**Mifano ya GitHub**](https://github.com/marketplace?type=models) kwa kozi hii kwa sababu:
 - **Bure** kuanza
@@ -47,18 +47,18 @@ Tunapendekeza kutumia [**Mifano ya GitHub**](https://github.com/marketplace?type
 - **Hakuna kadi ya mkopo** inayohitajika
 - **Mifano mingi** inapatikana kwa majaribio
 
-> **Kumbuka**: Mifano ya GitHub inayotumika katika mafunzo haya ina mipaka ya bure ifuatayo:
+> **Kumbuka**: Mifano ya GitHub inayotumika katika mafunzo haya ina mipaka hii ya bure:
 > - Maombi 15 kwa dakika (150 kwa siku)
 > - ~Maneno 8,000 ndani, ~maneno 4,000 nje kwa ombi
 > - Maombi 5 yanayofanyika kwa wakati mmoja
 > 
-> Kwa matumizi ya uzalishaji, boresha hadi Azure AI Foundry Models kwa akaunti yako ya Azure. Msimbo wako hauhitaji kubadilishwa. Angalia [hati za Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/quickstart-github-models).
+> Kwa matumizi ya uzalishaji, boresha hadi Azure AI Foundry Models kwa akaunti yako ya Azure. Msimbo wako hauhitaji kubadilishwa. Angalia [nyaraka za Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/quickstart-github-models).
 
-## Hatua ya 1: Weka Mazingira Yako ya Maendeleo
+## Hatua ya 1: Sanidi Mazingira Yako ya Maendeleo
 
 <a name="quick-start-cloud"></a>
 
-Tumeunda kontena la maendeleo lililowekwa tayari ili kupunguza muda wa usanidi na kuhakikisha una zana zote muhimu kwa kozi hii ya Generative AI kwa Java. Chagua mbinu yako ya maendeleo unayopendelea:
+Tumeunda kontena la maendeleo lililosanidiwa tayari ili kupunguza muda wa usanidi na kuhakikisha una zana zote muhimu kwa kozi hii ya Generative AI kwa Java. Chagua mbinu yako ya maendeleo unayopendelea:
 
 ### Chaguo za Usanidi wa Mazingira:
 
@@ -68,45 +68,45 @@ Tumeunda kontena la maendeleo lililowekwa tayari ili kupunguza muda wa usanidi n
 
 1. Fork hifadhi hii kwenye akaunti yako ya GitHub  
    > **Kumbuka**: Ikiwa unataka kuhariri usanidi wa msingi tafadhali angalia [Usanidi wa Kontena la Maendeleo](../../../.devcontainer/devcontainer.json)
-2. Bonyeza **Code** → **Kichupo cha Codespaces** → **...** → **New with options...**
-3. Tumia chaguo-msingi – hii itachagua **Usanidi wa kontena la maendeleo**: **Mazingira ya Maendeleo ya Generative AI Java** kontena maalum la maendeleo lililoundwa kwa kozi hii
+2. Bonyeza **Code** → kichupo cha **Codespaces** → **...** → **New with options...**
+3. Tumia chaguo-msingi – hii itachagua **Usanidi wa kontena la maendeleo**: **Mazingira ya Maendeleo ya Generative AI Java** kontena maalum lililoundwa kwa kozi hii
 4. Bonyeza **Create codespace**
 5. Subiri ~dakika 2 kwa mazingira kuwa tayari
 6. Endelea hadi [Hatua ya 2: Unda Token ya GitHub](../../../02-SetupDevEnvironment)
 
-<img src="./images/codespaces.png" alt="Picha ya skrini: Menyu ndogo ya Codespaces" width="50%">
+<img src="./images/codespaces.png" alt="Screenshot: Codespaces submenu" width="50%">
 
-<img src="./images/image.png" alt="Picha ya skrini: New with options" width="50%">
+<img src="./images/image.png" alt="Screenshot: New with options" width="50%">
 
-<img src="./images/codespaces-create.png" alt="Picha ya skrini: Chaguo za kuunda codespace" width="50%">
+<img src="./images/codespaces-create.png" alt="Screenshot: Create codespace options" width="50%">
 
 > **Faida za Codespaces**:
 > - Hakuna usakinishaji wa ndani unaohitajika
-> - Inafanya kazi kwenye kifaa chochote chenye kivinjari
-> - Imewekwa tayari na zana zote na utegemezi
+> - Hufanya kazi kwenye kifaa chochote chenye kivinjari
+> - Imetayarishwa tayari na zana zote na utegemezi
 > - Saa 60 za bure kwa mwezi kwa akaunti za kibinafsi
 > - Mazingira thabiti kwa wanafunzi wote
 
-#### Chaguo B: Kontena la Maendeleo la Ndani
+#### Chaguo B: Kontena la Ndani
 
-**Kwa watengenezaji wanaopendelea maendeleo ya ndani na Docker**
+**Kwa watengenezaji wanaopendelea maendeleo ya ndani kwa kutumia Docker**
 
 1. Fork na clone hifadhi hii kwenye mashine yako ya ndani  
    > **Kumbuka**: Ikiwa unataka kuhariri usanidi wa msingi tafadhali angalia [Usanidi wa Kontena la Maendeleo](../../../.devcontainer/devcontainer.json)
 2. Sakinisha [Docker Desktop](https://www.docker.com/products/docker-desktop/) na [VS Code](https://code.visualstudio.com/)
 3. Sakinisha [Kiendelezi cha Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) kwenye VS Code
 4. Fungua folda ya hifadhi kwenye VS Code
-5. Ukisukumwa, bonyeza **Reopen in Container** (au tumia `Ctrl+Shift+P` → "Dev Containers: Reopen in Container")
+5. Unapoombwa, bonyeza **Reopen in Container** (au tumia `Ctrl+Shift+P` → "Dev Containers: Reopen in Container")
 6. Subiri kontena lijengwe na kuanza
 7. Endelea hadi [Hatua ya 2: Unda Token ya GitHub](../../../02-SetupDevEnvironment)
 
-<img src="./images/devcontainer.png" alt="Picha ya skrini: Usanidi wa kontena la maendeleo" width="50%">
+<img src="./images/devcontainer.png" alt="Screenshot: Dev container setup" width="50%">
 
-<img src="./images/image-3.png" alt="Picha ya skrini: Ujenzi wa kontena la maendeleo umekamilika" width="50%">
+<img src="./images/image-3.png" alt="Screenshot: Dev container build complete" width="50%">
 
 #### Chaguo C: Tumia Usanidi Wako wa Ndani Uliopo
 
-**Kwa watengenezaji walio na mazingira ya Java yaliyopo**
+**Kwa watengenezaji wenye mazingira ya Java yaliyopo**
 
 Mahitaji:
 - [Java 21+](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html) 
@@ -118,15 +118,15 @@ Hatua:
 2. Fungua mradi kwenye IDE yako
 3. Endelea hadi [Hatua ya 2: Unda Token ya GitHub](../../../02-SetupDevEnvironment)
 
-> **Kidokezo cha Mtaalamu**: Ikiwa una mashine yenye uwezo mdogo lakini unataka VS Code ndani, tumia GitHub Codespaces! Unaweza kuunganisha VS Code yako ya ndani na Codespace inayohifadhiwa kwenye wingu kwa manufaa ya pande zote mbili.
+> **Kidokezo cha Kitaalam**: Ikiwa una mashine yenye uwezo mdogo lakini unataka kutumia VS Code ndani, tumia GitHub Codespaces! Unaweza kuunganisha VS Code yako ya ndani na Codespace inayohifadhiwa mtandaoni kwa manufaa ya pande zote mbili.
 
-<img src="./images/image-2.png" alt="Picha ya skrini: mfano wa kontena la maendeleo la ndani lililoundwa" width="50%">
+<img src="./images/image-2.png" alt="Screenshot: created local devcontainer instance" width="50%">
 
 ## Hatua ya 2: Unda Token ya Kibinafsi ya GitHub
 
 1. Nenda kwenye [Mipangilio ya GitHub](https://github.com/settings/profile) na uchague **Settings** kutoka kwenye menyu ya wasifu wako.
 2. Kwenye upau wa kushoto, bonyeza **Developer settings** (kawaida iko chini).
-3. Chini ya **Personal access tokens**, bonyeza **Fine-grained tokens** (au fuata kiungo hiki cha moja kwa moja [hapa](https://github.com/settings/personal-access-tokens)).
+3. Chini ya **Personal access tokens**, bonyeza **Fine-grained tokens** (au fuata [kiungo hiki cha moja kwa moja](https://github.com/settings/personal-access-tokens)).
 4. Bonyeza **Generate new token**.
 5. Chini ya "Token name", toa jina la kuelezea (mfano, `GenAI-Java-Course-Token`).
 6. Weka tarehe ya kumalizika muda (inapendekezwa: siku 7 kwa usalama bora).
@@ -134,13 +134,13 @@ Hatua:
 8. Chini ya "Repository access", chagua hifadhi unazotaka kutumia na Mifano ya GitHub (au "All repositories" ikiwa inahitajika).
 9. Chini ya "Repository permissions", tafuta **Models** na uweke kuwa **Read and write**.
 10. Bonyeza **Generate token**.
-11. **Nakili na uhifadhi token yako sasa** – hutaiona tena!
+11. **Nakili na uhifadhi token yako sasa** – huwezi kuiona tena!
 
-> **Kidokezo cha Usalama**: Tumia wigo mdogo unaohitajika na muda mfupi wa kumalizika unaowezekana kwa tokeni zako za ufikiaji.
+> **Kidokezo cha Usalama**: Tumia wigo wa chini unaohitajika na muda mfupi wa kumalizika kwa vitendo kwa token zako za ufikiaji.
 
-## Hatua ya 3: Jaribu Usanidi Wako na Mfano wa Mifano ya GitHub
+## Hatua ya 3: Pima Usanidi Wako na Mfano wa Mifano ya GitHub
 
-Mazingira yako ya maendeleo yakiwa tayari, hebu tujaribu ujumuishaji wa Mifano ya GitHub na programu yetu ya mfano katika [`02-SetupDevEnvironment/examples/github-models`](../../../02-SetupDevEnvironment/examples/github-models).
+Mazingira yako ya maendeleo yanapokuwa tayari, hebu tupime muunganisho wa Mifano ya GitHub kwa kutumia programu yetu ya mfano katika [`02-SetupDevEnvironment/examples/github-models`](../../../02-SetupDevEnvironment/examples/github-models).
 
 1. Fungua terminal kwenye mazingira yako ya maendeleo.
 2. Nenda kwenye mfano wa Mifano ya GitHub:
@@ -173,15 +173,15 @@ Response: Hello World!
 
 ### Kuelewa Msimbo wa Mfano
 
-Kwanza, hebu tuelewe tulichokimbia. Mfano chini ya `examples/github-models` unatumia OpenAI Java SDK kuunganishwa na Mifano ya GitHub:
+Kwanza, hebu tuelewe tulichokimbia. Mfano chini ya `examples/github-models` unatumia OpenAI Java SDK kuunganisha na Mifano ya GitHub:
 
-**Kile msimbo huu unafanya:**
-- **Unaunganisha** na Mifano ya GitHub ukitumia token yako ya kibinafsi
-- **Unatuma** ujumbe rahisi wa "Say Hello World!" kwa mfano wa AI
-- **Unapokea** na kuonyesha jibu la AI
-- **Unathibitisha** kuwa usanidi wako unafanya kazi ipasavyo
+**Kile msimbo huu hufanya:**
+- **Huunganisha** na Mifano ya GitHub kwa kutumia token yako ya kibinafsi
+- **Hutuma** ujumbe rahisi wa "Say Hello World!" kwa mfano wa AI
+- **Hupokea** na kuonyesha jibu la AI
+- **Huthibitisha** kuwa usanidi wako unafanya kazi vizuri
 
-**Tegemezi Muhimu** (katika `pom.xml`):
+**Utegemezi Muhimu** (katika `pom.xml`):
 ```xml
 <dependency>
     <groupId>com.openai</groupId>
@@ -212,35 +212,35 @@ System.out.println("Response: " + response.choices().get(0).message().content().
 
 ## Muhtasari
 
-**Hongera!** Umefanikiwa:
+Hongera! Sasa una kila kitu kilichosanidiwa:
 
-- **Kuunda Token ya Kibinafsi ya GitHub** yenye ruhusa sahihi za ufikiaji wa mifano ya AI
-- **Kuweka mazingira yako ya maendeleo ya Java** ukitumia Codespaces, kontena za maendeleo, au usanidi wa ndani
-- **Kuunganishwa na Mifano ya GitHub** ukitumia OpenAI Java SDK kwa ufikiaji wa bure wa maendeleo ya AI
-- **Kujaribu ujumuishaji** na programu ya mfano inayofanya mawasiliano na mifano ya AI
+- Umeunda Token ya Kibinafsi ya GitHub yenye ruhusa sahihi za ufikiaji wa mifano ya AI
+- Umeendesha mazingira yako ya maendeleo ya Java (iwe ni Codespaces, kontena la maendeleo, au ndani kabisa)
+- Umeunganisha na Mifano ya GitHub kwa kutumia OpenAI Java SDK kwa maendeleo ya AI bila malipo
+- Umejaribu na kuhakikisha kila kitu kinafanya kazi kwa mfano rahisi unaozungumza na mifano ya AI
 
 ## Hatua Zifuatazo
 
-[Surah ya 3: Mbinu za Msingi za Generative AI](../03-CoreGenerativeAITechniques/README.md)
+[Chapter 3: Core Generative AI Techniques](../03-CoreGenerativeAITechniques/README.md)
 
-## Utatuzi wa Shida
+## Kutatua Shida
 
-Unakutana na matatizo? Hapa kuna matatizo ya kawaida na suluhisho:
+Unakutana na changamoto? Hapa kuna matatizo ya kawaida na suluhisho:
 
 - **Token haifanyi kazi?** 
   - Hakikisha umenakili token yote bila nafasi za ziada
-  - Thibitisha kuwa token imewekwa ipasavyo kama kigezo cha mazingira
+  - Thibitisha kuwa token imewekwa kwa usahihi kama kigezo cha mazingira
   - Hakikisha token yako ina ruhusa sahihi (Models: Read and write)
 
 - **Maven haipatikani?** 
   - Ikiwa unatumia kontena za maendeleo/Codespaces, Maven inapaswa kuwa imewekwa tayari
-  - Kwa usanidi wa ndani, hakikisha Java 21+ na Maven 3.9+ zimesakinishwa
+  - Kwa usanidi wa ndani, hakikisha Java 21+ na Maven 3.9+ zimewekwa
   - Jaribu `mvn --version` kuthibitisha usakinishaji
 
 - **Shida za muunganisho?** 
   - Angalia muunganisho wako wa intaneti
   - Thibitisha kuwa GitHub inapatikana kutoka kwenye mtandao wako
-  - Hakikisha huna firewall inayozuia endpoint ya Mifano ya GitHub
+  - Hakikisha hauko nyuma ya ukuta wa moto unaozuia mwisho wa Mifano ya GitHub
 
 - **Kontena la maendeleo halianzi?** 
   - Hakikisha Docker Desktop inaendesha (kwa maendeleo ya ndani)
@@ -250,7 +250,7 @@ Unakutana na matatizo? Hapa kuna matatizo ya kawaida na suluhisho:
   - Hakikisha uko kwenye saraka sahihi: `02-SetupDevEnvironment/examples/github-models`
   - Jaribu kusafisha na kujenga upya: `mvn clean compile`
 
-> **Unahitaji msaada?**: Bado unakutana na matatizo? Fungua suala kwenye hifadhi na tutakusaidia.
+> **Unahitaji msaada?**: Bado unakutana na changamoto? Fungua suala kwenye hifadhi na tutakusaidia.
 
 **Kanusho**:  
-Hati hii imetafsiriwa kwa kutumia huduma ya kutafsiri ya AI [Co-op Translator](https://github.com/Azure/co-op-translator). Ingawa tunajitahidi kuhakikisha usahihi, tafadhali fahamu kuwa tafsiri za kiotomatiki zinaweza kuwa na makosa au kutokuwa sahihi. Hati ya asili katika lugha yake ya awali inapaswa kuzingatiwa kama chanzo cha mamlaka. Kwa taarifa muhimu, tafsiri ya kitaalamu ya binadamu inapendekezwa. Hatutawajibika kwa kutoelewana au tafsiri zisizo sahihi zinazotokana na matumizi ya tafsiri hii.
+Hati hii imetafsiriwa kwa kutumia huduma ya tafsiri ya AI [Co-op Translator](https://github.com/Azure/co-op-translator). Ingawa tunajitahidi kuhakikisha usahihi, tafadhali fahamu kuwa tafsiri za kiotomatiki zinaweza kuwa na makosa au kutokuwa sahihi. Hati ya asili katika lugha yake ya awali inapaswa kuzingatiwa kama chanzo cha mamlaka. Kwa taarifa muhimu, tafsiri ya kitaalamu ya binadamu inapendekezwa. Hatutawajibika kwa kutoelewana au tafsiri zisizo sahihi zinazotokana na matumizi ya tafsiri hii.

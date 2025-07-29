@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "c670445516e119888d8aaaa207bbee34",
-  "translation_date": "2025-07-27T13:19:31+00:00",
+  "original_hash": "c2a244c959e00da1ae1613d2ebfdac65",
+  "translation_date": "2025-07-29T15:58:06+00:00",
   "source_file": "02-SetupDevEnvironment/README.md",
   "language_code": "ms"
 }
@@ -16,7 +16,7 @@ CO_OP_TRANSLATOR_METADATA:
 ## Apa yang Anda Akan Pelajari
 
 - Menyediakan persekitaran pembangunan Java untuk aplikasi AI
-- Memilih dan mengkonfigurasi persekitaran pembangunan pilihan anda (berorientasikan awan dengan Codespaces, kontena pembangunan tempatan, atau persediaan tempatan sepenuhnya)
+- Memilih dan mengkonfigurasi persekitaran pembangunan pilihan anda (berorientasikan awan dengan Codespaces, kontena pembangunan tempatan, atau persediaan tempatan penuh)
 - Menguji persediaan anda dengan menyambung ke Model GitHub
 
 ## Kandungan
@@ -39,7 +39,7 @@ Bab ini akan membimbing anda melalui proses menyediakan persekitaran pembangunan
 
 **Tiada persediaan tempatan diperlukan!** Anda boleh mula menulis kod dengan segera menggunakan GitHub Codespaces, yang menyediakan persekitaran pembangunan penuh dalam pelayar anda.
 
-<img src="./images/models.webp" alt="Tangkapan Skrin: Model GitHub" width="50%">
+<img src="./images/models.webp" alt="Tangkapan skrin: Model GitHub" width="50%">
 
 Kami mengesyorkan menggunakan [**Model GitHub**](https://github.com/marketplace?type=models) untuk kursus ini kerana:
 - **Percuma** untuk bermula
@@ -52,7 +52,7 @@ Kami mengesyorkan menggunakan [**Model GitHub**](https://github.com/marketplace?
 > - ~8,000 perkataan masuk, ~4,000 perkataan keluar setiap permintaan
 > - 5 permintaan serentak
 > 
-> Untuk penggunaan produksi, tingkatkan ke Model Azure AI Foundry dengan akaun Azure anda. Kod anda tidak perlu diubah. Lihat [dokumentasi Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/quickstart-github-models).
+> Untuk penggunaan produksi, naik taraf ke Model Azure AI Foundry dengan akaun Azure anda. Kod anda tidak perlu diubah. Lihat [dokumentasi Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/quickstart-github-models).
 
 ## Langkah 1: Sediakan Persekitaran Pembangunan Anda
 
@@ -74,11 +74,11 @@ Kami telah mencipta kontena pembangunan yang telah dikonfigurasi untuk meminimum
 5. Tunggu ~2 minit untuk persekitaran bersedia
 6. Teruskan ke [Langkah 2: Cipta Token GitHub](../../../02-SetupDevEnvironment)
 
-<img src="./images/codespaces.png" alt="Tangkapan Skrin: Submenu Codespaces" width="50%">
+<img src="./images/codespaces.png" alt="Tangkapan skrin: Submenu Codespaces" width="50%">
 
-<img src="./images/image.png" alt="Tangkapan Skrin: New with options" width="50%">
+<img src="./images/image.png" alt="Tangkapan skrin: New with options" width="50%">
 
-<img src="./images/codespaces-create.png" alt="Tangkapan Skrin: Pilihan create codespace" width="50%">
+<img src="./images/codespaces-create.png" alt="Tangkapan skrin: Pilihan create codespace" width="50%">
 
 > **Kelebihan Codespaces**:
 > - Tiada pemasangan tempatan diperlukan
@@ -100,9 +100,9 @@ Kami telah mencipta kontena pembangunan yang telah dikonfigurasi untuk meminimum
 6. Tunggu kontena dibina dan dimulakan
 7. Teruskan ke [Langkah 2: Cipta Token GitHub](../../../02-SetupDevEnvironment)
 
-<img src="./images/devcontainer.png" alt="Tangkapan Skrin: Persediaan kontena pembangunan" width="50%">
+<img src="./images/devcontainer.png" alt="Tangkapan skrin: Persediaan kontena pembangunan" width="50%">
 
-<img src="./images/image-3.png" alt="Tangkapan Skrin: Pembinaan kontena pembangunan selesai" width="50%">
+<img src="./images/image-3.png" alt="Tangkapan skrin: Pembinaan kontena pembangunan selesai" width="50%">
 
 #### Pilihan C: Gunakan Pemasangan Tempatan Sedia Ada Anda
 
@@ -118,9 +118,9 @@ Langkah:
 2. Buka projek dalam IDE anda
 3. Teruskan ke [Langkah 2: Cipta Token GitHub](../../../02-SetupDevEnvironment)
 
-> **Petua Pro**: Jika anda mempunyai mesin dengan spesifikasi rendah tetapi ingin menggunakan VS Code secara tempatan, gunakan GitHub Codespaces! Anda boleh menyambungkan VS Code tempatan anda ke Codespace yang dihoskan di awan untuk mendapatkan yang terbaik dari kedua-dua dunia.
+> **Petua Pro**: Jika anda mempunyai mesin berspesifikasi rendah tetapi ingin menggunakan VS Code secara tempatan, gunakan GitHub Codespaces! Anda boleh menyambungkan VS Code tempatan anda ke Codespace yang dihoskan di awan untuk mendapatkan yang terbaik dari kedua-dua dunia.
 
-<img src="./images/image-2.png" alt="Tangkapan Skrin: Instans kontena pembangunan tempatan yang dicipta" width="50%">
+<img src="./images/image-2.png" alt="Tangkapan skrin: Instans kontena pembangunan tempatan yang dicipta" width="50%">
 
 ## Langkah 2: Cipta Token Akses Peribadi GitHub
 
@@ -212,12 +212,12 @@ System.out.println("Response: " + response.choices().get(0).message().content().
 
 ## Ringkasan
 
-**Tahniah!** Anda telah berjaya:
+Hebat! Anda kini telah menyediakan semuanya:
 
-- **Mencipta Token Akses Peribadi GitHub** dengan kebenaran yang betul untuk akses model AI
-- **Menyediakan persekitaran pembangunan Java anda** menggunakan Codespaces, kontena pembangunan, atau pemasangan tempatan
-- **Menyambung ke Model GitHub** menggunakan OpenAI Java SDK untuk akses pembangunan AI percuma
-- **Menguji integrasi** dengan aplikasi contoh yang berfungsi yang berkomunikasi dengan model AI
+- Mencipta Token Akses Peribadi GitHub dengan kebenaran yang betul untuk akses model AI
+- Menjalankan persekitaran pembangunan Java anda (sama ada Codespaces, kontena pembangunan, atau tempatan)
+- Menyambung ke Model GitHub menggunakan OpenAI Java SDK untuk pembangunan AI percuma
+- Menguji semuanya berfungsi dengan contoh mudah yang berinteraksi dengan model AI
 
 ## Langkah Seterusnya
 
@@ -246,7 +246,7 @@ Menghadapi masalah? Berikut adalah masalah biasa dan penyelesaiannya:
   - Pastikan Docker Desktop sedang berjalan (untuk pembangunan tempatan)
   - Cuba bina semula kontena: `Ctrl+Shift+P` → "Dev Containers: Rebuild Container"
 
-- **Ralat pengkompilasian aplikasi?**
+- **Ralat pengkompilasi aplikasi?**
   - Pastikan anda berada di direktori yang betul: `02-SetupDevEnvironment/examples/github-models`
   - Cuba bersihkan dan bina semula: `mvn clean compile`
 

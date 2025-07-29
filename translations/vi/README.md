@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "b4c05c53b67571aee42e9532404f2fb8",
-  "translation_date": "2025-07-28T10:58:48+00:00",
+  "original_hash": "63b6426b88f6f56398ca3f1fbfc30889",
+  "translation_date": "2025-07-29T15:51:19+00:00",
   "source_file": "README.md",
   "language_code": "vi"
 }
@@ -25,14 +25,14 @@ CO_OP_TRANSLATOR_METADATA:
 
 ## Hỗ Trợ Đa Ngôn Ngữ
 
-### Được Hỗ Trợ qua GitHub Action (Tự động & Luôn Cập Nhật)
+### Được hỗ trợ qua GitHub Action (Tự động & Luôn Cập Nhật)
 
-[Tiếng Pháp](../fr/README.md) | [Tiếng Tây Ban Nha](../es/README.md) | [Tiếng Đức](../de/README.md) | [Tiếng Nga](../ru/README.md) | [Tiếng Ả Rập](../ar/README.md) | [Tiếng Ba Tư (Farsi)](../fa/README.md) | [Tiếng Urdu](../ur/README.md) | [Tiếng Trung (Giản thể)](../zh/README.md) | [Tiếng Trung (Phồn thể, Macau)](../mo/README.md) | [Tiếng Trung (Phồn thể, Hồng Kông)](../hk/README.md) | [Tiếng Trung (Phồn thể, Đài Loan)](../tw/README.md) | [Tiếng Nhật](../ja/README.md) | [Tiếng Hàn](../ko/README.md) | [Tiếng Hindi](../hi/README.md) | [Tiếng Bengal](../bn/README.md) | [Tiếng Marathi](../mr/README.md) | [Tiếng Nepal](../ne/README.md) | [Tiếng Punjab (Gurmukhi)](../pa/README.md) | [Tiếng Bồ Đào Nha (Bồ Đào Nha)](../pt/README.md) | [Tiếng Bồ Đào Nha (Brazil)](../br/README.md) | [Tiếng Ý](../it/README.md) | [Tiếng Ba Lan](../pl/README.md) | [Tiếng Thổ Nhĩ Kỳ](../tr/README.md) | [Tiếng Hy Lạp](../el/README.md) | [Tiếng Thái](../th/README.md) | [Tiếng Thụy Điển](../sv/README.md) | [Tiếng Đan Mạch](../da/README.md) | [Tiếng Na Uy](../no/README.md) | [Tiếng Phần Lan](../fi/README.md) | [Tiếng Hà Lan](../nl/README.md) | [Tiếng Do Thái](../he/README.md) | [Tiếng Việt](./README.md) | [Tiếng Indonesia](../id/README.md) | [Tiếng Mã Lai](../ms/README.md) | [Tiếng Tagalog (Philippines)](../tl/README.md) | [Tiếng Swahili](../sw/README.md) | [Tiếng Hungary](../hu/README.md) | [Tiếng Séc](../cs/README.md) | [Tiếng Slovak](../sk/README.md) | [Tiếng Romania](../ro/README.md) | [Tiếng Bulgaria](../bg/README.md) | [Tiếng Serbia (Chữ Kirin)](../sr/README.md) | [Tiếng Croatia](../hr/README.md) | [Tiếng Slovenia](../sl/README.md) | [Tiếng Ukraina](../uk/README.md) | [Tiếng Miến Điện (Myanmar)](../my/README.md)
+[French](../fr/README.md) | [Spanish](../es/README.md) | [German](../de/README.md) | [Russian](../ru/README.md) | [Arabic](../ar/README.md) | [Persian (Farsi)](../fa/README.md) | [Urdu](../ur/README.md) | [Chinese (Simplified)](../zh/README.md) | [Chinese (Traditional, Macau)](../mo/README.md) | [Chinese (Traditional, Hong Kong)](../hk/README.md) | [Chinese (Traditional, Taiwan)](../tw/README.md) | [Japanese](../ja/README.md) | [Korean](../ko/README.md) | [Hindi](../hi/README.md) | [Bengali](../bn/README.md) | [Marathi](../mr/README.md) | [Nepali](../ne/README.md) | [Punjabi (Gurmukhi)](../pa/README.md) | [Portuguese (Portugal)](../pt/README.md) | [Portuguese (Brazil)](../br/README.md) | [Italian](../it/README.md) | [Polish](../pl/README.md) | [Turkish](../tr/README.md) | [Greek](../el/README.md) | [Thai](../th/README.md) | [Swedish](../sv/README.md) | [Danish](../da/README.md) | [Norwegian](../no/README.md) | [Finnish](../fi/README.md) | [Dutch](../nl/README.md) | [Hebrew](../he/README.md) | [Vietnamese](./README.md) | [Indonesian](../id/README.md) | [Malay](../ms/README.md) | [Tagalog (Filipino)](../tl/README.md) | [Swahili](../sw/README.md) | [Hungarian](../hu/README.md) | [Czech](../cs/README.md) | [Slovak](../sk/README.md) | [Romanian](../ro/README.md) | [Bulgarian](../bg/README.md) | [Serbian (Cyrillic)](../sr/README.md) | [Croatian](../hr/README.md) | [Slovenian](../sl/README.md) | [Ukrainian](../uk/README.md) | [Burmese (Myanmar)](../my/README.md)
 
 ## Cấu Trúc Khóa Học & Lộ Trình Học Tập
 
 ### **Chương 1: Giới Thiệu về AI Tạo Sinh**
-- **Các Khái Niệm Cốt Lõi**: Hiểu về Mô hình Ngôn ngữ Lớn, token, embedding, và khả năng AI
+- **Các Khái Niệm Cốt Lõi**: Hiểu về Mô Hình Ngôn Ngữ Lớn, token, embedding, và khả năng của AI
 - **Hệ Sinh Thái AI Java**: Tổng quan về Spring AI và OpenAI SDKs
 - **Giao Thức Ngữ Cảnh Mô Hình**: Giới thiệu về MCP và vai trò của nó trong giao tiếp của tác nhân AI
 - **Ứng Dụng Thực Tiễn**: Các kịch bản thực tế bao gồm chatbot và tạo nội dung
@@ -40,7 +40,7 @@ CO_OP_TRANSLATOR_METADATA:
 
 ### **Chương 2: Thiết Lập Môi Trường Phát Triển**
 - **Cấu Hình Đa Nhà Cung Cấp**: Thiết lập GitHub Models, Azure OpenAI, và tích hợp OpenAI Java SDK
-- **Spring Boot + Spring AI**: Các thực hành tốt nhất để phát triển ứng dụng AI doanh nghiệp
+- **Spring Boot + Spring AI**: Các thực hành tốt nhất cho phát triển ứng dụng AI doanh nghiệp
 - **GitHub Models**: Truy cập mô hình AI miễn phí để tạo mẫu và học tập (không cần thẻ tín dụng)
 - **Công Cụ Phát Triển**: Cấu hình Docker containers, VS Code, và GitHub Codespaces
 - **[→ Bắt đầu Chương 2](./02-SetupDevEnvironment/README.md)**
@@ -53,14 +53,14 @@ CO_OP_TRANSLATOR_METADATA:
 - **[→ Bắt đầu Chương 3](./03-CoreGenerativeAITechniques/README.md)**
 
 ### **Chương 4: Ứng Dụng Thực Tiễn & Dự Án**
-- **Trình Tạo Câu Chuyện Thú Cưng** (`petstory/`): Tạo nội dung sáng tạo với GitHub Models
+- **Trình Tạo Câu Chuyện Về Thú Cưng** (`petstory/`): Tạo nội dung sáng tạo với GitHub Models
 - **Demo Foundry Cục Bộ** (`foundrylocal/`): Tích hợp mô hình AI cục bộ với OpenAI Java SDK
 - **Dịch Vụ Máy Tính MCP** (`calculator/`): Triển khai cơ bản Giao Thức Ngữ Cảnh Mô Hình với Spring AI
 - **[→ Bắt đầu Chương 4](./04-PracticalSamples/README.md)**
 
 ### **Chương 5: Phát Triển AI Có Trách Nhiệm**
-- **An Toàn của GitHub Models**: Kiểm tra bộ lọc nội dung và cơ chế an toàn tích hợp sẵn
-- **Demo AI Có Trách Nhiệm**: Ví dụ thực hành cho thấy cách các bộ lọc an toàn AI hoạt động
+- **An Toàn của GitHub Models**: Kiểm tra các cơ chế lọc nội dung và an toàn tích hợp sẵn (chặn cứng và từ chối mềm)
+- **Demo AI Có Trách Nhiệm**: Ví dụ thực hành cho thấy cách các hệ thống an toàn AI hiện đại hoạt động
 - **Các Thực Hành Tốt Nhất**: Các hướng dẫn thiết yếu để phát triển và triển khai AI một cách đạo đức
 - **[→ Bắt đầu Chương 5](./05-ResponsibleGenAI/README.md)**
 
