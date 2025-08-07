@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "63b6426b88f6f56398ca3f1fbfc30889",
-  "translation_date": "2025-07-29T09:46:50+00:00",
+  "original_hash": "90ac762d40c6db51b8081cdb3e49e9db",
+  "translation_date": "2025-08-07T11:17:40+00:00",
   "source_file": "README.md",
   "language_code": "ms"
 }
@@ -12,9 +12,9 @@ CO_OP_TRANSLATOR_METADATA:
 
 ![Generative AI untuk Pemula - Edisi Java](../../translated_images/beg-genai-series.8b48be9951cc574c25f8a3accba949bfd03c2f008e2c613283a1b47316fbee68.ms.png)
 
-**Komitmen Masa**: Keseluruhan bengkel ini boleh diselesaikan secara dalam talian tanpa perlu persediaan tempatan. Persediaan persekitaran mengambil masa 2 minit, dengan penerokaan sampel memerlukan 1-3 jam bergantung kepada tahap penerokaan.
+**Komitmen Masa**: Keseluruhan bengkel ini boleh diselesaikan secara dalam talian tanpa perlu pemasangan tempatan. Persediaan persekitaran mengambil masa 2 minit, dengan penerokaan sampel memerlukan 1-3 jam bergantung pada tahap penerokaan.
 
-> **Permulaan Pantas** 
+> **Permulaan Pantas**
 
 1. Fork repositori ini ke akaun GitHub anda
 2. Klik **Code** → tab **Codespaces** → **...** → **New with options...**
@@ -45,11 +45,11 @@ CO_OP_TRANSLATOR_METADATA:
 - **Alat Pembangunan**: Konfigurasi kontena Docker, VS Code, dan GitHub Codespaces
 - **[→ Mula Bab 2](./02-SetupDevEnvironment/README.md)**
 
-### **Bab 3: Teknik Teras Generative AI**
-- **Prompt Engineering**: Teknik untuk respons model AI yang optimum
+### **Bab 3: Teknik Asas Generative AI**
+- **Prompt Engineering**: Teknik untuk mendapatkan respons model AI yang optimum
 - **Embedding & Operasi Vektor**: Melaksanakan carian semantik dan pemadanan kesamaan
 - **Retrieval-Augmented Generation (RAG)**: Gabungkan AI dengan sumber data anda sendiri
-- **Function Calling**: Kembangkan keupayaan AI dengan alat dan plugin tersuai
+- **Function Calling**: Memperluaskan keupayaan AI dengan alat dan plugin tersuai
 - **[→ Mula Bab 3](./03-CoreGenerativeAITechniques/README.md)**
 
 ### **Bab 4: Aplikasi Praktikal & Projek**
@@ -64,8 +64,9 @@ CO_OP_TRANSLATOR_METADATA:
 - **Amalan Terbaik**: Garis panduan penting untuk pembangunan dan penggunaan AI yang beretika
 - **[→ Mula Bab 5](./05-ResponsibleGenAI/README.md)**
 
-## Sumber Tambahan 
+## Sumber Tambahan
 
+- [MCP For Beginners](https://github.com/microsoft/mcp-for-beginners)
 - [AI Agents For Beginners](https://github.com/microsoft/ai-agents-for-beginners)
 - [Generative AI for Beginners using .NET](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)
 - [Generative AI for Beginners using JavaScript](https://github.com/microsoft/generative-ai-with-javascript)

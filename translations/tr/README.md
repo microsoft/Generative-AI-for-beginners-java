@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "63b6426b88f6f56398ca3f1fbfc30889",
-  "translation_date": "2025-07-29T09:09:39+00:00",
+  "original_hash": "90ac762d40c6db51b8081cdb3e49e9db",
+  "translation_date": "2025-08-07T11:11:58+00:00",
   "source_file": "README.md",
   "language_code": "tr"
 }
@@ -12,13 +12,13 @@ CO_OP_TRANSLATOR_METADATA:
 
 ![Başlangıç Seviyesi için Üretici Yapay Zeka - Java Sürümü](../../translated_images/beg-genai-series.8b48be9951cc574c25f8a3accba949bfd03c2f008e2c613283a1b47316fbee68.tr.png)
 
-**Zaman Taahhüdü**: Tüm atölye çalışması, yerel bir kurulum gerektirmeden çevrimiçi olarak tamamlanabilir. Ortam kurulumu 2 dakika sürer ve örnekleri keşfetmek, keşif derinliğine bağlı olarak 1-3 saat alabilir.
+**Zaman Taahhüdü**: Tüm atölye çalışması, yerel kurulum gerektirmeden çevrimiçi olarak tamamlanabilir. Ortam kurulumu 2 dakika sürer ve örneklerin keşfi, keşif derinliğine bağlı olarak 1-3 saat gerektirir.
 
 > **Hızlı Başlangıç**
 
 1. Bu depoyu GitHub hesabınıza çatallayın
 2. **Code** → **Codespaces** sekmesi → **...** → **New with options...** seçeneğine tıklayın
-3. Varsayılan ayarları kullanın – bu, bu kurs için oluşturulan Geliştirme konteynerini seçecektir
+3. Varsayılanları kullanın – bu, bu kurs için oluşturulan Geliştirme konteynerini seçecektir
 4. **Create codespace** butonuna tıklayın
 5. Ortamın hazır olması için yaklaşık 2 dakika bekleyin
 6. Doğrudan [İlk örneğe](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token) geçin
@@ -39,7 +39,7 @@ CO_OP_TRANSLATOR_METADATA:
 - **[→ Bölüm 1'e Başla](./01-IntroToGenAI/README.md)**
 
 ### **Bölüm 2: Geliştirme Ortamı Kurulumu**
-- **Çoklu Sağlayıcı Yapılandırması**: GitHub Modelleri, Azure OpenAI ve OpenAI Java SDK entegrasyonlarını kurma
+- **Çoklu Sağlayıcı Yapılandırması**: GitHub Modelleri, Azure OpenAI ve OpenAI Java SDK entegrasyonlarını ayarlama
 - **Spring Boot + Spring AI**: Kurumsal yapay zeka uygulama geliştirme için en iyi uygulamalar
 - **GitHub Modelleri**: Prototipleme ve öğrenme için ücretsiz yapay zeka modeli erişimi (kredi kartı gerekmez)
 - **Geliştirme Araçları**: Docker konteynerleri, VS Code ve GitHub Codespaces yapılandırması
@@ -66,9 +66,10 @@ CO_OP_TRANSLATOR_METADATA:
 
 ## Ek Kaynaklar
 
+- [Başlangıç Seviyesi için MCP](https://github.com/microsoft/mcp-for-beginners)
 - [Başlangıç Seviyesi için Yapay Zeka Ajanları](https://github.com/microsoft/ai-agents-for-beginners)
-- [Başlangıç Seviyesi için Üretici Yapay Zeka (.NET)](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)
-- [Başlangıç Seviyesi için Üretici Yapay Zeka (JavaScript)](https://github.com/microsoft/generative-ai-with-javascript)
+- [Başlangıç Seviyesi için .NET ile Üretici Yapay Zeka](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)
+- [Başlangıç Seviyesi için JavaScript ile Üretici Yapay Zeka](https://github.com/microsoft/generative-ai-with-javascript)
 - [Başlangıç Seviyesi için Üretici Yapay Zeka](https://github.com/microsoft/generative-ai-for-beginners)
 - [Başlangıç Seviyesi için Makine Öğrenimi](https://aka.ms/ml-beginners)
 - [Başlangıç Seviyesi için Veri Bilimi](https://aka.ms/datascience-beginners)
@@ -77,10 +78,10 @@ CO_OP_TRANSLATOR_METADATA:
 - [Başlangıç Seviyesi için Web Geliştirme](https://aka.ms/webdev-beginners)
 - [Başlangıç Seviyesi için IoT](https://aka.ms/iot-beginners)
 - [Başlangıç Seviyesi için XR Geliştirme](https://github.com/microsoft/xr-development-for-beginners)
-- [GitHub Copilot ile Yapay Zeka Destekli Programlama](https://aka.ms/GitHubCopilotAI)
-- [C#/.NET Geliştiricileri için GitHub Copilot](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers)
+- [AI Eşli Programlama için GitHub Copilot'u Ustalaştırma](https://aka.ms/GitHubCopilotAI)
+- [C#/.NET Geliştiricileri için GitHub Copilot'u Ustalaştırma](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers)
 - [Kendi Copilot Maceranızı Seçin](https://github.com/microsoft/CopilotAdventures)
 - [Azure AI Hizmetleri ile RAG Sohbet Uygulaması](https://github.com/Azure-Samples/azure-search-openai-demo-java)
 
 **Feragatname**:  
-Bu belge, AI çeviri hizmeti [Co-op Translator](https://github.com/Azure/co-op-translator) kullanılarak çevrilmiştir. Doğruluk için çaba göstersek de, otomatik çevirilerin hata veya yanlışlıklar içerebileceğini lütfen unutmayın. Belgenin orijinal dili, yetkili kaynak olarak kabul edilmelidir. Kritik bilgiler için profesyonel insan çevirisi önerilir. Bu çevirinin kullanımından kaynaklanan yanlış anlama veya yanlış yorumlamalardan sorumlu değiliz.
+Bu belge, [Co-op Translator](https://github.com/Azure/co-op-translator) adlı bir yapay zeka çeviri hizmeti kullanılarak çevrilmiştir. Doğruluk için çaba göstersek de, otomatik çevirilerin hata veya yanlışlıklar içerebileceğini lütfen unutmayın. Belgenin orijinal dili, yetkili kaynak olarak kabul edilmelidir. Kritik bilgiler için profesyonel bir insan çevirisi önerilir. Bu çevirinin kullanımından kaynaklanan herhangi bir yanlış anlama veya yanlış yorumlama durumunda sorumluluk kabul edilmez.

@@ -1,13 +1,13 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "63b6426b88f6f56398ca3f1fbfc30889",
-  "translation_date": "2025-07-29T08:13:30+00:00",
+  "original_hash": "90ac762d40c6db51b8081cdb3e49e9db",
+  "translation_date": "2025-08-07T11:02:43+00:00",
   "source_file": "README.md",
   "language_code": "ur"
 }
 -->
-# جنریٹو اے آئی برائے ابتدائی - جاوا ایڈیشن
+# جنریٹیو اے آئی برائے ابتدائی افراد - جاوا ایڈیشن
 
 [![Microsoft Azure AI Foundry Discord](https://dcbadge.limes.pink/api/server/ByRwuEEgH4)](https://discord.com/invite/ByRwuEEgH4)
 
@@ -18,7 +18,7 @@ CO_OP_TRANSLATOR_METADATA:
 > **فوری آغاز**
 
 1. اس ریپوزٹری کو اپنے GitHub اکاؤنٹ پر فورک کریں  
-2. **Code** → **Codespaces** ٹیب → **...** → **New with options...** پر کلک کریں  
+2. **Code** پر کلک کریں → **Codespaces** ٹیب → **...** → **New with options...**  
 3. ڈیفالٹس استعمال کریں – یہ اس کورس کے لیے بنائے گئے ڈیولپمنٹ کنٹینر کو منتخب کرے گا  
 4. **Create codespace** پر کلک کریں  
 5. ماحول کے تیار ہونے کے لیے تقریباً 2 منٹ انتظار کریں  
@@ -26,13 +26,13 @@ CO_OP_TRANSLATOR_METADATA:
 
 ## کثیر لسانی سپورٹ
 
-### GitHub ایکشن کے ذریعے سپورٹ (خودکار اور ہمیشہ اپ ڈیٹ شدہ)
+### GitHub ایکشن کے ذریعے سپورٹ (خودکار اور ہمیشہ اپ ڈیٹ)
 
 [French](../fr/README.md) | [Spanish](../es/README.md) | [German](../de/README.md) | [Russian](../ru/README.md) | [Arabic](../ar/README.md) | [Persian (Farsi)](../fa/README.md) | [Urdu](./README.md) | [Chinese (Simplified)](../zh/README.md) | [Chinese (Traditional, Macau)](../mo/README.md) | [Chinese (Traditional, Hong Kong)](../hk/README.md) | [Chinese (Traditional, Taiwan)](../tw/README.md) | [Japanese](../ja/README.md) | [Korean](../ko/README.md) | [Hindi](../hi/README.md) | [Bengali](../bn/README.md) | [Marathi](../mr/README.md) | [Nepali](../ne/README.md) | [Punjabi (Gurmukhi)](../pa/README.md) | [Portuguese (Portugal)](../pt/README.md) | [Portuguese (Brazil)](../br/README.md) | [Italian](../it/README.md) | [Polish](../pl/README.md) | [Turkish](../tr/README.md) | [Greek](../el/README.md) | [Thai](../th/README.md) | [Swedish](../sv/README.md) | [Danish](../da/README.md) | [Norwegian](../no/README.md) | [Finnish](../fi/README.md) | [Dutch](../nl/README.md) | [Hebrew](../he/README.md) | [Vietnamese](../vi/README.md) | [Indonesian](../id/README.md) | [Malay](../ms/README.md) | [Tagalog (Filipino)](../tl/README.md) | [Swahili](../sw/README.md) | [Hungarian](../hu/README.md) | [Czech](../cs/README.md) | [Slovak](../sk/README.md) | [Romanian](../ro/README.md) | [Bulgarian](../bg/README.md) | [Serbian (Cyrillic)](../sr/README.md) | [Croatian](../hr/README.md) | [Slovenian](../sl/README.md) | [Ukrainian](../uk/README.md) | [Burmese (Myanmar)](../my/README.md)
 
 ## کورس کا ڈھانچہ اور سیکھنے کا راستہ
 
-### **باب 1: جنریٹو اے آئی کا تعارف**
+### **باب 1: جنریٹیو اے آئی کا تعارف**
 - **بنیادی تصورات**: بڑے لینگویج ماڈلز، ٹوکنز، ایمبیڈنگز، اور اے آئی کی صلاحیتوں کو سمجھنا  
 - **جاوا اے آئی ایکو سسٹم**: Spring AI اور OpenAI SDKs کا جائزہ  
 - **ماڈل کانٹیکسٹ پروٹوکول**: MCP اور اے آئی ایجنٹ کمیونیکیشن میں اس کا کردار  
@@ -46,10 +46,10 @@ CO_OP_TRANSLATOR_METADATA:
 - **ڈیولپمنٹ ٹولز**: Docker کنٹینرز، VS Code، اور GitHub Codespaces کی ترتیب  
 - **[→ باب 2 شروع کریں](./02-SetupDevEnvironment/README.md)**  
 
-### **باب 3: بنیادی جنریٹو اے آئی تکنیکیں**
+### **باب 3: بنیادی جنریٹیو اے آئی تکنیکیں**
 - **پرومپٹ انجینئرنگ**: اے آئی ماڈل کے بہترین جوابات کے لیے تکنیکیں  
-- **ایمبیڈنگز اور ویکٹر آپریشنز**: سیمینٹک سرچ اور مماثلت کی تلاش کو نافذ کریں  
-- **ریٹریول-آگمینٹڈ جنریشن (RAG)**: اے آئی کو اپنے ڈیٹا ذرائع کے ساتھ جوڑیں  
+- **ایمبیڈنگز اور ویکٹر آپریشنز**: سیمینٹک سرچ اور مشابہت میچنگ کو نافذ کریں  
+- **ریٹریول-اگمینٹڈ جنریشن (RAG)**: اے آئی کو اپنے ڈیٹا ذرائع کے ساتھ جوڑیں  
 - **فنکشن کالنگ**: کسٹم ٹولز اور پلگ انز کے ساتھ اے آئی کی صلاحیتوں کو بڑھائیں  
 - **[→ باب 3 شروع کریں](./03-CoreGenerativeAITechniques/README.md)**  
 
@@ -61,12 +61,13 @@ CO_OP_TRANSLATOR_METADATA:
 
 ### **باب 5: ذمہ دار اے آئی ڈیولپمنٹ**
 - **GitHub Models سیفٹی**: بلٹ ان مواد فلٹرنگ اور سیفٹی میکانزمز (ہارڈ بلاکس اور سافٹ ریفیوزلز) کی جانچ  
-- **ذمہ دار اے آئی ڈیمو**: ایک عملی مثال جو جدید اے آئی سیفٹی سسٹمز کو کام کرتے ہوئے دکھاتی ہے  
+- **ذمہ دار اے آئی ڈیمو**: ایک عملی مثال جو جدید اے آئی سیفٹی سسٹمز کو عملی طور پر دکھاتی ہے  
 - **بہترین طریقے**: اخلاقی اے آئی ڈیولپمنٹ اور تعیناتی کے لیے ضروری رہنما اصول  
 - **[→ باب 5 شروع کریں](./05-ResponsibleGenAI/README.md)**  
 
 ## اضافی وسائل
 
+- [MCP For Beginners](https://github.com/microsoft/mcp-for-beginners)  
 - [AI Agents For Beginners](https://github.com/microsoft/ai-agents-for-beginners)  
 - [Generative AI for Beginners using .NET](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)  
 - [Generative AI for Beginners using JavaScript](https://github.com/microsoft/generative-ai-with-javascript)  
@@ -83,5 +84,5 @@ CO_OP_TRANSLATOR_METADATA:
 - [Choose Your Own Copilot Adventure](https://github.com/microsoft/CopilotAdventures)  
 - [RAG Chat App with Azure AI Services](https://github.com/Azure-Samples/azure-search-openai-demo-java)  
 
-**ڈس کلیمر**:  
-یہ دستاویز AI ترجمہ سروس [Co-op Translator](https://github.com/Azure/co-op-translator) کا استعمال کرتے ہوئے ترجمہ کی گئی ہے۔ ہم درستگی کے لیے کوشش کرتے ہیں، لیکن براہ کرم آگاہ رہیں کہ خودکار ترجمے میں غلطیاں یا عدم درستگی ہو سکتی ہیں۔ اصل دستاویز، جو اس کی مقامی زبان میں ہے، کو مستند ذریعہ سمجھا جانا چاہیے۔ اہم معلومات کے لیے، پیشہ ور انسانی ترجمہ کی سفارش کی جاتی ہے۔ اس ترجمے کے استعمال سے پیدا ہونے والی کسی بھی غلط فہمی یا غلط تشریح کے لیے ہم ذمہ دار نہیں ہیں۔
+**ڈسکلیمر**:  
+یہ دستاویز AI ترجمہ سروس [Co-op Translator](https://github.com/Azure/co-op-translator) کا استعمال کرتے ہوئے ترجمہ کی گئی ہے۔ ہم درستگی کے لیے کوشش کرتے ہیں، لیکن براہ کرم آگاہ رہیں کہ خودکار ترجمے میں غلطیاں یا غیر درستیاں ہو سکتی ہیں۔ اصل دستاویز کو اس کی اصل زبان میں مستند ذریعہ سمجھا جانا چاہیے۔ اہم معلومات کے لیے، پیشہ ور انسانی ترجمہ کی سفارش کی جاتی ہے۔ ہم اس ترجمے کے استعمال سے پیدا ہونے والی کسی بھی غلط فہمی یا غلط تشریح کے ذمہ دار نہیں ہیں۔

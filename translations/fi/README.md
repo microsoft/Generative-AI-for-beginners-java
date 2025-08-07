@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "63b6426b88f6f56398ca3f1fbfc30889",
-  "translation_date": "2025-07-29T09:30:49+00:00",
+  "original_hash": "90ac762d40c6db51b8081cdb3e49e9db",
+  "translation_date": "2025-08-07T11:15:03+00:00",
   "source_file": "README.md",
   "language_code": "fi"
 }
@@ -12,13 +12,13 @@ CO_OP_TRANSLATOR_METADATA:
 
 ![Generatiivinen AI aloittelijoille - Java-versio](../../translated_images/beg-genai-series.8b48be9951cc574c25f8a3accba949bfd03c2f008e2c613283a1b47316fbee68.fi.png)
 
-**Aikavaatimukset**: Koko työpaja voidaan suorittaa verkossa ilman paikallista asennusta. Ympäristön asennus vie 2 minuuttia, ja esimerkkien tutkiminen kestää 1–3 tuntia riippuen tutkimuksen syvyydestä.
+**Aikavaatimukset**: Koko työpaja voidaan suorittaa verkossa ilman paikallista asennusta. Ympäristön asennus kestää 2 minuuttia, ja esimerkkien tutkimiseen kuluu 1–3 tuntia riippuen tutkimisen syvyydestä.
 
-> **Pikakäynnistys**
+> **Pika-aloitus** 
 
-1. Haaroita tämä arkisto GitHub-tilillesi
+1. Haarauta tämä arkisto GitHub-tilillesi
 2. Klikkaa **Code** → **Codespaces**-välilehti → **...** → **New with options...**
-3. Käytä oletusasetuksia – tämä valitsee kurssille luodun kehityskontin
+3. Käytä oletusasetuksia – tämä valitsee tämän kurssin kehityskontin
 4. Klikkaa **Create codespace**
 5. Odota noin 2 minuuttia, että ympäristö on valmis
 6. Siirry suoraan [Ensimmäiseen esimerkkiin](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)
@@ -31,41 +31,42 @@ CO_OP_TRANSLATOR_METADATA:
 
 ## Kurssin rakenne ja oppimispolku
 
-### **Luku 1: Johdatus generatiiviseen AI:hin**
-- **Keskeiset käsitteet**: Suurten kielimallien, tokenien, upotusten ja AI:n kyvykkyyksien ymmärtäminen
-- **Java AI -ekosysteemi**: Katsaus Spring AI:hin ja OpenAI SDK:ihin
-- **Model Context Protocol**: Johdatus MCP:hen ja sen rooliin AI-agenttien viestinnässä
-- **Käytännön sovellukset**: Todelliset esimerkit, kuten chatbotit ja sisällöntuotanto
+### **Luku 1: Johdatus generatiiviseen tekoälyyn**
+- **Keskeiset käsitteet**: Suurten kielimallien, tokenien, upotusten ja tekoälyominaisuuksien ymmärtäminen
+- **Java AI -ekosysteemi**: Katsaus Spring AI- ja OpenAI-SDK:ihin
+- **Model Context Protocol**: Johdatus MCP:hen ja sen rooliin tekoälyagenttien viestinnässä
+- **Käytännön sovellukset**: Reaaliaikaisia esimerkkejä, kuten chatbotit ja sisällöntuotanto
 - **[→ Aloita luku 1](./01-IntroToGenAI/README.md)**
 
 ### **Luku 2: Kehitysympäristön asennus**
-- **Monitoimittajakonfiguraatio**: GitHub-mallien, Azure OpenAI:n ja OpenAI Java SDK:n integroinnin asennus
-- **Spring Boot + Spring AI**: Parhaat käytännöt yritystason AI-sovellusten kehittämiseen
-- **GitHub-mallit**: Ilmainen AI-mallien käyttö prototyyppien ja oppimisen tueksi (ei luottokorttia vaadita)
+- **Monitoimittajakonfiguraatio**: GitHub Models-, Azure OpenAI- ja OpenAI Java SDK -integraatioiden asennus
+- **Spring Boot + Spring AI**: Parhaat käytännöt yritystason tekoälysovellusten kehittämiseen
+- **GitHub Models**: Ilmainen tekoälymallien käyttö prototyyppien ja oppimisen tueksi (ei luottokorttia vaadita)
 - **Kehitystyökalut**: Docker-kontit, VS Code ja GitHub Codespaces -konfiguraatio
 - **[→ Aloita luku 2](./02-SetupDevEnvironment/README.md)**
 
-### **Luku 3: Generatiivisen AI:n ydintekniikat**
-- **Prompt-suunnittelu**: Tekniikat optimaalisten AI-mallivastausten saamiseksi
-- **Upotukset ja vektoritoiminnot**: Semanttisen haun ja samankaltaisuuden toteuttaminen
-- **Retrieval-Augmented Generation (RAG)**: AI:n yhdistäminen omiin tietolähteisiin
-- **Funktiokutsut**: AI:n kyvykkyyksien laajentaminen mukautetuilla työkaluilla ja lisäosilla
+### **Luku 3: Generatiivisen tekoälyn ydintekniikat**
+- **Prompt Engineering**: Tekniikoita optimaalisten tekoälymallivastausten saamiseksi
+- **Upotukset ja vektorilaskenta**: Semanttisen haun ja samankaltaisuusvertailun toteutus
+- **Retrieval-Augmented Generation (RAG)**: Yhdistä tekoäly omiin tietolähteisiisi
+- **Funktiokutsut**: Laajenna tekoälyn kykyjä mukautetuilla työkaluilla ja lisäosilla
 - **[→ Aloita luku 3](./03-CoreGenerativeAITechniques/README.md)**
 
 ### **Luku 4: Käytännön sovellukset ja projektit**
-- **Lemmikkitarinageneraattori** (`petstory/`): Luova sisällöntuotanto GitHub-malleilla
-- **Foundry Local Demo** (`foundrylocal/`): Paikallinen AI-mallien integrointi OpenAI Java SDK:lla
-- **MCP-laskinpalvelu** (`calculator/`): Perus Model Context Protocol -toteutus Spring AI:lla
+- **Lemmikkitarinageneraattori** (`petstory/`): Luova sisällöntuotanto GitHub Models -malleilla
+- **Foundry Local Demo** (`foundrylocal/`): Paikallisen tekoälymallin integrointi OpenAI Java SDK:lla
+- **MCP-laskinpalvelu** (`calculator/`): Perustason Model Context Protocol -toteutus Spring AI:lla
 - **[→ Aloita luku 4](./04-PracticalSamples/README.md)**
 
-### **Luku 5: Vastuullinen AI-kehitys**
-- **GitHub-mallien turvallisuus**: Sisäänrakennettujen sisällönsuodatus- ja turvallisuusmekanismien testaus (kovat estot ja pehmeät kieltäytymiset)
-- **Vastuullinen AI-demo**: Käytännön esimerkki siitä, miten modernit AI-turvajärjestelmät toimivat
-- **Parhaat käytännöt**: Keskeiset ohjeet eettiseen AI-kehitykseen ja käyttöönottoon
+### **Luku 5: Vastuullinen tekoälykehitys**
+- **GitHub Models -turvallisuus**: Sisäänrakennetun sisällönsuodatuksen ja turvallisuusmekanismien testaaminen (kovat estot ja pehmeät kieltäytymiset)
+- **Vastuullisen tekoälyn demo**: Käytännön esimerkki siitä, miten modernit tekoälyturvajärjestelmät toimivat
+- **Parhaat käytännöt**: Keskeiset ohjeet eettiseen tekoälyn kehittämiseen ja käyttöönottoon
 - **[→ Aloita luku 5](./05-ResponsibleGenAI/README.md)**
 
-## Lisäresurssit
+## Lisäresurssit 
 
+- [MCP For Beginners](https://github.com/microsoft/mcp-for-beginners)
 - [AI Agents For Beginners](https://github.com/microsoft/ai-agents-for-beginners)
 - [Generative AI for Beginners using .NET](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)
 - [Generative AI for Beginners using JavaScript](https://github.com/microsoft/generative-ai-with-javascript)
@@ -83,4 +84,4 @@ CO_OP_TRANSLATOR_METADATA:
 - [RAG Chat App with Azure AI Services](https://github.com/Azure-Samples/azure-search-openai-demo-java)
 
 **Vastuuvapauslauseke**:  
-Tämä asiakirja on käännetty käyttämällä tekoälypohjaista käännöspalvelua [Co-op Translator](https://github.com/Azure/co-op-translator). Pyrimme tarkkuuteen, mutta huomioithan, että automaattiset käännökset voivat sisältää virheitä tai epätarkkuuksia. Alkuperäistä asiakirjaa sen alkuperäisellä kielellä tulee pitää ensisijaisena lähteenä. Kriittisen tiedon osalta suositellaan ammattimaista ihmiskääntämistä. Emme ole vastuussa tämän käännöksen käytöstä aiheutuvista väärinkäsityksistä tai virhetulkinnoista.
+Tämä asiakirja on käännetty käyttämällä tekoälypohjaista käännöspalvelua [Co-op Translator](https://github.com/Azure/co-op-translator). Vaikka pyrimme tarkkuuteen, huomioithan, että automaattiset käännökset voivat sisältää virheitä tai epätarkkuuksia. Alkuperäinen asiakirja sen alkuperäisellä kielellä tulisi pitää ensisijaisena lähteenä. Kriittisen tiedon osalta suositellaan ammattimaista ihmiskäännöstä. Emme ole vastuussa väärinkäsityksistä tai virhetulkinnoista, jotka johtuvat tämän käännöksen käytöstä.

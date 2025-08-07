@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "63b6426b88f6f56398ca3f1fbfc30889",
-  "translation_date": "2025-07-29T08:48:21+00:00",
+  "original_hash": "90ac762d40c6db51b8081cdb3e49e9db",
+  "translation_date": "2025-08-07T11:08:43+00:00",
   "source_file": "README.md",
   "language_code": "ne"
 }
@@ -12,7 +12,7 @@ CO_OP_TRANSLATOR_METADATA:
 
 ![सुरुवातीका लागि जेनेरेटिभ एआई - जाभा संस्करण](../../translated_images/beg-genai-series.8b48be9951cc574c25f8a3accba949bfd03c2f008e2c613283a1b47316fbee68.ne.png)
 
-**समय प्रतिबद्धता**: यो सम्पूर्ण कार्यशाला स्थानीय सेटअप बिना नै अनलाइन पूरा गर्न सकिन्छ। वातावरण सेटअप गर्न २ मिनेट लाग्छ, र नमूनाहरू अन्वेषण गर्न १-३ घण्टा लाग्न सक्छ, अन्वेषणको गहिराइमा निर्भर गर्दै।
+**समय प्रतिबद्धता**: यो सम्पूर्ण कार्यशाला स्थानीय सेटअप बिना अनलाइन पूरा गर्न सकिन्छ। वातावरण सेटअप गर्न २ मिनेट लाग्छ, र नमूनाहरू अन्वेषण गर्न १-३ घण्टा लाग्न सक्छ, अन्वेषणको गहिराइमा निर्भर गर्दै।
 
 > **छिटो सुरु गर्नुहोस्**
 
@@ -34,8 +34,8 @@ CO_OP_TRANSLATOR_METADATA:
 ### **अध्याय १: जेनेरेटिभ एआईको परिचय**
 - **मुख्य अवधारणाहरू**: ठूलो भाषा मोडेलहरू, टोकनहरू, एम्बेडिङहरू, र एआई क्षमताहरू बुझ्ने  
 - **जाभा एआई इकोसिस्टम**: Spring AI र OpenAI SDKs को अवलोकन  
-- **मोडेल कन्टेक्स्ट प्रोटोकल**: MCP र एआई एजेन्ट सञ्चारमा यसको भूमिकाको परिचय  
-- **व्यावहारिक अनुप्रयोगहरू**: च्याटबट र सामग्री निर्माण जस्ता वास्तविक संसारका परिदृश्यहरू  
+- **मोडेल कन्टेक्स्ट प्रोटोकल**: MCP र यसको एआई एजेन्ट सञ्चारमा भूमिका  
+- **व्यावहारिक प्रयोगहरू**: च्याटबट र सामग्री निर्माण जस्ता वास्तविक संसारका परिदृश्यहरू  
 - **[→ अध्याय १ सुरु गर्नुहोस्](./01-IntroToGenAI/README.md)**  
 
 ### **अध्याय २: विकास वातावरण सेटअप**
@@ -46,13 +46,13 @@ CO_OP_TRANSLATOR_METADATA:
 - **[→ अध्याय २ सुरु गर्नुहोस्](./02-SetupDevEnvironment/README.md)**  
 
 ### **अध्याय ३: मुख्य जेनेरेटिभ एआई प्रविधिहरू**
-- **प्रम्प्ट इन्जिनियरिङ**: एआई मोडेलको उत्कृष्ट प्रतिक्रिया प्राप्त गर्ने प्रविधिहरू  
+- **प्रम्प्ट इन्जिनियरिङ**: एआई मोडेलको उत्कृष्ट प्रतिक्रिया प्राप्त गर्नका लागि प्रविधिहरू  
 - **एम्बेडिङ र भेक्टर अपरेसनहरू**: सेम्यान्टिक खोज र समानता मिलान कार्यान्वयन गर्नुहोस्  
 - **Retrieval-Augmented Generation (RAG)**: एआईलाई आफ्नै डाटा स्रोतहरूसँग संयोजन गर्नुहोस्  
 - **फङ्सन कलिङ**: कस्टम उपकरण र प्लगइनहरूसँग एआई क्षमताहरू विस्तार गर्नुहोस्  
 - **[→ अध्याय ३ सुरु गर्नुहोस्](./03-CoreGenerativeAITechniques/README.md)**  
 
-### **अध्याय ४: व्यावहारिक अनुप्रयोगहरू र परियोजनाहरू**
+### **अध्याय ४: व्यावहारिक प्रयोगहरू र परियोजनाहरू**
 - **पेट स्टोरी जेनेरेटर** (`petstory/`): GitHub Models को साथ सिर्जनात्मक सामग्री निर्माण  
 - **Foundry Local Demo** (`foundrylocal/`): OpenAI Java SDK को साथ स्थानीय एआई मोडेल एकीकरण  
 - **MCP क्याल्कुलेटर सेवा** (`calculator/`): Spring AI को साथ आधारभूत मोडेल कन्टेक्स्ट प्रोटोकल कार्यान्वयन  
@@ -61,26 +61,27 @@ CO_OP_TRANSLATOR_METADATA:
 ### **अध्याय ५: जिम्मेवार एआई विकास**
 - **GitHub Models सुरक्षा**: सामग्री फिल्टरिङ र सुरक्षा संयन्त्रहरूको परीक्षण गर्नुहोस् (कडा ब्लकहरू र नरम अस्वीकारहरू)  
 - **जिम्मेवार एआई डेमो**: आधुनिक एआई सुरक्षा प्रणालीहरू कसरी व्यवहारमा काम गर्छन् भन्ने देखाउने व्यावहारिक उदाहरण  
-- **उत्तम अभ्यासहरू**: नैतिक एआई विकास र परिनियोजनका लागि आवश्यक दिशानिर्देशहरू  
+- **उत्कृष्ट अभ्यासहरू**: नैतिक एआई विकास र परिनियोजनका लागि आवश्यक दिशानिर्देशहरू  
 - **[→ अध्याय ५ सुरु गर्नुहोस्](./05-ResponsibleGenAI/README.md)**  
 
 ## थप स्रोतहरू
 
-- [सुरुवातीका लागि एआई एजेन्टहरू](https://github.com/microsoft/ai-agents-for-beginners)  
-- [सुरुवातीका लागि जेनेरेटिभ एआई (.NET प्रयोग गरेर)](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)  
-- [सुरुवातीका लागि जेनेरेटिभ एआई (JavaScript प्रयोग गरेर)](https://github.com/microsoft/generative-ai-with-javascript)  
-- [सुरुवातीका लागि जेनेरेटिभ एआई](https://github.com/microsoft/generative-ai-for-beginners)  
-- [सुरुवातीका लागि मेसिन लर्निङ](https://aka.ms/ml-beginners)  
-- [सुरुवातीका लागि डाटा विज्ञान](https://aka.ms/datascience-beginners)  
-- [सुरुवातीका लागि एआई](https://aka.ms/ai-beginners)  
-- [सुरुवातीका लागि साइबर सुरक्षा](https://github.com/microsoft/Security-101)  
-- [सुरुवातीका लागि वेब विकास](https://aka.ms/webdev-beginners)  
-- [सुरुवातीका लागि IoT](https://aka.ms/iot-beginners)  
-- [सुरुवातीका लागि XR विकास](https://github.com/microsoft/xr-development-for-beginners)  
-- [GitHub Copilot को मास्टरी (एआई जोडी प्रोग्रामिङका लागि)](https://aka.ms/GitHubCopilotAI)  
-- [GitHub Copilot को मास्टरी (C#/.NET विकासकर्ताहरूका लागि)](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers)  
-- [आफ्नै Copilot साहसिक यात्रा चयन गर्नुहोस्](https://github.com/microsoft/CopilotAdventures)  
-- [Azure AI सेवाहरूको साथ RAG च्याट एप](https://github.com/Azure-Samples/azure-search-openai-demo-java)  
+- [MCP For Beginners](https://github.com/microsoft/mcp-for-beginners)  
+- [AI Agents For Beginners](https://github.com/microsoft/ai-agents-for-beginners)  
+- [Generative AI for Beginners using .NET](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)  
+- [Generative AI for Beginners using JavaScript](https://github.com/microsoft/generative-ai-with-javascript)  
+- [Generative AI for Beginners](https://github.com/microsoft/generative-ai-for-beginners)  
+- [ML for Beginners](https://aka.ms/ml-beginners)  
+- [Data Science for Beginners](https://aka.ms/datascience-beginners)  
+- [AI for Beginners](https://aka.ms/ai-beginners)  
+- [Cybersecurity for Beginners](https://github.com/microsoft/Security-101)  
+- [Web Dev for Beginners](https://aka.ms/webdev-beginners)  
+- [IoT for Beginners](https://aka.ms/iot-beginners)  
+- [XR Development for Beginners](https://github.com/microsoft/xr-development-for-beginners)  
+- [Mastering GitHub Copilot for AI Paired Programming](https://aka.ms/GitHubCopilotAI)  
+- [Mastering GitHub Copilot for C#/.NET Developers](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers)  
+- [Choose Your Own Copilot Adventure](https://github.com/microsoft/CopilotAdventures)  
+- [RAG Chat App with Azure AI Services](https://github.com/Azure-Samples/azure-search-openai-demo-java)  
 
 **अस्वीकरण**:  
-यो दस्तावेज़ AI अनुवाद सेवा [Co-op Translator](https://github.com/Azure/co-op-translator) प्रयोग गरी अनुवाद गरिएको हो। हामी यथासम्भव सटीकता सुनिश्चित गर्न प्रयास गर्छौं, तर कृपया ध्यान दिनुहोस् कि स्वचालित अनुवादहरूमा त्रुटि वा अशुद्धता हुन सक्छ। यसको मूल भाषामा रहेको मूल दस्तावेज़लाई आधिकारिक स्रोत मानिनुपर्छ। महत्त्वपूर्ण जानकारीका लागि, व्यावसायिक मानव अनुवाद सिफारिस गरिन्छ। यस अनुवादको प्रयोगबाट उत्पन्न हुने कुनै पनि गलतफहमी वा गलत व्याख्याको लागि हामी जिम्मेवार हुने छैनौं।
+यो दस्तावेज़ AI अनुवाद सेवा [Co-op Translator](https://github.com/Azure/co-op-translator) प्रयोग गरी अनुवाद गरिएको हो। हामी यथासम्भव सटीकता सुनिश्चित गर्न प्रयास गर्छौं, तर कृपया ध्यान दिनुहोस् कि स्वचालित अनुवादहरूमा त्रुटिहरू वा अशुद्धताहरू हुन सक्छन्। यसको मूल भाषामा रहेको मूल दस्तावेज़लाई आधिकारिक स्रोत मानिनुपर्छ। महत्त्वपूर्ण जानकारीका लागि, व्यावसायिक मानव अनुवाद सिफारिस गरिन्छ। यस अनुवादको प्रयोगबाट उत्पन्न हुने कुनै पनि गलतफहमी वा गलत व्याख्याका लागि हामी जिम्मेवार हुने छैनौं।

@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "63b6426b88f6f56398ca3f1fbfc30889",
-  "translation_date": "2025-07-29T08:00:12+00:00",
+  "original_hash": "90ac762d40c6db51b8081cdb3e49e9db",
+  "translation_date": "2025-08-07T11:00:30+00:00",
   "source_file": "README.md",
   "language_code": "de"
 }
@@ -66,6 +66,7 @@ CO_OP_TRANSLATOR_METADATA:
 
 ## Zusätzliche Ressourcen
 
+- [MCP für Anfänger](https://github.com/microsoft/mcp-for-beginners)
 - [KI-Agenten für Anfänger](https://github.com/microsoft/ai-agents-for-beginners)
 - [Generative KI für Anfänger mit .NET](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)
 - [Generative KI für Anfänger mit JavaScript](https://github.com/microsoft/generative-ai-with-javascript)
@@ -77,10 +78,10 @@ CO_OP_TRANSLATOR_METADATA:
 - [Webentwicklung für Anfänger](https://aka.ms/webdev-beginners)
 - [IoT für Anfänger](https://aka.ms/iot-beginners)
 - [XR-Entwicklung für Anfänger](https://github.com/microsoft/xr-development-for-beginners)
-- [GitHub Copilot für KI-gestütztes Programmieren meistern](https://aka.ms/GitHubCopilotAI)
-- [GitHub Copilot für C#/.NET-Entwickler meistern](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers)
+- [GitHub Copilot meistern für KI-gestütztes Programmieren](https://aka.ms/GitHubCopilotAI)
+- [GitHub Copilot meistern für C#/.NET-Entwickler](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers)
 - [Wählen Sie Ihr eigenes Copilot-Abenteuer](https://github.com/microsoft/CopilotAdventures)
-- [RAG-Chat-App mit Azure AI-Diensten](https://github.com/Azure-Samples/azure-search-openai-demo-java)
+- [RAG Chat App mit Azure AI Services](https://github.com/Azure-Samples/azure-search-openai-demo-java)
 
 **Haftungsausschluss**:  
-Dieses Dokument wurde mit dem KI-Übersetzungsdienst [Co-op Translator](https://github.com/Azure/co-op-translator) übersetzt. Obwohl wir uns um Genauigkeit bemühen, weisen wir darauf hin, dass automatisierte Übersetzungen Fehler oder Ungenauigkeiten enthalten können. Das Originaldokument in seiner ursprünglichen Sprache sollte als maßgebliche Quelle betrachtet werden. Für kritische Informationen wird eine professionelle menschliche Übersetzung empfohlen. Wir übernehmen keine Haftung für Missverständnisse oder Fehlinterpretationen, die sich aus der Nutzung dieser Übersetzung ergeben.
+Dieses Dokument wurde mit dem KI-Übersetzungsdienst [Co-op Translator](https://github.com/Azure/co-op-translator) übersetzt. Obwohl wir uns um Genauigkeit bemühen, beachten Sie bitte, dass automatisierte Übersetzungen Fehler oder Ungenauigkeiten enthalten können. Das Originaldokument in seiner ursprünglichen Sprache sollte als maßgebliche Quelle betrachtet werden. Für kritische Informationen wird eine professionelle menschliche Übersetzung empfohlen. Wir übernehmen keine Haftung für Missverständnisse oder Fehlinterpretationen, die sich aus der Nutzung dieser Übersetzung ergeben.

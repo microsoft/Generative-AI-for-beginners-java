@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "63b6426b88f6f56398ca3f1fbfc30889",
-  "translation_date": "2025-07-29T08:59:48+00:00",
+  "original_hash": "90ac762d40c6db51b8081cdb3e49e9db",
+  "translation_date": "2025-08-07T11:10:20+00:00",
   "source_file": "README.md",
   "language_code": "br"
 }
@@ -34,12 +34,12 @@ CO_OP_TRANSLATOR_METADATA:
 ### **Capítulo 1: Introdução à IA Generativa**
 - **Conceitos Básicos**: Compreendendo Modelos de Linguagem de Grande Escala, tokens, embeddings e capacidades de IA
 - **Ecossistema de IA em Java**: Visão geral do Spring AI e SDKs OpenAI
-- **Protocolo de Contexto do Modelo**: Introdução ao MCP e seu papel na comunicação de agentes de IA
+- **Protocolo de Contexto de Modelo**: Introdução ao MCP e seu papel na comunicação de agentes de IA
 - **Aplicações Práticas**: Cenários do mundo real, incluindo chatbots e geração de conteúdo
 - **[→ Comece o Capítulo 1](./01-IntroToGenAI/README.md)**
 
 ### **Capítulo 2: Configuração do Ambiente de Desenvolvimento**
-- **Configuração Multi-Fornecedor**: Configure integrações com GitHub Models, Azure OpenAI e OpenAI Java SDK
+- **Configuração Multi-Fornecedor**: Configure GitHub Models, Azure OpenAI e integrações do OpenAI Java SDK
 - **Spring Boot + Spring AI**: Melhores práticas para desenvolvimento de aplicações empresariais de IA
 - **GitHub Models**: Acesso gratuito a modelos de IA para prototipagem e aprendizado (sem necessidade de cartão de crédito)
 - **Ferramentas de Desenvolvimento**: Configuração de containers Docker, VS Code e GitHub Codespaces
@@ -49,24 +49,25 @@ CO_OP_TRANSLATOR_METADATA:
 - **Engenharia de Prompt**: Técnicas para respostas ideais de modelos de IA
 - **Embeddings e Operações com Vetores**: Implementação de busca semântica e correspondência de similaridade
 - **Geração Aumentada por Recuperação (RAG)**: Combine IA com suas próprias fontes de dados
-- **Chamada de Funções**: Amplie as capacidades da IA com ferramentas e plugins personalizados
+- **Chamada de Funções**: Expanda as capacidades da IA com ferramentas e plugins personalizados
 - **[→ Comece o Capítulo 3](./03-CoreGenerativeAITechniques/README.md)**
 
 ### **Capítulo 4: Aplicações Práticas e Projetos**
 - **Gerador de Histórias de Animais de Estimação** (`petstory/`): Geração criativa de conteúdo com GitHub Models
-- **Demo Local Foundry** (`foundrylocal/`): Integração local de modelos de IA com OpenAI Java SDK
-- **Serviço de Calculadora MCP** (`calculator/`): Implementação básica do Protocolo de Contexto do Modelo com Spring AI
+- **Demo Local Foundry** (`foundrylocal/`): Integração de modelos de IA locais com OpenAI Java SDK
+- **Serviço de Calculadora MCP** (`calculator/`): Implementação básica do Protocolo de Contexto de Modelo com Spring AI
 - **[→ Comece o Capítulo 4](./04-PracticalSamples/README.md)**
 
 ### **Capítulo 5: Desenvolvimento de IA Responsável**
-- **Segurança dos Modelos GitHub**: Teste os mecanismos de filtragem de conteúdo e segurança integrados (bloqueios rígidos e recusas suaves)
+- **Segurança dos GitHub Models**: Teste de filtros de conteúdo e mecanismos de segurança integrados (bloqueios rígidos e recusas suaves)
 - **Demo de IA Responsável**: Exemplo prático mostrando como os sistemas modernos de segurança de IA funcionam na prática
 - **Melhores Práticas**: Diretrizes essenciais para desenvolvimento e implantação ética de IA
 - **[→ Comece o Capítulo 5](./05-ResponsibleGenAI/README.md)**
 
 ## Recursos Adicionais
 
-- [Agentes de IA para Iniciantes](https://github.com/microsoft/ai-agents-for-beginners)
+- [MCP Para Iniciantes](https://github.com/microsoft/mcp-for-beginners)
+- [Agentes de IA Para Iniciantes](https://github.com/microsoft/ai-agents-for-beginners)
 - [IA Generativa para Iniciantes usando .NET](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)
 - [IA Generativa para Iniciantes usando JavaScript](https://github.com/microsoft/generative-ai-with-javascript)
 - [IA Generativa para Iniciantes](https://github.com/microsoft/generative-ai-for-beginners)
@@ -83,4 +84,4 @@ CO_OP_TRANSLATOR_METADATA:
 - [App de Chat RAG com Serviços de IA do Azure](https://github.com/Azure-Samples/azure-search-openai-demo-java)
 
 **Aviso Legal**:  
-Este documento foi traduzido utilizando o serviço de tradução por IA [Co-op Translator](https://github.com/Azure/co-op-translator). Embora nos esforcemos para garantir a precisão, esteja ciente de que traduções automáticas podem conter erros ou imprecisões. O documento original em seu idioma nativo deve ser considerado a fonte oficial. Para informações críticas, recomenda-se a tradução profissional realizada por humanos. Não nos responsabilizamos por quaisquer mal-entendidos ou interpretações equivocadas decorrentes do uso desta tradução.
+Este documento foi traduzido utilizando o serviço de tradução por IA [Co-op Translator](https://github.com/Azure/co-op-translator). Embora nos esforcemos para garantir a precisão, esteja ciente de que traduções automatizadas podem conter erros ou imprecisões. O documento original em seu idioma nativo deve ser considerado a fonte autoritativa. Para informações críticas, recomenda-se a tradução profissional realizada por humanos. Não nos responsabilizamos por quaisquer mal-entendidos ou interpretações equivocadas decorrentes do uso desta tradução.

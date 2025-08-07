@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "63b6426b88f6f56398ca3f1fbfc30889",
-  "translation_date": "2025-07-29T09:43:46+00:00",
+  "original_hash": "90ac762d40c6db51b8081cdb3e49e9db",
+  "translation_date": "2025-08-07T11:17:14+00:00",
   "source_file": "README.md",
   "language_code": "id"
 }
@@ -12,13 +12,13 @@ CO_OP_TRANSLATOR_METADATA:
 
 ![Generative AI untuk Pemula - Edisi Java](../../translated_images/beg-genai-series.8b48be9951cc574c25f8a3accba949bfd03c2f008e2c613283a1b47316fbee68.id.png)
 
-**Komitmen Waktu**: Seluruh workshop dapat diselesaikan secara online tanpa perlu pengaturan lokal. Pengaturan lingkungan memakan waktu 2 menit, dengan eksplorasi sampel membutuhkan 1-3 jam tergantung pada tingkat eksplorasi.
+**Komitmen Waktu**: Seluruh workshop dapat diselesaikan secara online tanpa pengaturan lokal. Pengaturan lingkungan memerlukan waktu 2 menit, dengan eksplorasi sampel membutuhkan 1-3 jam tergantung pada tingkat eksplorasi.
 
 > **Mulai Cepat**
 
 1. Fork repositori ini ke akun GitHub Anda
 2. Klik **Code** → tab **Codespaces** → **...** → **New with options...**
-3. Gunakan pengaturan default – ini akan memilih kontainer Development yang dibuat untuk kursus ini
+3. Gunakan pengaturan default – ini akan memilih container Development yang dibuat untuk kursus ini
 4. Klik **Create codespace**
 5. Tunggu sekitar 2 menit hingga lingkungan siap
 6. Langsung ke [Contoh pertama](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)
@@ -34,7 +34,7 @@ CO_OP_TRANSLATOR_METADATA:
 ### **Bab 1: Pengantar Generative AI**
 - **Konsep Inti**: Memahami Large Language Models, token, embeddings, dan kemampuan AI
 - **Ekosistem AI Java**: Gambaran umum Spring AI dan OpenAI SDKs
-- **Protokol Model Context**: Pengantar MCP dan perannya dalam komunikasi agen AI
+- **Model Context Protocol**: Pengantar MCP dan perannya dalam komunikasi agen AI
 - **Aplikasi Praktis**: Skenario dunia nyata termasuk chatbot dan pembuatan konten
 - **[→ Mulai Bab 1](./01-IntroToGenAI/README.md)**
 
@@ -42,7 +42,7 @@ CO_OP_TRANSLATOR_METADATA:
 - **Konfigurasi Multi-Penyedia**: Mengatur integrasi GitHub Models, Azure OpenAI, dan OpenAI Java SDK
 - **Spring Boot + Spring AI**: Praktik terbaik untuk pengembangan aplikasi AI perusahaan
 - **GitHub Models**: Akses model AI gratis untuk prototipe dan pembelajaran (tanpa kartu kredit)
-- **Alat Pengembangan**: Konfigurasi kontainer Docker, VS Code, dan GitHub Codespaces
+- **Alat Pengembangan**: Konfigurasi Docker containers, VS Code, dan GitHub Codespaces
 - **[→ Mulai Bab 2](./02-SetupDevEnvironment/README.md)**
 
 ### **Bab 3: Teknik Inti Generative AI**
@@ -66,6 +66,7 @@ CO_OP_TRANSLATOR_METADATA:
 
 ## Sumber Daya Tambahan
 
+- [MCP For Beginners](https://github.com/microsoft/mcp-for-beginners)
 - [AI Agents For Beginners](https://github.com/microsoft/ai-agents-for-beginners)
 - [Generative AI untuk Pemula menggunakan .NET](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)
 - [Generative AI untuk Pemula menggunakan JavaScript](https://github.com/microsoft/generative-ai-with-javascript)
@@ -74,7 +75,7 @@ CO_OP_TRANSLATOR_METADATA:
 - [Data Science untuk Pemula](https://aka.ms/datascience-beginners)
 - [AI untuk Pemula](https://aka.ms/ai-beginners)
 - [Keamanan Siber untuk Pemula](https://github.com/microsoft/Security-101)
-- [Pengembangan Web untuk Pemula](https://aka.ms/webdev-beginners)
+- [Web Dev untuk Pemula](https://aka.ms/webdev-beginners)
 - [IoT untuk Pemula](https://aka.ms/iot-beginners)
 - [Pengembangan XR untuk Pemula](https://github.com/microsoft/xr-development-for-beginners)
 - [Menguasai GitHub Copilot untuk Pemrograman Berpasangan AI](https://aka.ms/GitHubCopilotAI)

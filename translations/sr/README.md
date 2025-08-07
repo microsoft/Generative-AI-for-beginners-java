@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "63b6426b88f6f56398ca3f1fbfc30889",
-  "translation_date": "2025-07-29T10:14:00+00:00",
+  "original_hash": "90ac762d40c6db51b8081cdb3e49e9db",
+  "translation_date": "2025-08-07T11:21:52+00:00",
   "source_file": "README.md",
   "language_code": "sr"
 }
@@ -10,15 +10,15 @@ CO_OP_TRANSLATOR_METADATA:
 # Генеративна вештачка интелигенција за почетнике - Јава издање
 [![Microsoft Azure AI Foundry Discord](https://dcbadge.limes.pink/api/server/ByRwuEEgH4)](https://discord.com/invite/ByRwuEEgH4)
 
-![Генеративна вештачка интелигенција за почетнике - Јава издање](../../translated_images/beg-genai-series.8b48be9951cc574c25f8a3accba949bfd03c2f008e2c613283a1b47316fbee68.sr.png)
+![Generative AI for Beginners - Java Edition](../../translated_images/beg-genai-series.8b48be9951cc574c25f8a3accba949bfd03c2f008e2c613283a1b47316fbee68.sr.png)
 
-**Време потребно**: Целокупна радионица може се завршити онлајн без локалног подешавања. Постављање окружења траје 2 минута, док истраживање примера захтева 1-3 сата, у зависности од дубине истраживања.
+**Време потребно**: Цео радионички курс може се завршити онлајн без локалног подешавања. Постављање окружења траје 2 минута, док истраживање примера захтева 1-3 сата, у зависности од дубине истраживања.
 
 > **Брзи почетак**
 
 1. Форкујте овај репозиторијум на свој GitHub налог
 2. Кликните **Code** → **Codespaces** таб → **...** → **New with options...**
-3. Користите подразумеване вредности – ово ће изабрати развојни контејнер креиран за овај курс
+3. Користите подразумеване опције – ово ће изабрати развојни контејнер креиран за овај курс
 4. Кликните **Create codespace**
 5. Сачекајте ~2 минута да окружење буде спремно
 6. Пређите директно на [Први пример](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)
@@ -35,7 +35,7 @@ CO_OP_TRANSLATOR_METADATA:
 - **Основни концепти**: Разумевање великих језичких модела, токена, уградњи и могућности вештачке интелигенције
 - **Јава AI екосистем**: Преглед Spring AI и OpenAI SDK-ова
 - **Протокол контекста модела**: Увод у MCP и његову улогу у комуникацији AI агената
-- **Практичне примене**: Сценарији из стварног света, укључујући четботове и генерисање садржаја
+- **Практичне примене**: Сценарији из стварног света, укључујући чет-ботове и генерисање садржаја
 - **[→ Почните Поглавље 1](./01-IntroToGenAI/README.md)**
 
 ### **Поглавље 2: Постављање развојног окружења**
@@ -48,7 +48,7 @@ CO_OP_TRANSLATOR_METADATA:
 ### **Поглавље 3: Основне технике генеративне вештачке интелигенције**
 - **Инжењеринг упита**: Технике за оптималне одговоре AI модела
 - **Уградње и векторске операције**: Имплементација семантичке претраге и упоређивања сличности
-- **Генерисање уз помоћ претраживања (RAG)**: Комбинујте AI са сопственим изворима података
+- **Генерација уз помоћ претраживања (RAG)**: Комбинујте AI са сопственим изворима података
 - **Позивање функција**: Проширите могућности AI уз прилагођене алате и додатке
 - **[→ Почните Поглавље 3](./03-CoreGenerativeAITechniques/README.md)**
 
@@ -66,21 +66,22 @@ CO_OP_TRANSLATOR_METADATA:
 
 ## Додатни ресурси
 
-- [AI агенти за почетнике](https://github.com/microsoft/ai-agents-for-beginners)
-- [Генеративна вештачка интелигенција за почетнике уз .NET](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)
-- [Генеративна вештачка интелигенција за почетнике уз JavaScript](https://github.com/microsoft/generative-ai-with-javascript)
-- [Генеративна вештачка интелигенција за почетнике](https://github.com/microsoft/generative-ai-for-beginners)
-- [Машинско учење за почетнике](https://aka.ms/ml-beginners)
-- [Наука о подацима за почетнике](https://aka.ms/datascience-beginners)
-- [Вештачка интелигенција за почетнике](https://aka.ms/ai-beginners)
-- [Сајбер безбедност за почетнике](https://github.com/microsoft/Security-101)
-- [Веб развој за почетнике](https://aka.ms/webdev-beginners)
-- [IoT за почетнике](https://aka.ms/iot-beginners)
-- [XR развој за почетнике](https://github.com/microsoft/xr-development-for-beginners)
-- [Мастеринг GitHub Copilot за AI парно програмирање](https://aka.ms/GitHubCopilotAI)
-- [Мастеринг GitHub Copilot за C#/.NET програмере](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers)
-- [Изаберите своју Copilot авантуру](https://github.com/microsoft/CopilotAdventures)
-- [RAG чет апликација са Azure AI услугама](https://github.com/Azure-Samples/azure-search-openai-demo-java)
+- [MCP For Beginners](https://github.com/microsoft/mcp-for-beginners)
+- [AI Agents For Beginners](https://github.com/microsoft/ai-agents-for-beginners)
+- [Generative AI for Beginners using .NET](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)
+- [Generative AI for Beginners using JavaScript](https://github.com/microsoft/generative-ai-with-javascript)
+- [Generative AI for Beginners](https://github.com/microsoft/generative-ai-for-beginners)
+- [ML for Beginners](https://aka.ms/ml-beginners)
+- [Data Science for Beginners](https://aka.ms/datascience-beginners)
+- [AI for Beginners](https://aka.ms/ai-beginners)
+- [Cybersecurity for Beginners](https://github.com/microsoft/Security-101)
+- [Web Dev for Beginners](https://aka.ms/webdev-beginners)
+- [IoT for Beginners](https://aka.ms/iot-beginners)
+- [XR Development for Beginners](https://github.com/microsoft/xr-development-for-beginners)
+- [Mastering GitHub Copilot for AI Paired Programming](https://aka.ms/GitHubCopilotAI)
+- [Mastering GitHub Copilot for C#/.NET Developers](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers)
+- [Choose Your Own Copilot Adventure](https://github.com/microsoft/CopilotAdventures)
+- [RAG Chat App with Azure AI Services](https://github.com/Azure-Samples/azure-search-openai-demo-java)
 
 **Одрицање од одговорности**:  
-Овај документ је преведен коришћењем услуге за превођење помоћу вештачке интелигенције [Co-op Translator](https://github.com/Azure/co-op-translator). Иако тежимо тачности, молимо вас да имате у виду да аутоматизовани преводи могу садржати грешке или нетачности. Оригинални документ на свом изворном језику треба сматрати ауторитативним извором. За критичне информације препоручује се професионални превод од стране људи. Не сносимо одговорност за било каква погрешна тумачења или неспоразуме који могу произаћи из коришћења овог превода.
+Овај документ је преведен коришћењем услуге за превођење помоћу вештачке интелигенције [Co-op Translator](https://github.com/Azure/co-op-translator). Иако се трудимо да обезбедимо тачност, молимо вас да имате у виду да аутоматски преводи могу садржати грешке или нетачности. Оригинални документ на његовом изворном језику треба сматрати ауторитативним извором. За критичне информације препоручује се професионални превод од стране људи. Не преузимамо одговорност за било каква погрешна тумачења или неспоразуме који могу настати услед коришћења овог превода.

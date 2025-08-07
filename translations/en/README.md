@@ -1,15 +1,15 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "63b6426b88f6f56398ca3f1fbfc30889",
-  "translation_date": "2025-07-29T07:51:50+00:00",
+  "original_hash": "90ac762d40c6db51b8081cdb3e49e9db",
+  "translation_date": "2025-08-07T10:59:14+00:00",
   "source_file": "README.md",
   "language_code": "en"
 }
 -->
 # Generative AI for Beginners - Java Edition
 
-**Time Commitment**: This workshop can be completed entirely online without requiring a local setup. Setting up the environment takes about 2 minutes, and exploring the examples can take 1-3 hours depending on how deeply you dive into them.
+**Time Commitment**: This workshop can be completed entirely online without requiring local setup. Setting up the environment takes about 2 minutes, and exploring the examples can take 1-3 hours depending on how deeply you dive into them.
 
 > **Quick Start**
 
@@ -18,7 +18,7 @@ CO_OP_TRANSLATOR_METADATA:
 3. Use the default settings – this will select the Development container created for this course.
 4. Click **Create codespace**.
 5. Wait approximately 2 minutes for the environment to be ready.
-6. Jump directly to [The first example](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token).
+6. Jump straight to [The first example](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token).
 
 ## Multi-Language Support
 
@@ -30,20 +30,20 @@ CO_OP_TRANSLATOR_METADATA:
 
 ### **Chapter 1: Introduction to Generative AI**
 - **Core Concepts**: Learn about Large Language Models, tokens, embeddings, and AI capabilities.
-- **Java AI Ecosystem**: Explore Spring AI and OpenAI SDKs.
-- **Model Context Protocol**: Understand MCP and its importance in AI agent communication.
-- **Practical Applications**: Real-world use cases like chatbots and content generation.
+- **Java AI Ecosystem**: Overview of Spring AI and OpenAI SDKs.
+- **Model Context Protocol**: Introduction to MCP and its importance in AI agent communication.
+- **Practical Applications**: Explore real-world use cases like chatbots and content generation.
 - **[→ Start Chapter 1](./01-IntroToGenAI/README.md)**
 
 ### **Chapter 2: Development Environment Setup**
-- **Multi-Provider Configuration**: Set up integrations for GitHub Models, Azure OpenAI, and OpenAI Java SDK.
-- **Spring Boot + Spring AI**: Learn best practices for building enterprise AI applications.
+- **Multi-Provider Configuration**: Set up GitHub Models, Azure OpenAI, and OpenAI Java SDK integrations.
+- **Spring Boot + Spring AI**: Best practices for building enterprise AI applications.
 - **GitHub Models**: Access free AI models for prototyping and learning (no credit card required).
 - **Development Tools**: Configure Docker containers, VS Code, and GitHub Codespaces.
 - **[→ Start Chapter 2](./02-SetupDevEnvironment/README.md)**
 
 ### **Chapter 3: Core Generative AI Techniques**
-- **Prompt Engineering**: Learn how to craft prompts for optimal AI responses.
+- **Prompt Engineering**: Learn techniques to get the best responses from AI models.
 - **Embeddings & Vector Operations**: Implement semantic search and similarity matching.
 - **Retrieval-Augmented Generation (RAG)**: Combine AI with your own data sources.
 - **Function Calling**: Extend AI capabilities with custom tools and plugins.
@@ -63,6 +63,7 @@ CO_OP_TRANSLATOR_METADATA:
 
 ## Additional Resources
 
+- [MCP For Beginners](https://github.com/microsoft/mcp-for-beginners)
 - [AI Agents For Beginners](https://github.com/microsoft/ai-agents-for-beginners)
 - [Generative AI for Beginners using .NET](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)
 - [Generative AI for Beginners using JavaScript](https://github.com/microsoft/generative-ai-with-javascript)
@@ -80,4 +81,4 @@ CO_OP_TRANSLATOR_METADATA:
 - [RAG Chat App with Azure AI Services](https://github.com/Azure-Samples/azure-search-openai-demo-java)
 
 **Disclaimer**:  
-This document has been translated using the AI translation service [Co-op Translator](https://github.com/Azure/co-op-translator). While we strive for accuracy, please note that automated translations may contain errors or inaccuracies. The original document in its native language should be regarded as the authoritative source. For critical information, professional human translation is recommended. We are not responsible for any misunderstandings or misinterpretations resulting from the use of this translation.
+This document has been translated using the AI translation service [Co-op Translator](https://github.com/Azure/co-op-translator). While we aim for accuracy, please note that automated translations may include errors or inaccuracies. The original document in its native language should be regarded as the authoritative source. For critical information, professional human translation is advised. We are not responsible for any misunderstandings or misinterpretations resulting from the use of this translation.

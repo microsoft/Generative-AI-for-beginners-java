@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "63b6426b88f6f56398ca3f1fbfc30889",
-  "translation_date": "2025-07-29T09:02:30+00:00",
+  "original_hash": "90ac762d40c6db51b8081cdb3e49e9db",
+  "translation_date": "2025-08-07T11:10:50+00:00",
   "source_file": "README.md",
   "language_code": "it"
 }
@@ -31,15 +31,15 @@ CO_OP_TRANSLATOR_METADATA:
 
 ## Struttura del Corso e Percorso di Apprendimento
 
-### **Capitolo 1: Introduzione alla Generative AI**
+### **Capitolo 1: Introduzione al Generative AI**
 - **Concetti Fondamentali**: Comprendere i Large Language Models, i token, gli embeddings e le capacità dell'AI
-- **Ecosistema AI in Java**: Panoramica su Spring AI e sugli SDK OpenAI
-- **Model Context Protocol**: Introduzione al MCP e al suo ruolo nella comunicazione degli agenti AI
+- **Ecosistema AI in Java**: Panoramica su Spring AI e OpenAI SDKs
+- **Model Context Protocol**: Introduzione a MCP e al suo ruolo nella comunicazione degli agenti AI
 - **Applicazioni Pratiche**: Scenari reali, inclusi chatbot e generazione di contenuti
 - **[→ Inizia il Capitolo 1](./01-IntroToGenAI/README.md)**
 
 ### **Capitolo 2: Configurazione dell'Ambiente di Sviluppo**
-- **Configurazione Multi-Provider**: Configura GitHub Models, Azure OpenAI e integrazioni con OpenAI Java SDK
+- **Configurazione Multi-Provider**: Imposta GitHub Models, Azure OpenAI e integrazioni con OpenAI Java SDK
 - **Spring Boot + Spring AI**: Best practice per lo sviluppo di applicazioni AI aziendali
 - **GitHub Models**: Accesso gratuito ai modelli AI per prototipazione e apprendimento (senza carta di credito)
 - **Strumenti di Sviluppo**: Configurazione di container Docker, VS Code e GitHub Codespaces
@@ -60,12 +60,13 @@ CO_OP_TRANSLATOR_METADATA:
 
 ### **Capitolo 5: Sviluppo Responsabile dell'AI**
 - **Sicurezza dei GitHub Models**: Testa i meccanismi di filtraggio dei contenuti e di sicurezza integrati (blocchi rigidi e rifiuti morbidi)
-- **Demo di AI Responsabile**: Esempio pratico che mostra come funzionano i moderni sistemi di sicurezza AI
+- **Demo AI Responsabile**: Esempio pratico che mostra come funzionano i moderni sistemi di sicurezza AI
 - **Best Practice**: Linee guida essenziali per uno sviluppo e un'implementazione etica dell'AI
 - **[→ Inizia il Capitolo 5](./05-ResponsibleGenAI/README.md)**
 
 ## Risorse Aggiuntive
 
+- [MCP For Beginners](https://github.com/microsoft/mcp-for-beginners)
 - [AI Agents For Beginners](https://github.com/microsoft/ai-agents-for-beginners)
 - [Generative AI for Beginners using .NET](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)
 - [Generative AI for Beginners using JavaScript](https://github.com/microsoft/generative-ai-with-javascript)
@@ -82,5 +83,5 @@ CO_OP_TRANSLATOR_METADATA:
 - [Choose Your Own Copilot Adventure](https://github.com/microsoft/CopilotAdventures)
 - [RAG Chat App with Azure AI Services](https://github.com/Azure-Samples/azure-search-openai-demo-java)
 
-**Disclaimer**:  
-Questo documento è stato tradotto utilizzando il servizio di traduzione automatica [Co-op Translator](https://github.com/Azure/co-op-translator). Sebbene ci impegniamo per garantire l'accuratezza, si prega di notare che le traduzioni automatiche possono contenere errori o imprecisioni. Il documento originale nella sua lingua nativa dovrebbe essere considerato la fonte autorevole. Per informazioni critiche, si raccomanda una traduzione professionale eseguita da un traduttore umano. Non siamo responsabili per eventuali fraintendimenti o interpretazioni errate derivanti dall'uso di questa traduzione.
+**Disclaimer (Avvertenza)**:  
+Questo documento è stato tradotto utilizzando il servizio di traduzione automatica [Co-op Translator](https://github.com/Azure/co-op-translator). Sebbene ci impegniamo per garantire l'accuratezza, si prega di tenere presente che le traduzioni automatiche possono contenere errori o imprecisioni. Il documento originale nella sua lingua nativa dovrebbe essere considerato la fonte autorevole. Per informazioni critiche, si raccomanda una traduzione professionale effettuata da un traduttore umano. Non siamo responsabili per eventuali incomprensioni o interpretazioni errate derivanti dall'uso di questa traduzione.

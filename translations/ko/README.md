@@ -1,8 +1,8 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "63b6426b88f6f56398ca3f1fbfc30889",
-  "translation_date": "2025-07-29T08:33:06+00:00",
+  "original_hash": "90ac762d40c6db51b8081cdb3e49e9db",
+  "translation_date": "2025-08-07T11:06:30+00:00",
   "source_file": "README.md",
   "language_code": "ko"
 }
@@ -34,8 +34,8 @@ CO_OP_TRANSLATOR_METADATA:
 ### **1장: 생성형 AI 소개**
 - **핵심 개념**: 대규모 언어 모델, 토큰, 임베딩, AI 기능 이해
 - **Java AI 생태계**: Spring AI 및 OpenAI SDK 개요
-- **모델 컨텍스트 프로토콜**: MCP와 AI 에이전트 간의 통신 역할 소개
-- **실용적인 응용**: 챗봇 및 콘텐츠 생성과 같은 실제 사례
+- **모델 컨텍스트 프로토콜**: MCP와 AI 에이전트 간 통신에서의 역할 소개
+- **실용적인 응용**: 챗봇 및 콘텐츠 생성과 같은 실제 시나리오
 - **[→ 1장 시작하기](./01-IntroToGenAI/README.md)**
 
 ### **2장: 개발 환경 설정**
@@ -45,11 +45,11 @@ CO_OP_TRANSLATOR_METADATA:
 - **개발 도구**: Docker 컨테이너, VS Code, GitHub Codespaces 구성
 - **[→ 2장 시작하기](./02-SetupDevEnvironment/README.md)**
 
-### **3장: 생성형 AI 핵심 기술**
+### **3장: 핵심 생성형 AI 기술**
 - **프롬프트 엔지니어링**: 최적의 AI 모델 응답을 위한 기술
 - **임베딩 및 벡터 연산**: 의미론적 검색 및 유사성 매칭 구현
 - **검색 증강 생성 (RAG)**: AI와 자체 데이터 소스 결합
-- **기능 호출**: 사용자 정의 도구 및 플러그인으로 AI 기능 확장
+- **함수 호출**: 사용자 정의 도구 및 플러그인으로 AI 기능 확장
 - **[→ 3장 시작하기](./03-CoreGenerativeAITechniques/README.md)**
 
 ### **4장: 실용적인 응용 및 프로젝트**
@@ -66,9 +66,10 @@ CO_OP_TRANSLATOR_METADATA:
 
 ## 추가 자료
 
+- [초보자를 위한 MCP](https://github.com/microsoft/mcp-for-beginners)
 - [초보자를 위한 AI 에이전트](https://github.com/microsoft/ai-agents-for-beginners)
-- [초보자를 위한 생성형 AI (.NET 사용)](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)
-- [초보자를 위한 생성형 AI (JavaScript 사용)](https://github.com/microsoft/generative-ai-with-javascript)
+- [.NET을 사용한 초보자를 위한 생성형 AI](https://github.com/microsoft/Generative-AI-for-beginners-dotnet)
+- [JavaScript를 사용한 초보자를 위한 생성형 AI](https://github.com/microsoft/generative-ai-with-javascript)
 - [초보자를 위한 생성형 AI](https://github.com/microsoft/generative-ai-for-beginners)
 - [초보자를 위한 머신러닝](https://aka.ms/ml-beginners)
 - [초보자를 위한 데이터 과학](https://aka.ms/datascience-beginners)
@@ -77,10 +78,10 @@ CO_OP_TRANSLATOR_METADATA:
 - [초보자를 위한 웹 개발](https://aka.ms/webdev-beginners)
 - [초보자를 위한 IoT](https://aka.ms/iot-beginners)
 - [초보자를 위한 XR 개발](https://github.com/microsoft/xr-development-for-beginners)
-- [AI 페어드 프로그래밍을 위한 GitHub Copilot 마스터하기](https://aka.ms/GitHubCopilotAI)
+- [AI 페어 프로그래밍을 위한 GitHub Copilot 마스터하기](https://aka.ms/GitHubCopilotAI)
 - [C#/.NET 개발자를 위한 GitHub Copilot 마스터하기](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers)
 - [GitHub Copilot 모험 선택하기](https://github.com/microsoft/CopilotAdventures)
 - [Azure AI 서비스를 활용한 RAG 채팅 앱](https://github.com/Azure-Samples/azure-search-openai-demo-java)
 
 **면책 조항**:  
-이 문서는 AI 번역 서비스 [Co-op Translator](https://github.com/Azure/co-op-translator)를 사용하여 번역되었습니다. 정확성을 위해 최선을 다하고 있지만, 자동 번역에는 오류나 부정확성이 포함될 수 있습니다. 원본 문서를 해당 언어로 작성된 상태에서 권위 있는 자료로 간주해야 합니다. 중요한 정보에 대해서는 전문적인 인간 번역을 권장합니다. 이 번역 사용으로 인해 발생하는 오해나 잘못된 해석에 대해 당사는 책임을 지지 않습니다.
+이 문서는 AI 번역 서비스 [Co-op Translator](https://github.com/Azure/co-op-translator)를 사용하여 번역되었습니다. 정확성을 위해 최선을 다하고 있지만, 자동 번역에는 오류나 부정확성이 포함될 수 있습니다. 원본 문서의 원어 버전을 권위 있는 출처로 간주해야 합니다. 중요한 정보의 경우, 전문적인 인간 번역을 권장합니다. 이 번역 사용으로 인해 발생하는 오해나 잘못된 해석에 대해 책임을 지지 않습니다.
