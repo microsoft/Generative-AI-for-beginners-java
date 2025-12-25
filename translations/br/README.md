@@ -1,37 +1,37 @@
 <!--
 CO_OP_TRANSLATOR_METADATA:
 {
-  "original_hash": "eaa2dc75d2cf5083d071e3c84aa4b955",
-  "translation_date": "2025-12-19T10:08:26+00:00",
+  "original_hash": "64843fea021344d8e889dae94f46a9be",
+  "translation_date": "2025-12-25T05:41:23+00:00",
   "source_file": "README.md",
   "language_code": "br"
 }
 -->
 # IA Generativa para Iniciantes - Edição Java
-[![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
+[![Discord do Microsoft Foundry](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
 ![IA Generativa para Iniciantes - Edição Java](../../translated_images/beg-genai-series.8b48be9951cc574c25f8a3accba949bfd03c2f008e2c613283a1b47316fbee68.br.png)
 
-**Compromisso de Tempo**: O workshop completo pode ser realizado online sem configuração local. A configuração do ambiente leva 2 minutos, com a exploração dos exemplos exigindo de 1 a 3 horas, dependendo da profundidade da exploração.
+**Comprometimento de Tempo**: O workshop inteiro pode ser concluído online sem configuração local. A configuração do ambiente leva 2 minutos, com a exploração dos exemplos requerendo de 1 a 3 horas dependendo da profundidade da exploração.
 
 > **Início Rápido** 
 
 1. Faça um fork deste repositório para sua conta do GitHub
-2. Clique em **Code** → aba **Codespaces** → **...** → **Novo com opções...**
+2. Clique em **Code** → aba **Codespaces** → **...** → **New with options...**
 3. Use os padrões – isso selecionará o container de Desenvolvimento criado para este curso
-4. Clique em **Criar codespace**
-5. Aguarde ~2 minutos para o ambiente ficar pronto
+4. Clique em **Create codespace**
+5. Espere ~2 minutos para o ambiente ficar pronto
 6. Vá direto para [O primeiro exemplo](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)
 
-> **Prefere Clonar Localmente?**
+> **Prefere clonar localmente?**
 >
-> Este repositório inclui mais de 50 traduções de idiomas, o que aumenta significativamente o tamanho do download. Para clonar sem traduções, use sparse checkout:
+> Este repositório inclui mais de 50 traduções de idioma que aumentam significativamente o tamanho do download. Para clonar sem traduções, use sparse checkout:
 > ```bash
 > git clone --filter=blob:none --sparse https://github.com/microsoft/Generative-AI-for-beginners-java.git
 > cd Generative-AI-for-beginners-java
 > git sparse-checkout set --no-cone '/*' '!translations' '!translated_images'
 > ```
-> Isso fornece tudo que você precisa para completar o curso com um download muito mais rápido.
+> Isto fornece tudo o que você precisa para concluir o curso com um download muito mais rápido.
 
 
 ## Suporte Multilíngue
@@ -39,43 +39,43 @@ CO_OP_TRANSLATOR_METADATA:
 ### Suportado via GitHub Action (Automatizado e Sempre Atualizado)
 
 <!-- CO-OP TRANSLATOR LANGUAGES TABLE START -->
-[Árabe](../ar/README.md) | [Bengali](../bn/README.md) | [Búlgaro](../bg/README.md) | [Birmanês (Myanmar)](../my/README.md) | [Chinês (Simplificado)](../zh/README.md) | [Chinês (Tradicional, Hong Kong)](../hk/README.md) | [Chinês (Tradicional, Macau)](../mo/README.md) | [Chinês (Tradicional, Taiwan)](../tw/README.md) | [Croata](../hr/README.md) | [Tcheco](../cs/README.md) | [Dinamarquês](../da/README.md) | [Holandês](../nl/README.md) | [Estoniano](../et/README.md) | [Finlandês](../fi/README.md) | [Francês](../fr/README.md) | [Alemão](../de/README.md) | [Grego](../el/README.md) | [Hebraico](../he/README.md) | [Hindi](../hi/README.md) | [Húngaro](../hu/README.md) | [Indonésio](../id/README.md) | [Italiano](../it/README.md) | [Japonês](../ja/README.md) | [Kannada](../kn/README.md) | [Coreano](../ko/README.md) | [Lituano](../lt/README.md) | [Malaio](../ms/README.md) | [Malaiala](../ml/README.md) | [Marathi](../mr/README.md) | [Nepali](../ne/README.md) | [Pidgin Nigeriano](../pcm/README.md) | [Norueguês](../no/README.md) | [Persa (Farsi)](../fa/README.md) | [Polonês](../pl/README.md) | [Português (Brasil)](./README.md) | [Português (Portugal)](../pt/README.md) | [Punjabi (Gurmukhi)](../pa/README.md) | [Romeno](../ro/README.md) | [Russo](../ru/README.md) | [Sérvio (Cirílico)](../sr/README.md) | [Eslovaco](../sk/README.md) | [Esloveno](../sl/README.md) | [Espanhol](../es/README.md) | [Suaíli](../sw/README.md) | [Sueco](../sv/README.md) | [Tagalo (Filipino)](../tl/README.md) | [Tâmil](../ta/README.md) | [Telugu](../te/README.md) | [Tailandês](../th/README.md) | [Turco](../tr/README.md) | [Ucraniano](../uk/README.md) | [Urdu](../ur/README.md) | [Vietnamita](../vi/README.md)
+[Árabe](../ar/README.md) | [Bengalês](../bn/README.md) | [Búlgaro](../bg/README.md) | [Birmanês (Myanmar)](../my/README.md) | [Chinês (Simplificado)](../zh/README.md) | [Chinês (Tradicional, Hong Kong)](../hk/README.md) | [Chinês (Tradicional, Macau)](../mo/README.md) | [Chinês (Tradicional, Taiwan)](../tw/README.md) | [Croata](../hr/README.md) | [Tcheco](../cs/README.md) | [Dinamarquês](../da/README.md) | [Holandês](../nl/README.md) | [Estoniano](../et/README.md) | [Finlandês](../fi/README.md) | [Francês](../fr/README.md) | [Alemão](../de/README.md) | [Grego](../el/README.md) | [Hebraico](../he/README.md) | [Hindi](../hi/README.md) | [Húngaro](../hu/README.md) | [Indonésio](../id/README.md) | [Italiano](../it/README.md) | [Japonês](../ja/README.md) | [Kannada](../kn/README.md) | [Coreano](../ko/README.md) | [Lituano](../lt/README.md) | [Malaio](../ms/README.md) | [Malayalam](../ml/README.md) | [Marathi](../mr/README.md) | [Nepali](../ne/README.md) | [Pidgin Nigeriano](../pcm/README.md) | [Norueguês](../no/README.md) | [Persa (Farsi)](../fa/README.md) | [Polonês](../pl/README.md) | [Português (Brasil)](./README.md) | [Português (Portugal)](../pt/README.md) | [Punjabi (Gurmukhi)](../pa/README.md) | [Romeno](../ro/README.md) | [Russo](../ru/README.md) | [Sérvio (Cirílico)](../sr/README.md) | [Eslovaco](../sk/README.md) | [Esloveno](../sl/README.md) | [Espanhol](../es/README.md) | [Suaíli](../sw/README.md) | [Sueco](../sv/README.md) | [Tagalog (Filipino)](../tl/README.md) | [Tâmil](../ta/README.md) | [Telugo](../te/README.md) | [Tailandês](../th/README.md) | [Turco](../tr/README.md) | [Ucraniano](../uk/README.md) | [Urdu](../ur/README.md) | [Vietnamita](../vi/README.md)
 <!-- CO-OP TRANSLATOR LANGUAGES TABLE END -->
 
-## Estrutura do Curso & Caminho de Aprendizagem
+## Estrutura do Curso e Roteiro de Aprendizagem
 
 ### **Capítulo 1: Introdução à IA Generativa**
-- **Conceitos Básicos**: Compreendendo Grandes Modelos de Linguagem, tokens, embeddings e capacidades da IA
-- **Ecossistema Java AI**: Visão geral dos SDKs Spring AI e OpenAI
-- **Protocolo de Contexto de Modelo**: Introdução ao MCP e seu papel na comunicação de agentes de IA
-- **Aplicações Práticas**: Cenários do mundo real incluindo chatbots e geração de conteúdo
-- **[→ Começar Capítulo 1](./01-IntroToGenAI/README.md)**
+- **Conceitos Centrais**: Entendendo Modelos de Linguagem de Grande Escala, tokens, embeddings e capacidades da IA
+- **Ecossistema de IA em Java**: Visão geral do Spring AI e dos SDKs da OpenAI
+- **Model Context Protocol**: Introdução ao MCP e seu papel na comunicação entre agentes de IA
+- **Aplicações Práticas**: Cenários do mundo real, incluindo chatbots e geração de conteúdo
+- **[→ Iniciar Capítulo 1](./01-IntroToGenAI/README.md)**
 
 ### **Capítulo 2: Configuração do Ambiente de Desenvolvimento**
-- **Configuração Multi-Provedor**: Configurar GitHub Models, Azure OpenAI e integrações OpenAI Java SDK
-- **Spring Boot + Spring AI**: Melhores práticas para desenvolvimento de aplicações empresariais de IA
-- **GitHub Models**: Acesso gratuito a modelos de IA para prototipagem e aprendizado (sem necessidade de cartão de crédito)
-- **Ferramentas de Desenvolvimento**: Containers Docker, VS Code e configuração do GitHub Codespaces
-- **[→ Começar Capítulo 2](./02-SetupDevEnvironment/README.md)**
+- **Configuração Multi-Provedor**: Configure integrações com GitHub Models, Azure OpenAI e OpenAI Java SDK
+- **Spring Boot + Spring AI**: Melhores práticas para desenvolvimento de aplicações corporativas de IA
+- **GitHub Models**: Acesso gratuito a modelos de IA para prototipagem e aprendizagem (não é necessário cartão de crédito)
+- **Ferramentas de Desenvolvimento**: containers Docker, VS Code e configuração do GitHub Codespaces
+- **[→ Iniciar Capítulo 2](./02-SetupDevEnvironment/README.md)**
 
 ### **Capítulo 3: Técnicas Centrais de IA Generativa**
-- **Engenharia de Prompt**: Técnicas para respostas ótimas dos modelos de IA
-- **Embeddings & Operações Vetoriais**: Implementar busca semântica e correspondência de similaridade
-- **Geração com Recuperação Aprimorada (RAG)**: Combinar IA com suas próprias fontes de dados
-- **Chamada de Função**: Estender capacidades da IA com ferramentas e plugins personalizados
-- **[→ Começar Capítulo 3](./03-CoreGenerativeAITechniques/README.md)**
+- **Engenharia de Prompt**: Técnicas para respostas ótimas de modelos de IA
+- **Embeddings e Operações Vetoriais**: Implemente busca semântica e correspondência por similaridade
+- **Retrieval-Augmented Generation (RAG)**: Combine IA com suas próprias fontes de dados
+- **Chamadas de Função**: Expanda as capacidades da IA com ferramentas e plugins personalizados
+- **[→ Iniciar Capítulo 3](./03-CoreGenerativeAITechniques/README.md)**
 
 ### **Capítulo 4: Aplicações Práticas & Projetos**
-- **Gerador de Histórias de Animais de Estimação** (`petstory/`): Geração criativa de conteúdo com GitHub Models
-- **Demonstração Local Foundry** (`foundrylocal/`): Integração local de modelo de IA com OpenAI Java SDK
-- **Serviço Calculadora MCP** (`calculator/`): Implementação básica do Protocolo de Contexto de Modelo com Spring AI
-- **[→ Começar Capítulo 4](./04-PracticalSamples/README.md)**
+- **Gerador de Histórias de Animais** (`petstory/`): Geração criativa de conteúdo com GitHub Models
+- **Demonstração Local do Foundry** (`foundrylocal/`): Integração de modelo de IA local com o OpenAI Java SDK
+- **Serviço Calculadora MCP** (`calculator/`): Implementação básica do Model Context Protocol com Spring AI
+- **[→ Iniciar Capítulo 4](./04-PracticalSamples/README.md)**
 
 ### **Capítulo 5: Desenvolvimento Responsável de IA**
-- **Segurança do GitHub Models**: Testar filtragem de conteúdo embutida e mecanismos de segurança (bloqueios rígidos e recusas suaves)
-- **Demonstração de IA Responsável**: Exemplo prático mostrando como sistemas modernos de segurança de IA funcionam na prática
+- **Segurança dos GitHub Models**: Teste os filtros de conteúdo e mecanismos de segurança integrados (bloqueios rígidos e recusas suaves)
+- **Demonstração de IA Responsável**: Exemplo prático mostrando como os sistemas modernos de segurança em IA funcionam na prática
 - **Melhores Práticas**: Diretrizes essenciais para desenvolvimento e implantação ética de IA
-- **[→ Começar Capítulo 5](./05-ResponsibleGenAI/README.md)**
+- **[→ Iniciar Capítulo 5](./05-ResponsibleGenAI/README.md)**
 
 ## Recursos Adicionais
 
@@ -102,7 +102,7 @@ CO_OP_TRANSLATOR_METADATA:
 
 ---
  
-### Aprendizado Central
+### Aprendizado Fundamental
 [![ML para Iniciantes](https://img.shields.io/badge/ML%20for%20Beginners-22C55E?style=for-the-badge&labelColor=E5E7EB&color=22C55E)](https://aka.ms/ml-beginners?WT.mc_id=academic-105485-koreyst)
 [![Ciência de Dados para Iniciantes](https://img.shields.io/badge/Data%20Science%20for%20Beginners-84CC16?style=for-the-badge&labelColor=E5E7EB&color=84CC16)](https://aka.ms/datascience-beginners?WT.mc_id=academic-105485-koreyst)
 [![IA para Iniciantes](https://img.shields.io/badge/AI%20for%20Beginners-A3E635?style=for-the-badge&labelColor=E5E7EB&color=A3E635)](https://aka.ms/ai-beginners?WT.mc_id=academic-105485-koreyst)
@@ -119,19 +119,19 @@ CO_OP_TRANSLATOR_METADATA:
 [![Aventura Copilot](https://img.shields.io/badge/Copilot%20Adventure-FDE68A?style=for-the-badge&labelColor=E5E7EB&color=FDE68A)](https://github.com/microsoft/CopilotAdventures?WT.mc_id=academic-105485-koreyst)
 <!-- CO-OP TRANSLATOR OTHER COURSES END -->
 
-## Obter Ajuda
+## Obtendo Ajuda
 
-Se você ficar preso ou tiver alguma dúvida sobre como criar aplicativos de IA. Junte-se a outros aprendizes e desenvolvedores experientes em discussões sobre MCP. É uma comunidade de apoio onde perguntas são bem-vindas e o conhecimento é compartilhado livremente.
+Se você ficar preso ou tiver alguma dúvida sobre como criar aplicativos de IA. Junte-se a outros aprendizes e desenvolvedores experientes nas discussões sobre o MCP. É uma comunidade acolhedora onde perguntas são bem-vindas e o conhecimento é compartilhado livremente.
 
-[![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
+[![Discord do Microsoft Foundry](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-Se você tiver feedback sobre o produto ou erros durante a criação, visite:
+Se você tiver feedback sobre o produto ou encontrar erros durante o desenvolvimento, visite:
 
 [![Fórum de Desenvolvedores Microsoft Foundry](https://img.shields.io/badge/GitHub-Microsoft_Foundry_Developer_Forum-blue?style=for-the-badge&logo=github&color=000000&logoColor=fff)](https://aka.ms/foundry/forum)
 
 ---
 
 <!-- CO-OP TRANSLATOR DISCLAIMER START -->
-**Aviso Legal**:  
-Este documento foi traduzido utilizando o serviço de tradução por IA [Co-op Translator](https://github.com/Azure/co-op-translator). Embora nos esforcemos para garantir a precisão, esteja ciente de que traduções automáticas podem conter erros ou imprecisões. O documento original em seu idioma nativo deve ser considerado a fonte autorizada. Para informações críticas, recomenda-se a tradução profissional realizada por humanos. Não nos responsabilizamos por quaisquer mal-entendidos ou interpretações incorretas decorrentes do uso desta tradução.
+Isenção de responsabilidade:
+Este documento foi traduzido usando o serviço de tradução automática Co-op Translator (https://github.com/Azure/co-op-translator). Embora nos esforcemos para garantir a precisão, esteja ciente de que traduções automáticas podem conter erros ou imprecisões. O documento original em seu idioma deve ser considerado a fonte autorizada. Para informações críticas, recomenda-se tradução profissional feita por um tradutor humano. Não nos responsabilizamos por quaisquer mal-entendidos ou interpretações equivocadas decorrentes do uso desta tradução.
 <!-- CO-OP TRANSLATOR DISCLAIMER END -->
