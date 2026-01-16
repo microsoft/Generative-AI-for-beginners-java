@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # 초보자를 위한 생성 AI - Java 에디션
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![초보자를 위한 생성 AI - Java 에디션](../../translated_images/beg-genai-series.8b48be9951cc574c.ko.png)
+![초보자를 위한 생성 AI - Java 에디션](../../translated_images/ko/beg-genai-series.8b48be9951cc574c.webp)
 
 **소요 시간**: 전체 워크숍은 로컬 설정 없이 온라인으로 완료할 수 있습니다. 환경 설정은 2분이 걸리며, 샘플 탐색은 탐색 깊이에 따라 1-3시간이 소요됩니다.
 

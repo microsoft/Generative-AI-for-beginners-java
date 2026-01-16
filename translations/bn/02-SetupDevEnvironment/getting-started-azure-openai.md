@@ -75,7 +75,7 @@ CO_OP_TRANSLATOR_METADATA:
    > **নোট**: যদি আপনি বেসিক কনফিগ সম্পাদনা করতে চান, [Dev Container Configuration](../../../.devcontainer/devcontainer.json) দেখুন
 2. আপনার ফর্ক করা রিপোতে, **Code** → **Codespaces** ট্যাবে ক্লিক করুন
 3. **...** → **New with options...** ক্লিক করুন
-![কোডস্পেস অপশন দিয়ে তৈরি করা](../../../translated_images/codespaces.9945ded8ceb431a5.bn.png)
+![কোডস্পেস অপশন দিয়ে তৈরি করা](../../../translated_images/bn/codespaces.9945ded8ceb431a5.webp)
 4. **Dev container configuration** নির্বাচন করুন: 
    - **Generative AI Java Development Environment**
 5. **Create codespace** ক্লিক করুন

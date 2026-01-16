@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # ਸ਼ੁਰੂਆਤੀ ਲਈ ਜਨਰੇਟਿਵ ਏਆਈ - ਜਾਵਾ ਐਡੀਸ਼ਨ
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generative AI for Beginners - Java Edition](../../translated_images/beg-genai-series.8b48be9951cc574c.pa.png)
+![Generative AI for Beginners - Java Edition](../../translated_images/pa/beg-genai-series.8b48be9951cc574c.webp)
 
 **ਸਮਾਂ ਸਮਰਪਣ**: ਸਾਰਾ ਵਰਕਸ਼ਾਪ ਆਨਲਾਈਨ ਬਿਨਾਂ ਕਿਸੇ ਲੋਕਲ ਸੈਟਅਪ ਦੇ ਮੁਕੰਮਲ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ। ਵਾਤਾਵਰਨ ਸੈਟਅਪ ਵਿੱਚ 2 ਮਿੰਟ ਲੱਗਦੇ ਹਨ, ਅਤੇ ਨਮੂਨੇ ਖੰਗਾਲਣ ਵਿੱਚ ਵਿਅਕਤੀਗਤ ਗਹਿਰਾਈ ਮੁਤਾਬਕ 1-3 ਘੰਟੇ ਲੱਗ ਸਕਦੇ ਹਨ।
 

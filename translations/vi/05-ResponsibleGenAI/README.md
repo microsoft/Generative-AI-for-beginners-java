@@ -58,7 +58,7 @@ Lớp `ResponsibleGithubModels` thực hiện theo luồng sau:
 5. Hiển thị kết quả cho biết nội dung nào bị chặn, từ chối hoặc được phép
 6. Kiểm tra nội dung an toàn để so sánh
 
-![Demo An Toàn AI Có Trách Nhiệm](../../../translated_images/responsible.e4f51a917bafa4bf.vi.png)
+![Demo An Toàn AI Có Trách Nhiệm](../../../translated_images/vi/responsible.e4f51a917bafa4bf.webp)
 
 ### Hướng Dẫn Cài Đặt
 
@@ -164,7 +164,7 @@ Ví dụ này sử dụng các lời nhắc có vấn đề một cách có ch�
 
 Chúc mừng bạn đã hoàn thành khóa học AI Tạo Sinh cho Người Mới Bắt Đầu!
 
-![Hoàn Thành Khóa Học](../../../translated_images/image.73c7e2ff4a652e77.vi.png)
+![Hoàn Thành Khóa Học](../../../translated_images/vi/image.73c7e2ff4a652e77.webp)
 
 **Những gì bạn đã đạt được:**
 - Thiết lập môi trường phát triển của bạn

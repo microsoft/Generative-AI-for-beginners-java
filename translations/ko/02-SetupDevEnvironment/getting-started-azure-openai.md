@@ -75,7 +75,7 @@ CO_OP_TRANSLATOR_METADATA:
    > **참고**: 기본 설정을 수정하려면 [Dev Container Configuration](../../../.devcontainer/devcontainer.json)을 확인하세요.
 2. 포크한 저장소에서 **Code** → **Codespaces** 탭을 클릭합니다.
 3. **...** → **New with options...**를 클릭합니다.
-![옵션으로 Codespace 생성](../../../translated_images/codespaces.9945ded8ceb431a5.ko.png)
+![옵션으로 Codespace 생성](../../../translated_images/ko/codespaces.9945ded8ceb431a5.webp)
 4. **Dev container configuration**을 선택합니다: 
    - **Generative AI Java Development Environment**
 5. **Create codespace**를 클릭합니다.

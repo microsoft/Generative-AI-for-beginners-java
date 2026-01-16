@@ -44,7 +44,7 @@ Při vývoji vašich Java AI aplikací budete pracovat s **modely generativní A
 
 Existují specifické typy modelů optimalizované pro různé úkoly. Například jak **Small Language Models (SLM)**, tak **Large Language Models (LLM)** dokážou pracovat s generováním textu, přičemž LLM obvykle poskytují lepší výkon pro složitější úkoly. Pro úkoly související s obrázky byste použili specializované vizuální modely nebo multimodální modely.
 
-![Obrázek: Typy modelů generativní AI a jejich využití.](../../../translated_images/llms.225ca2b8a0d34473.cs.png)
+![Obrázek: Typy modelů generativní AI a jejich využití.](../../../translated_images/cs/llms.225ca2b8a0d34473.webp)
 
 Samozřejmě, odpovědi těchto modelů nejsou vždy dokonalé. Pravděpodobně jste slyšeli o tom, že modely „halucinují“ nebo generují nesprávné informace autoritativním způsobem. Můžete však modelu pomoci generovat lepší odpovědi tím, že mu poskytnete jasné instrukce a kontext. Zde přichází na řadu **návrh promptů**.
 
@@ -79,13 +79,13 @@ V Javě můžete použít knihovny jako OpenAI SDK, které automaticky zpracová
 
 - **Embeddingy**: Embeddingy jsou vektorové reprezentace tokenů, které zachycují sémantický význam. Jsou to číselné reprezentace (obvykle pole čísel s plovoucí desetinnou čárkou), které umožňují modelům chápat vztahy mezi slovy a generovat kontextově relevantní odpovědi. Podobná slova mají podobné embeddingy, což modelu umožňuje chápat koncepty jako synonyma a sémantické vztahy.
 
-![Obrázek: Embeddingy](../../../translated_images/embedding.398e50802c0037f9.cs.png)
+![Obrázek: Embeddingy](../../../translated_images/cs/embedding.398e50802c0037f9.webp)
 
 V Javě můžete generovat embeddingy pomocí OpenAI SDK nebo jiných knihoven, které podporují generování embeddingů. Tyto embeddingy jsou zásadní pro úkoly jako sémantické vyhledávání, kde chcete najít podobný obsah na základě významu, nikoli přesné shody textu.
 
 - **Vektorové databáze**: Vektorové databáze jsou specializované úložné systémy optimalizované pro embeddingy. Umožňují efektivní vyhledávání podobností a jsou klíčové pro vzory Retrieval-Augmented Generation (RAG), kde potřebujete najít relevantní informace z velkých datových sad na základě sémantické podobnosti, nikoli přesných shod.
 
-![Obrázek: Architektura vektorové databáze ukazující, jak jsou embeddingy ukládány a vyhledávány pro vyhledávání podobností.](../../../translated_images/vector.f12f114934e223df.cs.png)
+![Obrázek: Architektura vektorové databáze ukazující, jak jsou embeddingy ukládány a vyhledávány pro vyhledávání podobností.](../../../translated_images/cs/vector.f12f114934e223df.webp)
 
 > **Poznámka**: V tomto kurzu nebudeme pokrývat vektorové databáze, ale stojí za zmínku, protože jsou běžně používány v reálných aplikacích.
 
@@ -93,7 +93,7 @@ V Javě můžete generovat embeddingy pomocí OpenAI SDK nebo jiných knihoven, 
 
 V Java AI aplikacích budete používat tokeny pro zpracování textu, embeddingy pro sémantické vyhledávání a RAG, vektorové databáze pro vyhledávání dat a agenty s MCP pro budování inteligentních systémů využívajících nástroje.
 
-![Obrázek: Jak se prompt stává odpovědí—tokeny, vektory, volitelné RAG vyhledávání, LLM zpracování a MCP agent vše v jednom rychlém toku.](../../../translated_images/flow.f4ef62c3052d12a8.cs.png)
+![Obrázek: Jak se prompt stává odpovědí—tokeny, vektory, volitelné RAG vyhledávání, LLM zpracování a MCP agent vše v jednom rychlém toku.](../../../translated_images/cs/flow.f4ef62c3052d12a8.webp)
 
 ### Nástroje a knihovny pro vývoj AI v Javě
 

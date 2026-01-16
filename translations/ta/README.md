@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # தொடக்கத்தினருக்கான உருவாக்கும் AI - ஜாவா பதிப்பு
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generative AI for Beginners - Java Edition](../../translated_images/beg-genai-series.8b48be9951cc574c.ta.png)
+![Generative AI for Beginners - Java Edition](../../translated_images/ta/beg-genai-series.8b48be9951cc574c.webp)
 
 **நேரம் ஒதுக்கீடு**: முழு பணியகம் அடிப்படையில் உள்ளமைக்காமல் ஆன்லைனில் முடிக்க முடியும். சுற்றுச்சூழல் அமைப்புக்கு 2 நிமிடங்கள் பிடிக்கும், மாதிரிகளை ஆராய 1-3 மணி நேரம் தேவைப்படும், ஆராய்ச்சி ஆழத்தின்படி.
 

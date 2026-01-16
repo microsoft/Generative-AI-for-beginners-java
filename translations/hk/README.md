@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # 生成式人工智能初學者指南 - Java 版
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![生成式人工智能初學者指南 - Java 版](../../translated_images/beg-genai-series.8b48be9951cc574c.hk.png)
+![生成式人工智能初學者指南 - Java 版](../../translated_images/hk/beg-genai-series.8b48be9951cc574c.webp)
 
 **所需時間**：整個工作坊可線上完成，毋須本地設置。環境設定約需 2 分鐘，瀏覽範例所需時間依探索深度約 1-3 小時。
 

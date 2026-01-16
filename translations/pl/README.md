@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Generatywna AI dla początkujących - wersja Java
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generatywna AI dla początkujących - wersja Java](../../translated_images/beg-genai-series.8b48be9951cc574c.pl.png)
+![Generatywna AI dla początkujących - wersja Java](../../translated_images/pl/beg-genai-series.8b48be9951cc574c.webp)
 
 **Czas potrzebny**: Cały warsztat można ukończyć online bez lokalnej instalacji. Konfiguracja środowiska zajmuje 2 minuty, a eksploracja przykładów wymaga 1-3 godzin, w zależności od głębokości poznawania.
 

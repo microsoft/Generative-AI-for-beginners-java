@@ -44,7 +44,7 @@ Während Sie Ihre Java-KI-Anwendungen entwickeln, arbeiten Sie mit **generativen
 
 Es gibt spezifische Modelltypen, die für verschiedene Aufgaben optimiert sind. Beispielsweise können sowohl **Small Language Models (SLMs)** als auch **Large Language Models (LLMs)** Text generieren, wobei LLMs in der Regel eine bessere Leistung bei komplexen Aufgaben bieten. Für bildbezogene Aufgaben würden Sie spezialisierte Vision-Modelle oder multimodale Modelle verwenden.
 
-![Abbildung: Typen generativer KI-Modelle und Anwendungsfälle.](../../../translated_images/llms.225ca2b8a0d34473.de.png)
+![Abbildung: Typen generativer KI-Modelle und Anwendungsfälle.](../../../translated_images/de/llms.225ca2b8a0d34473.webp)
 
 Natürlich sind die Antworten dieser Modelle nicht immer perfekt. Sie haben wahrscheinlich schon gehört, dass Modelle „halluzinieren“ oder falsche Informationen auf autoritäre Weise generieren können. Aber Sie können das Modell durch klare Anweisungen und Kontext dazu bringen, bessere Antworten zu generieren. Hier kommt das **Prompt-Engineering** ins Spiel.
 
@@ -79,13 +79,13 @@ Die Tokenisierung ist der Prozess des Zerlegens von Text in diese kleineren Einh
 
 - **Embeddings**: Embeddings sind Vektorrepräsentationen von Tokens, die semantische Bedeutungen erfassen. Sie sind numerische Darstellungen (typischerweise Arrays von Gleitkommazahlen), die es Modellen ermöglichen, Beziehungen zwischen Wörtern zu verstehen und kontextuell relevante Antworten zu generieren. Ähnliche Wörter haben ähnliche Embeddings, wodurch das Modell Konzepte wie Synonyme und semantische Beziehungen verstehen kann.
 
-![Abbildung: Embeddings](../../../translated_images/embedding.398e50802c0037f9.de.png)
+![Abbildung: Embeddings](../../../translated_images/de/embedding.398e50802c0037f9.webp)
 
   In Java können Sie Embeddings mit dem OpenAI SDK oder anderen Bibliotheken generieren, die die Erstellung von Embeddings unterstützen. Diese Embeddings sind entscheidend für Aufgaben wie semantische Suche, bei der Sie ähnliche Inhalte basierend auf Bedeutung und nicht auf exakten Textübereinstimmungen finden möchten.
 
 - **Vektordatenbanken**: Vektordatenbanken sind spezialisierte Speichersysteme, die für Embeddings optimiert sind. Sie ermöglichen effiziente Ähnlichkeitssuche und sind entscheidend für Retrieval-Augmented Generation (RAG)-Muster, bei denen Sie relevante Informationen aus großen Datensätzen basierend auf semantischer Ähnlichkeit und nicht auf exakten Übereinstimmungen finden müssen.
 
-![Abbildung: Architektur einer Vektordatenbank, die zeigt, wie Embeddings für Ähnlichkeitssuche gespeichert und abgerufen werden.](../../../translated_images/vector.f12f114934e223df.de.png)
+![Abbildung: Architektur einer Vektordatenbank, die zeigt, wie Embeddings für Ähnlichkeitssuche gespeichert und abgerufen werden.](../../../translated_images/de/vector.f12f114934e223df.webp)
 
 > **Hinweis**: In diesem Kurs behandeln wir keine Vektordatenbanken, halten sie jedoch für erwähnenswert, da sie häufig in realen Anwendungen verwendet werden.
 
@@ -93,7 +93,7 @@ Die Tokenisierung ist der Prozess des Zerlegens von Text in diese kleineren Einh
 
 In Java-KI-Anwendungen verwenden Sie Tokens für die Textverarbeitung, Embeddings für semantische Suche und RAG, Vektordatenbanken für die Datenabfrage und Agenten mit MCP, um intelligente, toolnutzende Systeme zu erstellen.
 
-![Abbildung: Wie ein Prompt zu einer Antwort wird—Tokens, Vektoren, optionales RAG-Lookup, LLM-Denken und ein MCP-Agent alles in einem schnellen Ablauf.](../../../translated_images/flow.f4ef62c3052d12a8.de.png)
+![Abbildung: Wie ein Prompt zu einer Antwort wird—Tokens, Vektoren, optionales RAG-Lookup, LLM-Denken und ein MCP-Agent alles in einem schnellen Ablauf.](../../../translated_images/de/flow.f4ef62c3052d12a8.webp)
 
 ### Entwicklungstools und Bibliotheken für KI in Java
 

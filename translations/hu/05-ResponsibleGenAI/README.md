@@ -58,7 +58,7 @@ A `ResponsibleGithubModels` osztály az alábbi folyamatot követi:
 5. Eredmények megjelenítése, amelyek mutatják, hogy mely tartalmakat blokkolták, utasították el vagy engedélyezték
 6. Biztonságos tartalom tesztelése összehasonlítás céljából
 
-![Felelős AI Biztonsági Bemutató](../../../translated_images/responsible.e4f51a917bafa4bf.hu.png)
+![Felelős AI Biztonsági Bemutató](../../../translated_images/hu/responsible.e4f51a917bafa4bf.webp)
 
 ### Telepítési Útmutató
 
@@ -164,7 +164,7 @@ Ez a példa kizárólag oktatási célból használ problémás promptokat. A c�
 
 Gratulálunk, hogy befejezted a Generatív AI Kezdőknek tanfolyamot!
 
-![Tanfolyam Befejezése](../../../translated_images/image.73c7e2ff4a652e77.hu.png)
+![Tanfolyam Befejezése](../../../translated_images/hu/image.73c7e2ff4a652e77.webp)
 
 **Amit elértél:**
 - Beállítottad a fejlesztési környezetedet

@@ -44,7 +44,7 @@ Habang nagde-develop ka ng iyong Java AI applications, gagamit ka ng **generativ
 
 May mga partikular na uri ng models na na-optimize para sa iba't ibang gawain. Halimbawa, parehong **Small Language Models (SLMs)** at **Large Language Models (LLMs)** ang maaaring mag-handle ng text generation, ngunit ang LLMs ay karaniwang mas mahusay para sa mas kumplikadong gawain. Para sa mga gawain na may kaugnayan sa larawan, gagamit ka ng mga specialized vision models o multi-modal models.
 
-![Figure: Mga uri ng Generative AI models at mga use cases.](../../../translated_images/llms.225ca2b8a0d34473.tl.png)
+![Figure: Mga uri ng Generative AI models at mga use cases.](../../../translated_images/tl/llms.225ca2b8a0d34473.webp)
 
 Siyempre, hindi palaging perpekto ang mga tugon mula sa mga models. Marahil narinig mo na ang tungkol sa mga models na "nagha-hallucinate" o bumubuo ng maling impormasyon sa isang authoritative na paraan. Ngunit maaari mong gabayan ang model upang makabuo ng mas mahusay na tugon sa pamamagitan ng pagbibigay ng malinaw na mga instruksyon at konteksto. Dito pumapasok ang **prompt engineering**.
 
@@ -79,13 +79,13 @@ Ang tokenization ay ang proseso ng paghahati ng text sa mas maliliit na yunit. M
 
 - **Embeddings**: Ang embeddings ay mga vector representations ng tokens na naglalaman ng semantic meaning. Ito ay mga numerical representations (karaniwang arrays ng floating-point numbers) na nagpapahintulot sa models na maunawaan ang relasyon sa pagitan ng mga salita at makabuo ng mga tugon na may kaugnayan sa konteksto. Ang mga salitang magkatulad ay may magkatulad na embeddings, na nagpapahintulot sa model na maunawaan ang mga konsepto tulad ng synonyms at semantic relationships.
 
-![Figure: Embeddings](../../../translated_images/embedding.398e50802c0037f9.tl.png)
+![Figure: Embeddings](../../../translated_images/tl/embedding.398e50802c0037f9.webp)
 
   Sa Java, maaari kang mag-generate ng embeddings gamit ang OpenAI SDK o iba pang libraries na sumusuporta sa embedding generation. Ang mga embeddings ay mahalaga para sa mga gawain tulad ng semantic search, kung saan nais mong makahanap ng katulad na content batay sa kahulugan sa halip na eksaktong text matches.
 
 - **Vector databases**: Ang vector databases ay mga specialized storage systems na na-optimize para sa embeddings. Pinapadali nito ang efficient similarity search at mahalaga para sa Retrieval-Augmented Generation (RAG) patterns kung saan kailangan mong makahanap ng kaugnay na impormasyon mula sa malalaking datasets batay sa semantic similarity sa halip na eksaktong matches.
 
-![Figure: Arkitektura ng vector database na nagpapakita kung paano ini-store at nire-retrieve ang embeddings para sa similarity search.](../../../translated_images/vector.f12f114934e223df.tl.png)
+![Figure: Arkitektura ng vector database na nagpapakita kung paano ini-store at nire-retrieve ang embeddings para sa similarity search.](../../../translated_images/tl/vector.f12f114934e223df.webp)
 
 > **Note**: Sa kursong ito, hindi natin tatalakayin ang Vector databases ngunit mahalagang banggitin ito dahil karaniwang ginagamit ito sa mga real-world applications.
 
@@ -93,7 +93,7 @@ Ang tokenization ay ang proseso ng paghahati ng text sa mas maliliit na yunit. M
 
 Sa Java AI applications, gagamit ka ng tokens para sa text processing, embeddings para sa semantic search at RAG, vector databases para sa data retrieval, at agents gamit ang MCP para sa pagbuo ng intelligent, tool-using systems.
 
-![Figure: Paano nagiging tugon ang isang prompt—tokens, vectors, optional RAG lookup, LLM thinking, at isang MCP agent sa isang mabilis na daloy.](../../../translated_images/flow.f4ef62c3052d12a8.tl.png)
+![Figure: Paano nagiging tugon ang isang prompt—tokens, vectors, optional RAG lookup, LLM thinking, at isang MCP agent sa isang mabilis na daloy.](../../../translated_images/tl/flow.f4ef62c3052d12a8.webp)
 
 ### Mga Tools at Libraries para sa Java AI Development
 

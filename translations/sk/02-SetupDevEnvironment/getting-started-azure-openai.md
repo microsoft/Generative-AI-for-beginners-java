@@ -75,7 +75,7 @@ Táto príručka vám pomôže nastaviť modely Azure AI Foundry pre vaše Java 
    > **Poznámka**: Ak chcete upraviť základnú konfiguráciu, pozrite si [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
 2. Vo svojom forknutom úložisku kliknite na **Code** → kartu **Codespaces**
 3. Kliknite na **...** → **New with options...**
-![vytváranie codespace s možnosťami](../../../translated_images/codespaces.9945ded8ceb431a5.sk.png)
+![vytváranie codespace s možnosťami](../../../translated_images/sk/codespaces.9945ded8ceb431a5.webp)
 4. Vyberte **Dev container configuration**: 
    - **Generative AI Java Development Environment**
 5. Kliknite na **Create codespace**

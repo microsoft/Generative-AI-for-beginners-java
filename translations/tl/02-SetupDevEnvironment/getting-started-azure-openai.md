@@ -75,7 +75,7 @@ Ang gabay na ito ay tutulong sa iyo na i-set up ang mga modelo ng Azure AI Found
    > **Tandaan**: Kung nais mong i-edit ang basic config, tingnan ang [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
 2. Sa iyong forked repo, i-click ang **Code** → **Codespaces** tab
 3. I-click ang **...** → **New with options...**
-![creating a codespace with options](../../../translated_images/codespaces.9945ded8ceb431a5.tl.png)
+![creating a codespace with options](../../../translated_images/tl/codespaces.9945ded8ceb431a5.webp)
 4. Piliin ang **Dev container configuration**: 
    - **Generative AI Java Development Environment**
 5. I-click ang **Create codespace**

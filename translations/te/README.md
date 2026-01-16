@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # జనరేటివ్ AI ప్రారంభకులకు - జావా సంచిక  
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generative AI for Beginners - Java Edition](../../translated_images/beg-genai-series.8b48be9951cc574c.te.png)
+![Generative AI for Beginners - Java Edition](../../translated_images/te/beg-genai-series.8b48be9951cc574c.webp)
 
 **సమయ కేటాయింపు**: మొత్తం వర్క్‌షాప్‌ను ఆన్‌లైన్‌లో స్థానిక సెటప్ లేకుండా పూర్తి చేయవచ్చు. వాతావరణ సెటప్‌కు 2 నిమిషాలు పట్టుతుంది, నమూనాలను అన్వేషించడం అన్వేషణ లోతు మీద ఆధారపడి 1-3 గంటలు పడుతుంది.
 

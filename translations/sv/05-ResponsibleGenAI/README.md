@@ -58,7 +58,7 @@ Klassen `ResponsibleGithubModels` följer detta flöde:
 5. Visa resultat som visar vilket innehåll som blockerades, avslogs eller tilläts
 6. Testa säkert innehåll för jämförelse
 
-![Demo för ansvarsfull AI-säkerhet](../../../translated_images/responsible.e4f51a917bafa4bf.sv.png)
+![Demo för ansvarsfull AI-säkerhet](../../../translated_images/sv/responsible.e4f51a917bafa4bf.webp)
 
 ### Installationsinstruktioner
 
@@ -164,7 +164,7 @@ Detta exempel använder avsiktligt problematiska uppmaningar endast i utbildning
 
 Grattis till att ha slutfört kursen Generativ AI för nybörjare!
 
-![Kursavslutning](../../../translated_images/image.73c7e2ff4a652e77.sv.png)
+![Kursavslutning](../../../translated_images/sv/image.73c7e2ff4a652e77.webp)
 
 **Vad du har åstadkommit:**
 - Ställt in din utvecklingsmiljö

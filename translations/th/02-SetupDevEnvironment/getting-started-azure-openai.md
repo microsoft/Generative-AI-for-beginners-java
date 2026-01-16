@@ -75,7 +75,7 @@ CO_OP_TRANSLATOR_METADATA:
    > **หมายเหตุ**: หากคุณต้องการแก้ไขการตั้งค่าพื้นฐาน โปรดดูที่ [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
 2. ใน repo ที่คุณ fork มา คลิก **Code** → แท็บ **Codespaces**
 3. คลิก **...** → **New with options...**  
-![creating a codespace with options](../../../translated_images/codespaces.9945ded8ceb431a5.th.png)
+![creating a codespace with options](../../../translated_images/th/codespaces.9945ded8ceb431a5.webp)
 4. เลือก **Dev container configuration**: 
    - **Generative AI Java Development Environment**
 5. คลิก **Create codespace**

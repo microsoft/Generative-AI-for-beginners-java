@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # ജെനറേറ്റീവ് AI ആരംഭക്കാർക്ക് - ജावा പതിപ്പ്
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![ജെനറേറ്റീവ് AI ആരംഭക്കാർക്ക് - ജावा പതിപ്പ്](../../translated_images/beg-genai-series.8b48be9951cc574c.ml.png)
+![ജെനറേറ്റീവ് AI ആരംഭക്കാർക്ക് - ജावा പതിപ്പ്](../../translated_images/ml/beg-genai-series.8b48be9951cc574c.webp)
 
 **സമയം:** മുഴുവൻ വർക്ക്ഷോപ്പ് ഓൺലൈനിൽ സജ്ജീകരണമില്ലാതെ പൂർത്തിയാക്കാം. പരിസ്ഥിതി സജ്ജീകരണം 2 മിനിറ്റ് വേണ്ടി വരും, സാമ്പിളുകൾ അന്വേഷിക്കാനുള്ള സമയം 1-3 മണിക്കൂർ വരെ കൂടുതല്‍ ആഴത്തിൽ നോക്കുന്നതിന് അനുസരിച്ചായി.
 

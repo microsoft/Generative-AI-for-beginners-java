@@ -58,7 +58,7 @@ Klasa `ResponsibleGithubModels` slijedi ovaj tijek:
 5. Prikazuje rezultate koji pokazuju koji je sadržaj blokiran, odbijen ili dopušten
 6. Testira siguran sadržaj za usporedbu
 
-![Demo sigurnosti odgovornog AI-a](../../../translated_images/responsible.e4f51a917bafa4bf.hr.png)
+![Demo sigurnosti odgovornog AI-a](../../../translated_images/hr/responsible.e4f51a917bafa4bf.webp)
 
 ### Upute za postavljanje
 
@@ -164,7 +164,7 @@ Ovaj primjer koristi namjerno problematične upite isključivo u edukativne svrh
 
 Čestitamo na završetku tečaja Generativni AI za početnike!
 
-![Završetak tečaja](../../../translated_images/image.73c7e2ff4a652e77.hr.png)
+![Završetak tečaja](../../../translated_images/hr/image.73c7e2ff4a652e77.webp)
 
 **Što ste postigli:**
 - Postavili ste razvojno okruženje

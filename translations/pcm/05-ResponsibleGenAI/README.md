@@ -58,7 +58,7 @@ Di `ResponsibleGithubModels` class dey follow dis steps:
 5. Show results wey go display di content wey dem block, refuse, or allow
 6. Test safe content to compare
 
-![Responsible AI Safety Demo](../../../translated_images/responsible.e4f51a917bafa4bf.pcm.png)
+![Responsible AI Safety Demo](../../../translated_images/pcm/responsible.e4f51a917bafa4bf.webp)
 
 ### Setup Instructions
 
@@ -164,7 +164,7 @@ Dis example dey use problematic prompts for learning purpose only. Di aim na to 
 
 Congrats say you don finish di Generative AI for Beginners course!
 
-![Course Completion](../../../translated_images/image.73c7e2ff4a652e77.pcm.png)
+![Course Completion](../../../translated_images/pcm/image.73c7e2ff4a652e77.webp)
 
 **Wetin you don achieve:**
 - Set up your development environment

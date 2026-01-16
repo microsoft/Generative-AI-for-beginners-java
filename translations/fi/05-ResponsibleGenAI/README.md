@@ -58,7 +58,7 @@ Tässä luvussa on käytännön demonstraatio siitä, miten GitHub Models toteut
 5. Näyttää tulokset, jotka osoittavat, mikä sisältö estettiin, kiellettiin tai sallittiin
 6. Testaa turvallista sisältöä vertailun vuoksi
 
-![Vastuullisen AI:n turvallisuusdemo](../../../translated_images/responsible.e4f51a917bafa4bf.fi.png)
+![Vastuullisen AI:n turvallisuusdemo](../../../translated_images/fi/responsible.e4f51a917bafa4bf.webp)
 
 ### Asennusohjeet
 
@@ -164,7 +164,7 @@ Tämä esimerkki käyttää tarkoituksellisesti ongelmallisia kehotteita vain op
 
 Onnittelut Generatiivinen AI aloittelijoille -kurssin suorittamisesta!
 
-![Kurssin suorittaminen](../../../translated_images/image.73c7e2ff4a652e77.fi.png)
+![Kurssin suorittaminen](../../../translated_images/fi/image.73c7e2ff4a652e77.webp)
 
 **Mitä olet saavuttanut:**
 - Olet asentanut kehitysympäristösi

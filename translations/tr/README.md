@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Yeni Başlayanlar için Üretken Yapay Zeka - Java Sürümü
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Yeni Başlayanlar için Üretken Yapay Zeka - Java Sürümü](../../translated_images/beg-genai-series.8b48be9951cc574c.tr.png)
+![Yeni Başlayanlar için Üretken Yapay Zeka - Java Sürümü](../../translated_images/tr/beg-genai-series.8b48be9951cc574c.webp)
 
 **Zaman Taahhüdü**: Tüm atölye online olarak yerel kuruluma gerek olmadan tamamlanabilir. Ortam kurulumu 2 dakika sürer, örnekleri keşfetmek ise keşif derinliğine bağlı olarak 1-3 saat arası zaman alır.
 

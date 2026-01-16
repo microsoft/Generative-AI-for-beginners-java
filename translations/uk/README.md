@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Генеративний ШІ для Початківців - Java Edition
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Генеративний ШІ для Початківців - Java Edition](../../translated_images/beg-genai-series.8b48be9951cc574c.uk.png)
+![Генеративний ШІ для Початківців - Java Edition](../../translated_images/uk/beg-genai-series.8b48be9951cc574c.webp)
 
 **Час, який потрібно витратити**: Весь воркшоп можна пройти онлайн без локальної установки. Налаштування середовища займає 2 хвилини, дослідження прикладів потребує 1-3 години, залежно від глибини вивчення.
 

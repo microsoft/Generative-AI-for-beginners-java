@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Generatiivne tehisintellekt algajatele - Java väljaanne
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generatiivne tehisintellekt algajatele - Java väljaanne](../../translated_images/beg-genai-series.8b48be9951cc574c.et.png)
+![Generatiivne tehisintellekt algajatele - Java väljaanne](../../translated_images/et/beg-genai-series.8b48be9951cc574c.webp)
 
 **Ajapanus**: Kogu töötuba saab lõpetada veebis ilma kohaliku seadistuseta. Keskkonna seadistamine võtab 2 minutit ja näidiste uurimine 1–3 tundi, sõltuvalt uurimise sügavusest.
 

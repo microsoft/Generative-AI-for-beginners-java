@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Генеративни AI за почетнике - Java издање
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Генеративни AI за почетнике - Java издање](../../translated_images/beg-genai-series.8b48be9951cc574c.sr.png)
+![Генеративни AI за почетнике - Java издање](../../translated_images/sr/beg-genai-series.8b48be9951cc574c.webp)
 
 **Време потребно**: Цео радионица се може урадити онлајн без локалне инсталације. Подешавање окружења траје 2 минута, а истраживање примера захтева 1-3 сата у зависности од дубине истраживања.
 

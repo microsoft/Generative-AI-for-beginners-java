@@ -44,7 +44,7 @@ Khi bạn phát triển các ứng dụng AI bằng Java, bạn sẽ làm việc
 
 Có những loại mô hình cụ thể được tối ưu hóa cho các nhiệm vụ khác nhau. Ví dụ, cả **Mô hình Ngôn ngữ Nhỏ (SLMs)** và **Mô hình Ngôn ngữ Lớn (LLMs)** đều có thể xử lý việc tạo văn bản, với LLMs thường mang lại hiệu suất tốt hơn cho các nhiệm vụ phức tạp. Đối với các nhiệm vụ liên quan đến hình ảnh, bạn sẽ sử dụng các mô hình thị giác chuyên biệt hoặc mô hình đa phương thức.
 
-![Hình: Các loại mô hình Generative AI và các trường hợp sử dụng.](../../../translated_images/llms.225ca2b8a0d34473.vi.png)
+![Hình: Các loại mô hình Generative AI và các trường hợp sử dụng.](../../../translated_images/vi/llms.225ca2b8a0d34473.webp)
 
 Tất nhiên, các phản hồi từ các mô hình này không phải lúc nào cũng hoàn hảo. Bạn có thể đã nghe về việc các mô hình "ảo tưởng" hoặc tạo ra thông tin sai lệch một cách tự tin. Nhưng bạn có thể hướng dẫn mô hình tạo ra các phản hồi tốt hơn bằng cách cung cấp cho chúng các hướng dẫn và ngữ cảnh rõ ràng. Đây là lúc **kỹ thuật tạo prompt** phát huy tác dụng.
 
@@ -79,13 +79,13 @@ Tokenization là quá trình phân chia văn bản thành các đơn vị nhỏ 
 
 - **Embeddings**: Embeddings là các biểu diễn vector của tokens, nắm bắt ý nghĩa ngữ nghĩa. Chúng là các biểu diễn số (thường là các mảng số thập phân) cho phép các mô hình hiểu mối quan hệ giữa các từ và tạo ra các phản hồi phù hợp với ngữ cảnh. Các từ tương tự có embeddings tương tự, cho phép mô hình hiểu các khái niệm như từ đồng nghĩa và mối quan hệ ngữ nghĩa.
 
-![Hình: Embeddings](../../../translated_images/embedding.398e50802c0037f9.vi.png)
+![Hình: Embeddings](../../../translated_images/vi/embedding.398e50802c0037f9.webp)
 
   Trong Java, bạn có thể tạo embeddings bằng cách sử dụng OpenAI SDK hoặc các thư viện khác hỗ trợ tạo embeddings. Các embeddings này rất cần thiết cho các nhiệm vụ như tìm kiếm ngữ nghĩa, nơi bạn muốn tìm nội dung tương tự dựa trên ý nghĩa thay vì khớp văn bản chính xác.
 
 - **Cơ sở dữ liệu vector**: Cơ sở dữ liệu vector là các hệ thống lưu trữ chuyên biệt được tối ưu hóa cho embeddings. Chúng cho phép tìm kiếm tương tự hiệu quả và rất quan trọng cho các mẫu RAG (Retrieval-Augmented Generation), nơi bạn cần tìm thông tin liên quan từ các tập dữ liệu lớn dựa trên sự tương đồng ngữ nghĩa thay vì khớp chính xác.
 
-![Hình: Kiến trúc cơ sở dữ liệu vector, hiển thị cách embeddings được lưu trữ và truy xuất để tìm kiếm tương tự.](../../../translated_images/vector.f12f114934e223df.vi.png)
+![Hình: Kiến trúc cơ sở dữ liệu vector, hiển thị cách embeddings được lưu trữ và truy xuất để tìm kiếm tương tự.](../../../translated_images/vi/vector.f12f114934e223df.webp)
 
 > **Lưu ý**: Trong khóa học này, chúng ta sẽ không đề cập đến cơ sở dữ liệu vector nhưng nghĩ rằng chúng đáng được nhắc đến vì chúng thường được sử dụng trong các ứng dụng thực tế.
 
@@ -93,7 +93,7 @@ Tokenization là quá trình phân chia văn bản thành các đơn vị nhỏ 
 
 Trong các ứng dụng AI Java, bạn sẽ sử dụng tokens để xử lý văn bản, embeddings để tìm kiếm ngữ nghĩa và RAG, cơ sở dữ liệu vector để truy xuất dữ liệu, và agents với MCP để xây dựng các hệ thống thông minh sử dụng công cụ.
 
-![Hình: cách một prompt trở thành phản hồi—tokens, vectors, tra cứu RAG tùy chọn, suy nghĩ của LLM, và một agent MCP tất cả trong một luồng nhanh chóng.](../../../translated_images/flow.f4ef62c3052d12a8.vi.png)
+![Hình: cách một prompt trở thành phản hồi—tokens, vectors, tra cứu RAG tùy chọn, suy nghĩ của LLM, và một agent MCP tất cả trong một luồng nhanh chóng.](../../../translated_images/vi/flow.f4ef62c3052d12a8.webp)
 
 ### Công cụ và thư viện phát triển AI cho Java
 

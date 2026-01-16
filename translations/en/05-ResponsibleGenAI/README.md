@@ -58,7 +58,7 @@ The `ResponsibleGithubModels` class operates as follows:
 5. Displays results indicating which content was blocked, refused, or allowed
 6. Tests safe content for comparison
 
-![Responsible AI Safety Demo](../../../translated_images/responsible.e4f51a917bafa4bf.en.png)
+![Responsible AI Safety Demo](../../../translated_images/en/responsible.e4f51a917bafa4bf.webp)
 
 ### Setup Instructions
 
@@ -164,7 +164,7 @@ This example uses intentionally problematic prompts solely for educational purpo
 
 Congratulations on completing the Generative AI for Beginners course!
 
-![Course Completion](../../../translated_images/image.73c7e2ff4a652e77.en.png)
+![Course Completion](../../../translated_images/en/image.73c7e2ff4a652e77.webp)
 
 **What you've accomplished:**
 - Set up your development environment

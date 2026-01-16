@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # IA Generativa para Principiantes - Edición Java
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![IA Generativa para Principiantes - Edición Java](../../translated_images/beg-genai-series.8b48be9951cc574c.es.png)
+![IA Generativa para Principiantes - Edición Java](../../translated_images/es/beg-genai-series.8b48be9951cc574c.webp)
 
 **Compromiso de tiempo**: Todo el taller se puede completar en línea sin configuración local. La configuración del entorno toma 2 minutos, con la exploración de los ejemplos requiriendo de 1 a 3 horas según la profundidad de la exploración.
 

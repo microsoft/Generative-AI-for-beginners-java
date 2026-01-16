@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # ابتدائیوں کے لیے جنریٹو AI - جاوا ایڈیشن
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![ابتدائیوں کے لیے جنریٹو AI - جاوا ایڈیشن](../../translated_images/beg-genai-series.8b48be9951cc574c.ur.png)
+![ابتدائیوں کے لیے جنریٹو AI - جاوا ایڈیشن](../../translated_images/ur/beg-genai-series.8b48be9951cc574c.webp)
 
 **وقت کی وابستگی**: پورا ورکشاپ آن لائن مکمل کیا جا سکتا ہے بغیر لوکل سیٹ اپ کے۔ ماحول کی ترتیب میں 2 منٹ لگتے ہیں، نمونوں کو دریافت کرنے میں 1-3 گھنٹے لگ سکتے ہیں، دریافت کی گہرائی پر منحصر ہے۔
 

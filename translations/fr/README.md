@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # IA Générative pour Débutants - Édition Java
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![IA Générative pour Débutants - Édition Java](../../translated_images/beg-genai-series.8b48be9951cc574c.fr.png)
+![IA Générative pour Débutants - Édition Java](../../translated_images/fr/beg-genai-series.8b48be9951cc574c.webp)
 
 **Temps requis** : L’atelier complet peut être réalisé en ligne sans configuration locale. La mise en place de l’environnement prend 2 minutes, l’exploration des exemples nécessite 1 à 3 heures selon la profondeur de l’exploration.
 

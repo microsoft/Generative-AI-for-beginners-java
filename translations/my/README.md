@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Generative AI for Beginners - Java Edition
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generative AI for Beginners - Java Edition](../../translated_images/beg-genai-series.8b48be9951cc574c.my.png)
+![Generative AI for Beginners - Java Edition](../../translated_images/my/beg-genai-series.8b48be9951cc574c.webp)
 
 **အချိန်စွန့်မှု**: အလုပ်ရုံသင်တန်းတစ်ခုလုံးကို ဒေသဆိုင်ရာပြင်ဆင်မှုမလိုဘဲ အွန်လိုင်းတွင် ပြီးမြောက်နိုင်သည်။ ပတ်ဝန်းကျင်ရဲ့ပြင်ဆင်ခြင်းကို ၂ မိနစ်ယူပြီး နမူနာတွေကို လေ့လာဖို့မှာ ၁ မှ ၃ နာရီကြား ရှိနိုင်သည်။
 

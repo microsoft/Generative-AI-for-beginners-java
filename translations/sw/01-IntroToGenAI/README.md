@@ -44,7 +44,7 @@ Unapounda programu zako za AI kwa Java, utatumia **miundo ya AI jenereta** kuund
 
 Kuna aina maalum za miundo iliyoboreshwa kwa kazi tofauti. Kwa mfano, **Miundo Midogo ya Lugha (SLMs)** na **Miundo Mikubwa ya Lugha (LLMs)** zote zinaweza kushughulikia uundaji wa maandishi, huku LLMs zikitoa utendaji bora zaidi kwa kazi ngumu. Kwa kazi zinazohusiana na picha, ungetumia miundo maalum ya kuona au miundo ya njia nyingi.
 
-![Mchoro: Aina za miundo ya AI jenereta na matumizi yake.](../../../translated_images/llms.225ca2b8a0d34473.sw.png)
+![Mchoro: Aina za miundo ya AI jenereta na matumizi yake.](../../../translated_images/sw/llms.225ca2b8a0d34473.webp)
 
 Bila shaka, majibu kutoka kwa miundo hii si kamilifu kila wakati. Huenda umesikia kuhusu miundo "ikihalusi" au kutoa taarifa zisizo sahihi kwa njia ya mamlaka. Lakini unaweza kusaidia kuongoza mfano kutoa majibu bora kwa kuwapa maelekezo na muktadha wazi. Hapa ndipo **uhandisi wa maelekezo** unapoingia.
 
@@ -79,13 +79,13 @@ Mchakato wa kugawanya maandishi kuwa vipande vidogo hivi huitwa tokenization. Hi
 
 - **Embeddings**: Embeddings ni uwakilishi wa vekta wa tokeni unaokamata maana ya kisemantiki. Ni uwakilishi wa nambari (kawaida safu za nambari za nukta ya kuelea) unaoruhusu miundo kuelewa uhusiano kati ya maneno na kutoa majibu yanayofaa kwa muktadha. Maneno yanayofanana yana embeddings zinazofanana, kuwezesha mfano kuelewa dhana kama visawe na uhusiano wa kisemantiki.
 
-![Mchoro: Embeddings](../../../translated_images/embedding.398e50802c0037f9.sw.png)
+![Mchoro: Embeddings](../../../translated_images/sw/embedding.398e50802c0037f9.webp)
 
   Katika Java, unaweza kuunda embeddings ukitumia OpenAI SDK au maktaba nyingine zinazounga mkono uundaji wa embeddings. Embeddings hizi ni muhimu kwa kazi kama utafutaji wa kisemantiki, ambapo unataka kupata maudhui yanayofanana kulingana na maana badala ya mechi halisi ya maandishi.
 
 - **Hifadhidata za vekta**: Hifadhidata za vekta ni mifumo maalum ya kuhifadhi iliyoboreshwa kwa embeddings. Zinawawezesha utafutaji wa kufanana kwa ufanisi na ni muhimu kwa mifumo ya RAG (Retrieval-Augmented Generation) ambapo unahitaji kupata taarifa muhimu kutoka kwa seti kubwa za data kulingana na kufanana kwa kisemantiki badala ya mechi halisi.
 
-![Mchoro: Usanifu wa hifadhidata ya vekta unaoonyesha jinsi embeddings zinavyohifadhiwa na kupatikana kwa utafutaji wa kufanana.](../../../translated_images/vector.f12f114934e223df.sw.png)
+![Mchoro: Usanifu wa hifadhidata ya vekta unaoonyesha jinsi embeddings zinavyohifadhiwa na kupatikana kwa utafutaji wa kufanana.](../../../translated_images/sw/vector.f12f114934e223df.webp)
 
 > **Kumbuka**: Katika kozi hii, hatutashughulikia hifadhidata za vekta lakini tunadhani ni muhimu kuzitaja kwani zinatumiwa sana katika programu za ulimwengu halisi.
 
@@ -93,7 +93,7 @@ Mchakato wa kugawanya maandishi kuwa vipande vidogo hivi huitwa tokenization. Hi
 
 Katika programu za AI za Java, utatumia tokeni kwa usindikaji wa maandishi, embeddings kwa utafutaji wa kisemantiki na RAG, hifadhidata za vekta kwa upatikanaji wa data, na mawakala na MCP kwa kujenga mifumo ya akili inayotumia zana.
 
-![Mchoro: jinsi maelekezo yanavyokuwa jibu—tokeni, vekta, utafutaji wa hiari wa RAG, fikra za LLM, na wakala wa MCP vyote kwa mtiririko mmoja wa haraka.](../../../translated_images/flow.f4ef62c3052d12a8.sw.png)
+![Mchoro: jinsi maelekezo yanavyokuwa jibu—tokeni, vekta, utafutaji wa hiari wa RAG, fikra za LLM, na wakala wa MCP vyote kwa mtiririko mmoja wa haraka.](../../../translated_images/sw/flow.f4ef62c3052d12a8.webp)
 
 ### Zana na Maktaba za Maendeleo ya AI kwa Java
 

@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Generativní AI pro začátečníky - edice Java
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generativní AI pro začátečníky - edice Java](../../translated_images/beg-genai-series.8b48be9951cc574c.cs.png)
+![Generativní AI pro začátečníky - edice Java](../../translated_images/cs/beg-genai-series.8b48be9951cc574c.webp)
 
 **Časová náročnost**: Celý workshop lze dokončit online bez lokální instalace. Nastavení prostředí zabere 2 minuty, prozkoumání ukázek vyžaduje 1–3 hodiny podle hloubky průzkumu.
 

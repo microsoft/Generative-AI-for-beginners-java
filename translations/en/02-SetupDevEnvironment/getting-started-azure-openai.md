@@ -75,7 +75,7 @@ This guide will help you set up Azure AI Foundry models for your Java AI applica
    > **Note**: If you want to edit the basic configuration, check out the [Dev Container Configuration](../../../.devcontainer/devcontainer.json).
 2. In your forked repository, click **Code** → **Codespaces** tab.
 3. Click **...** → **New with options...**  
-![creating a codespace with options](../../../translated_images/codespaces.9945ded8ceb431a5.en.png)
+![creating a codespace with options](../../../translated_images/en/codespaces.9945ded8ceb431a5.webp)
 4. Select **Dev container configuration**: 
    - **Generative AI Java Development Environment**
 5. Click **Create codespace**.

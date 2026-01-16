@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # शूरुआतीहरूका लागि जनरेटिव एआई - जाभा संस्करण
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![शूरुआतीहरूका लागि जनरेटिव एआई - जाभा संस्करण](../../translated_images/beg-genai-series.8b48be9951cc574c.ne.png)
+![शूरुआतीहरूका लागि जनरेटिव एआई - जाभा संस्करण](../../translated_images/ne/beg-genai-series.8b48be9951cc574c.webp)
 
 **समय प्रतिबद्धता**: सम्पूर्ण कार्यशाला अनलाइन कुनै स्थानीय सेटअप बिना पूरा गर्न सकिन्छ। वातावरण सेटअप गर्न २ मिनेट लाग्छ, नमूनाहरू अन्वेषण गर्न १-३ घण्टा लाग्छ खोजी गहिराइ अनुसार।
 

@@ -44,7 +44,7 @@ Java AI application များကို ဖွံ့ဖြိုးစဉ် *
 
 မော်ဒယ်အမျိုးအစားများသည် တစ်ခုချင်းစီ၏ အလုပ်အကိုင်များအတွက် အထူးပြုထားပါသည်။ ဥပမာအားဖြင့် **Small Language Models (SLMs)** နှင့် **Large Language Models (LLMs)** နှစ်မျိုးစလုံးသည် စာသားဖန်တီးမှုကို လုပ်ဆောင်နိုင်သော်လည်း LLMs သည် ရှုပ်ထွေးသော အလုပ်များအတွက် ပိုမိုကောင်းမွန်သော performance ကို ပေးနိုင်ပါသည်။ ပုံရိပ်နှင့်ဆိုင်သော အလုပ်များအတွက် vision models သို့မဟုတ် multi-modal models ကို အသုံးပြုရပါမည်။
 
-![Figure: Generative AI model types and use cases.](../../../translated_images/llms.225ca2b8a0d34473.my.png)
+![Figure: Generative AI model types and use cases.](../../../translated_images/my/llms.225ca2b8a0d34473.webp)
 
 မော်ဒယ်များ၏ တုံ့ပြန်မှုများသည် အချို့အခါတွင် အပြည့်အဝမှန်ကန်မှုမရှိနိုင်ပါ။ "hallucinating" သို့မဟုတ် မှားယွင်းသော အချက်အလက်များကို authority ရှိသလိုပုံစံဖြင့် ဖန်တီးခြင်းကို သင်ကြားဖူးနိုင်ပါတယ်။ သို့သော် **prompt engineering** ကို အသုံးပြုခြင်းအားဖြင့် မော်ဒယ်ကို ပိုမိုကောင်းမွန်သော တုံ့ပြန်မှုများ ဖန်တီးစေခြင်းအတွက် လမ်းညွှန်နိုင်ပါသည်။
 
@@ -79,13 +79,13 @@ Tokenization ဆိုတာ စာသားကို အငယ်ဆုံး u
 
 - **Embeddings**: Embeddings ဆိုတာ tokens ရဲ့ semantic အဓိပ္ပါယ်ကို capture လုပ်သော vector ကိုယ်စားပြုမှုများဖြစ်သည်။ ဒါဟာ floating-point number array များဖြစ်ပြီး စာလုံးများအကြား ဆက်နွယ်မှုများကို နားလည်စေသည်။ Synonyms နှင့် semantic relationships ကဲ့သို့သော concepts များကို နားလည်စေသည်။
 
-![Figure: Embeddings](../../../translated_images/embedding.398e50802c0037f9.my.png)
+![Figure: Embeddings](../../../translated_images/my/embedding.398e50802c0037f9.webp)
 
   Java တွင် OpenAI SDK သို့မဟုတ် embedding generation ကို support လုပ်သော libraries များကို အသုံးပြု၍ embeddings ဖန်တီးနိုင်ပါသည်။ Semantic search ကဲ့သို့သော အလုပ်များအတွက် အဓိကဖြစ်သည်။
 
 - **Vector databases**: Vector databases ဆိုတာ embeddings အတွက် အထူးပြုထားသော storage systems ဖြစ်သည်။ Semantic similarity အပေါ်မူတည်၍ အချက်အလက်များကို ရှာဖွေခြင်းအတွက် အရေးပါသည်။
 
-![Figure: Vector database architecture showing how embeddings are stored and retrieved for similarity search.](../../../translated_images/vector.f12f114934e223df.my.png)
+![Figure: Vector database architecture showing how embeddings are stored and retrieved for similarity search.](../../../translated_images/my/vector.f12f114934e223df.webp)
 
 > **Note**: ဒီသင်တန်းမှာ Vector databases ကို မဖုံးအုပ်ပေမယ့် အရေးပါသောကြောင့် mention လုပ်ထားပါသည်။
 
@@ -93,7 +93,7 @@ Tokenization ဆိုတာ စာသားကို အငယ်ဆုံး u
 
 Java AI application များတွင် tokens ကို text processing အတွက်၊ embeddings ကို semantic search နှင့် RAG အတွက်၊ vector databases ကို data retrieval အတွက်၊ နှင့် MCP ပါသော agents ကို intelligent systems ဖန်တီးရန် အသုံးပြုရပါမည်။
 
-![Figure: how a prompt becomes a reply—tokens, vectors, optional RAG lookup, LLM thinking, and an MCP agent all in one quick flow..](../../../translated_images/flow.f4ef62c3052d12a8.my.png)
+![Figure: how a prompt becomes a reply—tokens, vectors, optional RAG lookup, LLM thinking, and an MCP agent all in one quick flow..](../../../translated_images/my/flow.f4ef62c3052d12a8.webp)
 
 ### Java အတွက် AI ဖွံ့ဖြိုးရေး Tools နှင့် Libraries
 

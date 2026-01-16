@@ -75,7 +75,7 @@ CO_OP_TRANSLATOR_METADATA:
    > **توجه**: اگر می‌خواهید تنظیمات پایه را ویرایش کنید، به [پیکربندی کانتینر توسعه](../../../.devcontainer/devcontainer.json) نگاهی بیندازید.
 2. در مخزن فورک‌شده خود، روی **Code** → تب **Codespaces** کلیک کنید.
 3. روی **...** → **New with options...** کلیک کنید.
-![ایجاد یک Codespace با گزینه‌ها](../../../translated_images/codespaces.9945ded8ceb431a5.fa.png)
+![ایجاد یک Codespace با گزینه‌ها](../../../translated_images/fa/codespaces.9945ded8ceb431a5.webp)
 4. **پیکربندی کانتینر توسعه** را انتخاب کنید: 
    - **محیط توسعه جاوای هوش مصنوعی مولد**
 5. روی **Create codespace** کلیک کنید.

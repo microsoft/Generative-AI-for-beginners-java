@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # AI Generatif untuk Pemula - Edisi Java
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![AI Generatif untuk Pemula - Edisi Java](../../translated_images/beg-genai-series.8b48be9951cc574c.ms.png)
+![AI Generatif untuk Pemula - Edisi Java](../../translated_images/ms/beg-genai-series.8b48be9951cc574c.webp)
 
 **Komitmen Masa**: Keseluruhan bengkel boleh diselesaikan secara dalam talian tanpa persediaan tempatan. Persediaan persekitaran mengambil masa 2 minit, dengan meneroka contoh memerlukan 1-3 jam bergantung kepada kedalaman penerokaan.
 

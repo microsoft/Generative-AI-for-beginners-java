@@ -44,7 +44,7 @@ Pe măsură ce dezvolți aplicații AI în Java, vei lucra cu **modele AI genera
 
 Există tipuri specifice de modele optimizate pentru diferite sarcini. De exemplu, atât **Modelele de Limbaj de Dimensiuni Mici (SLM-uri)**, cât și **Modelele de Limbaj de Dimensiuni Mari (LLM-uri)** pot gestiona generarea de text, LLM-urile oferind de obicei performanțe mai bune pentru sarcini complexe. Pentru sarcini legate de imagini, ai folosi modele specializate de viziune sau modele multi-modale.
 
-![Figura: Tipuri de modele AI generative și cazuri de utilizare.](../../../translated_images/llms.225ca2b8a0d34473.ro.png)
+![Figura: Tipuri de modele AI generative și cazuri de utilizare.](../../../translated_images/ro/llms.225ca2b8a0d34473.webp)
 
 Desigur, răspunsurile acestor modele nu sunt perfecte tot timpul. Probabil ai auzit despre modele care "halucinează" sau generează informații incorecte într-un mod autoritar. Dar poți ajuta modelul să genereze răspunsuri mai bune oferindu-i instrucțiuni clare și context. Aici intervine **ingineria prompturilor**.
 
@@ -79,13 +79,13 @@ Tokenizarea este procesul de împărțire a textului în aceste unități mai mi
 
 - **Embedding-uri**: Embedding-urile sunt reprezentări vectoriale ale tokenilor care capturează semnificația semantică. Sunt reprezentări numerice (de obicei matrice de numere în virgulă mobilă) care permit modelelor să înțeleagă relațiile dintre cuvinte și să genereze răspunsuri relevante contextual. Cuvintele similare au embedding-uri similare, permițând modelului să înțeleagă concepte precum sinonimele și relațiile semantice.
 
-![Figura: Embedding-uri](../../../translated_images/embedding.398e50802c0037f9.ro.png)
+![Figura: Embedding-uri](../../../translated_images/ro/embedding.398e50802c0037f9.webp)
 
   În Java, poți genera embedding-uri folosind OpenAI SDK sau alte biblioteci care suportă generarea de embedding-uri. Aceste embedding-uri sunt esențiale pentru sarcini precum căutarea semantică, unde vrei să găsești conținut similar pe baza semnificației, nu a potrivirilor exacte de text.
 
 - **Baze de date vectoriale**: Bazele de date vectoriale sunt sisteme de stocare specializate optimizate pentru embedding-uri. Ele permit căutarea eficientă a similarităților și sunt cruciale pentru modelele de Generare Augmentată prin Recuperare (RAG), unde trebuie să găsești informații relevante din seturi mari de date pe baza similarității semantice, nu a potrivirilor exacte.
 
-![Figura: Arhitectura bazei de date vectoriale care arată cum sunt stocate și recuperate embedding-urile pentru căutarea similarităților.](../../../translated_images/vector.f12f114934e223df.ro.png)
+![Figura: Arhitectura bazei de date vectoriale care arată cum sunt stocate și recuperate embedding-urile pentru căutarea similarităților.](../../../translated_images/ro/vector.f12f114934e223df.webp)
 
 > **Notă**: În acest curs, nu vom acoperi bazele de date vectoriale, dar considerăm că merită menționate deoarece sunt utilizate frecvent în aplicațiile din lumea reală.
 
@@ -93,7 +93,7 @@ Tokenizarea este procesul de împărțire a textului în aceste unități mai mi
 
 În aplicațiile AI Java, vei folosi tokeni pentru procesarea textului, embedding-uri pentru căutarea semantică și RAG, baze de date vectoriale pentru recuperarea datelor și agenți cu MCP pentru construirea de sisteme inteligente care utilizează instrumente.
 
-![Figura: cum un prompt devine un răspuns—tokeni, vectori, căutare opțională RAG, gândirea LLM și un agent MCP, toate într-un flux rapid.](../../../translated_images/flow.f4ef62c3052d12a8.ro.png)
+![Figura: cum un prompt devine un răspuns—tokeni, vectori, căutare opțională RAG, gândirea LLM și un agent MCP, toate într-un flux rapid.](../../../translated_images/ro/flow.f4ef62c3052d12a8.webp)
 
 ### Instrumente și biblioteci de dezvoltare AI pentru Java
 

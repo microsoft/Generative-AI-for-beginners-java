@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Generative KI für Einsteiger – Java Edition
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generative KI für Einsteiger – Java Edition](../../translated_images/beg-genai-series.8b48be9951cc574c.de.png)
+![Generative KI für Einsteiger – Java Edition](../../translated_images/de/beg-genai-series.8b48be9951cc574c.webp)
 
 **Zeitaufwand**: Der gesamte Workshop kann online ohne lokale Einrichtung durchgeführt werden. Die Einrichtung der Umgebung dauert 2 Minuten, das Durcharbeiten der Beispiele erfordert je nach Detailtiefe 1–3 Stunden.
 

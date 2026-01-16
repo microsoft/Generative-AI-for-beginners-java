@@ -58,7 +58,7 @@ Dette kapitel inkluderer en praktisk demonstration af, hvordan GitHub Models imp
 5. Vis resultater, der viser, hvilket indhold der blev blokeret, afvist eller tilladt  
 6. Test sikkert indhold til sammenligning  
 
-![Ansvarlig AI Sikkerhedsdemonstration](../../../translated_images/responsible.e4f51a917bafa4bf.da.png)
+![Ansvarlig AI Sikkerhedsdemonstration](../../../translated_images/da/responsible.e4f51a917bafa4bf.webp)
 
 ### Opsætningsinstruktioner
 
@@ -164,7 +164,7 @@ Dette eksempel bruger bevidst problematiske prompts udelukkende til uddannelsesm
 
 Tillykke med at have gennemført kurset Generativ AI for Begyndere!  
 
-![Kursusafslutning](../../../translated_images/image.73c7e2ff4a652e77.da.png)
+![Kursusafslutning](../../../translated_images/da/image.73c7e2ff4a652e77.webp)
 
 **Hvad du har opnået:**  
 - Opsat dit udviklingsmiljø  

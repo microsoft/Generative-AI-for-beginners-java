@@ -58,7 +58,7 @@ Klasa `ResponsibleGithubModels` działa według następującego schematu:
 5. Wyświetla wyniki pokazujące, które treści zostały zablokowane, odrzucone lub zaakceptowane
 6. Testuje bezpieczne treści dla porównania
 
-![Demonstracja bezpieczeństwa odpowiedzialnej AI](../../../translated_images/responsible.e4f51a917bafa4bf.pl.png)
+![Demonstracja bezpieczeństwa odpowiedzialnej AI](../../../translated_images/pl/responsible.e4f51a917bafa4bf.webp)
 
 ### Instrukcje konfiguracji
 
@@ -164,7 +164,7 @@ Ten przykład wykorzystuje celowo problematyczne zapytania wyłącznie w celach 
 
 Gratulacje z okazji ukończenia kursu Generatywna AI dla początkujących!
 
-![Zakończenie kursu](../../../translated_images/image.73c7e2ff4a652e77.pl.png)
+![Zakończenie kursu](../../../translated_images/pl/image.73c7e2ff4a652e77.webp)
 
 **Co udało Ci się osiągnąć:**
 - Skonfigurować środowisko programistyczne

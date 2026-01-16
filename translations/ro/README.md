@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Inteligență Artificială Generativă pentru Începători - Ediția Java
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Inteligență Artificială Generativă pentru Începători - Ediția Java](../../translated_images/beg-genai-series.8b48be9951cc574c.ro.png)
+![Inteligență Artificială Generativă pentru Începători - Ediția Java](../../translated_images/ro/beg-genai-series.8b48be9951cc574c.webp)
 
 **Timp de dedicare**: Întregul workshop poate fi finalizat online fără configurare locală. Configurarea mediului durează 2 minute, explorarea exemplelor necesitând 1-3 ore în funcție de adâncimea explorării.
 

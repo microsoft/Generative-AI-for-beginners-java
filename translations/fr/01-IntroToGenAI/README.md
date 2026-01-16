@@ -44,7 +44,7 @@ En développant vos applications IA en Java, vous travaillerez avec des **modèl
 
 Il existe des types spécifiques de modèles optimisés pour différentes tâches. Par exemple, les **modèles de langage de petite taille (SLMs)** et les **modèles de langage de grande taille (LLMs)** peuvent gérer la génération de texte, les LLMs offrant généralement de meilleures performances pour les tâches complexes. Pour les tâches liées aux images, vous utiliserez des modèles de vision spécialisés ou des modèles multimodaux.
 
-![Figure : Types de modèles d'IA générative et cas d'utilisation.](../../../translated_images/llms.225ca2b8a0d34473.fr.png)
+![Figure : Types de modèles d'IA générative et cas d'utilisation.](../../../translated_images/fr/llms.225ca2b8a0d34473.webp)
 
 Bien sûr, les réponses de ces modèles ne sont pas toujours parfaites. Vous avez probablement entendu parler de modèles qui "hallucinent" ou génèrent des informations incorrectes de manière convaincante. Mais vous pouvez guider le modèle pour produire de meilleures réponses en lui fournissant des instructions et un contexte clairs. C'est là qu'intervient **l'ingénierie des prompts**.
 
@@ -79,13 +79,13 @@ La tokenisation est le processus de décomposition du texte en ces unités plus 
 
 - **Embeddings** : Les embeddings sont des représentations vectorielles des tokens qui capturent leur signification sémantique. Ce sont des représentations numériques (généralement des tableaux de nombres à virgule flottante) qui permettent aux modèles de comprendre les relations entre les mots et de générer des réponses contextuellement pertinentes. Les mots similaires ont des embeddings similaires, ce qui permet au modèle de comprendre des concepts comme les synonymes et les relations sémantiques.
 
-![Figure : Embeddings](../../../translated_images/embedding.398e50802c0037f9.fr.png)
+![Figure : Embeddings](../../../translated_images/fr/embedding.398e50802c0037f9.webp)
 
   En Java, vous pouvez générer des embeddings à l'aide de l'OpenAI SDK ou d'autres bibliothèques prenant en charge la génération d'embeddings. Ces embeddings sont essentiels pour des tâches comme la recherche sémantique, où vous souhaitez trouver un contenu similaire basé sur la signification plutôt que sur des correspondances exactes de texte.
 
 - **Bases de données vectorielles** : Les bases de données vectorielles sont des systèmes de stockage spécialisés optimisés pour les embeddings. Elles permettent une recherche par similarité efficace et sont cruciales pour les modèles de génération augmentée par récupération (RAG), où vous devez trouver des informations pertinentes dans de grands ensembles de données en fonction de la similarité sémantique plutôt que des correspondances exactes.
 
-![Figure : Architecture d'une base de données vectorielle montrant comment les embeddings sont stockés et récupérés pour la recherche par similarité.](../../../translated_images/vector.f12f114934e223df.fr.png)
+![Figure : Architecture d'une base de données vectorielle montrant comment les embeddings sont stockés et récupérés pour la recherche par similarité.](../../../translated_images/fr/vector.f12f114934e223df.webp)
 
 > **Note** : Dans ce cours, nous ne couvrirons pas les bases de données vectorielles, mais elles méritent d'être mentionnées car elles sont couramment utilisées dans les applications réelles.
 
@@ -93,7 +93,7 @@ La tokenisation est le processus de décomposition du texte en ces unités plus 
 
 Dans les applications IA en Java, vous utiliserez les tokens pour le traitement du texte, les embeddings pour la recherche sémantique et les modèles RAG, les bases de données vectorielles pour la récupération de données, et les agents avec MCP pour construire des systèmes intelligents utilisant des outils.
 
-![Figure : Comment un prompt devient une réponse—tokens, vecteurs, recherche RAG optionnelle, réflexion LLM et agent MCP dans un flux rapide.](../../../translated_images/flow.f4ef62c3052d12a8.fr.png)
+![Figure : Comment un prompt devient une réponse—tokens, vecteurs, recherche RAG optionnelle, réflexion LLM et agent MCP dans un flux rapide.](../../../translated_images/fr/flow.f4ef62c3052d12a8.webp)
 
 ### Outils et bibliothèques de développement IA pour Java
 

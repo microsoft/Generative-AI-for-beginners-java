@@ -75,7 +75,7 @@ CO_OP_TRANSLATOR_METADATA:
    > **Σημείωση**: Αν θέλετε να επεξεργαστείτε τη βασική διαμόρφωση, δείτε τη [Διαμόρφωση Dev Container](../../../.devcontainer/devcontainer.json)
 2. Στο αποθετήριο που κάνατε fork, κάντε κλικ στο **Code** → καρτέλα **Codespaces**
 3. Κάντε κλικ στο **...** → **New with options...**
-![δημιουργία codespace με επιλογές](../../../translated_images/codespaces.9945ded8ceb431a5.el.png)
+![δημιουργία codespace με επιλογές](../../../translated_images/el/codespaces.9945ded8ceb431a5.webp)
 4. Επιλέξτε **Διαμόρφωση Dev container**: 
    - **Περιβάλλον Ανάπτυξης Generative AI Java**
 5. Κάντε κλικ στο **Create codespace**

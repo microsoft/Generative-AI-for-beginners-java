@@ -44,7 +44,7 @@ Med razvojem svojih aplikacij umetne inteligence v Javi boste delali z **generat
 
 Obstajajo specifični tipi modelov, ki so optimizirani za različne naloge. Na primer, tako **majhni jezikovni modeli (SLM-ji)** kot **veliki jezikovni modeli (LLM-ji)** lahko obdelujejo generiranje besedila, pri čemer LLM-ji običajno ponujajo boljšo zmogljivost za kompleksne naloge. Za naloge, povezane s slikami, bi uporabili specializirane vizualne modele ali multimodalne modele.
 
-![Slika: Vrste generativnih AI modelov in primeri uporabe.](../../../translated_images/llms.225ca2b8a0d34473.sl.png)
+![Slika: Vrste generativnih AI modelov in primeri uporabe.](../../../translated_images/sl/llms.225ca2b8a0d34473.webp)
 
 Seveda odzivi teh modelov niso vedno popolni. Verjetno ste že slišali, da modeli "halucinirajo" ali ustvarjajo napačne informacije na avtoritativen način. Toda lahko pomagate modelu pri ustvarjanju boljših odzivov tako, da mu zagotovite jasna navodila in kontekst. Tukaj pride v poštev **oblikovanje pozivov**.
 
@@ -79,13 +79,13 @@ Razčlenjevanje je proces razbijanja besedila na te manjše enote. To je ključn
 
 - **Vdelave**: Vdelave so vektorske predstavitve tokenov, ki zajemajo semantični pomen. So numerične predstavitve (običajno matrike s plavajočimi števili), ki omogočajo modelom razumevanje odnosov med besedami in generiranje kontekstualno ustreznih odzivov. Podobne besede imajo podobne vdelave, kar omogoča modelu razumevanje konceptov, kot so sopomenke in semantični odnosi.
 
-![Slika: Vdelave](../../../translated_images/embedding.398e50802c0037f9.sl.png)
+![Slika: Vdelave](../../../translated_images/sl/embedding.398e50802c0037f9.webp)
 
   V Javi lahko ustvarite vdelave z uporabo OpenAI SDK ali drugih knjižnic, ki podpirajo generiranje vdelav. Te vdelave so ključne za naloge, kot je semantično iskanje, kjer želite najti podobno vsebino na podlagi pomena in ne natančnih ujemanj besedila.
 
 - **Vektorske baze podatkov**: Vektorske baze podatkov so specializirani sistemi za shranjevanje, optimizirani za vdelave. Omogočajo učinkovito iskanje podobnosti in so ključne za vzorce generiranja, ki temeljijo na pridobivanju (RAG), kjer morate najti ustrezne informacije iz velikih podatkovnih zbirk na podlagi semantične podobnosti in ne natančnih ujemanj.
 
-![Slika: Arhitektura vektorske baze podatkov, ki prikazuje, kako se vdelave shranjujejo in pridobivajo za iskanje podobnosti.](../../../translated_images/vector.f12f114934e223df.sl.png)
+![Slika: Arhitektura vektorske baze podatkov, ki prikazuje, kako se vdelave shranjujejo in pridobivajo za iskanje podobnosti.](../../../translated_images/sl/vector.f12f114934e223df.webp)
 
 > **Opomba**: V tem tečaju ne bomo pokrivali vektorskih baz podatkov, vendar menimo, da jih je vredno omeniti, saj se pogosto uporabljajo v resničnih aplikacijah.
 
@@ -93,7 +93,7 @@ Razčlenjevanje je proces razbijanja besedila na te manjše enote. To je ključn
 
 V aplikacijah umetne inteligence v Javi boste uporabljali tokene za obdelavo besedila, vdelave za semantično iskanje in RAG, vektorske baze podatkov za pridobivanje podatkov ter agente z MCP za gradnjo inteligentnih sistemov, ki uporabljajo orodja.
 
-![Slika: kako poziv postane odgovor—tokeni, vektorji, opcijsko iskanje RAG, razmišljanje LLM in MCP agent vse v enem hitrem toku.](../../../translated_images/flow.f4ef62c3052d12a8.sl.png)
+![Slika: kako poziv postane odgovor—tokeni, vektorji, opcijsko iskanje RAG, razmišljanje LLM in MCP agent vse v enem hitrem toku.](../../../translated_images/sl/flow.f4ef62c3052d12a8.webp)
 
 ### Orodja in knjižnice za razvoj umetne inteligence v Javi
 

@@ -75,7 +75,7 @@ Tämä opas auttaa sinua asentamaan Azure AI Foundry -mallit Java AI -sovelluksi
    > **Huom**: Jos haluat muokata perusasetuksia, katso [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
 2. Haarautetussa arkistossasi klikkaa **Code** → **Codespaces**-välilehti
 3. Klikkaa **...** → **New with options...**
-![codespace-vaihtoehtojen luominen](../../../translated_images/codespaces.9945ded8ceb431a5.fi.png)
+![codespace-vaihtoehtojen luominen](../../../translated_images/fi/codespaces.9945ded8ceb431a5.webp)
 4. Valitse **Dev container configuration**: 
    - **Generative AI Java Development Environment**
 5. Klikkaa **Create codespace**

@@ -75,7 +75,7 @@ CO_OP_TRANSLATOR_METADATA:
    > **注意**：如果您想編輯基本配置，請查看 [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
 2. 在您的 Fork 存儲庫中，點擊 **Code** → **Codespaces** 標籤
 3. 點擊 **...** → **New with options...**
-![使用選項創建 Codespace](../../../translated_images/codespaces.9945ded8ceb431a5.mo.png)
+![使用選項創建 Codespace](../../../translated_images/mo/codespaces.9945ded8ceb431a5.webp)
 4. 選擇 **Dev container configuration**： 
    - **Generative AI Java Development Environment**
 5. 點擊 **Create codespace**

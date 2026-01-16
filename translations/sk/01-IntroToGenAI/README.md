@@ -44,7 +44,7 @@ Pri vývoji vašich Java AI aplikácií budete pracovať s **generatívnymi AI m
 
 Existujú špecifické typy modelov optimalizované pre rôzne úlohy. Napríklad, **malé jazykové modely (SLMs)** a **veľké jazykové modely (LLMs)** dokážu pracovať s generovaním textu, pričom LLMs zvyčajne poskytujú lepší výkon pri zložitejších úlohách. Pre úlohy súvisiace s obrázkami by ste použili špecializované vizuálne modely alebo multimodálne modely.
 
-![Obrázok: Typy generatívnych AI modelov a ich použitie.](../../../translated_images/llms.225ca2b8a0d34473.sk.png)
+![Obrázok: Typy generatívnych AI modelov a ich použitie.](../../../translated_images/sk/llms.225ca2b8a0d34473.webp)
 
 Samozrejme, odpovede od týchto modelov nie sú vždy dokonalé. Pravdepodobne ste už počuli o tom, že modely "halucinujú" alebo generujú nesprávne informácie autoritatívnym spôsobom. Môžete však modelu pomôcť generovať lepšie odpovede tým, že mu poskytnete jasné inštrukcie a kontext. Tu prichádza na rad **návrh promptov**.
 
@@ -79,13 +79,13 @@ Tokenizácia je proces rozdelenia textu na tieto menšie jednotky. Je to kľúč
 
 - **Embeddingy**: Embeddingy sú vektorové reprezentácie tokenov, ktoré zachytávajú sémantický význam. Sú to číselné reprezentácie (zvyčajne polia čísel s plávajúcou desatinnou čiarkou), ktoré umožňujú modelom pochopiť vzťahy medzi slovami a generovať kontextovo relevantné odpovede. Podobné slová majú podobné embeddingy, čo umožňuje modelu pochopiť koncepty ako synonymá a sémantické vzťahy.
 
-![Obrázok: Embeddingy](../../../translated_images/embedding.398e50802c0037f9.sk.png)
+![Obrázok: Embeddingy](../../../translated_images/sk/embedding.398e50802c0037f9.webp)
 
   V Jave môžete generovať embeddingy pomocou OpenAI SDK alebo iných knižníc, ktoré podporujú generovanie embeddingov. Tieto embeddingy sú nevyhnutné pre úlohy ako sémantické vyhľadávanie, kde chcete nájsť podobný obsah na základe významu, nie presných textových zhôd.
 
 - **Vektorové databázy**: Vektorové databázy sú špecializované úložné systémy optimalizované pre embeddingy. Umožňujú efektívne vyhľadávanie podobností a sú kľúčové pre vzory Retrieval-Augmented Generation (RAG), kde potrebujete nájsť relevantné informácie z veľkých datasetov na základe sémantickej podobnosti, nie presných zhôd.
 
-![Obrázok: Architektúra vektorovej databázy ukazujúca, ako sa embeddingy ukladajú a vyhľadávajú pre vyhľadávanie podobností.](../../../translated_images/vector.f12f114934e223df.sk.png)
+![Obrázok: Architektúra vektorovej databázy ukazujúca, ako sa embeddingy ukladajú a vyhľadávajú pre vyhľadávanie podobností.](../../../translated_images/sk/vector.f12f114934e223df.webp)
 
 > **Poznámka**: V tomto kurze nebudeme pokrývať vektorové databázy, ale považujeme ich za hodné zmienky, pretože sa bežne používajú v reálnych aplikáciách.
 
@@ -93,7 +93,7 @@ Tokenizácia je proces rozdelenia textu na tieto menšie jednotky. Je to kľúč
 
 V Java AI aplikáciách budete používať tokeny na spracovanie textu, embeddingy na sémantické vyhľadávanie a RAG, vektorové databázy na vyhľadávanie dát a agentov s MCP na budovanie inteligentných systémov využívajúcich nástroje.
 
-![Obrázok: Ako sa prompt stáva odpoveďou—tokeny, vektory, voliteľné RAG vyhľadávanie, LLM myslenie a MCP agent všetko v jednom rýchlom toku.](../../../translated_images/flow.f4ef62c3052d12a8.sk.png)
+![Obrázok: Ako sa prompt stáva odpoveďou—tokeny, vektory, voliteľné RAG vyhľadávanie, LLM myslenie a MCP agent všetko v jednom rýchlom toku.](../../../translated_images/sk/flow.f4ef62c3052d12a8.webp)
 
 ### Nástroje a knižnice na vývoj AI v Jave
 

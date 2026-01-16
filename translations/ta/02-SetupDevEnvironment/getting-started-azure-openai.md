@@ -75,7 +75,7 @@ CO_OP_TRANSLATOR_METADATA:
    > **குறிப்பு**: அடிப்படை அமைப்பைத் திருத்த விரும்பினால் [Dev Container Configuration](../../../.devcontainer/devcontainer.json) பார்க்கவும்
 2. Fork செய்யப்பட்ட repo-வில் **Code** → **Codespaces** தாவல் கிளிக் செய்யவும்
 3. **...** → **New with options...** கிளிக் செய்யவும்
-![creating a codespace with options](../../../translated_images/codespaces.9945ded8ceb431a5.ta.png)
+![creating a codespace with options](../../../translated_images/ta/codespaces.9945ded8ceb431a5.webp)
 4. **Dev container configuration** தேர்ந்தெடுக்கவும்: 
    - **Generative AI Java Development Environment**
 5. **Create codespace** கிளிக் செய்யவும்

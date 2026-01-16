@@ -75,7 +75,7 @@ Esta guía te ayudará a configurar los modelos de Azure AI Foundry para tus apl
    > **Nota**: Si deseas editar la configuración básica, revisa la [Configuración del Contenedor de Desarrollo](../../../.devcontainer/devcontainer.json).
 2. En tu repositorio bifurcado, haz clic en **Code** → pestaña **Codespaces**.
 3. Haz clic en **...** → **Nuevo con opciones...**  
-![crear un codespace con opciones](../../../translated_images/codespaces.9945ded8ceb431a5.es.png)
+![crear un codespace con opciones](../../../translated_images/es/codespaces.9945ded8ceb431a5.webp)
 4. Selecciona **Configuración del contenedor de desarrollo**: 
    - **Entorno de Desarrollo de Java para Generative AI**
 5. Haz clic en **Crear codespace**.

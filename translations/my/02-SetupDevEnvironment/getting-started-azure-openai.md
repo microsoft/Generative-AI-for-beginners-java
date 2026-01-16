@@ -75,7 +75,7 @@ CO_OP_TRANSLATOR_METADATA:
    > **Note**: Basic config ကို ပြင်ဆင်လိုပါက [Dev Container Configuration](../../../.devcontainer/devcontainer.json) ကို ကြည့်ပါ
 2. သင့် Fork လုပ်ထားသော repo မှ **Code** → **Codespaces** tab ကို နှိပ်ပါ
 3. **...** → **New with options...** ကို နှိပ်ပါ  
-![creating a codespace with options](../../../translated_images/codespaces.9945ded8ceb431a5.my.png)
+![creating a codespace with options](../../../translated_images/my/codespaces.9945ded8ceb431a5.webp)
 4. **Dev container configuration** ကို ရွေးပါ: 
    - **Generative AI Java Development Environment**
 5. **Create codespace** ကို နှိပ်ပါ

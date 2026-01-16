@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Генеративный ИИ для начинающих - Java версия
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Генеративный ИИ для начинающих - Java версия](../../translated_images/beg-genai-series.8b48be9951cc574c.ru.png)
+![Генеративный ИИ для начинающих - Java версия](../../translated_images/ru/beg-genai-series.8b48be9951cc574c.webp)
 
 **Временные затраты**: Весь воркшоп можно пройти онлайн без локальной настройки. Настройка среды занимает 2 минуты, а изучение примеров — от 1 до 3 часов в зависимости от глубины изучения.
 

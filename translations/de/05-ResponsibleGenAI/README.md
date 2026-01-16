@@ -58,7 +58,7 @@ Die Klasse `ResponsibleGithubModels` folgt diesem Ablauf:
 5. Anzeigen der Ergebnisse, die zeigen, welche Inhalte blockiert, abgelehnt oder zugelassen wurden
 6. Testen sicherer Inhalte zum Vergleich
 
-![Demo zur verantwortungsvollen KI-Sicherheit](../../../translated_images/responsible.e4f51a917bafa4bf.de.png)
+![Demo zur verantwortungsvollen KI-Sicherheit](../../../translated_images/de/responsible.e4f51a917bafa4bf.webp)
 
 ### Einrichtungsanweisungen
 
@@ -164,7 +164,7 @@ Dieses Beispiel verwendet absichtlich problematische Eingaben nur zu Bildungszwe
 
 Herzlichen Glückwunsch zum Abschluss des Kurses „Generative KI für Anfänger“!
 
-![Kursabschluss](../../../translated_images/image.73c7e2ff4a652e77.de.png)
+![Kursabschluss](../../../translated_images/de/image.73c7e2ff4a652e77.webp)
 
 **Was Sie erreicht haben:**
 - Einrichtung Ihrer Entwicklungsumgebung

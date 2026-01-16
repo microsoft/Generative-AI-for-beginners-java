@@ -75,7 +75,7 @@ Denne veiledningen hjelper deg med å sette opp Azure AI Foundry-modeller for di
    > **Merk**: Hvis du vil redigere grunnleggende konfigurasjon, se på [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
 2. I ditt forkede repo, klikk **Code** → **Codespaces**-fanen
 3. Klikk **...** → **Ny med alternativer...**
-![opprette en codespace med alternativer](../../../translated_images/codespaces.9945ded8ceb431a5.no.png)
+![opprette en codespace med alternativer](../../../translated_images/no/codespaces.9945ded8ceb431a5.webp)
 4. Velg **Dev container configuration**: 
    - **Generative AI Java Development Environment**
 5. Klikk **Opprett codespace**

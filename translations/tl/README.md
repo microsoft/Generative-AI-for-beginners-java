@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Generative AI para sa mga Baguhan - Java Edition
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generative AI para sa mga Baguhan - Java Edition](../../translated_images/beg-genai-series.8b48be9951cc574c.tl.png)
+![Generative AI para sa mga Baguhan - Java Edition](../../translated_images/tl/beg-genai-series.8b48be9951cc574c.webp)
 
 **Oras na Kailanganin**: Ang buong workshop ay maaaring matapos nang online nang walang lokal na setup. Ang pagsasaayos ng kapaligiran ay tumatagal ng 2 minuto, na may pag-explore sa mga halimbawa na nangangailangan ng 1-3 oras depende sa lalim ng pag-aaral.
 

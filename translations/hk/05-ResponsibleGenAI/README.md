@@ -58,7 +58,7 @@ GitHub Models 提供基本的內容過濾功能，就像人工智能俱樂部裡
 5. 顯示結果，展示哪些內容被阻擋、拒絕或允許
 6. 測試安全內容以作比較
 
-![負責任的人工智能安全示範](../../../translated_images/responsible.e4f51a917bafa4bf.hk.png)
+![負責任的人工智能安全示範](../../../translated_images/hk/responsible.e4f51a917bafa4bf.webp)
 
 ### 設置指引
 
@@ -164,7 +164,7 @@ Status: Response generated successfully
 
 恭喜您完成生成式人工智能初學者課程！
 
-![課程完成](../../../translated_images/image.73c7e2ff4a652e77.hk.png)
+![課程完成](../../../translated_images/hk/image.73c7e2ff4a652e77.webp)
 
 **您已完成的內容：**
 - 設置您的開發環境

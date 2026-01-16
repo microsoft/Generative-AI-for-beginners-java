@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # AI Inazalisha kwa Waanzilishi - Toleo la Java
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generative AI for Beginners - Java Edition](../../translated_images/beg-genai-series.8b48be9951cc574c.sw.png)
+![Generative AI for Beginners - Java Edition](../../translated_images/sw/beg-genai-series.8b48be9951cc574c.webp)
 
 **Muda wa Kujitolea**: Warsha yote inaweza kukamilika mtandaoni bila usanidi wa eneo lako. Usanidi wa mazingira unachukua dakika 2, na kuchunguza sampuli kunahitaji masaa 1-3 kulingana na kina cha utafiti.
 

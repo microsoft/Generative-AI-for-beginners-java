@@ -75,7 +75,7 @@ CO_OP_TRANSLATOR_METADATA:
    > **Напомена**: Ако желите да измените основну конфигурацију, погледајте [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
 2. У свом fork-ованом репозиторијуму, кликните на **Code** → картица **Codespaces**
 3. Кликните на **...** → **New with options...**
-![креирање Codespace-а са опцијама](../../../translated_images/codespaces.9945ded8ceb431a5.sr.png)
+![креирање Codespace-а са опцијама](../../../translated_images/sr/codespaces.9945ded8ceb431a5.webp)
 4. Изаберите **Dev container configuration**: 
    - **Generative AI Java Development Environment**
 5. Кликните на **Create codespace**

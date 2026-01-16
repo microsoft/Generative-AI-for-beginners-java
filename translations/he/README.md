@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # אינטליגנציה מלאכותית גנרטיבית למתחילים - מהדורת Java
 [![Discord של Microsoft Foundry](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![אינטליגנציה מלאכותית גנרטיבית למתחילים - מהדורת Java](../../translated_images/beg-genai-series.8b48be9951cc574c.he.png)
+![אינטליגנציה מלאכותית גנרטיבית למתחילים - מהדורת Java](../../translated_images/he/beg-genai-series.8b48be9951cc574c.webp)
 
 **זמן התחייבות**: כל הסדנה ניתנת לביצוע באופן מקוון ללא התקנה מקומית. הגדרת הסביבה לוקחת 2 דקות, וחקר הדוגמאות דורש 1-3 שעות בהתאם לעומק החקירה.
 

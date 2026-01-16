@@ -58,7 +58,7 @@ Kelas `ResponsibleGithubModels` mengikuti aliran ini:
 5. Memaparkan hasil yang menunjukkan kandungan mana yang disekat, ditolak, atau dibenarkan
 6. Menguji kandungan selamat untuk perbandingan
 
-![Demo Keselamatan AI yang Bertanggungjawab](../../../translated_images/responsible.e4f51a917bafa4bf.ms.png)
+![Demo Keselamatan AI yang Bertanggungjawab](../../../translated_images/ms/responsible.e4f51a917bafa4bf.webp)
 
 ### Arahan Persediaan
 
@@ -164,7 +164,7 @@ Contoh ini menggunakan arahan yang bermasalah secara sengaja untuk tujuan pendid
 
 Tahniah kerana telah menyelesaikan kursus Generative AI untuk Pemula!
 
-![Penyelesaian Kursus](../../../translated_images/image.73c7e2ff4a652e77.ms.png)
+![Penyelesaian Kursus](../../../translated_images/ms/image.73c7e2ff4a652e77.webp)
 
 **Apa yang telah anda capai:**
 - Menyediakan persekitaran pembangunan anda

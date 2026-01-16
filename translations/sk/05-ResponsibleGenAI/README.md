@@ -58,7 +58,7 @@ Trieda `ResponsibleGithubModels` postupuje podľa tohto toku:
 5. Zobrazuje výsledky, ktoré ukazujú, ktorý obsah bol blokovaný, odmietnutý alebo povolený
 6. Testuje bezpečný obsah na porovnanie
 
-![Ukážka bezpečnosti zodpovednej AI](../../../translated_images/responsible.e4f51a917bafa4bf.sk.png)
+![Ukážka bezpečnosti zodpovednej AI](../../../translated_images/sk/responsible.e4f51a917bafa4bf.webp)
 
 ### Inštrukcie na nastavenie
 
@@ -164,7 +164,7 @@ Tento príklad používa zámerne problematické vstupy len na vzdelávacie úč
 
 Gratulujeme k dokončeniu kurzu Generatívna AI pre začiatočníkov!
 
-![Dokončenie kurzu](../../../translated_images/image.73c7e2ff4a652e77.sk.png)
+![Dokončenie kurzu](../../../translated_images/sk/image.73c7e2ff4a652e77.webp)
 
 **Čo ste dosiahli:**
 - Nastavili ste svoje vývojové prostredie

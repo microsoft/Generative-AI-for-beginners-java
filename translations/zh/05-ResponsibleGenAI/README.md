@@ -58,7 +58,7 @@ GitHub Models 自带基础内容过滤功能。它就像您 AI 俱乐部的友�
 5. 显示结果，展示哪些内容被屏蔽、拒绝或允许
 6. 测试安全内容以作对比
 
-![负责任的 AI 安全演示](../../../translated_images/responsible.e4f51a917bafa4bf.zh.png)
+![负责任的 AI 安全演示](../../../translated_images/zh/responsible.e4f51a917bafa4bf.webp)
 
 ### 设置说明
 
@@ -164,7 +164,7 @@ Status: Response generated successfully
 
 恭喜您完成了《生成式 AI 初学者》课程！
 
-![课程完成](../../../translated_images/image.73c7e2ff4a652e77.zh.png)
+![课程完成](../../../translated_images/zh/image.73c7e2ff4a652e77.webp)
 
 **您已完成的内容：**
 - 设置开发环境

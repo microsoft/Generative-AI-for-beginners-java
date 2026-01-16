@@ -75,7 +75,7 @@ CO_OP_TRANSLATOR_METADATA:
    > **नोट**: यदि तपाईं आधारभूत कन्फिग सम्पादन गर्न चाहनुहुन्छ भने [Dev Container Configuration](../../../.devcontainer/devcontainer.json) हेर्नुहोस्।
 2. आफ्नो Fork गरिएको रिपोजिटरीमा, **Code** → **Codespaces** ट्याबमा जानुहोस्
 3. **...** → **New with options...** क्लिक गर्नुहोस्
-![Codespace विकल्पहरू सिर्जना गर्दै](../../../translated_images/codespaces.9945ded8ceb431a5.ne.png)
+![Codespace विकल्पहरू सिर्जना गर्दै](../../../translated_images/ne/codespaces.9945ded8ceb431a5.webp)
 4. **Dev container configuration** चयन गर्नुहोस्: 
    - **Generative AI Java Development Environment**
 5. **Create codespace** क्लिक गर्नुहोस्

@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Generativ AI for Begyndere - Java Udgave
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generativ AI for Begyndere - Java Udgave](../../translated_images/beg-genai-series.8b48be9951cc574c.da.png)
+![Generativ AI for Begyndere - Java Udgave](../../translated_images/da/beg-genai-series.8b48be9951cc574c.webp)
 
 **Tidsforbrug**: Hele workshoppen kan gennemføres online uden lokal opsætning. Miljøopsætningen tager 2 minutter, og udforskning af prøverne kræver 1-3 timer afhængigt af udforskningsdybden.
 

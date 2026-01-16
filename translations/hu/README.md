@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Generatív AI kezdőknek - Java kiadás
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generatív AI kezdőknek - Java kiadás](../../translated_images/beg-genai-series.8b48be9951cc574c.hu.png)
+![Generatív AI kezdőknek - Java kiadás](../../translated_images/hu/beg-genai-series.8b48be9951cc574c.webp)
 
 **Időigény**: Az egész workshop online, helyi telepítés nélkül elvégezhető. A környezet beállítása 2 percet vesz igénybe, a minták felfedezése pedig az elmélyülés mértékétől függően 1-3 órát igényel.
 

@@ -74,11 +74,11 @@ CO_OP_TRANSLATOR_METADATA:
 5. 環境の準備ができるまで約 2 分待ちます。
 6. [ステップ 2: GitHub トークンの作成](#step-2-create-a-github-personal-access-token) に進みます。
 
-<img src="/translated_images/codespaces.9945ded8ceb431a5.ja.png" alt="スクリーンショット: Codespaces サブメニュー" width="50%">
+<img src="/translated_images/ja/codespaces.9945ded8ceb431a5.webp" alt="スクリーンショット: Codespaces サブメニュー" width="50%">
 
-<img src="/translated_images/image.833552b62eee7766.ja.png" alt="スクリーンショット: オプション付き新規作成" width="50%">
+<img src="/translated_images/ja/image.833552b62eee7766.webp" alt="スクリーンショット: オプション付き新規作成" width="50%">
 
-<img src="/translated_images/codespaces-create.b44a36f728660ab7.ja.png" alt="スクリーンショット: Codespaces 作成オプション" width="50%">
+<img src="/translated_images/ja/codespaces-create.b44a36f728660ab7.webp" alt="スクリーンショット: Codespaces 作成オプション" width="50%">
 
 > **Codespaces のメリット**:
 > - ローカルインストールは不要
@@ -100,9 +100,9 @@ CO_OP_TRANSLATOR_METADATA:
 6. コンテナがビルドされて起動するまで待ちます。
 7. [ステップ2: GitHubトークンの作成](#step-2-create-a-github-per) に進みます。
 
-<img src="/translated_images/devcontainer.21126c9d6de64494.ja.png" alt="スクリーンショット: 開発コンテナのセットアップ" width="50%">
+<img src="/translated_images/ja/devcontainer.21126c9d6de64494.webp" alt="スクリーンショット: 開発コンテナのセットアップ" width="50%">
 
-<img src="/translated_images/image-3.bf93d533bbc84268.ja.png" alt="スクリーンショット: 開発コンテナのビルド完了" width="50%">
+<img src="/translated_images/ja/image-3.bf93d533bbc84268.webp" alt="スクリーンショット: 開発コンテナのビルド完了" width="50%">
 
 #### オプション C: 既存のローカルインストールを使用する
 
@@ -120,7 +120,7 @@ CO_OP_TRANSLATOR_METADATA:
 
 > **プロのヒント**: 低スペックのマシンを使っているけれど、VS Code をローカルで使いたい場合は、GitHub Codespaces をご利用ください。ローカルの VS Code をクラウドホストの Codespace に接続することで、両方のメリットを享受できます。
 
-<img src="/translated_images/image-2.fc0da29a6e4d2aff.ja.png" alt="スクリーンショット: ローカルの devcontainer インスタンスを作成" width="50%">
+<img src="/translated_images/ja/image-2.fc0da29a6e4d2aff.webp" alt="スクリーンショット: ローカルの devcontainer インスタンスを作成" width="50%">
 
 ## ステップ 2: GitHub 個人アクセストークンの作成
 

@@ -75,7 +75,7 @@ CO_OP_TRANSLATOR_METADATA:
    > **نوٹ**: اگر آپ بنیادی کنفیگریشن میں ترمیم کرنا چاہتے ہیں تو [Dev Container Configuration](../../../.devcontainer/devcontainer.json) دیکھیں
 2. اپنی فورک شدہ ریپوزٹری میں، **Code** → **Codespaces** ٹیب پر کلک کریں
 3. **...** → **New with options...** پر کلک کریں  
-![کوڈ اسپیس آپشنز کے ساتھ بنانا](../../../translated_images/codespaces.9945ded8ceb431a5.ur.png)
+![کوڈ اسپیس آپشنز کے ساتھ بنانا](../../../translated_images/ur/codespaces.9945ded8ceb431a5.webp)
 4. **Dev container configuration** منتخب کریں: 
    - **Generative AI Java Development Environment**
 5. **Create codespace** پر کلک کریں

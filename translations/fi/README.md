@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Generatiivinen tekoäly aloittelijoille - Java Edition
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generatiivinen tekoäly aloittelijoille - Java Edition](../../translated_images/beg-genai-series.8b48be9951cc574c.fi.png)
+![Generatiivinen tekoäly aloittelijoille - Java Edition](../../translated_images/fi/beg-genai-series.8b48be9951cc574c.webp)
 
 **Ajan tarve**: Koko työpajan voi suorittaa verkossa ilman paikallista asennusta. Ympäristön asetukset vievät 2 minuuttia, ja esimerkkien tutkimiseen menee 1-3 tuntia riippuen tutkimisen syvyydestä.
 

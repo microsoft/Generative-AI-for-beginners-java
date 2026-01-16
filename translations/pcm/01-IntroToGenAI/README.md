@@ -44,7 +44,7 @@ As you dey build your Java AI apps, you go dey use **generative AI models** to c
 
 Different models dey for different tasks. For example, **Small Language Models (SLMs)** and **Large Language Models (LLMs)** fit handle text generation, but LLMs dey perform better for complex tasks. For image tasks, you go use special vision models or multi-modal models.
 
-![Figure: Generative AI model types and use cases.](../../../translated_images/llms.225ca2b8a0d34473.pcm.png)
+![Figure: Generative AI model types and use cases.](../../../translated_images/pcm/llms.225ca2b8a0d34473.webp)
 
 But no be every time di models dey give correct answers. You don hear say models dey "hallucinate" or talk wrong things like say na true. You fit help di model give better answers by giving am clear instructions and context. Dis na where **prompt engineering** dey important.
 
@@ -79,13 +79,13 @@ Tokenization na di process of breaking text into dis small parts. E dey importan
 
 - **Embeddings**: Embeddings na vector representations of tokens wey dey show di meaning. Dem be numbers (usually arrays of floating-point numbers) wey help di model understand di relationship between words and give answers wey make sense. Words wey mean di same thing go get similar embeddings, so di model fit understand things like synonyms and relationships.
 
-![Figure: Embeddings](../../../translated_images/embedding.398e50802c0037f9.pcm.png)
+![Figure: Embeddings](../../../translated_images/pcm/embedding.398e50802c0037f9.webp)
 
   For Java, you fit create embeddings with OpenAI SDK or other libraries wey support embedding generation. Embeddings dey important for things like semantic search, where you dey find similar content based on meaning, no be exact text match.
 
 - **Vector databases**: Vector databases na special storage systems wey dey work well with embeddings. Dem dey help find similar things fast and dey important for Retrieval-Augmented Generation (RAG) patterns where you dey look for relevant information from big datasets based on meaning, no be exact match.
 
-![Figure: Vector database architecture showing how embeddings are stored and retrieved for similarity search.](../../../translated_images/vector.f12f114934e223df.pcm.png)
+![Figure: Vector database architecture showing how embeddings are stored and retrieved for similarity search.](../../../translated_images/pcm/vector.f12f114934e223df.webp)
 
 > **Note**: For dis course, we no go cover Vector databases but e dey important because people dey use am for real-world apps.
 
@@ -93,7 +93,7 @@ Tokenization na di process of breaking text into dis small parts. E dey importan
 
 For Java AI apps, you go use tokens for text processing, embeddings for semantic search and RAG, vector databases for data retrieval, and agents with MCP to build smart systems wey fit use tools.
 
-![Figure: how a prompt becomes a reply—tokens, vectors, optional RAG lookup, LLM thinking, and an MCP agent all in one quick flow..](../../../translated_images/flow.f4ef62c3052d12a8.pcm.png)
+![Figure: how a prompt becomes a reply—tokens, vectors, optional RAG lookup, LLM thinking, and an MCP agent all in one quick flow..](../../../translated_images/pcm/flow.f4ef62c3052d12a8.webp)
 
 ### AI Development Tools and Libraries for Java
 

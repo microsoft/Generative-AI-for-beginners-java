@@ -44,7 +44,7 @@ Ao desenvolveres as tuas aplicações de IA em Java, vais trabalhar com **modelo
 
 Existem tipos específicos de modelos otimizados para diferentes tarefas. Por exemplo, tanto os **Modelos de Linguagem Pequenos (SLMs)** como os **Modelos de Linguagem de Grande Escala (LLMs)** podem lidar com a geração de texto, sendo que os LLMs geralmente oferecem melhor desempenho para tarefas complexas. Para tarefas relacionadas a imagens, utilizarias modelos de visão especializados ou modelos multimodais.
 
-![Figura: Tipos de modelos de IA generativa e casos de uso.](../../../translated_images/llms.225ca2b8a0d34473.pt.png)
+![Figura: Tipos de modelos de IA generativa e casos de uso.](../../../translated_images/pt/llms.225ca2b8a0d34473.webp)
 
 Claro que as respostas destes modelos nem sempre são perfeitas. Provavelmente já ouviste falar de modelos que "alucinam" ou geram informações incorretas de forma autoritária. No entanto, podes ajudar a guiar o modelo para gerar melhores respostas fornecendo instruções e contexto claros. É aqui que entra a **engenharia de prompts**.
 
@@ -79,13 +79,13 @@ A tokenização é o processo de dividir o texto nestas unidades menores. Isto �
 
 - **Embeddings**: Embeddings são representações vetoriais de tokens que capturam o significado semântico. São representações numéricas (tipicamente arrays de números de ponto flutuante) que permitem aos modelos compreender relações entre palavras e gerar respostas contextualmente relevantes. Palavras semelhantes têm embeddings semelhantes, permitindo ao modelo compreender conceitos como sinónimos e relações semânticas.
 
-![Figura: Embeddings](../../../translated_images/embedding.398e50802c0037f9.pt.png)
+![Figura: Embeddings](../../../translated_images/pt/embedding.398e50802c0037f9.webp)
 
   Em Java, podes gerar embeddings usando o OpenAI SDK ou outras bibliotecas que suportem a geração de embeddings. Estes embeddings são essenciais para tarefas como pesquisa semântica, onde queres encontrar conteúdos semelhantes com base no significado em vez de correspondências exatas de texto.
 
 - **Bases de dados vetoriais**: Bases de dados vetoriais são sistemas de armazenamento especializados otimizados para embeddings. Permitem uma pesquisa eficiente por similaridade e são cruciais para padrões de Geração Aumentada por Recuperação (RAG), onde precisas encontrar informações relevantes em grandes conjuntos de dados com base na similaridade semântica em vez de correspondências exatas.
 
-![Figura: Arquitetura de base de dados vetorial mostrando como os embeddings são armazenados e recuperados para pesquisa por similaridade.](../../../translated_images/vector.f12f114934e223df.pt.png)
+![Figura: Arquitetura de base de dados vetorial mostrando como os embeddings são armazenados e recuperados para pesquisa por similaridade.](../../../translated_images/pt/vector.f12f114934e223df.webp)
 
 > **Nota**: Neste curso, não abordaremos bases de dados vetoriais, mas achamos que vale a pena mencioná-las, pois são comumente usadas em aplicações do mundo real.
 
@@ -93,7 +93,7 @@ A tokenização é o processo de dividir o texto nestas unidades menores. Isto �
 
 Nas aplicações de IA em Java, vais usar tokens para processamento de texto, embeddings para pesquisa semântica e RAG, bases de dados vetoriais para recuperação de dados e agentes com MCP para construir sistemas inteligentes que utilizam ferramentas.
 
-![Figura: como um prompt se torna uma resposta—tokens, vetores, pesquisa opcional RAG, raciocínio do LLM e um agente MCP num fluxo rápido.](../../../translated_images/flow.f4ef62c3052d12a8.pt.png)
+![Figura: como um prompt se torna uma resposta—tokens, vetores, pesquisa opcional RAG, raciocínio do LLM e um agente MCP num fluxo rápido.](../../../translated_images/pt/flow.f4ef62c3052d12a8.webp)
 
 ### Ferramentas e bibliotecas de desenvolvimento de IA para Java
 

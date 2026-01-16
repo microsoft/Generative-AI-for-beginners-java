@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # هوش مصنوعی مولد برای مبتدیان - نسخه جاوا
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![هوش مصنوعی مولد برای مبتدیان - نسخه جاوا](../../translated_images/beg-genai-series.8b48be9951cc574c.fa.png)
+![هوش مصنوعی مولد برای مبتدیان - نسخه جاوا](../../translated_images/fa/beg-genai-series.8b48be9951cc574c.webp)
 
 **مدت زمان مورد نیاز**: کل کارگاه را می‌توان به صورت آنلاین بدون نصب محلی انجام داد. راه‌اندازی محیط ۲ دقیقه زمان می‌برد و بررسی نمونه‌ها بین ۱ تا ۳ ساعت بسته به عمق کاوش نیاز دارد.
 

@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Inteligência Artificial Generativa para Iniciantes - Edição Java
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Inteligência Artificial Generativa para Iniciantes - Edição Java](../../translated_images/beg-genai-series.8b48be9951cc574c.pt.png)
+![Inteligência Artificial Generativa para Iniciantes - Edição Java](../../translated_images/pt/beg-genai-series.8b48be9951cc574c.webp)
 
 **Compromisso de Tempo**: O workshop completo pode ser realizado online sem configuração local. A configuração do ambiente leva 2 minutos, sendo que explorar os exemplos requer 1-3 horas, dependendo da profundidade da exploração.
 

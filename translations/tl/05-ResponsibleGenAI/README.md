@@ -58,7 +58,7 @@ Ang `ResponsibleGithubModels` class ay sumusunod sa ganitong daloy:
 5. Ipakita ang mga resulta kung aling nilalaman ang na-block, tinanggihan, o pinayagan
 6. Subukan ang ligtas na nilalaman para sa paghahambing
 
-![Responsible AI Safety Demo](../../../translated_images/responsible.e4f51a917bafa4bf.tl.png)
+![Responsible AI Safety Demo](../../../translated_images/tl/responsible.e4f51a917bafa4bf.webp)
 
 ### Mga Tagubilin sa Setup
 
@@ -164,7 +164,7 @@ Ang halimbawang ito ay gumagamit ng mga problematikong prompt para sa layuning p
 
 Binabati kita sa pagkumpleto ng Generative AI for Beginners na kurso!
 
-![Pagkumpleto ng Kurso](../../../translated_images/image.73c7e2ff4a652e77.tl.png)
+![Pagkumpleto ng Kurso](../../../translated_images/tl/image.73c7e2ff4a652e77.webp)
 
 **Ano ang iyong natapos:**
 - Na-set up ang iyong development environment

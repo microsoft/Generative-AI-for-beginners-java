@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Generativ AI för Nybörjare - Java Edition
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generativ AI för Nybörjare - Java Edition](../../translated_images/beg-genai-series.8b48be9951cc574c.sv.png)
+![Generativ AI för Nybörjare - Java Edition](../../translated_images/sv/beg-genai-series.8b48be9951cc574c.webp)
 
 **Tidsåtgång**: Hela workshoppen kan genomföras online utan lokal installation. Miljöinställningen tar 2 minuter, och att utforska exemplen kräver 1-3 timmar beroende på hur mycket man utforskar.
 

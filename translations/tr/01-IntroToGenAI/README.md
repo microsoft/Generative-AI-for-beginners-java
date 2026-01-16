@@ -44,7 +44,7 @@ Java yapay zeka uygulamalarınızı geliştirirken, **üretken yapay zeka modell
 
 Farklı görevler için optimize edilmiş belirli model türleri vardır. Örneğin, hem **Küçük Dil Modelleri (SLM'ler)** hem de **Büyük Dil Modelleri (LLM'ler)** metin üretimini ele alabilir, ancak LLM'ler genellikle karmaşık görevler için daha iyi performans sunar. Görüntüyle ilgili görevler için özel görsel modeller veya çok modlu modeller kullanırsınız.
 
-![Şekil: Üretken yapay zeka model türleri ve kullanım alanları.](../../../translated_images/llms.225ca2b8a0d34473.tr.png)
+![Şekil: Üretken yapay zeka model türleri ve kullanım alanları.](../../../translated_images/tr/llms.225ca2b8a0d34473.webp)
 
 Tabii ki, bu modellerin yanıtları her zaman mükemmel değildir. Muhtemelen modellerin "halüsinasyon görmesi" veya otoriter bir şekilde yanlış bilgi üretmesi hakkında bir şeyler duymuşsunuzdur. Ancak, modele net talimatlar ve bağlam sağlayarak daha iyi yanıtlar oluşturmasına yardımcı olabilirsiniz. İşte burada **istem mühendisliği** devreye girer.
 
@@ -79,13 +79,13 @@ Tokenizasyon, metni bu küçük birimlere ayırma sürecidir. Bu önemlidir çü
 
 - **Gömüler**: Gömüler, tokenların anlamsal anlamını yakalayan vektör temsilleridir. Bunlar, kelimeler arasındaki ilişkileri anlamalarına ve bağlamsal olarak uygun yanıtlar oluşturmalarına olanak tanıyan sayısal temsillerdir (genellikle kayan noktalı sayı dizileri). Benzer kelimeler benzer gömülere sahiptir, bu da modelin eş anlamlılar ve anlamsal ilişkiler gibi kavramları anlamasını sağlar.
 
-![Şekil: Gömüler](../../../translated_images/embedding.398e50802c0037f9.tr.png)
+![Şekil: Gömüler](../../../translated_images/tr/embedding.398e50802c0037f9.webp)
 
   Java'da, OpenAI SDK veya gömü oluşturmayı destekleyen diğer kütüphaneler kullanarak gömüler oluşturabilirsiniz. Bu gömüler, anlamsal arama gibi görevler için önemlidir; burada, tam metin eşleşmeleri yerine anlam temelinde benzer içerik bulmak istersiniz.
 
 - **Vektör veritabanları**: Vektör veritabanları, gömüler için optimize edilmiş özel depolama sistemleridir. Anlamsal benzerlik temelinde büyük veri kümelerinden ilgili bilgileri bulmanız gereken Retrieval-Augmented Generation (RAG) desenleri için verimli benzerlik araması sağlarlar.
 
-![Şekil: Vektör veritabanı mimarisi, gömülerin benzerlik araması için nasıl saklandığını ve alındığını gösteriyor.](../../../translated_images/vector.f12f114934e223df.tr.png)
+![Şekil: Vektör veritabanı mimarisi, gömülerin benzerlik araması için nasıl saklandığını ve alındığını gösteriyor.](../../../translated_images/tr/vector.f12f114934e223df.webp)
 
 > **Not**: Bu kursta vektör veritabanlarını ele almayacağız, ancak gerçek dünya uygulamalarında yaygın olarak kullanıldıkları için bahsetmeye değer olduklarını düşünüyoruz.
 
@@ -93,7 +93,7 @@ Tokenizasyon, metni bu küçük birimlere ayırma sürecidir. Bu önemlidir çü
 
 Java yapay zeka uygulamalarında, metin işleme için tokenları, anlamsal arama ve RAG için gömüleri, veri alımı için vektör veritabanlarını ve harici araçları kullanan akıllı sistemler oluşturmak için MCP ile ajanları kullanacaksınız.
 
-![Şekil: Bir istemin yanıt haline gelme süreci—tokenlar, vektörler, isteğe bağlı RAG araması, LLM düşünme ve MCP ajanı hepsi bir hızlı akışta.](../../../translated_images/flow.f4ef62c3052d12a8.tr.png)
+![Şekil: Bir istemin yanıt haline gelme süreci—tokenlar, vektörler, isteğe bağlı RAG araması, LLM düşünme ve MCP ajanı hepsi bir hızlı akışta.](../../../translated_images/tr/flow.f4ef62c3052d12a8.webp)
 
 ### Java için Yapay Zeka Geliştirme Araçları ve Kütüphaneleri
 

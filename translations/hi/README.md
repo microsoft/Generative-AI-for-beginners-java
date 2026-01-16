@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # शुरुआती लोगों के लिए जनरेटिव एआई - जावा संस्करण
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![शुरुआती लोगों के लिए जनरेटिव एआई - जावा संस्करण](../../translated_images/beg-genai-series.8b48be9951cc574c.hi.png)
+![शुरुआती लोगों के लिए जनरेटिव एआई - जावा संस्करण](../../translated_images/hi/beg-genai-series.8b48be9951cc574c.webp)
 
 **समय प्रतिबद्धता**: पूरे कार्यशाला को ऑनलाइन बिना स्थानीय सेटअप के पूरा किया जा सकता है। वातावरण सेटअप में 2 मिनट लगते हैं, और नमूनों का पता लगाने में 1-3 घंटे लग सकते हैं, जो जांच की गहराई पर निर्भर करता है।
 

@@ -1,0 +1,98 @@
+{
+  "beg-genai-series.8b48be9951cc574c.webp": {
+    "original_hash": "a967aa7c967f7eef94f31926c4c8067c",
+    "translation_date": "2026-01-16T07:37:22+00:00",
+    "source_file": "images/beg-genai-series.png",
+    "language_code": "lt"
+  },
+  "codespaces-create.b44a36f728660ab7.webp": {
+    "original_hash": "7eab55896561d1bc55c6a162156d0017",
+    "translation_date": "2026-01-16T07:40:05+00:00",
+    "source_file": "02-SetupDevEnvironment/images/codespaces-create.png",
+    "language_code": "lt"
+  },
+  "codespaces.9945ded8ceb431a5.webp": {
+    "original_hash": "48d3567c3959e06e4ce108c43a1bb655",
+    "translation_date": "2026-01-16T07:39:30+00:00",
+    "source_file": "02-SetupDevEnvironment/images/codespaces.png",
+    "language_code": "lt"
+  },
+  "devcontainer.21126c9d6de64494.webp": {
+    "original_hash": "5a080e0e2e92ea495d1fd4fb0c3dca16",
+    "translation_date": "2026-01-16T07:39:35+00:00",
+    "source_file": "02-SetupDevEnvironment/images/devcontainer.png",
+    "language_code": "lt"
+  },
+  "embedding.398e50802c0037f9.webp": {
+    "original_hash": "3b42046dab31decbe80630673d9a4299",
+    "translation_date": "2026-01-16T07:38:24+00:00",
+    "source_file": "01-IntroToGenAI/images/embedding.png",
+    "language_code": "lt"
+  },
+  "flow.f4ef62c3052d12a8.webp": {
+    "original_hash": "384dbf925c9bd33ed060d90696e1e5dc",
+    "translation_date": "2026-01-16T07:38:14+00:00",
+    "source_file": "01-IntroToGenAI/images/flow.png",
+    "language_code": "lt"
+  },
+  "image-1.b36122aba30b20ad.webp": {
+    "original_hash": "beb64e9c23de84eff0eb1949f9e903cd",
+    "translation_date": "2026-01-16T07:41:14+00:00",
+    "source_file": "02-SetupDevEnvironment/images/image-1.png",
+    "language_code": "lt"
+  },
+  "image-2.fc0da29a6e4d2aff.webp": {
+    "original_hash": "6e06c4be35f0713416497bbcbf5272f1",
+    "translation_date": "2026-01-16T07:40:39+00:00",
+    "source_file": "02-SetupDevEnvironment/images/image-2.png",
+    "language_code": "lt"
+  },
+  "image-3.bf93d533bbc84268.webp": {
+    "original_hash": "682e3bce2f2c57bb12667e96da792191",
+    "translation_date": "2026-01-16T07:39:54+00:00",
+    "source_file": "02-SetupDevEnvironment/images/image-3.png",
+    "language_code": "lt"
+  },
+  "image.73c7e2ff4a652e77.webp": {
+    "original_hash": "65b6d1abec8bfb715c24ebe0f8929028",
+    "translation_date": "2026-01-16T07:39:17+00:00",
+    "source_file": "05-ResponsibleGenAI/images/image.png",
+    "language_code": "lt"
+  },
+  "image.833552b62eee7766.webp": {
+    "original_hash": "6ea0edb52249206f1b5cbea93bedb7fb",
+    "translation_date": "2026-01-16T07:40:56+00:00",
+    "source_file": "02-SetupDevEnvironment/images/image.png",
+    "language_code": "lt"
+  },
+  "llms.225ca2b8a0d34473.webp": {
+    "original_hash": "3e69ea1754a889ad7f1a690103fe75b6",
+    "translation_date": "2026-01-16T07:38:46+00:00",
+    "source_file": "01-IntroToGenAI/images/llms.png",
+    "language_code": "lt"
+  },
+  "mcp.3fcf1d13c662ef9a.webp": {
+    "original_hash": "93122a41e7b6451319598b97a160174b",
+    "translation_date": "2026-01-16T07:38:19+00:00",
+    "source_file": "01-IntroToGenAI/images/mcp.png",
+    "language_code": "lt"
+  },
+  "responsible.e4f51a917bafa4bf.webp": {
+    "original_hash": "fa8d1e23eabb52aff991b3257f039a93",
+    "translation_date": "2026-01-16T07:39:11+00:00",
+    "source_file": "05-ResponsibleGenAI/images/responsible.png",
+    "language_code": "lt"
+  },
+  "tool.189edfdb50db566d.webp": {
+    "original_hash": "ed2556303c831d1c9277652dc12014a1",
+    "translation_date": "2026-01-16T07:37:48+00:00",
+    "source_file": "04-PracticalSamples/calculator/images/tool.png",
+    "language_code": "lt"
+  },
+  "vector.f12f114934e223df.webp": {
+    "original_hash": "b3c0003a891ccc7f1dc4711beb194a02",
+    "translation_date": "2026-01-16T07:38:34+00:00",
+    "source_file": "01-IntroToGenAI/images/vector.png",
+    "language_code": "lt"
+  }
+}

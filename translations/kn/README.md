@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # ಆರಂಭಿಕರಿಗೆ ಜನರೇಟಿವ್ AI - ಜಾವಾ ಆವೃತ್ತಿ
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generative AI for Beginners - Java Edition](../../translated_images/beg-genai-series.8b48be9951cc574c.kn.png)
+![Generative AI for Beginners - Java Edition](../../translated_images/kn/beg-genai-series.8b48be9951cc574c.webp)
 
 **ಸಮಯ ಬದ್ಧತೆ**: ಸಂಪೂರ್ಣ ಕಾರ್ಯಾಗಾರವನ್ನು ಸ್ಥಳೀಯ ವ್ಯವಸ್ಥಾಪನೆ ಇಲ್ಲದೆ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಪೂರ್ಣಗೊಳಿಸಬಹುದು. ಪರಿಸರ ವ್ಯವಸ್ಥೆಯನ್ನು ಸ್ಥಾಪಿಸಲು 2 ನಿಮಿಷಗಳು ಬೇಕಾಗಿದ್ದು, ಉದಾಹರಣೆಗಳನ್ನು ಪರಿಶೀಲಿಸಲು ಅನುಸರಿಸುವ ಆಳತೆಗೆ ಅವಲಂಬಿಸಿದಂತೆ 1-3 ಗಂಟೆಗಳು ಬೇಕಾಗಬಹುದು.
 

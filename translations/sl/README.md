@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Generativna umetna inteligenca za začetnike - izdaja Java
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generativna umetna inteligenca za začetnike - izdaja Java](../../translated_images/beg-genai-series.8b48be9951cc574c.sl.png)
+![Generativna umetna inteligenca za začetnike - izdaja Java](../../translated_images/sl/beg-genai-series.8b48be9951cc574c.webp)
 
 **Časovna obveza**: Celoten delavnico je mogoče dokončati prek spleta brez lokalne namestitve. Nastavitev okolja traja 2 minuti, raziskovanje primerov pa zahteva 1–3 ure, odvisno od globine raziskovanja.
 

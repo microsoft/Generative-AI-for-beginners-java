@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Generatyvinis DI pradedantiesiems – Java leidimas
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generatyvinis DI pradedantiesiems – Java leidimas](../../translated_images/beg-genai-series.8b48be9951cc574c.lt.png)
+![Generatyvinis DI pradedantiesiems – Java leidimas](../../translated_images/lt/beg-genai-series.8b48be9951cc574c.webp)
 
 **Laiko sąnaudų kiekis**: Visa dirbtuvė gali būti atlikta internetu be vietinės aplinkos konfigūracijos. Aplinkos paruošimas užtrunka 2 minutes, o pavyzdžių tyrinėjimas – nuo 1 iki 3 valandų, priklausomai nuo tyrinėjimo gylio.
 

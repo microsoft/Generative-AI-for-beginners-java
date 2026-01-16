@@ -75,7 +75,7 @@ CO_OP_TRANSLATOR_METADATA:
    > **గమనిక**: మీరు ప్రాథమిక కాన్ఫిగరేషన్‌ను మార్చాలనుకుంటే, [Dev Container Configuration](../../../.devcontainer/devcontainer.json)ని చూడండి
 2. మీ ఫోర్క్ చేసిన రిపోలో, **Code** → **Codespaces** ట్యాబ్ క్లిక్ చేయండి
 3. **...** → **New with options...** క్లిక్ చేయండి  
-![creating a codespace with options](../../../translated_images/codespaces.9945ded8ceb431a5.te.png)
+![creating a codespace with options](../../../translated_images/te/codespaces.9945ded8ceb431a5.webp)
 4. **Dev container configuration** ఎంచుకోండి: 
    - **Generative AI Java Development Environment**
 5. **Create codespace** క్లిక్ చేయండి

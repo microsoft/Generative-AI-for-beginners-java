@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # नवीनांसाठी जनरेटिव्ह AI - जावा संस्करण
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generative AI for Beginners - Java Edition](../../translated_images/beg-genai-series.8b48be9951cc574c.mr.png)
+![Generative AI for Beginners - Java Edition](../../translated_images/mr/beg-genai-series.8b48be9951cc574c.webp)
 
 **वेळेची बांधणी**: संपूर्ण कार्यशाळा ऑनलाईन पूर्ण करता येते, स्थानिक सेटअपशिवाय. पर्यावरण सेटअपसाठी 2 मिनिटे लागतात, आणि नमुन्यांचा अभ्यास करण्यासाठी 1-3 तासांचा वेगळेपणा आहे जो अभ्यासाच्या खोलीवर अवलंबून आहे.
 

@@ -58,7 +58,7 @@ La classe `ResponsibleGithubModels` suit ce processus :
 5. Afficher les résultats montrant quel contenu a été bloqué, refusé ou autorisé
 6. Tester du contenu sûr pour comparaison
 
-![Démo de sécurité IA responsable](../../../translated_images/responsible.e4f51a917bafa4bf.fr.png)
+![Démo de sécurité IA responsable](../../../translated_images/fr/responsible.e4f51a917bafa4bf.webp)
 
 ### Instructions de configuration
 
@@ -164,7 +164,7 @@ Cet exemple utilise des invites problématiques intentionnellement à des fins �
 
 Félicitations pour avoir terminé le cours "IA générative pour débutants" !
 
-![Fin du cours](../../../translated_images/image.73c7e2ff4a652e77.fr.png)
+![Fin du cours](../../../translated_images/fr/image.73c7e2ff4a652e77.webp)
 
 **Ce que vous avez accompli :**
 - Configuré votre environnement de développement

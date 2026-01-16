@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Generative AI cho Người mới bắt đầu - Phiên bản Java
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generative AI cho Người mới bắt đầu - Phiên bản Java](../../translated_images/beg-genai-series.8b48be9951cc574c.vi.png)
+![Generative AI cho Người mới bắt đầu - Phiên bản Java](../../translated_images/vi/beg-genai-series.8b48be9951cc574c.webp)
 
 **Thời gian cam kết**: Toàn bộ hội thảo có thể hoàn thành trực tuyến mà không cần cài đặt cục bộ. Việc thiết lập môi trường mất 2 phút, khám phá các ví dụ mẫu cần từ 1-3 giờ tùy thuộc vào độ sâu khám phá.
 

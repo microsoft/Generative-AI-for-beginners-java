@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Генеративен изкуствен интелект за начинаещи - Java издание
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Генеративен изкуствен интелект за начинаещи - Java издание](../../translated_images/beg-genai-series.8b48be9951cc574c.bg.png)
+![Генеративен изкуствен интелект за начинаещи - Java издание](../../translated_images/bg/beg-genai-series.8b48be9951cc574c.webp)
 
 **Време за ангажираност**: Целият семинар може да бъде завършен онлайн без локална настройка. Настройката на средата отнема 2 минути, като разглеждането на примерите изисква от 1 до 3 часа в зависимост от дълбочината на проучване.
 

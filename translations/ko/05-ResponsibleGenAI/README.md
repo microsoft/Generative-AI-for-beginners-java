@@ -58,7 +58,7 @@ GitHub Models는 기본 콘텐츠 필터링 기능을 제공합니다. 마치 AI
 5. 차단된 콘텐츠, 거부된 콘텐츠, 허용된 콘텐츠를 보여주는 결과를 표시합니다.
 6. 비교를 위해 안전한 콘텐츠를 테스트합니다.
 
-![책임 있는 AI 안전 데모](../../../translated_images/responsible.e4f51a917bafa4bf.ko.png)
+![책임 있는 AI 안전 데모](../../../translated_images/ko/responsible.e4f51a917bafa4bf.webp)
 
 ### 설치 지침
 
@@ -164,7 +164,7 @@ AI 애플리케이션을 개발할 때 다음 필수 모범 사례를 따르세�
 
 초보자를 위한 생성형 AI 강의를 완료한 것을 축하합니다!
 
-![강의 완료](../../../translated_images/image.73c7e2ff4a652e77.ko.png)
+![강의 완료](../../../translated_images/ko/image.73c7e2ff4a652e77.webp)
 
 **완료한 내용:**
 - 개발 환경 설정

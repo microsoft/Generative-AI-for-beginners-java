@@ -75,7 +75,7 @@ CO_OP_TRANSLATOR_METADATA:
    > **הערה**: אם ברצונכם לערוך את ההגדרות הבסיסיות, עיינו ב-[Dev Container Configuration](../../../.devcontainer/devcontainer.json)
 2. במאגר ה-Fork שלכם, לחצו על **Code** → לשונית **Codespaces**
 3. לחצו על **...** → **New with options...**  
-![יצירת Codespace עם אפשרויות](../../../translated_images/codespaces.9945ded8ceb431a5.he.png)
+![יצירת Codespace עם אפשרויות](../../../translated_images/he/codespaces.9945ded8ceb431a5.webp)
 4. בחרו **Dev container configuration**: 
    - **Generative AI Java Development Environment**
 5. לחצו על **Create codespace**

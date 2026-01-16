@@ -44,7 +44,7 @@ Bij het ontwikkelen van je Java AI-toepassingen werk je met **generatieve AI-mod
 
 Er zijn specifieke soorten modellen die geoptimaliseerd zijn voor verschillende taken. Bijvoorbeeld, zowel **Small Language Models (SLM's)** als **Large Language Models (LLM's)** kunnen tekst genereren, waarbij LLM's doorgaans beter presteren bij complexe taken. Voor beeldgerelateerde taken gebruik je gespecialiseerde vision-modellen of multimodale modellen.
 
-![Afbeelding: Typen generatieve AI-modellen en hun toepassingen.](../../../translated_images/llms.225ca2b8a0d34473.nl.png)
+![Afbeelding: Typen generatieve AI-modellen en hun toepassingen.](../../../translated_images/nl/llms.225ca2b8a0d34473.webp)
 
 De reacties van deze modellen zijn natuurlijk niet altijd perfect. Je hebt waarschijnlijk gehoord over modellen die "hallucineren" of onjuiste informatie genereren op een overtuigende manier. Maar je kunt het model helpen betere reacties te genereren door duidelijke instructies en context te geven. Dit is waar **prompt engineering** van pas komt.
 
@@ -79,13 +79,13 @@ Tokenisatie is het proces van het opsplitsen van tekst in deze kleinere eenheden
 
 - **Embeddings**: Embeddings zijn vectorrepresentaties van tokens die semantische betekenis vastleggen. Het zijn numerieke representaties (meestal arrays van drijvende-komma-getallen) die modellen in staat stellen relaties tussen woorden te begrijpen en contextueel relevante reacties te genereren. Vergelijkbare woorden hebben vergelijkbare embeddings, waardoor het model concepten zoals synoniemen en semantische relaties kan begrijpen.
 
-![Afbeelding: Embeddings](../../../translated_images/embedding.398e50802c0037f9.nl.png)
+![Afbeelding: Embeddings](../../../translated_images/nl/embedding.398e50802c0037f9.webp)
 
   In Java kun je embeddings genereren met de OpenAI SDK of andere bibliotheken die embedding-generatie ondersteunen. Deze embeddings zijn essentieel voor taken zoals semantisch zoeken, waarbij je vergelijkbare content wilt vinden op basis van betekenis in plaats van exacte tekstovereenkomsten.
 
 - **Vector databases**: Vector databases zijn gespecialiseerde opslagsystemen die geoptimaliseerd zijn voor embeddings. Ze maken efficiënte gelijkeniszoekopdrachten mogelijk en zijn cruciaal voor Retrieval-Augmented Generation (RAG)-patronen, waarbij je relevante informatie uit grote datasets wilt vinden op basis van semantische gelijkenis in plaats van exacte overeenkomsten.
 
-![Afbeelding: Vector database-architectuur die laat zien hoe embeddings worden opgeslagen en opgehaald voor gelijkeniszoekopdrachten.](../../../translated_images/vector.f12f114934e223df.nl.png)
+![Afbeelding: Vector database-architectuur die laat zien hoe embeddings worden opgeslagen en opgehaald voor gelijkeniszoekopdrachten.](../../../translated_images/nl/vector.f12f114934e223df.webp)
 
 > **Opmerking**: In deze cursus behandelen we geen vector databases, maar we vinden het belangrijk om ze te noemen omdat ze vaak worden gebruikt in praktijktoepassingen.
 
@@ -93,7 +93,7 @@ Tokenisatie is het proces van het opsplitsen van tekst in deze kleinere eenheden
 
 In Java AI-toepassingen gebruik je tokens voor tekstverwerking, embeddings voor semantisch zoeken en RAG, vector databases voor gegevensopvraging en agents met MCP voor het bouwen van intelligente systemen die tools gebruiken.
 
-![Afbeelding: hoe een prompt een antwoord wordt—tokens, vectoren, optionele RAG-opzoeking, LLM-denken en een MCP-agent in één snelle stroom.](../../../translated_images/flow.f4ef62c3052d12a8.nl.png)
+![Afbeelding: hoe een prompt een antwoord wordt—tokens, vectoren, optionele RAG-opzoeking, LLM-denken en een MCP-agent in één snelle stroom.](../../../translated_images/nl/flow.f4ef62c3052d12a8.webp)
 
 ### AI-ontwikkeltools en bibliotheken voor Java
 

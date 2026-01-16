@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Generative AI for Beginners - Java Edition
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generative AI for Beginners - Java Edition](../../translated_images/beg-genai-series.8b48be9951cc574c.en.png)
+![Generative AI for Beginners - Java Edition](../../translated_images/en/beg-genai-series.8b48be9951cc574c.webp)
 
 **Time Commitment**: The entire workshop can be completed online without local setup. The environment setup takes 2 minutes, with exploring the samples requiring 1-3 hours depending on exploration depth.
 

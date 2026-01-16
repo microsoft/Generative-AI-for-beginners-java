@@ -75,11 +75,11 @@ We don create preconfigured development container to make setup easy and make su
 5. Wait ~2 minutes make the environment ready
 6. Go [Step 2: Create GitHub Token](../../../02-SetupDevEnvironment)
 
-<img src="../../../translated_images/codespaces.9945ded8ceb431a5.pcm.png" alt="Screenshot: Codespaces submenu" width="50%">
+<img src="../../../translated_images/pcm/codespaces.9945ded8ceb431a5.webp" alt="Screenshot: Codespaces submenu" width="50%">
 
-<img src="../../../translated_images/image.833552b62eee7766.pcm.png" alt="Screenshot: New with options" width="50%">
+<img src="../../../translated_images/pcm/image.833552b62eee7766.webp" alt="Screenshot: New with options" width="50%">
 
-<img src="../../../translated_images/codespaces-create.b44a36f728660ab7.pcm.png" alt="Screenshot: Create codespace options" width="50%">
+<img src="../../../translated_images/pcm/codespaces-create.b44a36f728660ab7.webp" alt="Screenshot: Create codespace options" width="50%">
 
 
 > **Benefits of Codespaces**:
@@ -102,9 +102,9 @@ We don create preconfigured development container to make setup easy and make su
 6. Wait make the container build and start
 7. Go [Step 2: Create GitHub Token](../../../02-SetupDevEnvironment)
 
-<img src="../../../translated_images/devcontainer.21126c9d6de64494.pcm.png" alt="Screenshot: Dev container setup" width="50%">
+<img src="../../../translated_images/pcm/devcontainer.21126c9d6de64494.webp" alt="Screenshot: Dev container setup" width="50%">
 
-<img src="../../../translated_images/image-3.bf93d533bbc84268.pcm.png" alt="Screenshot: Dev container build complete" width="50%">
+<img src="../../../translated_images/pcm/image-3.bf93d533bbc84268.webp" alt="Screenshot: Dev container build complete" width="50%">
 
 #### Option C: Use Your Existing Local Installation
 
@@ -122,7 +122,7 @@ Steps:
 
 > **Pro Tip**: If your machine no strong but you wan use VS Code locally, try GitHub Codespaces! You fit connect your local VS Code to cloud-hosted Codespace for better experience.
 
-<img src="../../../translated_images/image-2.fc0da29a6e4d2aff.pcm.png" alt="Screenshot: created local devcontainer instance" width="50%">
+<img src="../../../translated_images/pcm/image-2.fc0da29a6e4d2aff.webp" alt="Screenshot: created local devcontainer instance" width="50%">
 
 
 ## Step 2: Create a GitHub Personal Access Token

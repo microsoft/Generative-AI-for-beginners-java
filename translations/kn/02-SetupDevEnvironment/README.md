@@ -74,11 +74,11 @@ CO_OP_TRANSLATOR_METADATA:
 5. ಪರಿಸರ ಸಿದ್ಧವಾಗಲು ~2 ನಿಮಿಷ ಕಾಯಿರಿ
 6. [ಹಂತ 2: GitHub ಟೋಕನ್ ರಚಿಸಿ](../../../02-SetupDevEnvironment) ಗೆ ಮುಂದುವರಿಯಿರಿ
 
-<img src="../../../translated_images/codespaces.9945ded8ceb431a5.kn.png" alt="ಸ್ಕ್ರೀನ್‌ಶಾಟ್: Codespaces ಉಪಮೆನು" width="50%">
+<img src="../../../translated_images/kn/codespaces.9945ded8ceb431a5.webp" alt="ಸ್ಕ್ರೀನ್‌ಶಾಟ್: Codespaces ಉಪಮೆನು" width="50%">
 
-<img src="../../../translated_images/image.833552b62eee7766.kn.png" alt="ಸ್ಕ್ರೀನ್‌ಶಾಟ್: New with options" width="50%">
+<img src="../../../translated_images/kn/image.833552b62eee7766.webp" alt="ಸ್ಕ್ರೀನ್‌ಶಾಟ್: New with options" width="50%">
 
-<img src="../../../translated_images/codespaces-create.b44a36f728660ab7.kn.png" alt="ಸ್ಕ್ರೀನ್‌ಶಾಟ್: Create codespace options" width="50%">
+<img src="../../../translated_images/kn/codespaces-create.b44a36f728660ab7.webp" alt="ಸ್ಕ್ರೀನ್‌ಶಾಟ್: Create codespace options" width="50%">
 
 > **Codespaces ನ ಲಾಭಗಳು**:
 > - ಸ್ಥಳೀಯ ಇನ್‌ಸ್ಟಾಲೇಶನ್ ಅಗತ್ಯವಿಲ್ಲ
@@ -100,9 +100,9 @@ CO_OP_TRANSLATOR_METADATA:
 6. ಕಂಟೈನರ್ ನಿರ್ಮಿಸಲು ಮತ್ತು ಪ್ರಾರಂಭಿಸಲು ಕಾಯಿರಿ
 7. [ಹಂತ 2: GitHub ಟೋಕನ್ ರಚಿಸಿ](../../../02-SetupDevEnvironment) ಗೆ ಮುಂದುವರಿಯಿರಿ
 
-<img src="../../../translated_images/devcontainer.21126c9d6de64494.kn.png" alt="ಸ್ಕ್ರೀನ್‌ಶಾಟ್: Dev container setup" width="50%">
+<img src="../../../translated_images/kn/devcontainer.21126c9d6de64494.webp" alt="ಸ್ಕ್ರೀನ್‌ಶಾಟ್: Dev container setup" width="50%">
 
-<img src="../../../translated_images/image-3.bf93d533bbc84268.kn.png" alt="ಸ್ಕ್ರೀನ್‌ಶಾಟ್: Dev container build complete" width="50%">
+<img src="../../../translated_images/kn/image-3.bf93d533bbc84268.webp" alt="ಸ್ಕ್ರೀನ್‌ಶಾಟ್: Dev container build complete" width="50%">
 
 #### ಆಯ್ಕೆ C: ನಿಮ್ಮ ಇತ್ತೀಚಿನ ಸ್ಥಳೀಯ ಇನ್‌ಸ್ಟಾಲೇಶನ್ ಅನ್ನು ಬಳಸುವುದು
 
@@ -120,7 +120,7 @@ CO_OP_TRANSLATOR_METADATA:
 
 > **ಪ್ರೊ ಟಿಪ್**: ನೀವು ಕಡಿಮೆ-ವಿಶೇಷಣಾ ಯಂತ್ರವನ್ನು ಹೊಂದಿದ್ದರೆ ಆದರೆ ಸ್ಥಳೀಯವಾಗಿ VS Code ಅನ್ನು ಬಯಸಿದರೆ, GitHub Codespaces ಅನ್ನು ಬಳಸಿ! ಕ್ಲೌಡ್-ಹೋಸ್ಟೆಡ್ Codespace ಗೆ ನಿಮ್ಮ ಸ್ಥಳೀಯ VS Code ಅನ್ನು ಸಂಪರ್ಕಿಸಿ.
 
-<img src="../../../translated_images/image-2.fc0da29a6e4d2aff.kn.png" alt="ಸ್ಕ್ರೀನ್‌ಶಾಟ್: created local devcontainer instance" width="50%">
+<img src="../../../translated_images/kn/image-2.fc0da29a6e4d2aff.webp" alt="ಸ್ಕ್ರೀನ್‌ಶಾಟ್: created local devcontainer instance" width="50%">
 
 ## ಹಂತ 2: GitHub ವೈಯಕ್ತಿಕ ಪ್ರವೇಶ ಟೋಕನ್ ರಚಿಸಿ
 

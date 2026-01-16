@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # الذكاء الاصطناعي التوليدي للمبتدئين - إصدار جافا
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![الذكاء الاصطناعي التوليدي للمبتدئين - إصدار جافا](../../translated_images/beg-genai-series.8b48be9951cc574c.ar.png)
+![الذكاء الاصطناعي التوليدي للمبتدئين - إصدار جافا](../../translated_images/ar/beg-genai-series.8b48be9951cc574c.webp)
 
 **مدة الالتزام**: يمكن إتمام ورشة العمل بأكملها عبر الإنترنت دون تثبيت محلي. يستغرق إعداد البيئة دقيقتين، مع استكشاف العينات الذي يتطلب من 1 إلى 3 ساعات حسب عمق الاستكشاف.
 

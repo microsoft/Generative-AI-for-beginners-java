@@ -75,7 +75,7 @@ CO_OP_TRANSLATOR_METADATA:
    > **ملاحظة**: إذا كنت ترغب في تعديل التكوين الأساسي، يرجى الاطلاع على [تكوين حاوية التطوير](../../../.devcontainer/devcontainer.json)
 2. في المستودع الذي قمت بعمل Fork له، انقر على **Code** → علامة تبويب **Codespaces**
 3. انقر على **...** → **جديد مع الخيارات...**
-![إنشاء Codespace مع الخيارات](../../../translated_images/codespaces.9945ded8ceb431a5.ar.png)
+![إنشاء Codespace مع الخيارات](../../../translated_images/ar/codespaces.9945ded8ceb431a5.webp)
 4. اختر **تكوين حاوية التطوير**: 
    - **بيئة تطوير Java للذكاء الاصطناعي التوليدي**
 5. انقر على **إنشاء Codespace**

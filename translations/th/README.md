@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Generative AI สำหรับผู้เริ่มต้น - ฉบับ Java
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generative AI สำหรับผู้เริ่มต้น - ฉบับ Java](../../translated_images/beg-genai-series.8b48be9951cc574c.th.png)
+![Generative AI สำหรับผู้เริ่มต้น - ฉบับ Java](../../translated_images/th/beg-genai-series.8b48be9951cc574c.webp)
 
 **เวลาที่ใช้**: เวิร์กช็อปทั้งหมดสามารถทำได้ออนไลน์โดยไม่ต้องตั้งค่าท้องถิ่น การตั้งค่าสภาพแวดล้อมใช้เวลา 2 นาที โดยการสำรวจตัวอย่างใช้เวลาประมาณ 1-3 ชั่วโมงขึ้นอยู่กับความลึกของการสำรวจ
 

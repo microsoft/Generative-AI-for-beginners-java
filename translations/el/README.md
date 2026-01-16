@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Δημιουργική Τεχνητή Νοημοσύνη για Αρχάριους - Έκδοση Java
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generative AI for Beginners - Java Edition](../../translated_images/beg-genai-series.8b48be9951cc574c.el.png)
+![Generative AI for Beginners - Java Edition](../../translated_images/el/beg-genai-series.8b48be9951cc574c.webp)
 
 **Διάρκεια**: Το ολόκληρο εργαστήριο μπορεί να ολοκληρωθεί διαδικτυακά χωρίς τοπική εγκατάσταση. Η ρύθμιση του περιβάλλοντος διαρκεί 2 λεπτά, ενώ η εξερεύνηση των δειγμάτων απαιτεί 1-3 ώρες ανάλογα με το βάθος της εξερεύνησης.
 

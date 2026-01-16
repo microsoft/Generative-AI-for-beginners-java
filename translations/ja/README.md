@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # ジェネレーティブAI入門 - Javaエディション
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![ジェネレーティブAI入門 - Javaエディション](../../translated_images/beg-genai-series.8b48be9951cc574c.ja.png)
+![ジェネレーティブAI入門 - Javaエディション](../../translated_images/ja/beg-genai-series.8b48be9951cc574c.webp)
 
 **所要時間**: ワークショップ全体はローカル環境設定なしでオンラインで完了できます。環境設定には2分、サンプルの探索には探索の深さに応じて1〜3時間かかります。
 

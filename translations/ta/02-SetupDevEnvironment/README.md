@@ -74,11 +74,11 @@ CO_OP_TRANSLATOR_METADATA:
 5. சூழல் தயாராக ~2 நிமிடங்கள் காத்திருக்கவும்
 6. [படி 2: GitHub Token உருவாக்குதல்](../../../02-SetupDevEnvironment) பகுதியை நோக்கி செல்லுங்கள்
 
-<img src="../../../translated_images/codespaces.9945ded8ceb431a5.ta.png" alt="திரைப்படம்: Codespaces submenu" width="50%">
+<img src="../../../translated_images/ta/codespaces.9945ded8ceb431a5.webp" alt="திரைப்படம்: Codespaces submenu" width="50%">
 
-<img src="../../../translated_images/image.833552b62eee7766.ta.png" alt="திரைப்படம்: New with options" width="50%">
+<img src="../../../translated_images/ta/image.833552b62eee7766.webp" alt="திரைப்படம்: New with options" width="50%">
 
-<img src="../../../translated_images/codespaces-create.b44a36f728660ab7.ta.png" alt="திரைப்படம்: Create codespace options" width="50%">
+<img src="../../../translated_images/ta/codespaces-create.b44a36f728660ab7.webp" alt="திரைப்படம்: Create codespace options" width="50%">
 
 
 > **Codespaces இன் நன்மைகள்**:
@@ -101,9 +101,9 @@ CO_OP_TRANSLATOR_METADATA:
 6. கண்டெய்னர் கட்டமைக்கவும் மற்றும் தொடங்கவும் காத்திருக்கவும்
 7. [படி 2: GitHub Token உருவாக்குதல்](../../../02-SetupDevEnvironment) பகுதியை நோக்கி செல்லுங்கள்
 
-<img src="../../../translated_images/devcontainer.21126c9d6de64494.ta.png" alt="திரைப்படம்: Dev container அமைப்பு" width="50%">
+<img src="../../../translated_images/ta/devcontainer.21126c9d6de64494.webp" alt="திரைப்படம்: Dev container அமைப்பு" width="50%">
 
-<img src="../../../translated_images/image-3.bf93d533bbc84268.ta.png" alt="திரைப்படம்: Dev container கட்டமைப்பு முடிந்தது" width="50%">
+<img src="../../../translated_images/ta/image-3.bf93d533bbc84268.webp" alt="திரைப்படம்: Dev container கட்டமைப்பு முடிந்தது" width="50%">
 
 #### விருப்பம் C: உங்கள் உள்ளூர் நிறுவலை பயன்படுத்துதல்
 
@@ -121,7 +121,7 @@ CO_OP_TRANSLATOR_METADATA:
 
 > **சிறந்த ஆலோசனை**: உங்கள் கணினி குறைந்த அளவிலான திறனுடன் இருந்தால், ஆனால் உள்ளூர் VS Code ஐ விரும்பினால், GitHub Codespaces ஐ பயன்படுத்துங்கள்! உங்கள் உள்ளூர் VS Code ஐ கிளவுட்-ஹோஸ்டட் Codespace க்கு இணைக்கலாம், இரண்டின் சிறந்த அம்சங்களையும் பெற.
 
-<img src="../../../translated_images/image-2.fc0da29a6e4d2aff.ta.png" alt="திரைப்படம்: உள்ளூர் devcontainer instance உருவாக்கப்பட்டது" width="50%">
+<img src="../../../translated_images/ta/image-2.fc0da29a6e4d2aff.webp" alt="திரைப்படம்: உள்ளூர் devcontainer instance உருவாக்கப்பட்டது" width="50%">
 
 
 ## படி 2: GitHub தனிப்பட்ட அணுகல் டோக்கனை உருவாக்குதல்

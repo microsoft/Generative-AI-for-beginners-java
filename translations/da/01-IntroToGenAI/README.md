@@ -44,7 +44,7 @@ Når du udvikler dine Java AI-applikationer, vil du arbejde med **generative AI-
 
 Der findes specifikke typer modeller, der er optimeret til forskellige opgaver. For eksempel kan både **Small Language Models (SLM'er)** og **Large Language Models (LLM'er)** håndtere tekstgenerering, hvor LLM'er typisk giver bedre ydeevne til komplekse opgaver. Til billedrelaterede opgaver vil du bruge specialiserede visionsmodeller eller multimodale modeller.
 
-![Figur: Typer af generative AI-modeller og deres anvendelsesområder.](../../../translated_images/llms.225ca2b8a0d34473.da.png)
+![Figur: Typer af generative AI-modeller og deres anvendelsesområder.](../../../translated_images/da/llms.225ca2b8a0d34473.webp)
 
 Selvfølgelig er svarene fra disse modeller ikke altid perfekte. Du har sikkert hørt om modeller, der "hallucinerer" eller genererer forkerte oplysninger på en autoritativ måde. Men du kan hjælpe med at guide modellen til at generere bedre svar ved at give den klare instruktioner og kontekst. Det er her, **prompt engineering** kommer ind i billedet.
 
@@ -79,13 +79,13 @@ Tokenisering er processen med at opdele tekst i disse mindre enheder. Dette er a
 
 - **Embeddings**: Embeddings er vektorrepræsentationer af tokens, der fanger semantisk betydning. De er numeriske repræsentationer (typisk arrays af flydende punkt-tal), der gør det muligt for modeller at forstå relationer mellem ord og generere kontekstuelt relevante svar. Lignende ord har lignende embeddings, hvilket gør det muligt for modellen at forstå begreber som synonymer og semantiske relationer.
 
-![Figur: Embeddings](../../../translated_images/embedding.398e50802c0037f9.da.png)
+![Figur: Embeddings](../../../translated_images/da/embedding.398e50802c0037f9.webp)
 
   I Java kan du generere embeddings ved hjælp af OpenAI SDK eller andre biblioteker, der understøtter embedding-generering. Disse embeddings er essentielle til opgaver som semantisk søgning, hvor du ønsker at finde lignende indhold baseret på betydning snarere end præcise tekstmatch.
 
 - **Vektordatabaser**: Vektordatabaser er specialiserede lagringssystemer optimeret til embeddings. De muliggør effektiv lighedssøgning og er afgørende for Retrieval-Augmented Generation (RAG)-mønstre, hvor du skal finde relevant information fra store datasæt baseret på semantisk lighed snarere end præcise match.
 
-![Figur: Vektordatabasens arkitektur, der viser, hvordan embeddings lagres og hentes til lighedssøgning.](../../../translated_images/vector.f12f114934e223df.da.png)
+![Figur: Vektordatabasens arkitektur, der viser, hvordan embeddings lagres og hentes til lighedssøgning.](../../../translated_images/da/vector.f12f114934e223df.webp)
 
 > **Note**: I dette kursus dækker vi ikke vektordatabaser, men de er værd at nævne, da de ofte bruges i virkelige applikationer.
 
@@ -93,7 +93,7 @@ Tokenisering er processen med at opdele tekst i disse mindre enheder. Dette er a
 
 I Java AI-applikationer vil du bruge tokens til tekstbehandling, embeddings til semantisk søgning og RAG, vektordatabaser til datahentning og agenter med MCP til at bygge intelligente systemer, der bruger værktøjer.
 
-![Figur: Hvordan en prompt bliver til et svar—tokens, vektorer, valgfri RAG-opslag, LLM-tænkning og en MCP-agent i én hurtig proces.](../../../translated_images/flow.f4ef62c3052d12a8.da.png)
+![Figur: Hvordan en prompt bliver til et svar—tokens, vektorer, valgfri RAG-opslag, LLM-tænkning og en MCP-agent i én hurtig proces.](../../../translated_images/da/flow.f4ef62c3052d12a8.webp)
 
 ### AI-udviklingsværktøjer og biblioteker til Java
 

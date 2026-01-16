@@ -58,7 +58,7 @@ Selles peatükis on praktiline demonstratsioon, kuidas GitHub Models rakendab va
 5. Tulemuste kuvamine, mis näitavad, milline sisu blokeeriti, keelduti või lubati
 6. Võrdluseks turvalise sisu testimine
 
-![Vastutustundliku tehisintellekti turvademo](../../../translated_images/responsible.e4f51a917bafa4bf.et.png)
+![Vastutustundliku tehisintellekti turvademo](../../../translated_images/et/responsible.e4f51a917bafa4bf.webp)
 
 ### Seadistamise juhised
 
@@ -164,7 +164,7 @@ See näide kasutab tahtlikult problemaatilisi sisendeid ainult hariduslikel eesm
 
 Palju õnne, et lõpetasid Generatiivse Tehisintellekti Algajatele kursuse!
 
-![Kursuse lõpetamine](../../../translated_images/image.73c7e2ff4a652e77.et.png)
+![Kursuse lõpetamine](../../../translated_images/et/image.73c7e2ff4a652e77.webp)
 
 **Mida oled saavutanud:**
 - Seadistasid oma arenduskeskkonna

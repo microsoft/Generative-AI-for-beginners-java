@@ -74,11 +74,11 @@ CO_OP_TRANSLATOR_METADATA:
 5. പരിസ്ഥിതി സജ്ജമാകാൻ ~2 മിനിറ്റ് കാത്തിരിക്കുക
 6. [Step 2: Create GitHub Token](../../../02-SetupDevEnvironment) ഭാഗത്തേക്ക് മുന്നോട്ട് പോകുക
 
-<img src="../../../translated_images/codespaces.9945ded8ceb431a5.ml.png" alt="സ്ക്രീൻഷോട്ട്: Codespaces സബ്‌മെനു" width="50%">
+<img src="../../../translated_images/ml/codespaces.9945ded8ceb431a5.webp" alt="സ്ക്രീൻഷോട്ട്: Codespaces സബ്‌മെനു" width="50%">
 
-<img src="../../../translated_images/image.833552b62eee7766.ml.png" alt="സ്ക്രീൻഷോട്ട്: New with options" width="50%">
+<img src="../../../translated_images/ml/image.833552b62eee7766.webp" alt="സ്ക്രീൻഷോട്ട്: New with options" width="50%">
 
-<img src="../../../translated_images/codespaces-create.b44a36f728660ab7.ml.png" alt="സ്ക്രീൻഷോട്ട്: Create codespace options" width="50%">
+<img src="../../../translated_images/ml/codespaces-create.b44a36f728660ab7.webp" alt="സ്ക്രീൻഷോട്ട്: Create codespace options" width="50%">
 
 > **Codespaces-ന്റെ ഗുണങ്ങൾ**:
 > - പ്രാദേശിക ഇൻസ്റ്റലേഷൻ ആവശ്യമില്ല
@@ -100,9 +100,9 @@ CO_OP_TRANSLATOR_METADATA:
 6. കണ്ടെയ്നർ നിർമ്മിച്ച് ആരംഭിക്കാൻ കാത്തിരിക്കുക
 7. [Step 2: Create GitHub Token](../../../02-SetupDevEnvironment) ഭാഗത്തേക്ക് മുന്നോട്ട് പോകുക
 
-<img src="../../../translated_images/devcontainer.21126c9d6de64494.ml.png" alt="സ്ക്രീൻഷോട്ട്: Dev container setup" width="50%">
+<img src="../../../translated_images/ml/devcontainer.21126c9d6de64494.webp" alt="സ്ക്രീൻഷോട്ട്: Dev container setup" width="50%">
 
-<img src="../../../translated_images/image-3.bf93d533bbc84268.ml.png" alt="സ്ക്രീൻഷോട്ട്: Dev container build complete" width="50%">
+<img src="../../../translated_images/ml/image-3.bf93d533bbc84268.webp" alt="സ്ക്രീൻഷോട്ട്: Dev container build complete" width="50%">
 
 #### ഓപ്ഷൻ C: നിങ്ങളുടെ നിലവിലെ പ്രാദേശിക ഇൻസ്റ്റലേഷൻ ഉപയോഗിക്കുക
 
@@ -120,7 +120,7 @@ CO_OP_TRANSLATOR_METADATA:
 
 > **പ്രൊ ടിപ്പ്**: നിങ്ങളുടെ മെഷീൻ കുറഞ്ഞ സ്പെക്കുകൾ ഉള്ളതാണെങ്കിൽ, GitHub Codespaces ഉപയോഗിച്ച് പ്രാദേശിക VS Code ഉപയോഗിക്കുക! ക്ലൗഡ്-ഹോസ്റ്റുചെയ്ത Codespace-നെ പ്രാദേശിക VS Code-യുമായി ബന്ധിപ്പിച്ച് ഇരുവരുടെയും മികച്ച അനുഭവം നേടുക.
 
-<img src="../../../translated_images/image-2.fc0da29a6e4d2aff.ml.png" alt="സ്ക്രീൻഷോട്ട്: created local devcontainer instance" width="50%">
+<img src="../../../translated_images/ml/image-2.fc0da29a6e4d2aff.webp" alt="സ്ക്രീൻഷോട്ട്: created local devcontainer instance" width="50%">
 
 ## ഘട്ടം 2: GitHub Personal Access Token സൃഷ്ടിക്കുക
 

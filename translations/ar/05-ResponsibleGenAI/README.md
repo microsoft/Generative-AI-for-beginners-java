@@ -58,7 +58,7 @@ CO_OP_TRANSLATOR_METADATA:
 5. عرض النتائج التي توضح المحتوى الذي تم حظره أو رفضه أو السماح به  
 6. اختبار المحتوى الآمن للمقارنة  
 
-![عرض توضيحي لأمان الذكاء الاصطناعي المسؤول](../../../translated_images/responsible.e4f51a917bafa4bf.ar.png)
+![عرض توضيحي لأمان الذكاء الاصطناعي المسؤول](../../../translated_images/ar/responsible.e4f51a917bafa4bf.webp)
 
 ### إرشادات الإعداد
 
@@ -164,7 +164,7 @@ Status: Response generated successfully
 
 تهانينا على إتمام دورة الذكاء الاصطناعي التوليدي للمبتدئين!
 
-![إتمام الدورة](../../../translated_images/image.73c7e2ff4a652e77.ar.png)
+![إتمام الدورة](../../../translated_images/ar/image.73c7e2ff4a652e77.webp)
 
 **ما الذي أنجزته:**  
 - إعداد بيئة التطوير الخاصة بك  

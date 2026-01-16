@@ -74,11 +74,11 @@ CO_OP_TRANSLATOR_METADATA:
 5. ఎన్విరాన్‌మెంట్ సిద్ధం కావడానికి ~2 నిమిషాలు వేచి ఉండండి
 6. [దశ 2: GitHub టోకెన్ సృష్టించండి](../../../02-SetupDevEnvironment)కి కొనసాగండి
 
-<img src="../../../translated_images/codespaces.9945ded8ceb431a5.te.png" alt="స్క్రీన్‌షాట్: Codespaces ఉపమెను" width="50%">
+<img src="../../../translated_images/te/codespaces.9945ded8ceb431a5.webp" alt="స్క్రీన్‌షాట్: Codespaces ఉపమెను" width="50%">
 
-<img src="../../../translated_images/image.833552b62eee7766.te.png" alt="స్క్రీన్‌షాట్: New with options" width="50%">
+<img src="../../../translated_images/te/image.833552b62eee7766.webp" alt="స్క్రీన్‌షాట్: New with options" width="50%">
 
-<img src="../../../translated_images/codespaces-create.b44a36f728660ab7.te.png" alt="స్క్రీన్‌షాట్: Create codespace options" width="50%">
+<img src="../../../translated_images/te/codespaces-create.b44a36f728660ab7.webp" alt="స్క్రీన్‌షాట్: Create codespace options" width="50%">
 
 
 > **Codespaces ప్రయోజనాలు**:
@@ -101,9 +101,9 @@ CO_OP_TRANSLATOR_METADATA:
 6. కంటైనర్ నిర్మించడానికి మరియు ప్రారంభించడానికి వేచి ఉండండి
 7. [దశ 2: GitHub టోకెన్ సృష్టించండి](../../../02-SetupDevEnvironment)కి కొనసాగండి
 
-<img src="../../../translated_images/devcontainer.21126c9d6de64494.te.png" alt="స్క్రీన్‌షాట్: Dev container సెటప్" width="50%">
+<img src="../../../translated_images/te/devcontainer.21126c9d6de64494.webp" alt="స్క్రీన్‌షాట్: Dev container సెటప్" width="50%">
 
-<img src="../../../translated_images/image-3.bf93d533bbc84268.te.png" alt="స్క్రీన్‌షాట్: Dev container నిర్మాణం పూర్తయింది" width="50%">
+<img src="../../../translated_images/te/image-3.bf93d533bbc84268.webp" alt="స్క్రీన్‌షాట్: Dev container నిర్మాణం పూర్తయింది" width="50%">
 
 #### ఆప్షన్ C: మీ ప్రస్తుత స్థానిక ఇన్‌స్టాలేషన్ ఉపయోగించండి
 
@@ -121,7 +121,7 @@ CO_OP_TRANSLATOR_METADATA:
 
 > **ప్రో టిప్**: మీకు తక్కువ స్పెక్స్ ఉన్న యంత్రం ఉంటే కానీ స్థానికంగా VS Code కావాలనుకుంటే, GitHub Codespaces ఉపయోగించండి! మీరు మీ స్థానిక VS Codeను క్లౌడ్-హోస్టెడ్ Codespaceకి కనెక్ట్ చేయవచ్చు.
 
-<img src="../../../translated_images/image-2.fc0da29a6e4d2aff.te.png" alt="స్క్రీన్‌షాట్: స్థానిక డెవ్ కంటైనర్ ఉదాహరణ సృష్టించబడింది" width="50%">
+<img src="../../../translated_images/te/image-2.fc0da29a6e4d2aff.webp" alt="స్క్రీన్‌షాట్: స్థానిక డెవ్ కంటైనర్ ఉదాహరణ సృష్టించబడింది" width="50%">
 
 
 ## దశ 2: GitHub వ్యక్తిగత యాక్సెస్ టోకెన్ సృష్టించండి

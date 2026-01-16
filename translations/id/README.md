@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # Generative AI untuk Pemula - Edisi Java
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generative AI untuk Pemula - Edisi Java](../../translated_images/beg-genai-series.8b48be9951cc574c.id.png)
+![Generative AI untuk Pemula - Edisi Java](../../translated_images/id/beg-genai-series.8b48be9951cc574c.webp)
 
 **Komitmen Waktu**: Seluruh workshop dapat diselesaikan secara online tanpa pengaturan lokal. Pengaturan lingkungan memakan waktu 2 menit, dengan penjelajahan contoh membutuhkan 1-3 jam tergantung pada kedalaman eksplorasi.
 

@@ -58,7 +58,7 @@ GitHub Models מגיע עם סינון תוכן בסיסי מובנה. זה כמ
 5. הצגת תוצאות שמראות איזה תוכן נחסם, סורב או אושר
 6. בדיקת תוכן בטוח להשוואה
 
-![הדגמת בטיחות בינה מלאכותית אחראית](../../../translated_images/responsible.e4f51a917bafa4bf.he.png)
+![הדגמת בטיחות בינה מלאכותית אחראית](../../../translated_images/he/responsible.e4f51a917bafa4bf.webp)
 
 ### הוראות התקנה
 
@@ -164,7 +164,7 @@ Status: Response generated successfully
 
 ברכות על סיום קורס בינה מלאכותית יוצרת למתחילים!
 
-![סיום הקורס](../../../translated_images/image.73c7e2ff4a652e77.he.png)
+![סיום הקורס](../../../translated_images/he/image.73c7e2ff4a652e77.webp)
 
 **מה שהשגתם:**
 - הגדרת סביבת הפיתוח שלכם

@@ -74,11 +74,11 @@ Oleme loonud eelkonfigureeritud arenduscontaineri, et minimeerida seadistusaega 
 5. Oota ~2 minutit, kuni keskkond on valmis
 6. Jätka [2. sammuga: GitHubi tunnuse loomine](../../../02-SetupDevEnvironment)
 
-<img src="../../../translated_images/codespaces.9945ded8ceb431a5.et.png" alt="Ekraanipilt: Codespaces'i alammenüü" width="50%">
+<img src="../../../translated_images/et/codespaces.9945ded8ceb431a5.webp" alt="Ekraanipilt: Codespaces'i alammenüü" width="50%">
 
-<img src="../../../translated_images/image.833552b62eee7766.et.png" alt="Ekraanipilt: New with options" width="50%">
+<img src="../../../translated_images/et/image.833552b62eee7766.webp" alt="Ekraanipilt: New with options" width="50%">
 
-<img src="../../../translated_images/codespaces-create.b44a36f728660ab7.et.png" alt="Ekraanipilt: Codespace'i loomise valikud" width="50%">
+<img src="../../../translated_images/et/codespaces-create.b44a36f728660ab7.webp" alt="Ekraanipilt: Codespace'i loomise valikud" width="50%">
 
 > **Codespaces'i eelised**:
 > - Kohalikku installimist pole vaja
@@ -100,9 +100,9 @@ Oleme loonud eelkonfigureeritud arenduscontaineri, et minimeerida seadistusaega 
 6. Oota, kuni container ehitatakse ja käivitatakse
 7. Jätka [2. sammuga: GitHubi tunnuse loomine](../../../02-SetupDevEnvironment)
 
-<img src="../../../translated_images/devcontainer.21126c9d6de64494.et.png" alt="Ekraanipilt: Dev-containeri seadistamine" width="50%">
+<img src="../../../translated_images/et/devcontainer.21126c9d6de64494.webp" alt="Ekraanipilt: Dev-containeri seadistamine" width="50%">
 
-<img src="../../../translated_images/image-3.bf93d533bbc84268.et.png" alt="Ekraanipilt: Dev-containeri ehitamine lõpetatud" width="50%">
+<img src="../../../translated_images/et/image-3.bf93d533bbc84268.webp" alt="Ekraanipilt: Dev-containeri ehitamine lõpetatud" width="50%">
 
 #### Valik C: Olemasoleva kohaliku installatsiooni kasutamine
 
@@ -120,7 +120,7 @@ Sammud:
 
 > **Pro nõuanne**: Kui sul on madala spetsifikatsiooniga masin, kuid soovid VS Code'i kohapeal, kasuta GitHub Codespaces'i! Sa saad ühendada oma kohaliku VS Code'i pilvehostitud Codespace'iga, et saada mõlemast maailmast parim.
 
-<img src="../../../translated_images/image-2.fc0da29a6e4d2aff.et.png" alt="Ekraanipilt: loodud kohalik dev-containeri instants" width="50%">
+<img src="../../../translated_images/et/image-2.fc0da29a6e4d2aff.webp" alt="Ekraanipilt: loodud kohalik dev-containeri instants" width="50%">
 
 ## 2. samm: GitHubi isikliku juurdepääsutunnuse loomine
 

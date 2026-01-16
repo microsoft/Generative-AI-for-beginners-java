@@ -10,7 +10,7 @@ CO_OP_TRANSLATOR_METADATA:
 # নবপ্রবীণদের জন্য জেনেরেটিভ এআই - জাভা সংস্করণ
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![নবপ্রবীণদের জন্য জেনেরেটিভ এআই - জাভা সংস্করণ](../../translated_images/beg-genai-series.8b48be9951cc574c.bn.png)
+![নবপ্রবীণদের জন্য জেনেরেটিভ এআই - জাভা সংস্করণ](../../translated_images/bn/beg-genai-series.8b48be9951cc574c.webp)
 
 **সময় বরাদ্দ**: সম্পূর্ণ কর্মশালাটি অনলাইনে স্থানীয় সেটআপ ছাড়াই সম্পন্ন করা যেতে পারে। পরিবেশ সেটআপ করতে ২ মিনিট সময় লাগে, নমুনাগুলি অন্বেষণ করতে ১-৩ ঘণ্টা সময় লাগতে পারে যা অন্বেষণ গভীরতার উপর নির্ভর করে।
 

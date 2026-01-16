@@ -44,7 +44,7 @@ Semasa anda membangunkan aplikasi AI Java anda, anda akan bekerja dengan **model
 
 Terdapat jenis model tertentu yang dioptimumkan untuk tugas yang berbeza. Sebagai contoh, **Model Bahasa Kecil (SLM)** dan **Model Bahasa Besar (LLM)** boleh mengendalikan penjanaan teks, dengan LLM biasanya menawarkan prestasi yang lebih baik untuk tugas yang kompleks. Untuk tugas berkaitan imej, anda akan menggunakan model penglihatan khusus atau model multi-modal.
 
-![Rajah: Jenis model Generative AI dan kes penggunaannya.](../../../translated_images/llms.225ca2b8a0d34473.ms.png)
+![Rajah: Jenis model Generative AI dan kes penggunaannya.](../../../translated_images/ms/llms.225ca2b8a0d34473.webp)
 
 Sudah tentu, respons daripada model ini tidak selalu sempurna. Anda mungkin pernah mendengar tentang model yang "berhalusinasi" atau menghasilkan maklumat yang salah dengan cara yang meyakinkan. Tetapi anda boleh membantu membimbing model untuk menghasilkan respons yang lebih baik dengan memberikan arahan dan konteks yang jelas. Di sinilah **kejuruteraan prompt** memainkan peranan.
 
@@ -79,13 +79,13 @@ Tokenisasi adalah proses memecahkan teks kepada unit-unit kecil ini. Ini penting
 
 - **Embedding**: Embedding adalah representasi vektor token yang menangkap makna semantik. Ia adalah representasi berangka (biasanya tatasusunan nombor titik terapung) yang membolehkan model memahami hubungan antara perkataan dan menghasilkan respons yang relevan secara kontekstual. Perkataan yang serupa mempunyai embedding yang serupa, membolehkan model memahami konsep seperti sinonim dan hubungan semantik.
 
-![Rajah: Embedding](../../../translated_images/embedding.398e50802c0037f9.ms.png)
+![Rajah: Embedding](../../../translated_images/ms/embedding.398e50802c0037f9.webp)
 
   Dalam Java, anda boleh menghasilkan embedding menggunakan OpenAI SDK atau perpustakaan lain yang menyokong penjanaan embedding. Embedding ini penting untuk tugas seperti carian semantik, di mana anda ingin mencari kandungan yang serupa berdasarkan makna dan bukannya padanan teks tepat.
 
 - **Pangkalan data vektor**: Pangkalan data vektor adalah sistem penyimpanan khusus yang dioptimumkan untuk embedding. Ia membolehkan carian keserupaan yang cekap dan penting untuk corak Penjanaan Augmentasi Pengambilan (RAG) di mana anda perlu mencari maklumat yang relevan daripada set data besar berdasarkan keserupaan semantik dan bukannya padanan tepat.
 
-![Rajah: Seni bina pangkalan data vektor menunjukkan bagaimana embedding disimpan dan diambil untuk carian keserupaan.](../../../translated_images/vector.f12f114934e223df.ms.png)
+![Rajah: Seni bina pangkalan data vektor menunjukkan bagaimana embedding disimpan dan diambil untuk carian keserupaan.](../../../translated_images/ms/vector.f12f114934e223df.webp)
 
 > **Nota**: Dalam kursus ini, kami tidak akan merangkumi pangkalan data vektor tetapi menganggap ia patut disebut kerana ia sering digunakan dalam aplikasi dunia nyata.
 
@@ -93,7 +93,7 @@ Tokenisasi adalah proses memecahkan teks kepada unit-unit kecil ini. Ini penting
 
 Dalam aplikasi AI Java, anda akan menggunakan token untuk pemprosesan teks, embedding untuk carian semantik dan RAG, pangkalan data vektor untuk pengambilan data, dan agen dengan MCP untuk membina sistem pintar yang menggunakan alat.
 
-![Rajah: bagaimana prompt menjadi respons—token, vektor, carian RAG pilihan, pemikiran LLM, dan agen MCP semuanya dalam satu aliran pantas.](../../../translated_images/flow.f4ef62c3052d12a8.ms.png)
+![Rajah: bagaimana prompt menjadi respons—token, vektor, carian RAG pilihan, pemikiran LLM, dan agen MCP semuanya dalam satu aliran pantas.](../../../translated_images/ms/flow.f4ef62c3052d12a8.webp)
 
 ### Alat dan Perpustakaan Pembangunan AI untuk Java
 

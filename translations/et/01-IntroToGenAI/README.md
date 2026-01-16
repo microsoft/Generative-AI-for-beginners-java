@@ -44,7 +44,7 @@ Java tehisintellekti rakenduste arendamisel töötad **generatiivsete tehisintel
 
 On olemas spetsiaalseid mudeleid, mis on optimeeritud erinevate ülesannete jaoks. Näiteks nii **väikesed keelemudelid (SLM-id)** kui ka **suured keelemudelid (LLM-id)** suudavad teostada teksti genereerimist, kusjuures LLM-id pakuvad tavaliselt keerukamate ülesannete jaoks paremat jõudlust. Piltidega seotud ülesannete jaoks kasutatakse spetsiaalseid visuaalseid mudeleid või multimodaalseid mudeleid.
 
-![Joonis: Generatiivse tehisintellekti mudelitüübid ja kasutusjuhtumid.](../../../translated_images/llms.225ca2b8a0d34473.et.png)
+![Joonis: Generatiivse tehisintellekti mudelitüübid ja kasutusjuhtumid.](../../../translated_images/et/llms.225ca2b8a0d34473.webp)
 
 Muidugi ei ole nende mudelite vastused alati täiuslikud. Oled ilmselt kuulnud, et mudelid võivad "hallutsineerida" või esitada ekslikku teavet autoriteetsel viisil. Kuid sa saad aidata mudelil paremaid vastuseid genereerida, andes sellele selgeid juhiseid ja konteksti. Siin tulebki mängu **promptide inseneeria**.
 
@@ -79,13 +79,13 @@ Tokeniseerimine on protsess, mille käigus tekst jagatakse väiksemateks osadeks
 
 - **Embeddingud**: Embeddingud on tokenite vektorilised esitlused, mis hõlmavad semantilist tähendust. Need on numbrilised esitused (tavaliselt ujukomaarvude massiivid), mis võimaldavad mudelitel mõista sõnade vahelisi seoseid ja genereerida konteksti arvestavaid vastuseid. Sarnastel sõnadel on sarnased embeddingud, mis võimaldab mudelil mõista sünonüüme ja semantilisi seoseid.
 
-![Joonis: Embeddingud](../../../translated_images/embedding.398e50802c0037f9.et.png)
+![Joonis: Embeddingud](../../../translated_images/et/embedding.398e50802c0037f9.webp)
 
   Javas saad embeddinguid genereerida OpenAI SDK või muude embeddingute genereerimist toetavate raamatukogude abil. Need embeddingud on olulised selliste ülesannete jaoks nagu semantiline otsing, kus soovid leida sarnast sisu tähenduse, mitte täpse tekstivastavuse põhjal.
 
 - **Vektoriandmebaasid**: Vektoriandmebaasid on spetsiaalsed salvestussüsteemid, mis on optimeeritud embeddingute jaoks. Need võimaldavad tõhusat sarnasuse otsingut ja on olulised RAG (Retrieval-Augmented Generation) mustrite jaoks, kus on vaja leida asjakohast teavet suurtest andmekogumitest semantilise sarnasuse, mitte täpse vastavuse alusel.
 
-![Joonis: Vektoriandmebaasi arhitektuur, mis näitab, kuidas embeddinguid salvestatakse ja sarnasuse otsimiseks kasutatakse.](../../../translated_images/vector.f12f114934e223df.et.png)
+![Joonis: Vektoriandmebaasi arhitektuur, mis näitab, kuidas embeddinguid salvestatakse ja sarnasuse otsimiseks kasutatakse.](../../../translated_images/et/vector.f12f114934e223df.webp)
 
 > **Märkus**: Selles kursuses me vektoriandmebaase ei käsitle, kuid need on mainimist väärt, kuna neid kasutatakse sageli päriselu rakendustes.
 
@@ -93,7 +93,7 @@ Tokeniseerimine on protsess, mille käigus tekst jagatakse väiksemateks osadeks
 
 Java tehisintellekti rakendustes kasutad tokeneid tekstide töötlemiseks, embeddinguid semantilise otsingu ja RAG jaoks, vektoriandmebaase andmete leidmiseks ning agente koos MCP-ga intelligentsete, tööriistu kasutavate süsteemide loomiseks.
 
-![Joonis: kuidas prompt muutub vastuseks—tokenid, vektorid, valikuline RAG otsing, LLM-i mõtlemine ja MCP agent ühes kiire voos.](../../../translated_images/flow.f4ef62c3052d12a8.et.png)
+![Joonis: kuidas prompt muutub vastuseks—tokenid, vektorid, valikuline RAG otsing, LLM-i mõtlemine ja MCP agent ühes kiire voos.](../../../translated_images/et/flow.f4ef62c3052d12a8.webp)
 
 ### Tehisintellekti arendustööriistad ja -raamatukogud Java jaoks
 
