@@ -1,81 +1,83 @@
-# Generativ AI for Begyndere - Java Edition
+# Generativ AI for Begyndere - Java Udgave
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generativ AI for Begyndere - Java Edition](../../translated_images/da/beg-genai-series.8b48be9951cc574c.webp)
+![Generativ AI for Begyndere - Java Udgave](../../translated_images/da/beg-genai-series.8b48be9951cc574c.webp)
 
-**Tidsforbrug**: Hele workshoppen kan gennemføres online uden lokal opsætning. Miljøopsætningen tager 2 minutter, og det at udforske eksemplerne kræver 1-3 timer afhængigt af udforskningsdybden.
+**Tidsforbrug**: Hele workshoppen kan gennemføres online uden lokal opsætning. Miljøopsætningen tager 2 minutter, mens udforskning af eksemplerne kræver 1-3 timer afhængigt af dybden af udforskningen.
 
-> **Kom hurtigt i gang**
+> **Hurtig Start** 
 
 1. Fork dette repository til din GitHub-konto
-2. Klik på **Code** → fanen **Codespaces** → **...** → **Ny med valgmuligheder...**
-3. Brug standardindstillingerne – dette vælger udviklingscontaineren oprettet til dette kursus
-4. Klik på **Opret codespace**
-5. Vent ca. 2 minutter på, at miljøet er klar
-6. Gå direkte til [Det første eksempel](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)
+2. Klik **Code** → **Codespaces** fanen → **...** → **Ny med muligheder...**
+3. Brug standardindstillingerne – dette vil vælge udviklingscontaineren oprettet til dette kursus
+4. Klik **Opret codespace**
+5. Vent ~2 minutter for miljøet er klar
+6. Spring direkte til [Det første eksempel](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)
+
+## Multi-sprog Support
+
+### Understøttet via GitHub Action (Automatiseret & Altid Opdateret)
+
+<!-- CO-OP TRANSLATOR LANGUAGES TABLE START -->
+[Arabic](../ar/README.md) | [Bengali](../bn/README.md) | [Bulgarian](../bg/README.md) | [Burmese (Myanmar)](../my/README.md) | [Chinese (Simplified)](../zh-CN/README.md) | [Chinese (Traditional, Hong Kong)](../zh-HK/README.md) | [Chinese (Traditional, Macau)](../zh-MO/README.md) | [Chinese (Traditional, Taiwan)](../zh-TW/README.md) | [Croatian](../hr/README.md) | [Czech](../cs/README.md) | [Danish](./README.md) | [Dutch](../nl/README.md) | [Estonian](../et/README.md) | [Finnish](../fi/README.md) | [French](../fr/README.md) | [German](../de/README.md) | [Greek](../el/README.md) | [Hebrew](../he/README.md) | [Hindi](../hi/README.md) | [Hungarian](../hu/README.md) | [Indonesian](../id/README.md) | [Italian](../it/README.md) | [Japanese](../ja/README.md) | [Kannada](../kn/README.md) | [Korean](../ko/README.md) | [Lithuanian](../lt/README.md) | [Malay](../ms/README.md) | [Malayalam](../ml/README.md) | [Marathi](../mr/README.md) | [Nepali](../ne/README.md) | [Nigerian Pidgin](../pcm/README.md) | [Norwegian](../no/README.md) | [Persian (Farsi)](../fa/README.md) | [Polish](../pl/README.md) | [Portuguese (Brazil)](../pt-BR/README.md) | [Portuguese (Portugal)](../pt-PT/README.md) | [Punjabi (Gurmukhi)](../pa/README.md) | [Romanian](../ro/README.md) | [Russian](../ru/README.md) | [Serbian (Cyrillic)](../sr/README.md) | [Slovak](../sk/README.md) | [Slovenian](../sl/README.md) | [Spanish](../es/README.md) | [Swahili](../sw/README.md) | [Swedish](../sv/README.md) | [Tagalog (Filipino)](../tl/README.md) | [Tamil](../ta/README.md) | [Telugu](../te/README.md) | [Thai](../th/README.md) | [Turkish](../tr/README.md) | [Ukrainian](../uk/README.md) | [Urdu](../ur/README.md) | [Vietnamese](../vi/README.md)
 
 > **Foretrækker du at klone lokalt?**
 >
-> Dette repository inkluderer 50+ sprogoversættelser, som væsentligt øger downloadstørrelsen. For at klone uden oversættelser, brug sparse checkout:
+> Dette repository inkluderer 50+ sprogoversættelser som markant forøger download-størrelsen. For at klone uden oversættelser, brug sparsommelig udtjekning:
 >
-> **Linux / macOS (Bash)**
+> **Bash / macOS / Linux:**
 > ```bash
 > git clone --filter=blob:none --sparse https://github.com/microsoft/Generative-AI-for-beginners-java.git
 > cd Generative-AI-for-beginners-java
 > git sparse-checkout set --no-cone '/*' '!translations' '!translated_images'
 > ```
 >
-> **Windows (PowerShell)**
-> ```powershell
+> **CMD (Windows):**
+> ```cmd
 > git clone --filter=blob:none --sparse https://github.com/microsoft/Generative-AI-for-beginners-java.git
 > cd Generative-AI-for-beginners-java
 > git sparse-checkout set --no-cone "/*" "!translations" "!translated_images"
 > ```
-> Dette giver dig alt, hvad du behøver for at gennemføre kurset med en meget hurtigere download.
+>
+> Dette giver dig alt, hvad du behøver for at fuldføre kurset med en langt hurtigere download.
+<!-- CO-OP TRANSLATOR LANGUAGES TABLE END -->
 
-## Understøttelse af flere sprog
-
-### Understøttet via GitHub Action (Automatiseret & altid opdateret)
-
-<!-- CO-OP TRANSLATOR LANGUAGES TABLE START -->
-[Arabisk](../ar/README.md) | [Bengali](../bn/README.md) | [Bulgarsk](../bg/README.md) | [Burmese (Myanmar)](../my/README.md) | [Kinesisk (forenklet)](../zh-CN/README.md) | [Kinesisk (traditionelt, Hong Kong)](../zh-HK/README.md) | [Kinesisk (traditionelt, Macau)](../zh-MO/README.md) | [Kinesisk (traditionelt, Taiwan)](../zh-TW/README.md) | [Kroatisk](../hr/README.md) | [Tjekkisk](../cs/README.md) | [Dansk](./README.md) | [Hollandsk](../nl/README.md) | [Estisk](../et/README.md) | [Finsk](../fi/README.md) | [Fransk](../fr/README.md) | [Tysk](../de/README.md) | [Græsk](../el/README.md) | [Hebraisk](../he/README.md) | [Hindi](../hi/README.md) | [Ungarsk](../hu/README.md) | [Indonesisk](../id/README.md) | [Italiensk](../it/README.md) | [Japansk](../ja/README.md) | [Kannada](../kn/README.md) | [Koreansk](../ko/README.md) | [Litauisk](../lt/README.md) | [Malayisk](../ms/README.md) | [Malayalam](../ml/README.md) | [Marathi](../mr/README.md) | [Nepali](../ne/README.md) | [Nigeriansk Pidgin](../pcm/README.md) | [Norsk](../no/README.md) | [Persisk (Farsi)](../fa/README.md) | [Polsk](../pl/README.md) | [Portugisisk (Brasilien)](../pt-BR/README.md) | [Portugisisk (Portugal)](../pt-PT/README.md) | [Punjabi (Gurmukhi)](../pa/README.md) | [Rumænsk](../ro/README.md) | [Russisk](../ru/README.md) | [Serbisk (Cyrillisk)](../sr/README.md) | [Slovakisk](../sk/README.md) | [Slovensk](../sl/README.md) | [Spansk](../es/README.md) | [Swahili](../sw/README.md) | [Svensk](../sv/README.md) | [Tagalog (Filippinsk)](../tl/README.md) | [Tamil](../ta/README.md) | [Telugu](../te/README.md) | [Thai](../th/README.md) | [Tyrkisk](../tr/README.md) | [Ukrainsk](../uk/README.md) | [Urdu](../ur/README.md) | [Vietnamesisk](../vi/README.md)
-
-## Kursusstruktur & Læringsvej
+## Kursusstruktur & Læringssti
 
 ### **Kapitel 1: Introduktion til Generativ AI**
-- **Kernebegreber**: Forståelse af store sprogmodeller, tokens, embeddings og AI's muligheder
-- **Java AI-økosystem**: Oversigt over Spring AI og OpenAI SDK'er
-- **Model Context Protocol**: Introduktion til MCP og dets rolle i AI-agent kommunikation
-- **Praktiske anvendelser**: Virkelige scenarier inklusiv chatbots og indholdsgenerering
+- **Kernebegreber**: Forståelse af store sprogmodeller, tokens, embeddings og AI's evner
+- **Java AI Økosystem**: Oversigt over Spring AI og OpenAI SDK'er
+- **Modellens Kontekstprotokol**: Introduktion til MCP og dens rolle i AI-agent kommunikation
+- **Praktiske Anvendelser**: Virkelighedsnære scenarier inkl. chatbots og indholdsgenerering
 - **[→ Start Kapitel 1](./01-IntroToGenAI/README.md)**
 
-### **Kapitel 2: Udviklingsmiljøopsætning**
-- **Multi-leverandør konfiguration**: Opsæt GitHub Models, Azure OpenAI og OpenAI Java SDK integrationer
-- **Spring Boot + Spring AI**: Bedste praksis for udvikling af AI-virksomhedsapplikationer
-- **GitHub Models**: Gratis AI-modeladgang til prototyping og læring (ingen kreditkort nødvendig)
-- **Udviklingsværktøjer**: Docker-containere, VS Code og GitHub Codespaces konfiguration
+### **Kapitel 2: Opsætning af Udviklingsmiljø**
+- **Multi-leverandør Konfiguration**: Opsæt GitHub Models, Azure OpenAI, og OpenAI Java SDK integrationer
+- **Spring Boot + Spring AI**: Bedste praksis for enterprise AI applikationsudvikling
+- **GitHub Models**: Gratis AI model adgang til prototyping og læring (intet kreditkort påkrævet)
+- **Udviklingsværktøjer**: Docker containers, VS Code, og GitHub Codespaces konfiguration
 - **[→ Start Kapitel 2](./02-SetupDevEnvironment/README.md)**
 
-### **Kapitel 3: Grundlæggende generative AI-teknikker**
-- **Prompt Engineering**: Teknikker til optimale AI-modelsvar
-- **Embeddings & vektoroperationer**: Implementer semantisk søgning og ligheds-matchning
+### **Kapitel 3: Grundlæggende Generative AI Teknikker**
+- **Prompt Engineering**: Teknikker til optimale AI-model svar
+- **Embeddings & Vektoroperationer**: Implementer semantisk søgning og lighedssammenligning
 - **Retrieval-Augmented Generation (RAG)**: Kombiner AI med dine egne datakilder
-- **Function Calling**: Udvid AI-kapaciteter med brugerdefinerede værktøjer og plugins
+- **Funktionskald**: Udvid AI kapaciteter med tilpassede værktøjer og plugins
 - **[→ Start Kapitel 3](./03-CoreGenerativeAITechniques/README.md)**
 
-### **Kapitel 4: Praktiske anvendelser & projekter**
+### **Kapitel 4: Praktiske Anvendelser & Projekter**
 - **Pet Story Generator** (`petstory/`): Kreativ indholdsgenerering med GitHub Models
-- **Foundry Local Demo** (`foundrylocal/`): Lokal AI-modelintegration med OpenAI Java SDK
-- **MCP Calculator Service** (`calculator/`): Grundlæggende Model Context Protocol-implementering med Spring AI
+- **Foundry Lokal Demo** (`foundrylocal/`): Lokal AI model integration med OpenAI Java SDK
+- **MCP Kalkulatortjeneste** (`calculator/`): Grundlæggende Model Context Protocol implementering med Spring AI
 - **[→ Start Kapitel 4](./04-PracticalSamples/README.md)**
 
-### **Kapitel 5: Ansvarlig AI-udvikling**
-- **GitHub Models Sikkerhed**: Test indbygget indholdsfiltrering og sikkerhedsmekanismer (hårde blokke og bløde afslag)
-- **Ansvarlig AI-demo**: Praktisk eksempel, der viser, hvordan moderne AI-sikkerhedssystemer fungerer
-- **Bedste praksis**: Vigtige retningslinjer for etisk AI-udvikling og implementering
+### **Kapitel 5: Ansvarlig AI Udvikling**
+- **GitHub Models Sikkerhed**: Test indbygget indholdsfiltrering og sikkerhedsmekanismer (hårde blokeringer og bløde afvisninger)
+- **Ansvarlig AI Demo**: Praktisk eksempel som viser hvordan moderne AI sikkerhedssystemer virker i praksis
+- **Bedste Praksis**: Vigtige retningslinjer for etisk AI udvikling og implementering
 - **[→ Start Kapitel 5](./05-ResponsibleGenAI/README.md)**
 
-## Yderligere ressourcer
+## Yderligere Ressourcer
 
 <!-- CO-OP TRANSLATOR OTHER COURSES START -->
 ### LangChain
@@ -91,20 +93,21 @@
 [![AI Agents for Beginners](https://img.shields.io/badge/AI%20Agents%20for%20Beginners-00C49A?style=for-the-badge&labelColor=E5E7EB&color=00C49A)](https://github.com/microsoft/ai-agents-for-beginners?WT.mc_id=academic-105485-koreyst)
 
 ---
- 
-### Generativ AI-serie
+
+### Generative AI Serie
 [![Generative AI for Beginners](https://img.shields.io/badge/Generative%20AI%20for%20Beginners-8B5CF6?style=for-the-badge&labelColor=E5E7EB&color=8B5CF6)](https://github.com/microsoft/generative-ai-for-beginners?WT.mc_id=academic-105485-koreyst)
 [![Generative AI (.NET)](https://img.shields.io/badge/Generative%20AI%20(.NET)-9333EA?style=for-the-badge&labelColor=E5E7EB&color=9333EA)](https://github.com/microsoft/Generative-AI-for-beginners-dotnet?WT.mc_id=academic-105485-koreyst)
 [![Generative AI (Java)](https://img.shields.io/badge/Generative%20AI%20(Java)-C084FC?style=for-the-badge&labelColor=E5E7EB&color=C084FC)](https://github.com/microsoft/generative-ai-for-beginners-java?WT.mc_id=academic-105485-koreyst)
 [![Generative AI (JavaScript)](https://img.shields.io/badge/Generative%20AI%20(JavaScript)-E879F9?style=for-the-badge&labelColor=E5E7EB&color=E879F9)](https://github.com/microsoft/generative-ai-with-javascript?WT.mc_id=academic-105485-koreyst)
 
 ---
- 
-### Kerne-læring
+
+### Kerne Læring
 [![ML for Beginners](https://img.shields.io/badge/ML%20for%20Beginners-22C55E?style=for-the-badge&labelColor=E5E7EB&color=22C55E)](https://aka.ms/ml-beginners?WT.mc_id=academic-105485-koreyst)
 [![Data Science for Beginners](https://img.shields.io/badge/Data%20Science%20for%20Beginners-84CC16?style=for-the-badge&labelColor=E5E7EB&color=84CC16)](https://aka.ms/datascience-beginners?WT.mc_id=academic-105485-koreyst)
 [![AI for Beginners](https://img.shields.io/badge/AI%20for%20Beginners-A3E635?style=for-the-badge&labelColor=E5E7EB&color=A3E635)](https://aka.ms/ai-beginners?WT.mc_id=academic-105485-koreyst)
 [![Cybersecurity for Beginners](https://img.shields.io/badge/Cybersecurity%20for%20Beginners-F97316?style=for-the-badge&labelColor=E5E7EB&color=F97316)](https://github.com/microsoft/Security-101?WT.mc_id=academic-96948-sayoung)
+
 [![Web Dev for Beginners](https://img.shields.io/badge/Web%20Dev%20for%20Beginners-EC4899?style=for-the-badge&labelColor=E5E7EB&color=EC4899)](https://aka.ms/webdev-beginners?WT.mc_id=academic-105485-koreyst)
 [![IoT for Beginners](https://img.shields.io/badge/IoT%20for%20Beginners-14B8A6?style=for-the-badge&labelColor=E5E7EB&color=14B8A6)](https://aka.ms/iot-beginners?WT.mc_id=academic-105485-koreyst)
 [![XR Development for Beginners](https://img.shields.io/badge/XR%20Development%20for%20Beginners-38BDF8?style=for-the-badge&labelColor=E5E7EB&color=38BDF8)](https://github.com/microsoft/xr-development-for-beginners?WT.mc_id=academic-105485-koreyst)
@@ -119,11 +122,11 @@
 
 ## Få hjælp
 
-Hvis du står fast eller har spørgsmål om at bygge AI-apps. Deltag sammen med andre elever og erfarne udviklere i diskussioner om MCP. Det er et støttende fællesskab, hvor spørgsmål er velkomne, og viden deles frit.
+Hvis du sidder fast eller har spørgsmål om at bygge AI-apps. Deltag sammen med andre lærende og erfarne udviklere i diskussioner om MCP. Det er et støttende fællesskab, hvor spørgsmål er velkomne, og viden deles frit.
 
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-Hvis du har produktfeedback eller oplever fejl under udvikling, besøg:
+Hvis du har produktfeedback eller fejl under opbygning, besøg:
 
 [![Microsoft Foundry Developer Forum](https://img.shields.io/badge/GitHub-Microsoft_Foundry_Developer_Forum-blue?style=for-the-badge&logo=github&color=000000&logoColor=fff)](https://aka.ms/foundry/forum)
 
@@ -131,5 +134,5 @@ Hvis du har produktfeedback eller oplever fejl under udvikling, besøg:
 
 <!-- CO-OP TRANSLATOR DISCLAIMER START -->
 **Ansvarsfraskrivelse**:
-Dette dokument er blevet oversat ved hjælp af AI-oversættelsestjenesten [Co-op Translator](https://github.com/Azure/co-op-translator). Selvom vi stræber efter nøjagtighed, skal du være opmærksom på, at automatiserede oversættelser kan indeholde fejl eller unøjagtigheder. Det originale dokument på dets oprindelige sprog bør betragtes som den autoritative kilde. For kritisk information anbefales professionel menneskelig oversættelse. Vi påtager os intet ansvar for misforståelser eller fejltolkninger, der opstår som følge af brugen af denne oversættelse.
+Dette dokument er blevet oversat ved hjælp af AI-oversættelsestjenesten [Co-op Translator](https://github.com/Azure/co-op-translator). Selvom vi bestræber os på nøjagtighed, skal du være opmærksom på, at automatiserede oversættelser kan indeholde fejl eller unøjagtigheder. Det oprindelige dokument på dets modersmål bør betragtes som den autoritative kilde. For kritisk information anbefales professionel menneskelig oversættelse. Vi påtager os ikke ansvar for misforståelser eller fejltolkninger, der måtte opstå ved brug af denne oversættelse.
 <!-- CO-OP TRANSLATOR DISCLAIMER END -->

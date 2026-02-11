@@ -3,7 +3,7 @@
 
 ![Generative AI for Beginners - Java Edition](../../translated_images/pcm/beg-genai-series.8b48be9951cc574c.webp)
 
-**Time Commitment**: Di whole workshop fit finish online without setup for your local machine. Di environment setup go take 2 minutes, but to explore di samples fit take 1-3 hours depending on how deep you wan explore.
+**Time Commitment**: Di whole workshop fit finish online without local setup. Di environment setup dey take 2 minutes, and to explore di samples dey require 1-3 hours depending on how deep you wan explore.
 
 > **Quick Start** 
 
@@ -14,26 +14,6 @@
 5. Wait ~2 minutes make di environment ready
 6. Jump straight go [Di first example](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)
 
-> **You Wan Clone Am for Your Machine?**
->
-> Dis repository get 50+ language translations wey dey make di download size big. To clone without di translations, use sparse checkout:
->
-> **Linux / macOS (Bash)**
-> ```bash
-> git clone --filter=blob:none --sparse https://github.com/microsoft/Generative-AI-for-beginners-java.git
-> cd Generative-AI-for-beginners-java
-> git sparse-checkout set --no-cone '/*' '!translations' '!translated_images'
-> ```
->
-> **Windows (PowerShell)**
-> ```powershell
-> git clone --filter=blob:none --sparse https://github.com/microsoft/Generative-AI-for-beginners-java.git
-> cd Generative-AI-for-beginners-java
-> git sparse-checkout set --no-cone "/*" "!translations" "!translated_images"
-> ```
-> Dis one go give you everytin wey you need to finish di course with fast download.
-
-
 ## Multi-Language Support
 
 ### Supported via GitHub Action (Automated & Always Up-to-Date)
@@ -41,27 +21,48 @@
 <!-- CO-OP TRANSLATOR LANGUAGES TABLE START -->
 [Arabic](../ar/README.md) | [Bengali](../bn/README.md) | [Bulgarian](../bg/README.md) | [Burmese (Myanmar)](../my/README.md) | [Chinese (Simplified)](../zh-CN/README.md) | [Chinese (Traditional, Hong Kong)](../zh-HK/README.md) | [Chinese (Traditional, Macau)](../zh-MO/README.md) | [Chinese (Traditional, Taiwan)](../zh-TW/README.md) | [Croatian](../hr/README.md) | [Czech](../cs/README.md) | [Danish](../da/README.md) | [Dutch](../nl/README.md) | [Estonian](../et/README.md) | [Finnish](../fi/README.md) | [French](../fr/README.md) | [German](../de/README.md) | [Greek](../el/README.md) | [Hebrew](../he/README.md) | [Hindi](../hi/README.md) | [Hungarian](../hu/README.md) | [Indonesian](../id/README.md) | [Italian](../it/README.md) | [Japanese](../ja/README.md) | [Kannada](../kn/README.md) | [Korean](../ko/README.md) | [Lithuanian](../lt/README.md) | [Malay](../ms/README.md) | [Malayalam](../ml/README.md) | [Marathi](../mr/README.md) | [Nepali](../ne/README.md) | [Nigerian Pidgin](./README.md) | [Norwegian](../no/README.md) | [Persian (Farsi)](../fa/README.md) | [Polish](../pl/README.md) | [Portuguese (Brazil)](../pt-BR/README.md) | [Portuguese (Portugal)](../pt-PT/README.md) | [Punjabi (Gurmukhi)](../pa/README.md) | [Romanian](../ro/README.md) | [Russian](../ru/README.md) | [Serbian (Cyrillic)](../sr/README.md) | [Slovak](../sk/README.md) | [Slovenian](../sl/README.md) | [Spanish](../es/README.md) | [Swahili](../sw/README.md) | [Swedish](../sv/README.md) | [Tagalog (Filipino)](../tl/README.md) | [Tamil](../ta/README.md) | [Telugu](../te/README.md) | [Thai](../th/README.md) | [Turkish](../tr/README.md) | [Ukrainian](../uk/README.md) | [Urdu](../ur/README.md) | [Vietnamese](../vi/README.md)
 
+> **Prefer to Clone Locally?**
+>
+> Dis repository get 50+ language translations wey dey increase di download size. To clone without translations, use sparse checkout:
+>
+> **Bash / macOS / Linux:**
+> ```bash
+> git clone --filter=blob:none --sparse https://github.com/microsoft/Generative-AI-for-beginners-java.git
+> cd Generative-AI-for-beginners-java
+> git sparse-checkout set --no-cone '/*' '!translations' '!translated_images'
+> ```
+>
+> **CMD (Windows):**
+> ```cmd
+> git clone --filter=blob:none --sparse https://github.com/microsoft/Generative-AI-for-beginners-java.git
+> cd Generative-AI-for-beginners-java
+> git sparse-checkout set --no-cone "/*" "!translations" "!translated_images"
+> ```
+>
+> Dis one go give you everything wey you need to complete di course with beta download speed.
+<!-- CO-OP TRANSLATOR LANGUAGES TABLE END -->
+
 ## Course Structure & Learning Path
 
 ### **Chapter 1: Introduction to Generative AI**
 - **Core Concepts**: Understanding Large Language Models, tokens, embeddings, and AI capabilities
 - **Java AI Ecosystem**: Overview of Spring AI and OpenAI SDKs
-- **Model Context Protocol**: Introduction to MCP and its role in AI agent communication
-- **Practical Applications**: Real-world scenarios including chatbots and content generation
+- **Model Context Protocol**: Introduction to MCP and wetin e mean for AI agent communication
+- **Practical Applications**: Real-world tins like chatbots and content generation
 - **[→ Start Chapter 1](./01-IntroToGenAI/README.md)**
 
 ### **Chapter 2: Development Environment Setup**
-- **Multi-Provider Configuration**: Set up GitHub Models, Azure OpenAI, and OpenAI Java SDK integrations
-- **Spring Boot + Spring AI**: Best practices for enterprise AI application development
+- **Multi-Provider Configuration**: Setup GitHub Models, Azure OpenAI, and OpenAI Java SDK integrations
+- **Spring Boot + Spring AI**: Best ways to develop enterprise AI application
 - **GitHub Models**: Free AI model access for prototyping and learning (no credit card required)
-- **Development Tools**: Docker containers, VS Code, and GitHub Codespaces configuration
+- **Development Tools**: Docker containers, VS Code, and GitHub Codespaces setup
 - **[→ Start Chapter 2](./02-SetupDevEnvironment/README.md)**
 
 ### **Chapter 3: Core Generative AI Techniques**
-- **Prompt Engineering**: Techniques for optimal AI model responses
-- **Embeddings & Vector Operations**: Implement semantic search and similarity matching
+- **Prompt Engineering**: Beta ways to get good AI model responses
+- **Embeddings & Vector Operations**: How to do semantic search and similarity matching
 - **Retrieval-Augmented Generation (RAG)**: Combine AI with your own data sources
-- **Function Calling**: Extend AI capabilities with custom tools and plugins
+- **Function Calling**: Extend AI power with custom tools and plugins
 - **[→ Start Chapter 3](./03-CoreGenerativeAITechniques/README.md)**
 
 ### **Chapter 4: Practical Applications & Projects**
@@ -72,8 +73,8 @@
 
 ### **Chapter 5: Responsible AI Development**
 - **GitHub Models Safety**: Test built-in content filtering and safety mechanisms (hard blocks and soft refusals)
-- **Responsible AI Demo**: Hands-on example showing how modern AI safety systems work in practice
-- **Best Practices**: Essential guidelines for ethical AI development and deployment
+- **Responsible AI Demo**: Hands-on example wey show how modern AI safety system dey work
+- **Best Practices**: Important rules for ethical AI development and deployment
 - **[→ Start Chapter 5](./05-ResponsibleGenAI/README.md)**
 
 ## Additional Resources
@@ -120,11 +121,11 @@
 
 ## Getting Help
 
-If you get stuck or get any questions about building AI apps. Join other learners and experienced developers for discussions about MCP. Na supportive community wey questions dey welcome and knowledge dey shared freely.
+If you get stuck or get any questions about how to build AI apps. Come join other learners and experienced developers to yan about MCP. Na beta community weh dey support and wey questions dem dey welcome plus knowledge dey share freely.
 
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-If you get product feedback or errors for building, visit:
+If you get product feedback or find errors while you dey build, waka go:
 
 [![Microsoft Foundry Developer Forum](https://img.shields.io/badge/GitHub-Microsoft_Foundry_Developer_Forum-blue?style=for-the-badge&logo=github&color=000000&logoColor=fff)](https://aka.ms/foundry/forum)
 
@@ -132,5 +133,5 @@ If you get product feedback or errors for building, visit:
 
 <!-- CO-OP TRANSLATOR DISCLAIMER START -->
 **Disclaimer**:
-Dis document na translate wit AI translation service [Co-op Translator](https://github.com/Azure/co-op-translator). Even though we try make am correct, abeg sabi say automated translation fit get some mistakes or no correct well. The original document for dia own language na wetin get authority pass. For important tins, make you use professional human translation. We no go take responsibility if person no understand or misinterpret because of dis translation.
+Dis dokument don translate wit AI translator wey dem call [Co-op Translator](https://github.com/Azure/co-op-translator). Even though we dey try make am correct, abeg sabi say automatic translation fit get some mistakes or errors. Di original dokument wey dey for im oga language na di main correct one. If na serious mata, better make human professional translate am. We no responsible if anybody misunderstand or misinterpret anything wey come from dis translation.
 <!-- CO-OP TRANSLATOR DISCLAIMER END -->

@@ -14,32 +14,33 @@
 5. Wait ~2 minutes for the environment to be ready
 6. Jump straight to [The first example](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)
 
-> **Prefer to Clone Locally?**
->
-> This repository includes 50+ language translations which significantly increases the download size. To clone without translations, use sparse checkout:
->
-> **Linux / macOS (Bash)**
-> ```bash
-> git clone --filter=blob:none --sparse https://github.com/microsoft/Generative-AI-for-beginners-java.git
-> cd Generative-AI-for-beginners-java
-> git sparse-checkout set --no-cone '/*' '!translations' '!translated_images'
-> ```
->
-> **Windows (PowerShell)**
-> ```powershell
-> git clone --filter=blob:none --sparse https://github.com/microsoft/Generative-AI-for-beginners-java.git
-> cd Generative-AI-for-beginners-java
-> git sparse-checkout set --no-cone "/*" "!translations" "!translated_images"
-> ```
-> This gives you everything you need to complete the course with a much faster download.
-
-
 ## Multi-Language Support
 
 ### Supported via GitHub Action (Automated & Always Up-to-Date)
 
 <!-- CO-OP TRANSLATOR LANGUAGES TABLE START -->
 [Arabic](../ar/README.md) | [Bengali](../bn/README.md) | [Bulgarian](../bg/README.md) | [Burmese (Myanmar)](../my/README.md) | [Chinese (Simplified)](../zh-CN/README.md) | [Chinese (Traditional, Hong Kong)](../zh-HK/README.md) | [Chinese (Traditional, Macau)](../zh-MO/README.md) | [Chinese (Traditional, Taiwan)](../zh-TW/README.md) | [Croatian](../hr/README.md) | [Czech](../cs/README.md) | [Danish](../da/README.md) | [Dutch](../nl/README.md) | [Estonian](../et/README.md) | [Finnish](../fi/README.md) | [French](../fr/README.md) | [German](../de/README.md) | [Greek](../el/README.md) | [Hebrew](../he/README.md) | [Hindi](../hi/README.md) | [Hungarian](../hu/README.md) | [Indonesian](../id/README.md) | [Italian](../it/README.md) | [Japanese](../ja/README.md) | [Kannada](../kn/README.md) | [Korean](../ko/README.md) | [Lithuanian](../lt/README.md) | [Malay](../ms/README.md) | [Malayalam](../ml/README.md) | [Marathi](../mr/README.md) | [Nepali](../ne/README.md) | [Nigerian Pidgin](../pcm/README.md) | [Norwegian](../no/README.md) | [Persian (Farsi)](../fa/README.md) | [Polish](../pl/README.md) | [Portuguese (Brazil)](../pt-BR/README.md) | [Portuguese (Portugal)](../pt-PT/README.md) | [Punjabi (Gurmukhi)](../pa/README.md) | [Romanian](../ro/README.md) | [Russian](../ru/README.md) | [Serbian (Cyrillic)](../sr/README.md) | [Slovak](../sk/README.md) | [Slovenian](../sl/README.md) | [Spanish](../es/README.md) | [Swahili](../sw/README.md) | [Swedish](../sv/README.md) | [Tagalog (Filipino)](../tl/README.md) | [Tamil](../ta/README.md) | [Telugu](../te/README.md) | [Thai](../th/README.md) | [Turkish](../tr/README.md) | [Ukrainian](../uk/README.md) | [Urdu](../ur/README.md) | [Vietnamese](../vi/README.md)
+
+> **Prefer to Clone Locally?**
+>
+> This repository includes 50+ language translations which significantly increases the download size. To clone without translations, use sparse checkout:
+>
+> **Bash / macOS / Linux:**
+> ```bash
+> git clone --filter=blob:none --sparse https://github.com/microsoft/Generative-AI-for-beginners-java.git
+> cd Generative-AI-for-beginners-java
+> git sparse-checkout set --no-cone '/*' '!translations' '!translated_images'
+> ```
+>
+> **CMD (Windows):**
+> ```cmd
+> git clone --filter=blob:none --sparse https://github.com/microsoft/Generative-AI-for-beginners-java.git
+> cd Generative-AI-for-beginners-java
+> git sparse-checkout set --no-cone "/*" "!translations" "!translated_images"
+> ```
+>
+> This gives you everything you need to complete the course with a much faster download.
+<!-- CO-OP TRANSLATOR LANGUAGES TABLE END -->
 
 ## Course Structure & Learning Path
 
@@ -120,11 +121,11 @@
 
 ## Getting Help
 
-If you get stuck or have any questions about building AI apps, join fellow learners and experienced developers in discussions about MCP. It's a supportive community where questions are welcome and knowledge is shared freely.
+If you get stuck or have any questions about building AI apps. Join fellow learners and experienced developers in discussions about MCP. It's a supportive community where questions are welcome and knowledge is shared freely.
 
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-If you have product feedback or errors while building, visit:
+If you have product feedback or errors while building visit:
 
 [![Microsoft Foundry Developer Forum](https://img.shields.io/badge/GitHub-Microsoft_Foundry_Developer_Forum-blue?style=for-the-badge&logo=github&color=000000&logoColor=fff)](https://aka.ms/foundry/forum)
 

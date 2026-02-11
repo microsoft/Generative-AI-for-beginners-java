@@ -1,130 +1,132 @@
-# जनरेटिव AI सुरू करणाऱ्यांसाठी - जावा आवृत्ती
+# जनरेटिव AI सुरुवातीसाठी - जावा आवृत्ती
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![जनरेटिव AI सुरू करणाऱ्यांसाठी - जावा आवृत्ती](../../translated_images/mr/beg-genai-series.8b48be9951cc574c.webp)
+![जनरेटिव AI सुरुवातीसाठी - जावा आवृत्ती](../../translated_images/mr/beg-genai-series.8b48be9951cc574c.webp)
 
-**वेळेची गरज**: संपूर्ण कार्यशाळा ऑनलाईन पूर्ण केली जाऊ शकते, स्थानिक सेटअपशिवाय. वातावरण सेटअप करण्यासाठी २ मिनिटे लागतात, तर नमुन्यांचा अभ्यास करण्यासाठी शोधण्याच्या खोलीवर अवलंबून १-३ तास लागू शकतात.
+**वेळ प्रतिबद्धता**: संपूर्ण वर्कशॉप स्थानिक सेटअपशिवाय ऑनलाइन पूर्ण केली जाऊ शकते. वातावरण सेटअपसाठी २ मिनिटे लागतात, तर नमुने अभ्यासण्यासाठी १-३ तास लागतील, अभ्यासाच्या खोलीनुसार.
 
-> **जलद प्रारंभ**
+> **त्वरित प्रारंभ** 
 
-1. हा रेपोजिटरी आपल्या GitHub खात्यात Fork करा
+1. हा रेपॉजिटरी तुमच्या GitHub खात्यावर Fork करा
 2. क्लिक करा **Code** → **Codespaces** टॅब → **...** → **New with options...**
-3. डीफॉल्ट्स वापरा – यामुळे या कोर्ससाठी तयार केलेला Development कंटेनर निवडला जाईल
+3. डीफॉल्ट वापरा – हे या कोर्ससाठी तयार केलेले Development कंटेनर निवडेल
 4. क्लिक करा **Create codespace**
-5. वातावरण तयार होण्यासाठी अंदाजे २ मिनिटे थांबा
-6. थेट [पहिल्या उदाहरणावर जा](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)
+5. सुमारे २ मिनिटे प्रतीक्षा करा जेव्हा वातावरण तयार होईल
+6. सरळ [पहिल्या उदाहरणाकडे जा](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)
 
-> **स्थानिक क्लोन करण्याचा पसंती आहे?**
+## मल्टि-भाषा समर्थन
+
+### GitHub Action द्वारे समर्थित (स्वयंचलित आणि सदैव अद्ययावत)
+
+<!-- CO-OP TRANSLATOR LANGUAGES TABLE START -->
+[अरबी](../ar/README.md) | [बांग्ला](../bn/README.md) | [बुल्गेरियन](../bg/README.md) | [बर्मी (म्यानमार)](../my/README.md) | [चिनी (सरलीकृत)](../zh-CN/README.md) | [चिनी (परंपरागत, हाँगकाँग)](../zh-HK/README.md) | [चिनी (परंपरागत, मकाऊ)](../zh-MO/README.md) | [चिनी (परंपरागत, तैवान)](../zh-TW/README.md) | [क्रोएशियन](../hr/README.md) | [चेक](../cs/README.md) | [डॅनिश](../da/README.md) | [डच](../nl/README.md) | [एस्टोनियन](../et/README.md) | [फिन्निश](../fi/README.md) | [फ्रेंच](../fr/README.md) | [जर्मन](../de/README.md) | [ग्रीक](../el/README.md) | [हिब्रू](../he/README.md) | [हिंदी](../hi/README.md) | [हंगेरियन](../hu/README.md) | [इंडोनेशियन](../id/README.md) | [इटालियन](../it/README.md) | [जपानी](../ja/README.md) | [कन्नड](../kn/README.md) | [कोरियन](../ko/README.md) | [लिथुआनियन](../lt/README.md) | [मलय](../ms/README.md) | [मलयाळम](../ml/README.md) | [मराठी](./README.md) | [नेपाली](../ne/README.md) | [नायजेरियन पिजिन](../pcm/README.md) | [नॉर्वेजियन](../no/README.md) | [फारसी (पर्शियन)](../fa/README.md) | [पोलिश](../pl/README.md) | [पोर्टुगिझ (ब्राझील)](../pt-BR/README.md) | [पोर्टुगिझ (पुर्तगाल)](../pt-PT/README.md) | [पंजाबी (गुरमुखी)](../pa/README.md) | [रोमानीयन](../ro/README.md) | [रशियन](../ru/README.md) | [सर्बियन (सिरिलिक)](../sr/README.md) | [स्लोव्हाक](../sk/README.md) | [स्लोव्हेनियन](../sl/README.md) | [स्पॅनिश](../es/README.md) | [स्वाहिली](../sw/README.md) | [स्वीडिश](../sv/README.md) | [टागालोग (फिलीपीन्स)](../tl/README.md) | [तमिळ](../ta/README.md) | [तेलुगू](../te/README.md) | [थाई](../th/README.md) | [टर्किश](../tr/README.md) | [यूक्रेनियन](../uk/README.md) | [उर्दू](../ur/README.md) | [व्हिएतनामीज](../vi/README.md)
+
+> **स्थानिक क्लोन करायचा आहे का?**
 >
-> या रेपोजिटरीमध्ये ५०+ भाषा अनुवाद समाविष्ट आहेत जे डाउनलोड साईज मोठा करतात. भाषांतरांशिवाय क्लोन करण्यासाठी sparse checkout वापरा:
+> या रेपॉजिटरीमध्ये ५०+ भाषा अनुवादांचा समावेश आहे ज्यामुळे डाउनलोडचा आकार फार मोठा होतो. भाषांतरांशिवाय क्लोन करण्यासाठी sparse checkout वापरा:
 >
-> **Linux / macOS (Bash)**
+> **Bash / macOS / Linux:**
 > ```bash
 > git clone --filter=blob:none --sparse https://github.com/microsoft/Generative-AI-for-beginners-java.git
 > cd Generative-AI-for-beginners-java
 > git sparse-checkout set --no-cone '/*' '!translations' '!translated_images'
 > ```
 >
-> **Windows (PowerShell)**
-> ```powershell
+> **CMD (Windows):**
+> ```cmd
 > git clone --filter=blob:none --sparse https://github.com/microsoft/Generative-AI-for-beginners-java.git
 > cd Generative-AI-for-beginners-java
 > git sparse-checkout set --no-cone "/*" "!translations" "!translated_images"
 > ```
-> हे आपल्याला कोर्स पूर्ण करण्यासाठी आवश्यक सर्व काही फार वेगाने डाउनलोड करुन देते.
+>
+> यामुळे कोर्स पूर्ण करण्यासाठी वेगवान डाउनलोडसह सर्व काही मिळेल.
+<!-- CO-OP TRANSLATOR LANGUAGES TABLE END -->
 
+## कोर्स रचना आणि शिक्षण मार्ग
 
-## बहुभाषिक समर्थन
-
-### GitHub Action द्वारे समर्थित (स्वयंचलित आणि नेहमी अद्ययावत)
-
-<!-- CO-OP TRANSLATOR LANGUAGES TABLE START -->
-[अरबी](../ar/README.md) | [बंगाली](../bn/README.md) | [बल्गेरियन](../bg/README.md) | [बर्मese (म्यानमार)](../my/README.md) | [चिनी (सरलीकृत)](../zh-CN/README.md) | [चिनी (परंपरागत, हॉंगकॉंग)](../zh-HK/README.md) | [चिनी (परंपरागत, मकाऊ)](../zh-MO/README.md) | [चिनी (परंपरागत, तैवान)](../zh-TW/README.md) | [ख्रोटियन](../hr/README.md) | [चेक](../cs/README.md) | [डॅनिश](../da/README.md) | [डच](../nl/README.md) | [एस्टोनियन](../et/README.md) | [फिनिश](../fi/README.md) | [फ्रेंच](../fr/README.md) | [जर्मन](../de/README.md) | [ग्रीक](../el/README.md) | [हिब्रू](../he/README.md) | [हिंदी](../hi/README.md) | [हंगेरीयन](../hu/README.md) | [इंडोनेशियन](../id/README.md) | [इटालियन](../it/README.md) | [जपानी](../ja/README.md) | [कन्नड](../kn/README.md) | [कोरियन](../ko/README.md) | [लिथुआनियन](../lt/README.md) | [मलय](../ms/README.md) | [मलयाळम](../ml/README.md) | [मराठी](./README.md) | [नेपाली](../ne/README.md) | [नायजेरियन पिजिन](../pcm/README.md) | [नॉर्वेजियन](../no/README.md) | [फारसी (पर्शियन)](../fa/README.md) | [पोलिश](../pl/README.md) | [पोर्तुगीज (ब्राझील)](../pt-BR/README.md) | [पोर्तुगीज (पोर्तुगाल)](../pt-PT/README.md) | [पंजाबी (गुरमुखी)](../pa/README.md) | [रोमेनियन](../ro/README.md) | [रशियन](../ru/README.md) | [सर्बियन (सिरिलिक)](../sr/README.md) | [स्लोवाक](../sk/README.md) | [स्लोव्हेनियन](../sl/README.md) | [स्पॅनिश](../es/README.md) | [स्वाहिली](../sw/README.md) | [स्विडिश](../sv/README.md) | [टॅगालॉग (फिलिपिनो)](../tl/README.md) | [तमिळ](../ta/README.md) | [तेलुगू](../te/README.md) | [थाई](../th/README.md) | [तुर्की](../tr/README.md) | [यूक्रेनियन](../uk/README.md) | [उर्दू](../ur/README.md) | [व्हिएतनामी](../vi/README.md)
-
-## कोर्स रचना आणि शिकण्याचा मार्ग
-
-### **अध्याय १: जनरेटिव AI परिचय**
-- **मूलभूत समज**: मोठ्या भाषा मॉडेल्स, टोकन्स, एम्बेडिंग्ज आणि AI क्षमता समजून घेणे
-- **जावा AI वातावरण**: स्प्रिंग AI आणि OpenAI SDKs चे आढावा
-- **मॉडेल संदर्भ प्रोटोकॉल**: MCP चे परिचय आणि AI एजंट संवादातील त्याची भूमिका
-- **व्यावहारिक अनुप्रयोग**: चॅटबॉट्स आणि सामग्री निर्मितीसह वास्तविक जगातील उदाहरणे
+### **अध्याय १: जनरेटिव AI ची ओळख**
+- **मूलभूत संकल्पना**: Large Language Models, टोकन्स, एम्बेडिंग्ज, आणि AI क्षमता समजून घेणे
+- **जावा AI पर्यावरण**: Spring AI आणि OpenAI SDKs ची रूपरेषा
+- **मॉडेल कॉन्टेक्स्ट प्रोटोकॉल**: MCP ची ओळख आणि AI एजंट संवादातील भूमिका
+- **व्यावहारिक अनुप्रयोग**: चॅटबॉट्स व कंटेंट जनरेशनसह प्रत्यक्ष वापराच्या घटना
 - **[→ अध्याय १ सुरू करा](./01-IntroToGenAI/README.md)**
 
-### **अध्याय २: विकास वातावरण सेटअप**
-- **बहु-प्रदाता संरचना**: GitHub मॉडेल्स, Azure OpenAI आणि OpenAI Java SDK एकत्रीकरण सेट करा
-- **स्प्रिंग बूट + स्प्रिंग AI**: एंटरप्राइज AI अनुप्रयोग विकासासाठी सर्वोत्तम पद्धती
-- **GitHub मॉडेल्स**: प्रोटोटायपिंग आणि शिकण्यासाठी मुक्त AI मॉडेल प्रवेश (कोणतेही क्रेडिट कार्ड आवश्यक नाही)
-- **विकास साधने**: डॉकर कंटेनर्स, VS कोड, आणि GitHub Codespaces कॉन्फिगरेशन
+### **अध्याय २: विकास पर्यावरण सेटअप**
+- **मल्टि-प्रोव्हायडर कॉन्फिगरेशन**: GitHub Models, Azure OpenAI, आणि OpenAI Java SDK एकत्रीकरण सेटअप करा
+- **Spring Boot + Spring AI**: एंटरप्राइझ AI अनुप्रयोग विकासासाठी सर्वोत्तम उपाय
+- **GitHub Models**: मोफत AI मॉडेल प्रवेश (क्रेडिट कार्ड नको)
+- **विकास उपकरणे**: Docker कंटेनर्स, VS Code, आणि GitHub Codespaces कॉन्फिगरेशन
 - **[→ अध्याय २ सुरू करा](./02-SetupDevEnvironment/README.md)**
 
-### **अध्याय ३: मुख्य जनरेटिव AI तंत्रे**
-- **प्रॉम्प्ट इंजिनीअरिंग**: AI मॉडेलच्या उत्तम प्रतिसादांसाठी तंत्रे
-- **एंबेडिंग्ज आणि व्हेक्टर ऑपरेशन्स**: सेमँटिक शोध आणि समानता जुळवणी अमलात आणा
-- **रिट्रीव्हल-ऑगमेंटेड जनरेशन (RAG)**: AI आपल्या स्वतःच्या डेटासोर्सेससह एकत्र करा
-- **फंक्शन कॉलिंग**: कस्टम टूल्स आणि प्लगइन्ससह AI क्षमता वाढवा
+### **अध्याय ३: मुख्य जनरेटिव AI तंत्रज्ञान**
+- **प्रॉम्प्ट इंजिनीयरिंग**: AI मॉडेल उत्तरे मिळविण्याचे तंत्र
+- **एम्बेडिंग्ज आणि वेक्टर ऑपरेशन्स**: सेमँटिक सर्च आणि सादृश्यता मॅचिंग लागू करा
+- **रिट्रीव्हल-अगमेंटेड जनरेशन (RAG)**: तुमच्या स्वतःच्या डेटासोर्ससह AI चे संयोजन करा
+- **फंक्शन कॉलिंग**: AI क्षमतांना कस्टम टूल्स आणि प्लगइन्सने विस्तृत करा
 - **[→ अध्याय ३ सुरू करा](./03-CoreGenerativeAITechniques/README.md)**
 
 ### **अध्याय ४: व्यावहारिक अनुप्रयोग आणि प्रकल्प**
-- **पाळीव प्राणी कथा जनरेटर** (`petstory/`): GitHub मॉडेल्स सह सर्जनशील सामग्री निर्मिती
-- **Foundry Local Demo** (`foundrylocal/`): स्थानिक AI मॉडेल समाकलन OpenAI Java SDK सह
-- **MCP कॅल्कुलेटर सेवा** (`calculator/`): स्प्रिंग AI सह बेसिक मॉडेल संदर्भ प्रोटोकॉल अंमलबजावणी
+- **पाळीव प्राणी कथा जनरेटर** (`petstory/`): GitHub Models सह क्रिएटिव कंटेंट जनरेशन
+- **Foundry लोकल डेमो** (`foundrylocal/`): OpenAI Java SDK सह स्थानिक AI मॉडेल समाकलन
+- **MCP कॅल्क्युलेटर सेवा** (`calculator/`): Spring AI सह मूलभूत Model Context Protocol अंमलबजावणी
 - **[→ अध्याय ४ सुरू करा](./04-PracticalSamples/README.md)**
 
 ### **अध्याय ५: जबाबदार AI विकास**
-- **GitHub मॉडेल्स सुरक्षा**: अंगभूत सामग्री फिल्टरिंग आणि सुरक्षा यंत्रणा तपासा (कठोर अडथळे व सौम्य नाकारण्यांसह)
-- **जबाबदार AI डेमो**: प्रॅक्टिकल उदाहरण जे आधुनिक AI सुरक्षा प्रणाली कशी काम करते ते दाखवते
-- **सर्वोत्तम पद्धती**: नैतिक AI विकास आणि तैनातीकरिता आवश्यक मार्गदर्शक तत्त्वे
+- **GitHub Models सुरक्षा**: अंगभूत कंटेंट फिल्टरिंग आणि सुरक्षा यंत्रणांची तपासणी करा (कठोर अडथळे आणि सौम्य नकार)
+- **जबाबदार AI डेमो**: आधुनिक AI सुरक्षा प्रणाली प्रत्यक्ष कशी कार्य करते याचे हाताळणी उदाहरण
+- **सर्वोत्तम पद्धती**: नैतिक AI विकास व प्रकाशनासाठी आवश्यक मार्गदर्शक तत्त्वे
 - **[→ अध्याय ५ सुरू करा](./05-ResponsibleGenAI/README.md)**
 
 ## अतिरिक्त संसाधने
 
 <!-- CO-OP TRANSLATOR OTHER COURSES START -->
 ### LangChain
-[![LangChain4j सुरू करणाऱ्यांसाठी](https://img.shields.io/badge/LangChain4j%20for%20Beginners-22C55E?style=for-the-badge&&labelColor=E5E7EB&color=0553D6)](https://aka.ms/langchain4j-for-beginners)
-[![LangChain.js सुरू करणाऱ्यांसाठी](https://img.shields.io/badge/LangChain.js%20for%20Beginners-22C55E?style=for-the-badge&labelColor=E5E7EB&color=0553D6)](https://aka.ms/langchainjs-for-beginners?WT.mc_id=m365-94501-dwahlin)
-[![LangChain सुरू करणाऱ्यांसाठी](https://img.shields.io/badge/LangChain%20for%20Beginners-22C55E?style=for-the-badge&labelColor=E5E7EB&color=0553D6)](https://github.com/microsoft/langchain-for-beginners?WT.mc_id=m365-94501-dwahlin)
+[![LangChain4j सुरुवातीसाठी](https://img.shields.io/badge/LangChain4j%20for%20Beginners-22C55E?style=for-the-badge&&labelColor=E5E7EB&color=0553D6)](https://aka.ms/langchain4j-for-beginners)
+[![LangChain.js सुरुवातीसाठी](https://img.shields.io/badge/LangChain.js%20for%20Beginners-22C55E?style=for-the-badge&labelColor=E5E7EB&color=0553D6)](https://aka.ms/langchainjs-for-beginners?WT.mc_id=m365-94501-dwahlin)
+[![LangChain सुरुवातीसाठी](https://img.shields.io/badge/LangChain%20for%20Beginners-22C55E?style=for-the-badge&labelColor=E5E7EB&color=0553D6)](https://github.com/microsoft/langchain-for-beginners?WT.mc_id=m365-94501-dwahlin)
 ---
 
-### Azure / Edge / MCP / Agents
-[![AZD सुरू करणाऱ्यांसाठी](https://img.shields.io/badge/AZD%20for%20Beginners-0078D4?style=for-the-badge&labelColor=E5E7EB&color=0078D4)](https://github.com/microsoft/AZD-for-beginners?WT.mc_id=academic-105485-koreyst)
-[![Edge AI सुरू करणाऱ्यांसाठी](https://img.shields.io/badge/Edge%20AI%20for%20Beginners-00B8E4?style=for-the-badge&labelColor=E5E7EB&color=00B8E4)](https://github.com/microsoft/edgeai-for-beginners?WT.mc_id=academic-105485-koreyst)
-[![MCP सुरू करणाऱ्यांसाठी](https://img.shields.io/badge/MCP%20for%20Beginners-009688?style=for-the-badge&labelColor=E5E7EB&color=009688)](https://github.com/microsoft/mcp-for-beginners?WT.mc_id=academic-105485-koreyst)
-[![AI Agents सुरू करणाऱ्यांसाठी](https://img.shields.io/badge/AI%20Agents%20for%20Beginners-00C49A?style=for-the-badge&labelColor=E5E7EB&color=00C49A)](https://github.com/microsoft/ai-agents-for-beginners?WT.mc_id=academic-105485-koreyst)
+### Azure / Edge / MCP / एजंट्स
+[![AZD सुरुवातीसाठी](https://img.shields.io/badge/AZD%20for%20Beginners-0078D4?style=for-the-badge&labelColor=E5E7EB&color=0078D4)](https://github.com/microsoft/AZD-for-beginners?WT.mc_id=academic-105485-koreyst)
+[![Edge AI सुरुवातीसाठी](https://img.shields.io/badge/Edge%20AI%20for%20Beginners-00B8E4?style=for-the-badge&labelColor=E5E7EB&color=00B8E4)](https://github.com/microsoft/edgeai-for-beginners?WT.mc_id=academic-105485-koreyst)
+[![MCP सुरुवातीसाठी](https://img.shields.io/badge/MCP%20for%20Beginners-009688?style=for-the-badge&labelColor=E5E7EB&color=009688)](https://github.com/microsoft/mcp-for-beginners?WT.mc_id=academic-105485-koreyst)
+[![AI एजंट्स सुरुवातीसाठी](https://img.shields.io/badge/AI%20Agents%20for%20Beginners-00C49A?style=for-the-badge&labelColor=E5E7EB&color=00C49A)](https://github.com/microsoft/ai-agents-for-beginners?WT.mc_id=academic-105485-koreyst)
 
 ---
  
-### जनरेटिव AI मालिकाः
-[![जनरेटिव AI सुरू करणाऱ्यांसाठी](https://img.shields.io/badge/Generative%20AI%20for%20Beginners-8B5CF6?style=for-the-badge&labelColor=E5E7EB&color=8B5CF6)](https://github.com/microsoft/generative-ai-for-beginners?WT.mc_id=academic-105485-koreyst)
+### जनरेटिव AI सिरीज
+[![जनरेटिव AI सुरुवातीसाठी](https://img.shields.io/badge/Generative%20AI%20for%20Beginners-8B5CF6?style=for-the-badge&labelColor=E5E7EB&color=8B5CF6)](https://github.com/microsoft/generative-ai-for-beginners?WT.mc_id=academic-105485-koreyst)
 [![जनरेटिव AI (.NET)](https://img.shields.io/badge/Generative%20AI%20(.NET)-9333EA?style=for-the-badge&labelColor=E5E7EB&color=9333EA)](https://github.com/microsoft/Generative-AI-for-beginners-dotnet?WT.mc_id=academic-105485-koreyst)
-[![जनरेटिव AI (जावा)](https://img.shields.io/badge/Generative%20AI%20(Java)-C084FC?style=for-the-badge&labelColor=E5E7EB&color=C084FC)](https://github.com/microsoft/generative-ai-for-beginners-java?WT.mc_id=academic-105485-koreyst)
-[![जनरेटिव AI (जावास्क्रिप्ट)](https://img.shields.io/badge/Generative%20AI%20(JavaScript)-E879F9?style=for-the-badge&labelColor=E5E7EB&color=E879F9)](https://github.com/microsoft/generative-ai-with-javascript?WT.mc_id=academic-105485-koreyst)
+[![जनरेटिव AI (Java)](https://img.shields.io/badge/Generative%20AI%20(Java)-C084FC?style=for-the-badge&labelColor=E5E7EB&color=C084FC)](https://github.com/microsoft/generative-ai-for-beginners-java?WT.mc_id=academic-105485-koreyst)
+[![जनरेटिव AI (JavaScript)](https://img.shields.io/badge/Generative%20AI%20(JavaScript)-E879F9?style=for-the-badge&labelColor=E5E7EB&color=E879F9)](https://github.com/microsoft/generative-ai-with-javascript?WT.mc_id=academic-105485-koreyst)
 
 ---
  
 ### मुख्य शिक्षण
-[![ML सुरू करणाऱ्यांसाठी](https://img.shields.io/badge/ML%20for%20Beginners-22C55E?style=for-the-badge&labelColor=E5E7EB&color=22C55E)](https://aka.ms/ml-beginners?WT.mc_id=academic-105485-koreyst)
-[![डेटा सायन्स सुरू करणाऱ्यांसाठी](https://img.shields.io/badge/Data%20Science%20for%20Beginners-84CC16?style=for-the-badge&labelColor=E5E7EB&color=84CC16)](https://aka.ms/datascience-beginners?WT.mc_id=academic-105485-koreyst)
-[![AI सुरू करणाऱ्यांसाठी](https://img.shields.io/badge/AI%20for%20Beginners-A3E635?style=for-the-badge&labelColor=E5E7EB&color=A3E635)](https://aka.ms/ai-beginners?WT.mc_id=academic-105485-koreyst)
-[![साइबरसुरक्षा सुरू करणाऱ्यांसाठी](https://img.shields.io/badge/Cybersecurity%20for%20Beginners-F97316?style=for-the-badge&labelColor=E5E7EB&color=F97316)](https://github.com/microsoft/Security-101?WT.mc_id=academic-96948-sayoung)
-[![वेब डेव्ह फॉर बिगिनर्स](https://img.shields.io/badge/Web%20Dev%20for%20Beginners-EC4899?style=for-the-badge&labelColor=E5E7EB&color=EC4899)](https://aka.ms/webdev-beginners?WT.mc_id=academic-105485-koreyst)
-[![IoT फॉर बिगिनर्स](https://img.shields.io/badge/IoT%20for%20Beginners-14B8A6?style=for-the-badge&labelColor=E5E7EB&color=14B8A6)](https://aka.ms/iot-beginners?WT.mc_id=academic-105485-koreyst)
-[![XR डेव्हलपमेंट फॉर बिगिनर्स](https://img.shields.io/badge/XR%20Development%20for%20Beginners-38BDF8?style=for-the-badge&labelColor=E5E7EB&color=38BDF8)](https://github.com/microsoft/xr-development-for-beginners?WT.mc_id=academic-105485-koreyst)
+[![ML सुरुवातीसाठी](https://img.shields.io/badge/ML%20for%20Beginners-22C55E?style=for-the-badge&labelColor=E5E7EB&color=22C55E)](https://aka.ms/ml-beginners?WT.mc_id=academic-105485-koreyst)
+[![डेटा सायन्स सुरुवातीसाठी](https://img.shields.io/badge/Data%20Science%20for%20Beginners-84CC16?style=for-the-badge&labelColor=E5E7EB&color=84CC16)](https://aka.ms/datascience-beginners?WT.mc_id=academic-105485-koreyst)
+[![AI सुरुवातीसाठी](https://img.shields.io/badge/AI%20for%20Beginners-A3E635?style=for-the-badge&labelColor=E5E7EB&color=A3E635)](https://aka.ms/ai-beginners?WT.mc_id=academic-105485-koreyst)
+[![सायबरसिक्युरिटी सुरुवातीसाठी](https://img.shields.io/badge/Cybersecurity%20for%20Beginners-F97316?style=for-the-badge&labelColor=E5E7EB&color=F97316)](https://github.com/microsoft/Security-101?WT.mc_id=academic-96948-sayoung)
+
+[![Web Dev for Beginners](https://img.shields.io/badge/Web%20Dev%20for%20Beginners-EC4899?style=for-the-badge&labelColor=E5E7EB&color=EC4899)](https://aka.ms/webdev-beginners?WT.mc_id=academic-105485-koreyst)
+[![IoT for Beginners](https://img.shields.io/badge/IoT%20for%20Beginners-14B8A6?style=for-the-badge&labelColor=E5E7EB&color=14B8A6)](https://aka.ms/iot-beginners?WT.mc_id=academic-105485-koreyst)
+[![XR Development for Beginners](https://img.shields.io/badge/XR%20Development%20for%20Beginners-38BDF8?style=for-the-badge&labelColor=E5E7EB&color=38BDF8)](https://github.com/microsoft/xr-development-for-beginners?WT.mc_id=academic-105485-koreyst)
 
 ---
  
-### कोपायलट सिरीज
-[![AI पेअर्ड प्रोग्रॅमिंगसाठी कोपायलट](https://img.shields.io/badge/Copilot%20for%20AI%20Paired%20Programming-FACC15?style=for-the-badge&labelColor=E5E7EB&color=FACC15)](https://aka.ms/GitHubCopilotAI?WT.mc_id=academic-105485-koreyst)
-[![C#/.NET साठी कोपायलट](https://img.shields.io/badge/Copilot%20for%20C%23/.NET-FBBF24?style=for-the-badge&labelColor=E5E7EB&color=FBBF24)](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers?WT.mc_id=academic-105485-koreyst)
-[![कोपायलट अॅडव्हेंचर](https://img.shields.io/badge/Copilot%20Adventure-FDE68A?style=for-the-badge&labelColor=E5E7EB&color=FDE68A)](https://github.com/microsoft/CopilotAdventures?WT.mc_id=academic-105485-koreyst)
+### कॉपायलट मालिका
+[![Copilot for AI Paired Programming](https://img.shields.io/badge/Copilot%20for%20AI%20Paired%20Programming-FACC15?style=for-the-badge&labelColor=E5E7EB&color=FACC15)](https://aka.ms/GitHubCopilotAI?WT.mc_id=academic-105485-koreyst)
+[![Copilot for C#/.NET](https://img.shields.io/badge/Copilot%20for%20C%23/.NET-FBBF24?style=for-the-badge&labelColor=E5E7EB&color=FBBF24)](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers?WT.mc_id=academic-105485-koreyst)
+[![Copilot Adventure](https://img.shields.io/badge/Copilot%20Adventure-FDE68A?style=for-the-badge&labelColor=E5E7EB&color=FDE68A)](https://github.com/microsoft/CopilotAdventures?WT.mc_id=academic-105485-koreyst)
 <!-- CO-OP TRANSLATOR OTHER COURSES END -->
 
-## मदत घेणे
+## मदतीसाठी
 
-जर आपण अडकले असाल किंवा AI अॅप्स तयार करताना कोणतेही प्रश्न असतील तर MCP विषयी चर्चा करण्यासाठी इतर शिकणारे आणि अनुभवसंपन्न डेव्हलपर्सशी सहभागी व्हा. हे एक मदतशील समुदाय आहे जिथे प्रश्न स्वागतार्ह आहेत आणि ज्ञान मोकळेपणाने सामायिक केले जाते.
+जर तुम्हाला अडचण आली किंवा AI अ‍ॅप्स बनवण्याबद्दल काही प्रश्न असतील तर मग, MCP बद्दलच्या चर्चांमध्ये सहअभ्यासक आणि अनुभवी विकसकांशी सामील व्हा. ही एक समर्थन करणारी समुदाय आहे जिथे प्रश्न स्वागतार्ह आहेत आणि ज्ञान मोकळेपणाने वाटले जाते.
 
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-आपल्याकडे उत्पादन अभिप्राय किंवा चुका असल्यास भेट द्या:
+जर तुम्हाला उत्पादनाबद्दल अभिप्राय किंवा चुकांचा सामना झाला तर भेट द्या:
 
 [![Microsoft Foundry Developer Forum](https://img.shields.io/badge/GitHub-Microsoft_Foundry_Developer_Forum-blue?style=for-the-badge&logo=github&color=000000&logoColor=fff)](https://aka.ms/foundry/forum)
 
@@ -132,5 +134,5 @@
 
 <!-- CO-OP TRANSLATOR DISCLAIMER START -->
 **अस्वीकरण**:
-हा दस्तऐवज AI भाषांतर सेव्हिस [Co-op Translator](https://github.com/Azure/co-op-translator) च्या मदतीने अनुवादित केला आहे. आम्ही अचूकतेसाठी प्रयत्नशील असलो तरी, कृपया लक्षात घ्या की स्वयंचलित भाषांतरांमध्ये चुका किंवा असमर्थता असू शकतात. मूळ दस्तऐवज त्याच्या मूळ भाषेतच अधिकृत स्रोत म्हणून मान्य केला पाहिजे. महत्वाची माहिती असल्यास व्यावसायिक मानवी भाषांतर करण्याचा सल्ला दिला जातो. या भाषांतराच्या वापरामुळे उद्भवणाऱ्या कोणत्याही गैरसमज किंवा चुकीच्या समजुतीबाबत आम्ही जबाबदार नाही.
+हा दस्तऐवज AI भाषांतर सेवेचा वापर करून भाषांतरित केलेला आहे [Co-op Translator](https://github.com/Azure/co-op-translator). जरी आम्ही अचूकतेसाठी प्रयत्न करतो, तरी कृपया लक्षात घ्या की स्वयंचलित भाषांतरांमध्ये चुका किंवा चुकीची माहिती असू शकते. मूळ दस्तऐवज त्याच्या स्थानिक भाषेत अधिकृत स्रोत मानला जावा. महत्त्वाच्या माहितीसाठी व्यावसायिक मानव भाषांतर करण्याची शिफारस केली जाते. या भाषांतराच्या वापरामुळे उद्भवलेल्या कोणत्याही गैरसमजुती किंवा चुकीच्या अर्थलाहणीसाठी आम्ही जबाबदार नाही.
 <!-- CO-OP TRANSLATOR DISCLAIMER END -->

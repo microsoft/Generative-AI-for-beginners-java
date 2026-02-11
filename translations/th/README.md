@@ -1,70 +1,80 @@
-# Generative AI สำหรับผู้เริ่มต้น - เวอร์ชัน Java
+# ปัญญาประดิษฐ์เชิงสร้างสรรค์สำหรับผู้เริ่มต้น - รุ่น Java
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generative AI สำหรับผู้เริ่มต้น - เวอร์ชัน Java](../../translated_images/th/beg-genai-series.8b48be9951cc574c.webp)
+![Generative AI for Beginners - Java Edition](../../translated_images/th/beg-genai-series.8b48be9951cc574c.webp)
 
-**เวลาที่ใช้**: เวิร์กช็อปทั้งหมดสามารถทำเสร็จออนไลน์โดยไม่ต้องติดตั้งบนเครื่อง เวลาการตั้งค่าสภาพแวดล้อมใช้เวลาประมาณ 2 นาที ขณะที่การสำรวจตัวอย่างใช้เวลา 1-3 ชั่วโมงขึ้นอยู่กับความลึกของการสำรวจ
+**เวลาที่ใช้**: การประชุมเชิงปฏิบัติการทั้งหมดสามารถทำออนไลน์โดยไม่ต้องตั้งค่าท้องถิ่น การตั้งค่าสภาพแวดล้อมใช้เวลา 2 นาที โดยการสำรวจตัวอย่างใช้เวลาประมาณ 1-3 ชั่วโมงขึ้นอยู่กับความลึกของการสำรวจ
 
 > **เริ่มต้นอย่างรวดเร็ว**
 
 1. Fork รีโพสิทอรีนี้ไปยังบัญชี GitHub ของคุณ
-2. คลิก **Code** → แท็บ **Codespaces** → **...** → **New with options...**
-3. ใช้ค่าพื้นฐาน – ตัวเลือกนี้จะเลือกคอนเทนเนอร์ Development ที่สร้างขึ้นสำหรับหลักสูตรนี้
+2. คลิก **Code** → แท็บ **Codespaces** → **…** → **New with options...**
+3. ใช้ค่าปริยาย – ซึ่งจะเลือก Development container ที่สร้างขึ้นสำหรับหลักสูตรนี้
 4. คลิก **Create codespace**
-5. รอประมาณ 2 นาทีเพื่อให้สภาพแวดล้อมพร้อมใช้งาน
-6. ไปยัง [ตัวอย่างแรก](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token) ได้เลย
+5. รอประมาณ 2 นาทีจนกว่าสภาพแวดล้อมจะพร้อมใช้งาน
+6. ข้ามไปที่ [ตัวอย่างแรก](./02-SetupDevEnvironment/README.md#step-2-create-a-github-personal-access-token)
 
-> **ต้องการโคลนแบบ Local ไหม?**
+## การสนับสนุนหลายภาษา
+
+### สนับสนุนผ่าน GitHub Action (อัตโนมัติ & อัปเดตเสมอ)
+
+<!-- CO-OP TRANSLATOR LANGUAGES TABLE START -->
+[อารบิก](../ar/README.md) | [เบงกาลี](../bn/README.md) | [บัลแกเรีย](../bg/README.md) | [พม่า (เมียนมา)](../my/README.md) | [จีน (ตัวย่อ)](../zh-CN/README.md) | [จีน (ตัวเต็ม, ฮ่องกง)](../zh-HK/README.md) | [จีน (ตัวเต็ม, มาเก๊า)](../zh-MO/README.md) | [จีน (ตัวเต็ม, ไต้หวัน)](../zh-TW/README.md) | [โครเอเชีย](../hr/README.md) | [เช็ก](../cs/README.md) | [เดนมาร์ก](../da/README.md) | [ดัตช์](../nl/README.md) | [เอสโตเนีย](../et/README.md) | [ฟินแลนด์](../fi/README.md) | [ฝรั่งเศส](../fr/README.md) | [เยอรมัน](../de/README.md) | [กรีก](../el/README.md) | [ฮีบรู](../he/README.md) | [ฮินดี](../hi/README.md) | [ฮังการี](../hu/README.md) | [อินโดนีเซีย](../id/README.md) | [อิตาลี](../it/README.md) | [ญี่ปุ่น](../ja/README.md) | [กันนาดา](../kn/README.md) | [เกาหลี](../ko/README.md) | [ลิทัวเนีย](../lt/README.md) | [มาเลย์](../ms/README.md) | [มาลายาลัม](../ml/README.md) | [มราฐี](../mr/README.md) | [เนปาล](../ne/README.md) | [ไนจีเรีย pidgin](../pcm/README.md) | [นอร์เวย์](../no/README.md) | [เปอร์เซีย (ฟาร์ซี)](../fa/README.md) | [โปแลนด์](../pl/README.md) | [โปรตุเกส (บราซิล)](../pt-BR/README.md) | [โปรตุเกส (โปรตุเกส)](../pt-PT/README.md) | [ปัญจาบ (กูรมุขิ)](../pa/README.md) | [โรมาเนีย](../ro/README.md) | [รัสเซีย](../ru/README.md) | [เซอร์เบีย (คิริลลิก)](../sr/README.md) | [สโลวัก](../sk/README.md) | [สโลวีเนีย](../sl/README.md) | [สเปน](../es/README.md) | [สวาฮิลี](../sw/README.md) | [สวีเดน](../sv/README.md) | [ตากาล็อก (ฟิลิปปินส์)](../tl/README.md) | [ทมิฬ](../ta/README.md) | [เทลูกู](../te/README.md) | [ไทย](./README.md) | [ตุรกี](../tr/README.md) | [ยูเครน](../uk/README.md) | [อูรดู](../ur/README.md) | [เวียดนาม](../vi/README.md)
+
+> **ต้องการโคลนเฉพาะเครื่องใช่ไหม?**
 >
-> รีโพสิทอรีนี้มีการแปลภาษาไว้กว่า 50 ภาษา ซึ่งเพิ่มขนาดการดาวน์โหลดอย่างมาก หากต้องการโคลนโดยไม่รวมการแปลภาษา ให้ใช้ sparse checkout:
+> รีโพสิทอรีนี้ประกอบด้วยการแปลภาษากว่า 50 ภาษา ซึ่งเพิ่มขนาดการดาวน์โหลดอย่างมีนัยสำคัญ เพื่อโคลนโดยไม่รวมการแปลภาษา ให้ใช้ sparse checkout:
+>
+> **Bash / macOS / Linux:**
 > ```bash
 > git clone --filter=blob:none --sparse https://github.com/microsoft/Generative-AI-for-beginners-java.git
 > cd Generative-AI-for-beginners-java
 > git sparse-checkout set --no-cone '/*' '!translations' '!translated_images'
 > ```
-> ซึ่งจะให้ทุกอย่างที่คุณต้องการสำหรับหลักสูตรนี้พร้อมการดาวน์โหลดที่เร็วขึ้นมาก
-
-
-## รองรับหลายภาษา
-
-### รองรับผ่าน GitHub Action (อัตโนมัติ & อัปเดตอยู่เสมอ)
-
-<!-- CO-OP TRANSLATOR LANGUAGES TABLE START -->
-[อาหรับ](../ar/README.md) | [เบงกาลี](../bn/README.md) | [บัลแกเรีย](../bg/README.md) | [พม่า (เมียนมา)](../my/README.md) | [จีน (ตัวย่อ)](../zh-CN/README.md) | [จีน (ตัวเต็ม ฮ่องกง)](../zh-HK/README.md) | [จีน (ตัวเต็ม มาเก๊า)](../zh-MO/README.md) | [จีน (ตัวเต็ม ไต้หวัน)](../zh-TW/README.md) | [โครเอเชีย](../hr/README.md) | [เชก](../cs/README.md) | [เดนมาร์ก](../da/README.md) | [ดัตช์](../nl/README.md) | [เอสโตเนีย](../et/README.md) | [ฟินแลนด์](../fi/README.md) | [ฝรั่งเศส](../fr/README.md) | [เยอรมัน](../de/README.md) | [กรีก](../el/README.md) | [ฮิบรู](../he/README.md) | [ฮินดี](../hi/README.md) | [ฮังการี](../hu/README.md) | [อินโดนีเซีย](../id/README.md) | [อิตาลี](../it/README.md) | [ญี่ปุ่น](../ja/README.md) | [กันนาดา](../kn/README.md) | [เกาหลี](../ko/README.md) | [ลิทัวเนีย](../lt/README.md) | [มาเลย์](../ms/README.md) | [มาลายาลัม](../ml/README.md) | [มราฐี](../mr/README.md) | [เนปาล](../ne/README.md) | [ไนจีเรีย พิดจิน](../pcm/README.md) | [นอร์เวย์](../no/README.md) | [เปอร์เซีย (ฟาร์ซี)](../fa/README.md) | [โปแลนด์](../pl/README.md) | [โปรตุเกส (บราซิล)](../pt-BR/README.md) | [โปรตุเกส (โปรตุเกส)](../pt-PT/README.md) | [ปัญจาบี (กูรมุคคี)](../pa/README.md) | [โรมาเนีย](../ro/README.md) | [รัสเซีย](../ru/README.md) | [เซอร์เบีย (ซีริลลิก)](../sr/README.md) | [สโลวัก](../sk/README.md) | [สโลวีเนีย](../sl/README.md) | [สเปน](../es/README.md) | [สวาฮิลี](../sw/README.md) | [สวีเดน](../sv/README.md) | [ทากาล็อก (ฟิลิปปินส์)](../tl/README.md) | [ทมิฬ](../ta/README.md) | [เทลูกู](../te/README.md) | [ไทย](./README.md) | [ตุรกี](../tr/README.md) | [ยูเครน](../uk/README.md) | [อุรดู](../ur/README.md) | [เวียดนาม](../vi/README.md)
+>
+> **CMD (Windows):**
+> ```cmd
+> git clone --filter=blob:none --sparse https://github.com/microsoft/Generative-AI-for-beginners-java.git
+> cd Generative-AI-for-beginners-java
+> git sparse-checkout set --no-cone "/*" "!translations" "!translated_images"
+> ```
+>
+> นี้จะให้ทุกอย่างที่คุณต้องการเพื่อทำหลักสูตรให้เสร็จได้โดยดาวน์โหลดได้เร็วขึ้นมาก
+<!-- CO-OP TRANSLATOR LANGUAGES TABLE END -->
 
 ## โครงสร้างหลักสูตร & เส้นทางการเรียนรู้
 
-### **บทที่ 1: แนะนำ Generative AI**
-- **แนวคิดหลัก**: ทำความเข้าใจโมเดลภาษาใหญ่ (Large Language Models), โทเค็น, การฝังข้อมูล (embeddings), และความสามารถของ AI
+### **บทที่ 1: แนะนำ AI เชิงสร้างสรรค์**
+- **แนวคิดหลัก**: ทำความเข้าใจ Large Language Models, โทเค็น, embeddings และความสามารถของ AI
 - **ระบบนิเวศ AI ใน Java**: ภาพรวมของ Spring AI และ OpenAI SDKs
-- **โพรโตคอลบริบทโมเดล (Model Context Protocol)**: บทนำสู่ MCP และบทบาทในการสื่อสารของเอเจนต์ AI
-- **การใช้งานจริง**: สถานการณ์ในโลกจริง เช่น แชทบอตและการสร้างเนื้อหา
+- **โปรโตคอลบริบทโมเดล**: แนะนำ MCP และบทบาทในสื่อสารของเอเจนต์ AI
+- **การใช้งานจริง**: กรณีใช้งานจริงรวมถึงแชทบอทและการสร้างเนื้อหา
 - **[→ เริ่มบทที่ 1](./01-IntroToGenAI/README.md)**
 
 ### **บทที่ 2: การตั้งค่าสภาพแวดล้อมการพัฒนา**
-- **การกำหนดค่าผู้ให้บริการหลายราย**: ตั้งค่า GitHub Models, Azure OpenAI, และ OpenAI Java SDK
+- **การตั้งค่าหลายผู้ให้บริการ**: ตั้งค่า GitHub Models, Azure OpenAI และ OpenAI Java SDK
 - **Spring Boot + Spring AI**: แนวทางปฏิบัติที่ดีที่สุดสำหรับการพัฒนาแอป AI ในองค์กร
-- **GitHub Models**: เข้าถึงโมเดล AI ฟรีสำหรับการสร้างต้นแบบและเรียนรู้ (ไม่ต้องใช้บัตรเครดิต)
-- **เครื่องมือพัฒนา**: คอนเทนเนอร์ Docker, VS Code และการกำหนดค่า GitHub Codespaces
+- **GitHub Models**: การเข้าถึงโมเดล AI ฟรีสำหรับการสร้างต้นแบบและการเรียนรู้ (ไม่ต้องใช้บัตรเครดิต)
+- **เครื่องมือพัฒนา**: คอนเทนเนอร์ Docker, VS Code และการตั้งค่า GitHub Codespaces
 - **[→ เริ่มบทที่ 2](./02-SetupDevEnvironment/README.md)**
 
-### **บทที่ 3: เทคนิคหลักของ Generative AI**
-- **การออกแบบพรอมต์ (Prompt Engineering)**: เทคนิคสำหรับการตอบสนองที่ดีที่สุดจากโมเดล AI
-- **Embedding & การปฏิบัติการเวกเตอร์**: นำไปใช้การค้นหาเชิงความหมายและการเปรียบเทียบความเหมือน
-- **การสร้างเพิ่มเติมจากการดึงข้อมูล (Retrieval-Augmented Generation - RAG)**: ผสมผสาน AI กับแหล่งข้อมูลของคุณเอง
-- **การเรียกใช้ฟังก์ชัน (Function Calling)**: ขยายความสามารถ AI ด้วยเครื่องมือและปลั๊กอินที่กำหนดเอง
+### **บทที่ 3: เทคนิคหลักของ AI เชิงสร้างสรรค์**
+- **Prompt Engineering**: เทคนิคสำหรับการตอบสนองของโมเดล AI ที่ดีที่สุด
+- **Embeddings & การดำเนินการเวกเตอร์**: นำไปใช้การค้นหาความหมายและการจับคู่ความคล้ายคลึง
+- **Retrieval-Augmented Generation (RAG)**: ผสมผสาน AI กับแหล่งข้อมูลของคุณเอง
+- **Function Calling**: ขยายความสามารถของ AI ด้วยเครื่องมือต่างๆ และปลั๊กอินที่กำหนดเอง
 - **[→ เริ่มบทที่ 3](./03-CoreGenerativeAITechniques/README.md)**
 
-### **บทที่ 4: การใช้งานจริง & โครงการ**
-- **เครื่องมือสร้างเรื่องเล่าสัตว์เลี้ยง** (`petstory/`): สร้างสรรค์เนื้อหาด้วย GitHub Models
-- **Foundry Local Demo** (`foundrylocal/`): การรวมโมเดล AI ภายในเครื่องด้วย OpenAI Java SDK
-- **บริการเครื่องคิดเลข MCP** (`calculator/`): การใช้งาน Model Context Protocol ขั้นพื้นฐานกับ Spring AI
+### **บทที่ 4: การใช้งานและโครงการจริง**
+- **ตัวสร้างเรื่องราวสัตว์เลี้ยง** (`petstory/`): การสร้างเนื้อหาสร้างสรรค์ด้วย GitHub Models
+- **สาธิต Foundry Local** (`foundrylocal/`): การรวมโมเดล AI ท้องถิ่นกับ OpenAI Java SDK
+- **บริการเครื่องคิดเลข MCP** (`calculator/`): การใช้งาน Model Context Protocol เบื้องต้นด้วย Spring AI
 - **[→ เริ่มบทที่ 4](./04-PracticalSamples/README.md)**
 
-### **บทที่ 5: การพัฒนา AI อย่างรับผิดชอบ**
-- **ความปลอดภัย GitHub Models**: ทดสอบกลไกกรองเนื้อหาและความปลอดภัย (บล็อกแข็งและปฏิเสธแบบสุภาพ)
-- **เดโม AI อย่างรับผิดชอบ**: ตัวอย่างฝึกปฏิบัติแสดงระบบความปลอดภัย AI สมัยใหม่ทำงานอย่างไร
-- **แนวทางปฏิบัติที่ดีที่สุด**: แนวทางสำคัญในการพัฒนาและปรับใช้งาน AI อย่างมีจริยธรรม
+### **บทที่ 5: การพัฒนา AI อย่างมีความรับผิดชอบ**
+- **ความปลอดภัย GitHub Models**: ทดสอบระบบกรองเนื้อหาและกลไกความปลอดภัยในตัว (บล็อกแข็งและการปฏิเสธแบบนุ่มนวล)
+- **สาธิต AI อย่างมีความรับผิดชอบ**: ตัวอย่างมือปฏิบัติแสดงให้เห็นว่าระบบความปลอดภัย AI สมัยใหม่ทำงานอย่างไร
+- **แนวทางปฏิบัติที่ดีที่สุด**: แนวทางจำเป็นสำหรับการพัฒนาและการใช้งาน AI อย่างมีจริยธรรม
 - **[→ เริ่มบทที่ 5](./05-ResponsibleGenAI/README.md)**
 
 ## แหล่งข้อมูลเพิ่มเติม
@@ -94,9 +104,9 @@
  
 ### การเรียนรู้หลัก
 [![ML สำหรับผู้เริ่มต้น](https://img.shields.io/badge/ML%20for%20Beginners-22C55E?style=for-the-badge&labelColor=E5E7EB&color=22C55E)](https://aka.ms/ml-beginners?WT.mc_id=academic-105485-koreyst)
-[![Data Science สำหรับผู้เริ่มต้น](https://img.shields.io/badge/Data%20Science%20for%20Beginners-84CC16?style=for-the-badge&labelColor=E5E7EB&color=84CC16)](https://aka.ms/datascience-beginners?WT.mc_id=academic-105485-koreyst)
+[![วิทยาศาสตร์ข้อมูลสำหรับผู้เริ่มต้น](https://img.shields.io/badge/Data%20Science%20for%20Beginners-84CC16?style=for-the-badge&labelColor=E5E7EB&color=84CC16)](https://aka.ms/datascience-beginners?WT.mc_id=academic-105485-koreyst)
 [![AI สำหรับผู้เริ่มต้น](https://img.shields.io/badge/AI%20for%20Beginners-A3E635?style=for-the-badge&labelColor=E5E7EB&color=A3E635)](https://aka.ms/ai-beginners?WT.mc_id=academic-105485-koreyst)
-[![Cybersecurity สำหรับผู้เริ่มต้น](https://img.shields.io/badge/Cybersecurity%20for%20Beginners-F97316?style=for-the-badge&labelColor=E5E7EB&color=F97316)](https://github.com/microsoft/Security-101?WT.mc_id=academic-96948-sayoung)
+[![ไซเบอร์ซีเคียวริตี้สำหรับผู้เริ่มต้น](https://img.shields.io/badge/Cybersecurity%20for%20Beginners-F97316?style=for-the-badge&labelColor=E5E7EB&color=F97316)](https://github.com/microsoft/Security-101?WT.mc_id=academic-96948-sayoung)
 [![Web Dev for Beginners](https://img.shields.io/badge/Web%20Dev%20for%20Beginners-EC4899?style=for-the-badge&labelColor=E5E7EB&color=EC4899)](https://aka.ms/webdev-beginners?WT.mc_id=academic-105485-koreyst)
 [![IoT for Beginners](https://img.shields.io/badge/IoT%20for%20Beginners-14B8A6?style=for-the-badge&labelColor=E5E7EB&color=14B8A6)](https://aka.ms/iot-beginners?WT.mc_id=academic-105485-koreyst)
 [![XR Development for Beginners](https://img.shields.io/badge/XR%20Development%20for%20Beginners-38BDF8?style=for-the-badge&labelColor=E5E7EB&color=38BDF8)](https://github.com/microsoft/xr-development-for-beginners?WT.mc_id=academic-105485-koreyst)
@@ -109,19 +119,19 @@
 [![Copilot Adventure](https://img.shields.io/badge/Copilot%20Adventure-FDE68A?style=for-the-badge&labelColor=E5E7EB&color=FDE68A)](https://github.com/microsoft/CopilotAdventures?WT.mc_id=academic-105485-koreyst)
 <!-- CO-OP TRANSLATOR OTHER COURSES END -->
 
-## การขอความช่วยเหลือ
+## ขอรับความช่วยเหลือ
 
-หากคุณติดขัดหรือต้องการถามคำถามเกี่ยวกับการสร้างแอป AI เข้าร่วมกับผู้เรียนและนักพัฒนาที่มีประสบการณ์ในการสนทนาเกี่ยวกับ MCP นี่คือชุมชนที่สนับสนุนซึ่งเปิดรับคำถามและแบ่งปันความรู้ได้อย่างอิสระ
+ถ้าคุณติดขัดหรือมีคำถามใด ๆ เกี่ยวกับการสร้างแอป AI เข้าร่วมกับผู้เรียนและนักพัฒนาที่มีประสบการณ์ในการอภิปรายเกี่ยวกับ MCP นี่คือชุมชนที่ให้การสนับสนุนโดยยินดีรับคำถาม และแบ่งปันความรู้กันอย่างเสรี
 
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-หากคุณมีความคิดเห็นเกี่ยวกับผลิตภัณฑ์หรือต้องการรายงานข้อผิดพลาดขณะสร้างโปรดไปที่:
+ถ้าคุณมีข้อเสนอแนะเกี่ยวกับผลิตภัณฑ์หรือพบข้อผิดพลาดขณะสร้างโปรดเข้าไปที่:
 
 [![Microsoft Foundry Developer Forum](https://img.shields.io/badge/GitHub-Microsoft_Foundry_Developer_Forum-blue?style=for-the-badge&logo=github&color=000000&logoColor=fff)](https://aka.ms/foundry/forum)
 
 ---
 
 <!-- CO-OP TRANSLATOR DISCLAIMER START -->
-**ข้อจำกัดความรับผิดชอบ**:
-เอกสารนี้ได้รับการแปลโดยใช้บริการแปลภาษาอัตโนมัติ [Co-op Translator](https://github.com/Azure/co-op-translator) แม้ว่าเราจะพยายามให้ความถูกต้องสูงสุด แต่โปรดทราบว่าการแปลโดยอัตโนมัติอาจมีข้อผิดพลาดหรือความไม่ถูกต้องได้ เอกสารต้นฉบับในภาษาดั้งเดิมควรถูกพิจารณาเป็นแหล่งข้อมูลที่เป็นทางการ สำหรับข้อมูลสำคัญ ขอแนะนำให้ใช้การแปลโดยนักแปลมืออาชีพ เราจะไม่รับผิดชอบต่อความเข้าใจผิดหรือการแปลความหมายผิดใด ๆ ที่เกิดจากการใช้การแปลนี้
+**ข้อจำกัดความรับผิดชอบ**:  
+เอกสารฉบับนี้ได้รับการแปลโดยใช้บริการแปลภาษาอัตโนมัติ [Co-op Translator](https://github.com/Azure/co-op-translator) แม้ว่าเราจะพยายามให้มีความถูกต้อง แต่โปรดทราบว่าการแปลอัตโนมัติอาจมีข้อผิดพลาดหรือความไม่ถูกต้อง เอกสารต้นฉบับในภาษาดั้งเดิมถือเป็นแหล่งข้อมูลที่มีอำนาจสูงสุด สำหรับข้อมูลที่สำคัญ แนะนำให้ใช้บริการแปลโดยผู้เชี่ยวชาญเพื่อลดความผิดพลาดใด ๆ เราจะไม่รับผิดชอบต่อความเข้าใจผิดหรือการตีความผิดที่เกิดขึ้นจากการใช้การแปลฉบับนี้
 <!-- CO-OP TRANSLATOR DISCLAIMER END -->
