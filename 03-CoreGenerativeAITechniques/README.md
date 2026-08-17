@@ -388,7 +388,7 @@ List<ChatRequestMessage> messages = List.of(
 
 Ready to put these techniques to work? Let's build some real applications!
 
-[Chapter 04: Practical samples](../04-PracticalSamples/README.md)
+[Chapter 4: Practical samples](../04-PracticalSamples/README.md)
 
 ## Troubleshooting
 
