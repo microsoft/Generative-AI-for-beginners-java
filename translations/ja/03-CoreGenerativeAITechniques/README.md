@@ -388,7 +388,7 @@ List<ChatRequestMessage> messages = List.of(
 
 これらの技術を活用してアプリケーションを作りましょう！
 
-[第04章: 実践サンプル](../04-PracticalSamples/README.md)
+[第4章: 実践サンプル](../04-PracticalSamples/README.md)
 
 ## トラブルシューティング
 
