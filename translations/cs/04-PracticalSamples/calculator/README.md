@@ -1,38 +1,63 @@
-# MCP Kalkulačka Tutorial pro Začátečníky
+# MCP Kalkulační návod pro začátečníky
 
 ## Obsah
 
-- [Co se Naučíte](#co-se-naučíte)
+- [Co se naučíte](#co-se-naučíte)
 - [Požadavky](#požadavky)
-- [Porozumění Struktuře Projektu](#porozumění-struktuře-projektu)
-- [Vysvětlení Hlavních Komponent](#vysvětlení-hlavních-komponent)
-  - [1. Hlavní Aplikace](#1-hlavní-aplikace)
-  - [2. Kalkulační Služba](#2-kalkulační-služba)
-  - [3. Přímý MCP Klient](#3-přímý-mcp-klient)
-  - [4. Klient Pohlížený Umělou Inteligencí](#4-klient-pohlížený-umělou-inteligencí)
-- [Spuštění Příkladů](#spuštění-příkladů)
-- [Jak To Všechno Funguje Dohromady](#jak-to-všechno-funguje-dohromady)
-- [Další Kroky](#další-kroky)
+- [Verze závislostí](#verze-závislostí)
+- [Porozumění struktuře projektu](#porozumění-struktuře-projektu)
+- [Vysvětlení základních komponent](#vysvětlení-základních-komponent)
+  - [1. Hlavní aplikace](#1-hlavní-aplikace)
+  - [2. Kalkulační služba](#2-kalkulační-služba)
+  - [3. Přímý MCP klient](#3-přímý-mcp-klient)
+  - [4. Klient s AI](#4-klient-s-ai)
+- [Spuštění příkladů](#spuštění-příkladů)
+- [Offline testy](#offline-testy)
+- [Jak to vše funguje dohromady](#jak-to-vše-funguje-dohromady)
+- [Další kroky](#další-kroky)
 
-## Co se Naučíte
+## Co se naučíte
 
-Tento tutoriál vysvětluje, jak vytvořit kalkulační službu pomocí Model Context Protocol (MCP). Pochopíte:
+Tento návod vysvětluje, jak vytvořit kalkulační službu pomocí Model Context Protocol (MCP). Naučíte se:
 
-- Jak vytvořit službu, kterou může AI využít jako nástroj
+- Jak vytvořit službu, kterou může AI používat jako nástroj
 - Jak nastavit přímou komunikaci se službami MCP
-- Jak modely AI mohou automaticky vybírat, které nástroje použít
-- Rozdíl mezi přímými voláními protokolu a interakcemi asistovanými AI
+- Jak mohou AI modely automaticky vybrat, které nástroje použít
+- Rozdíl mezi přímými protokolovými voláními a interakcemi asistovanými AI
 
 ## Požadavky
 
-Než začnete, ujistěte se, že máte:
+Před začátkem se ujistěte, že máte:
 - Nainstalovanou Javu 21 nebo vyšší
 - Maven pro správu závislostí
-- Nasazení modelu Azure AI Foundry (zprovozněte příkazem `azd up` — viz [Kapitola 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md))
-- [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli), přihlášený příkazem `az login` (autentizace bez klíče)
 - Základní znalost Javy a Spring Boot
 
-## Porozumění Struktuře Projektu
+Pouze AI klienti vyžadují Azure OpenAI nasazení a ověřený `DefaultAzureCredential`,
+například přihlášení přes Azure CLI lokálně nebo spravovanou identitu v Azure. Identita musí mít
+roli Cognitive Services OpenAI User na příslušném zdroji. Viz [Kapitola 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md).
+Server, přímý SDK klient a všechny automatizované testy žádný Azure účet ani přístup k modelu nevyžadují.
+
+## Verze závislostí
+
+Ověřené závislosti ke dni 2026-09-14:
+
+| Závislost | Verze |
+| --- | --- |
+| Spring Boot | 4.1.1 |
+| Spring AI | 2.0.1 |
+| MCP Java SDK (spravovaný Spring AI) | 2.0.0 |
+| LangChain4j / core | 1.20.0 |
+| LangChain4j MCP | 1.20.0-beta30 |
+| LangChain4j oficiální OpenAI adaptér | 1.20.0-beta30 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
+| JUnit Jupiter (spravovaný Bootem) | 6.0.3 |
+
+MCP a oficiální OpenAI adaptéry jsou publikované beta verze v Maven Central, nikoli snapshoty.
+Jejich verze se liší od LangChain4j core. Není potřeba žádné snapshot nebo milestone repozitáře.
+Závislosti pouze pro klienty mají rozsah testování, protože spustitelné příklady jsou v `src/test/java`.
+
+## Porozumění struktuře projektu
 
 Projekt kalkulačky obsahuje několik důležitých souborů:
 
@@ -44,16 +69,16 @@ calculator/
 └── src/test/java/com/microsoft/mcp/sample/client/
     ├── SDKClient.java                     # Direct MCP communication
     ├── LangChain4jClient.java            # AI-powered client
-    └── Bot.java                          # Simple chat interface
+    └── Bot.java                          # Chat interface and interactive entrypoint
 ```
 
-## Vysvětlení Hlavních Komponent
+## Vysvětlení základních komponent
 
-### 1. Hlavní Aplikace
+### 1. Hlavní aplikace
 
 **Soubor:** `McpServerApplication.java`
 
-Toto je vstupní bod naší kalkulační služby. Je to standardní Spring Boot aplikace s jedním speciálním doplňkem:
+Toto je vstupní bod naší kalkulační služby. Jedná se o standardní Spring Boot aplikaci se speciálním doplňkem:
 
 ```java
 @SpringBootApplication
@@ -71,15 +96,15 @@ public class McpServerApplication {
 ```
 
 **Co to dělá:**
-- Spouští webový server Spring Boot na portu 8080
-- Vytváří `ToolCallbackProvider`, který zpřístupňuje naše kalkulační metody jako MCP nástroje
-- Anotace `@Bean` říká Springu, aby tuto komponentu spravoval a aby ji mohly používat ostatní části aplikace
+- Spustí Spring Boot webový server na portu 8080
+- Vytvoří `ToolCallbackProvider`, který zpřístupní naše kalkulační metody jako MCP nástroje
+- Anotace `@Bean` říká Springu, aby to spravoval jako komponentu, kterou mohou používat ostatní části
 
-### 2. Kalkulační Služba
+### 2. Kalkulační služba
 
 **Soubor:** `CalculatorService.java`
 
-Zde se děje veškerá matematika. Každá metoda je označena anotací `@Tool`, aby byla dostupná přes MCP:
+Zde probíhají veškeré matematické výpočty. Každá metoda je označena `@Tool`, aby byla dostupná přes MCP:
 
 ```java
 @Service
@@ -100,219 +125,198 @@ public class CalculatorService {
     // Další operace kalkulačky...
     
     private String formatResult(double a, String operator, double b, double result) {
-        return String.format("%.2f %s %.2f = %.2f", a, operator, b, result);
+        return String.format(java.util.Locale.ROOT, "%.2f %s %.2f = %.2f", a, operator, b, result);
     }
 }
 ```
 
-**Hlavní vlastnosti:**
+**Klíčové vlastnosti:**
 
-1. **Anotace `@Tool`**: Umožňuje MCP, aby tuto metodu volali externí klienti
-2. **Jasné popisy**: Každý nástroj má popis, který pomáhá AI modelům pochopit, kdy jej použít
-3. **Konzistentní formát návratové hodnoty**: Všechny operace vracejí lidsky čitelné řetězce jako "5.00 + 3.00 = 8.00"
-4. **Zpracování chyb**: Dělení nulou a odmocnina z negativního čísla vrací chybová hlášení
+1. **Anotace `@Tool`**: Říká MCP, že tuto metodu mohou volat externí klienti
+2. **Jasné popisy**: Každý nástroj má popis, který pomáhá AI modelům pochopit, kdy použít daný nástroj
+3. **Konzistentní formát návratu**: Všechny operace vrací čitelné řetězce, například "5.00 + 3.00 = 8.00"
+4. **Zpracování chyb**: Dělení nulou a odmocnina záporného čísla vrací chybová hlášení
 
 **Dostupné operace:**
 - `add(a, b)` - Sčítá dvě čísla
 - `subtract(a, b)` - Odečítá druhé číslo od prvního
 - `multiply(a, b)` - Násobí dvě čísla
-- `divide(a, b)` - Dělí první číslo druhým (kontrola nulou)
+- `divide(a, b)` - Dělí první číslo druhým (s kontrolou nuly)
 - `power(base, exponent)` - Umocňuje základ na exponent
-- `squareRoot(number)` - Vypočítá druhou odmocninu (kontrola na záporné číslo)
+- `squareRoot(number)` - Vypočítá druhou odmocninu (kontrola záporného čísla)
 - `modulus(a, b)` - Vrací zbytek po dělení
 - `absolute(number)` - Vrací absolutní hodnotu
 - `help()` - Vrací informace o všech operacích
 
-### 3. Přímý MCP Klient
+### 3. Přímý MCP klient
 
-**Soubor:** `SDKClient.java`
+Viz [SDKClient.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/SDKClient.java).
 
-Tento klient komunikuje přímo se serverem MCP bez použití AI. Ručně volá specifické kalkulační funkce:
+Tento klient používá `HttpClientStreamableHttpTransport` na `/mcp`, inicializuje spojení,
+pingne server a zvládá stránkování seznamu nástrojů. Kontroluje, zda všech devět očekávaných nástrojů
+existuje, a volá každý z nich, včetně `modulus` a `help`, bez AI modelu.
 
-```java
-public class SDKClient {
-    
-    public static void main(String[] args) {
-        McpClientTransport transport = WebFluxSseClientTransport.builder(
-            WebClient.builder().baseUrl("http://localhost:8080")
-        ).build();
-        new SDKClient(transport).run();
-    }
-    
-    public void run() {
-        var client = McpClient.sync(this.transport).build();
-        client.initialize();
-        
-        // Vypsat dostupné nástroje
-        ListToolsResult toolsList = client.listTools();
-        System.out.println("Available Tools = " + toolsList);
-        
-        // Zavolat konkrétní funkce kalkulačky
-        CallToolResult resultAdd = client.callTool(
-            new CallToolRequest("add", Map.of("a", 5.0, "b", 3.0))
-        );
-        System.out.println("Add Result = " + resultAdd);
-        
-        CallToolResult resultSqrt = client.callTool(
-            new CallToolRequest("squareRoot", Map.of("number", 16.0))
-        );
-        System.out.println("Square Root Result = " + resultSqrt);
-        
-        client.closeGracefully();
-    }
-}
-```
-
-**Co to dělá:**
-1. **Připojuje se** k serveru kalkulačky na `http://localhost:8080` pomocí builder patternu
-2. **Vypisuje** všechny dostupné nástroje (naše kalkulační funkce)
-3. **Volá** konkrétní funkce s přesnými parametry
-4. **Tiskne** výsledky přímo
-
-**Poznámka:** Tento příklad používá závislost Spring AI 1.1.0-SNAPSHOT, která zavedla builder pattern pro `WebFluxSseClientTransport`. Pokud používáte starší stabilní verzi, možná budete muset použít přímý konstruktor.
-
-**Kdy použít:** Když přesně víte, jaký výpočet chcete provést, a chcete ho volat programově.
-
-### 4. Klient Pohlížený Umělou Inteligencí
-
-**Soubor:** `LangChain4jClient.java`
-
-Tento klient používá AI model (GPT-4o-mini), který může automaticky rozhodnout, které kalkulační nástroje použít:
+Současný stavěč požadavků vypadá takto:
 
 ```java
-public class LangChain4jClient {
-    
-    public static void main(String[] args) throws Exception {
-        // Nastavte AI model (Azure AI Foundry, autentizace bez klíče přes Microsoft Entra ID)
-        String endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1";
-        String token = new DefaultAzureCredentialBuilder().build()
-                .getToken(new TokenRequestContext().addScopes("https://ai.azure.com/.default"))
-                .block().getToken();
-        ChatLanguageModel model = OpenAiOfficialChatModel.builder()
-                .baseUrl(baseUrl)
-                .apiKey(token)
-                .modelName("gpt-4o-mini")
-                .build();
-
-        // Připojte se k našemu serveru kalkulačky MCP
-        McpTransport transport = new HttpMcpTransport.Builder()
-                .sseUrl("http://localhost:8080/sse")
-                .logRequests(true)  // Zobrazuje, co AI právě dělá
-                .logResponses(true)
-                .build();
-
-        McpClient mcpClient = new DefaultMcpClient.Builder()
-                .transport(transport)
-                .build();
-
-        // Dejte AI přístup k našim kalkulačkovým nástrojům
-        ToolProvider toolProvider = McpToolProvider.builder()
-                .mcpClients(List.of(mcpClient))
-                .build();
-
-        // Vytvořte AI bota, který může používat naši kalkulačku
-        Bot bot = AiServices.builder(Bot.class)
-                .chatLanguageModel(model)
-                .toolProvider(toolProvider)
-                .build();
-
-        // Nyní můžeme požádat AI, aby prováděla výpočty v přirozeném jazyce
-        String response = bot.chat("Calculate the sum of 24.5 and 17.3 using the calculator service");
-        System.out.println(response);
-
-        response = bot.chat("What's the square root of 144?");
-        System.out.println(response);
-    }
-}
+var request = CallToolRequest.builder("add")
+    .arguments(Map.of("a", 5.0, "b", 3.0))
+    .build();
+var result = client.callTool(request);
 ```
 
-**Co to dělá:**
-1. **Vytváří** připojení k AI modelu s autentizací bez klíče (Microsoft Entra ID)
-2. **Připojuje** AI ke kalkulačnímu MCP serveru
-3. **Dává** AI přístup ke všem kalkulačním nástrojům
-4. **Umožňuje** přirozené jazykové požadavky jako „Vypočítej součet 24.5 a 17.3“
+Chyby protokolu zákazníka nezahodí, místo toho končí chybou místo falešného úspěchu. MCP klient
+je uzavřen pomocí try-with-resources, i když selže objevování nebo volání nástroje.
 
-**AI automaticky:**
-- Chápe, že chcete sčítat čísla
-- Vybere nástroj `add`
-- Zavolá `add(24.5, 17.3)`
-- Vrátí výsledek v přirozené odpovědi
+### 4. Klient s AI
 
-## Spuštění Příkladů
+Viz [LangChain4jClient.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/LangChain4jClient.java)
+a [Bot.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/Bot.java).
 
-### Krok 1: Spusťte Server Kalkulačky
+`OpenAiOfficialChatModel` implementuje aktuální LangChain4j `ChatModel` API.
+`StreamableHttpMcpTransport` ho propojuje se stejným `/mcp` endpointem jako SDK klienta.
+`AiServices` objevuje nástroje a řídí konverzaci volání nástroje / výsledku.
 
-Nejdříve se přihlaste a nastavte svůj Azure AI Foundry endpoint (potřebné pro AI klienta — autentizace bez klíče, bez API klíče):
+Výchozí nasazení je **GPT-5.6 Luna**, s explicitním vypnutím uvažování:
 
-**Windows:**
-```cmd
-az login
-set AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
+```java
+var parameters = OpenAiOfficialChatRequestParameters.builder()
+    .modelName("gpt-5.6-luna")
+    .reasoningEffort("none")
+    .maxCompletionTokens(1024)
+    .parallelToolCalls(false)
+    .build();
 ```
 
-**Linux/macOS:**
-```bash
-az login
-export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-```
+Tyto výchozí hodnoty platí pro každé dokončení, včetně následných dotazů po provedení nástroje.
+Klient používá obnovitelný `BearerTokenCredential`, podporovaný `DefaultAzureCredential`
+a rozsahem `https://ai.azure.com/.default`, nikoli jednorázový token předaný jako API klíč.
+Jsou akceptovány jak URL zdroje, tak URL již končící na `/openai/v1`.
 
-Spusťte server:
-```bash
+Bot udržuje omezenou historii konverzace, tiskne `Tool executed: ...` s aktuálním
+výsledkem MCP a ukončí se, pokud odpověď vynechá nástroje. Smyčky nástrojů jsou omezeny na čtyři kola.
+Autentifikace, model, MCP a chyby nástrojů se propagují; automatické opakování modelu je vypnuto.
+MCP transport/klient i oficiální OpenAI klient jsou uzavřeni při úspěchu i neúspěchu.
+
+## Spuštění příkladů
+
+### Krok 1: Spusťte server kalkulačky
+
+Pro server není potřeba žádná konfigurace Azure. Níže uvedené příkazy běží z adresáře tohoto vzoru.
+Příklad používá port **18081**, aby se vyhnul konfliktu s jiným příkladem; výchozí port zůstává 8080.
+
+```powershell
 cd 04-PracticalSamples/calculator
-mvn clean spring-boot:run
+mvn spring-boot:run "-Dspring-boot.run.arguments=--server.port=18081"
 ```
 
-Server se spustí na `http://localhost:8080`. Měli byste vidět:
-```
-Started McpServerApplication in X.XXX seconds
-```
+MCP endpoint je `http://localhost:18081/mcp`. Stav zdraví a informace o objevování jsou na
+`http://localhost:18081/health` a `http://localhost:18081/info`.
+Streamable HTTP nahrazuje starý pouze SSE transport; `/sse` a `/v1/tools` nejsou endpointy.
 
-### Krok 2: Otestujte s Přímým Klientem
+### Krok 2: Otestujte s přímým klientem
 
-V **NOVÉM** terminálu, zatímco server běží, spusťte přímého MCP klienta:
-```bash
+V jiném PowerShell terminálu:
+
+```powershell
 cd 04-PracticalSamples/calculator
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient" -Dexec.classpathScope=test
+$env:MCP_SERVER_URL = "http://localhost:18081"
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.SDKClient" "-Dexec.classpathScope=test"
 ```
 
-Uvidíte výstup jako:
-```
-Available Tools = [add, subtract, multiply, divide, power, squareRoot, modulus, absolute, help]
-Add Result = 5.00 + 3.00 = 8.00
-Square Root Result = √16.00 = 4.00
-```
+Není potřeba žádný vstup. Jsou vyzkoušeny všechny devět nástrojů. Očekávané aritmetické výsledky zahrnují
+8, 6, 42, 5, 256, 4, 2 a 5,5, následované textem nápovědy.
 
-### Krok 3: Otestujte s AI Klientem
+### Krok 3: Otestujte s AI klientem
 
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient" -Dexec.classpathScope=test
-```
+Po autentizaci podle požadavků nastavte AI klienta ve stejném terminálu:
 
-Uvidíte, jak AI automaticky používá nástroje:
-```
-The sum of 24.5 and 17.3 is 41.8.
-The square root of 144 is 12.
+```powershell
+$env:AZURE_OPENAI_ENDPOINT = "https://your-resource.openai.azure.com/"
+$env:AZURE_OPENAI_DEPLOYMENT = "gpt-5.6-luna"
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.LangChain4jClient" "-Dexec.classpathScope=test" "-Dexec.args=--prompt 'Calculate the sum of 24.5 and 17.3 using the calculator service'"
 ```
 
-### Krok 4: Ukončete MCP Server
+Očekávejte řádek `Tool executed: add` s hodnotou `41.80`, následovaný odpovědí modelu.
+Režim jednoho promptu skončí bez čekání na vstup. Pro spuštění původní demo verze se čtyřmi prompty:
 
-Až skončíte s testováním, AI klienta zastavíte stiskem `Ctrl+C` v jeho terminálu. MCP server poběží dál, dokud ho nezastavíte.
-Pro zastavení serveru stiskněte `Ctrl+C` v terminálu, kde běží.
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.LangChain4jClient" "-Dexec.classpathScope=test" "-Dexec.args=--demo"
+```
 
-## Jak To Všechno Funguje Dohromady
+Demo volá `add`, `squareRoot`, `help` a řetězenou operaci `power` a poté `divide`.
+Očekávané číselné odpovědi jsou 41,8, 12 a 64. Vynechání argumentů také spustí toto demo.
 
-Zde je kompletní průběh, když se AI zeptáte „Kolik je 5 + 3?“:
+### Krok 4: Spusťte interaktivního bota
 
-1. **Vy** se ptáte AI přirozeným jazykem
-2. **AI** analyzuje požadavek a pochopí, že chcete sčítat
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.Bot" "-Dexec.classpathScope=test"
+```
+
+Zadejte `Násob 6 krát 7 pomocí kalkulační služby`, poté `exit` nebo `quit`.
+Očekávejte skutečný výsledek nástroje `multiply` s hodnotou 42. Prázdné řádky jsou ignorovány; EOF také ukončí relaci.
+Pro neinteraktivní smoke test tohoto vstupního bodu:
+
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.Bot" "-Dexec.classpathScope=test" "-Dexec.args=--prompt 'Multiply 6 by 7 using the calculator service'"
+```
+
+Oba AI vstupní body přijímají `--prompt "otázka"`, `--demo` a `--interactive`.
+Neplatné volby selžou ještě před otevřením spojení. Každý Maven `-D...` argument je v PowerShellu plně v uvozovkách.
+V Bashi použijte `export NAME=value` místo `$env:NAME = "value"`.
+
+**Kvóta:** Spouštějte AI příklady postupně. Jednoduchý prompt obvykle potřebuje dvě žádosti modelu;
+kompletní demo normálně potřebuje devět, včetně následných dotazů na výsledky nástrojů. U sdíleného 10 RPM
+nasazení počkejte na novou kvótovou periodu před dalším během AI. 429 chyba se nezopakují automaticky a zobrazí chybu;
+řiďte se pokyny služby k době čekání (retry-after). Počet skutečných požadavků závisí na modelu.
+Offline testy nevyužívají kvótu ani nezjišťují dostupnost či kvalitu odpovědí Luna.
+
+### Konfigurace a vypnutí
+
+| Nastavení | Výchozí / chování |
+| --- | --- |
+| `MCP_SERVER_URL` | `http://localhost:8080`; základní URL, bez `/mcp` |
+| `-Dmcp.server.url=...` | Přepíše `MCP_SERVER_URL` ve všech klientech |
+| `AZURE_OPENAI_ENDPOINT` | Vyžadováno pouze pro AI klienty; URL zdroje nebo `/openai/v1` URL |
+| `AZURE_OPENAI_DEPLOYMENT` | `gpt-5.6-luna`; jméno Azure nasazení |
+| `AZURE_OPENAI_MAX_COMPLETION_TOKENS` | `1024`; kladné celé číslo |
+| Úsilí o uvažování | Vždy `none`, včetně následných dotazů nástrojových smyček |
+
+Přepsané nasazení musí podporovat `reasoning_effort=none` a `max_completion_tokens`.
+Klienti automaticky nečtou `.env` soubor. Po testování zastavte server pomocí `Ctrl+C`.
+Klienti běžně vrací návratovou hodnotu bez `System.exit` či zpoždění ukončení.
+
+## Offline testy
+
+```powershell
+mvn -B -ntp clean verify
+```
+
+Všechny testy jsou offline vzhledem k Azure: protokol spustí Spring server a
+OpenAI-kompatibilní stub na náhodných loopback portech, které pak zavře. Maven může stále potřebovat
+stáhnout závislosti. Nejsou použity žádné přihlašovací údaje, živé nasazení ani existující MCP server.
+
+- Jednotkové testy kalkulačky pokrývají všechny aritmetické operace, desetinné výsledky, nápovědu a doménové chyby.
+- MCP testy zahrnují inicializaci, objevování, všech devět volání nástrojů, selhání nástrojů a stav zdraví/informace.
+- AI protokol testy provádějí celé demo a interaktivního bota proti skutečné kalkulačce,
+  ověřují, zda výsledky nástrojů krmí následující dokončení, a kontrolují každý HTTP obsah pro Luna,
+  `reasoning_effort: "none"` a `max_completion_tokens` bez starého `max_tokens`.
+- Konfigurační/vstupní testy ověřují přepnutí nasazení a endpointu, prázdné řádky, EOF, exit/quit,
+  režim jednoho promptu, neplatné volby a propagaci chyb. Testy kvóty potvrzují, že chyba 429 není opakována.
+
+## Jak to vše funguje dohromady
+
+Zde je celý tok, když se zeptáte AI "Kolik je 5 + 3?":
+
+1. **Vy** požádáte AI přirozeným jazykem
+2. **AI** analyzuje váš požadavek a zjistí, že chcete sčítání
 3. **AI** zavolá MCP server: `add(5.0, 3.0)`
-4. **Kalkulační Služba** provede: `5.0 + 3.0 = 8.0`
-5. **Kalkulační Služba** vrátí: `"5.00 + 3.00 = 8.00"`
+4. **Kalkulační služba** provede: `5.0 + 3.0 = 8.0`
+5. **Kalkulační služba** vrátí: `"5.00 + 3.00 = 8.00"`
 6. **AI** přijme výsledek a vytvoří přirozenou odpověď
-7. **Vy** dostanete: „Součet 5 a 3 je 8“
+7. **Vy** dostanete: "Součet 5 a 3 je 8"
 
-## Další Kroky
+## Další kroky
 
 Pro více příkladů viz [Kapitola 04: Praktické ukázky](../README.md)
 

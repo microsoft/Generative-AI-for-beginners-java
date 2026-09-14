@@ -1,22 +1,22 @@
-# Nastavení vývojového prostředí pro Generative AI pro Java
+# Nastavení vývojového prostředí pro Generativní AI pro Javu
 
-> **Rychlý start:** Zprovozněte své AI modely na **Azure AI Foundry** jako kód pomocí Bicep + `azd` během několika minut — podívejte se na [Průvodce nastavením Azure AI Foundry](getting-started-azure-openai.md). Autentizace je **bezklíčová** (Microsoft Entra ID), takže není potřeba spravovat žádné API klíče.
+> **Rychlý start:** Nasazujte své AI modely na **Azure AI Foundry** jako kód s Bicep + `azd` během několika minut — viz [Průvodce nastavením Azure AI Foundry](getting-started-azure-openai.md). Autentizace je **bezklíčová** (Microsoft Entra ID), takže není třeba spravovat žádné API klíče.
 
 ## Co se naučíte
 
-- Nastavit vývojové prostředí pro AI aplikace v jazyce Java
-- Vybrat a nakonfigurovat preferované vývojové prostředí (cloud-first s Codespaces, lokální dev container nebo plná lokální instalace)
+- Nastavit vývojové prostředí pro AI aplikace v Javě
+- Vybrat a nakonfigurovat preferované vývojové prostředí (cloud-first s Codespaces, lokální dev kontejner nebo plná lokální instalace)
 - Otestovat nastavení připojením k modelu Azure AI Foundry
 
 ## Obsah
 
 - [Co se naučíte](#co-se-naučíte)
 - [Úvod](#úvod)
-- [Krok 1: Nastavte si vývojové prostředí](#krok-1-nastavte-si-vývojové-prostředí)
+- [Krok 1: Nastavení vývojového prostředí](#krok-1-nastavení-vývojového-prostředí)
   - [Možnost A: GitHub Codespaces (doporučeno)](#možnost-a-github-codespaces-doporučeno)
-  - [Možnost B: Lokální dev container](#možnost-b-lokální-dev-container)
-  - [Možnost C: Použijte stávající lokální instalaci](#možnost-c-použijte-stávající-lokální-instalaci)
-- [Krok 2: Provision Azure AI Foundry](#krok-2-provision-azure-ai-foundry)
+  - [Možnost B: Lokální dev kontejner](#možnost-b-lokální-dev-kontejner)
+  - [Možnost C: Použití stávající lokální instalace](#možnost-c-použijte-svou-stávající-lokální-instalaci)
+- [Krok 2: Nasazení Azure AI Foundry](#krok-2-nasazení-azure-ai-foundry)
 - [Krok 3: Otestujte své nastavení](#krok-3-otestujte-své-nastavení)
 - [Řešení problémů](#řešení-problémů)
 - [Shrnutí](#shrnutí)
@@ -24,89 +24,92 @@
 
 ## Úvod
 
-Tato kapitola vás provede nastavením vývojového prostředí. Během tohoto kurzu budeme používat **Azure AI Foundry** pro modely. Modely zprovozníte jako kód pomocí Bicep a Azure Developer CLI (`azd`), a připojíte se s **bezklíčovou autentizací** (Microsoft Entra ID) — není potřeba kopírovat či uchovávat API klíče.
+Tento kapitola vás provede nastavením vývojového prostředí. Po celou dobu kurzu použijeme **Azure AI Foundry** pro modely. Modely nasadíte jako kód pomocí Bicep a Azure Developer CLI (`azd`), poté se připojíte pomocí **bezklíčové autentizace** (Microsoft Entra ID) — žádné API klíče nemusíte kopírovat nebo riskovat únik.
 
-**Není potřeba žádné lokální nastavení!** Můžete použít GitHub Codespaces, který poskytuje plné vývojové prostředí přímo v prohlížeči a zde i zprovozníte Foundry.
+**Není potřeba žádná lokální instalace!** Můžete použít GitHub Codespaces, který poskytuje plné vývojové prostředí v prohlížeči, a odtud nasadit Foundry.
 
-Používáme **Azure AI Foundry**, protože:
-- **Provisionuje se jako kód** — jedno `azd up` nasadí účet a deploymenty modelů
-- **Je bezklíčové** — autentizace pomocí přihlášení do Azure nebo spravované identity
-- **Je připravené pro produkci** — stejný kód běží lokálně i v Azure
-- **Je flexibilní** — vyměníte model změnou názvu deploymentu, ne kódu
+Pro tento kurz používáme **Azure AI Foundry**, protože je:
+- **Nasazeno jako kód** — jeden příkaz `azd up` nasadí účet a modely
+- **Bezklíčové** — autentizace probíhá pomocí Azure přihlášení nebo spravované identity
+- **Připravené do produkce** — stejný kód funguje lokálně i v Azure
+- **Flexibilní** — vyměníte model změnou názvu nasazení, nikoli kódu
 
-> **Poznámka**: Deploymenty Azure AI Foundry se účtují za tokeny (pay-as-you-go). Viz [průvodce nastavením Azure AI Foundry](getting-started-azure-openai.md) pro detaily o provisioningu, regionech a nákladech.
+> **Poznámka**: Nasazení Azure AI Foundry se účtuje podle počtu tokenů (platební podle užití). Viz [Průvodce nastavením Azure AI Foundry](getting-started-azure-openai.md) pro podrobnosti o nasazení, lokalitě a cenách.
 
-## Krok 1: Nastavte si vývojové prostředí
+
+## Krok 1: Nastavení vývojového prostředí
 
 <a name="quick-start-cloud"></a>
 
-Vytvořili jsme předkonfigurovaný vývojový kontejner, který minimalizuje nastavení a zajistí, že máte všechny potřebné nástroje pro tento kurz Generative AI pro Java. Vyberte si preferovaný přístup k vývoji:
+Vytvořili jsme přednastavený vývojový kontejner, abychom minimalizovali dobu instalace a zajistili, že máte všechny potřebné nástroje pro tento kurz Generativní AI pro Javu. Vyberte si svůj preferovaný způsob vývoje:
 
 ### Možnosti nastavení prostředí:
 
-#### Možnost A: GitHub Codespaces (Doporučeno)
+#### Možnost A: GitHub Codespaces (doporučeno)
 
-**Začněte kódovat za 2 minuty – bez lokální instalace!**
+**Začněte kódovat za 2 minuty - bez potřeby lokální instalace!**
 
-1. Forkněte si tento repozitář na svůj GitHub účet  
-   > **Poznámka**: Pokud chcete upravit základní konfiguraci, podívejte se na [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
+1. Zforkujte tento repozitář do svého GitHub účtu
+   > **Poznámka**: Pokud chcete upravit základní konfiguraci, podívejte se na [Konfiguraci Dev kontejneru](../../../.devcontainer/devcontainer.json)
 2. Klikněte na **Code** → záložka **Codespaces** → **...** → **New with options...**
-3. Použijte výchozí nastavení – vybere se **Dev container configuration**: **Generative AI Java Development Environment** vlastní devcontainer vytvořený pro tento kurz
+3. Použijte výchozí nastavení – vybere se **Dev container konfigurace**: **Generative AI Java Development Environment** vlastní devcontainer vytvořený pro tento kurz
 4. Klikněte na **Create codespace**
-5. Počkejte asi 2 minuty, než se prostředí připraví
-6. Pokračujte na [Krok 2: Provision Azure AI Foundry](#krok-2-provision-azure-ai-foundry)
+5. Počkejte asi 2 minuty, než bude prostředí připravené
+6. Pokračujte do [Kroku 2: Nasazení Azure AI Foundry](#krok-2-nasazení-azure-ai-foundry)
 
-<img src="../../../translated_images/cs/codespaces.9945ded8ceb431a5.webp" alt="Screenshot: Codespaces submenu" width="50%">
+<img src="../../../translated_images/cs/codespaces.9945ded8ceb431a5.webp" alt="Snímek obrazovky: nabídka Codespaces" width="50%">
 
-<img src="../../../translated_images/cs/image.833552b62eee7766.webp" alt="Screenshot: New with options" width="50%">
+<img src="../../../translated_images/cs/image.833552b62eee7766.webp" alt="Snímek obrazovky: Nový s možnostmi" width="50%">
 
-<img src="../../../translated_images/cs/codespaces-create.b44a36f728660ab7.webp" alt="Screenshot: Create codespace options" width="50%">
+<img src="../../../translated_images/cs/codespaces-create.b44a36f728660ab7.webp" alt="Snímek obrazovky: Nastavení vytvoření codespace" width="50%">
+
 
 > **Výhody Codespaces**:
-> - Není potřeba žádná lokální instalace
-> - Funguje na libovolném zařízení s prohlížečem
-> - Předkonfigurováno se všemi nástroji a závislostmi
-> - Zdarma 60 hodin/měsíc pro osobní účty
+> - Není potřeba lokální instalace
+> - Funguje na jakémkoli zařízení s prohlížečem
+> - Přednastavené se všemi nástroji a závislostmi
+> - Zdarma 60 hodin měsíčně pro osobní účty
 > - Konzistentní prostředí pro všechny studenty
 
-#### Možnost B: Lokální Dev Container
+#### Možnost B: Lokální Dev kontejner
 
 **Pro vývojáře, kteří preferují lokální vývoj s Dockerem**
 
-1. Forkněte a naklonujte tento repozitář do svého počítače  
-   > **Poznámka**: Pokud chcete upravit základní konfiguraci, podívejte se na [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
+1. Zforkujte a klonujte tento repozitář na svůj počítač
+   > **Poznámka**: Pokud chcete upravit základní konfiguraci, podívejte se na [Konfiguraci Dev kontejneru](../../../.devcontainer/devcontainer.json)
 2. Nainstalujte [Docker Desktop](https://www.docker.com/products/docker-desktop/) a [VS Code](https://code.visualstudio.com/)
-3. Nainstalujte rozšíření [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) do VS Code
-4. Otevřete složku s repozitářem ve VS Code
-5. Jakmile se zobrazí výzva, klikněte na **Reopen in Container** (nebo použijte `Ctrl+Shift+P` → "Dev Containers: Reopen in Container")
-6. Počkejte, až se container sestaví a spustí
-7. Pokračujte na [Krok 2: Provision Azure AI Foundry](#krok-2-provision-azure-ai-foundry)
+3. Nainstalujte v VS Code rozšíření [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+4. Otevřete složku repozitáře ve VS Code
+5. Když budete vyzváni, klikněte na **Reopen in Container** (nebo použijte `Ctrl+Shift+P` → "Dev Containers: Reopen in Container")
+6. Počkejte na sestavení a spuštění kontejneru
+7. Pokračujte do [Kroku 2: Nasazení Azure AI Foundry](#krok-2-nasazení-azure-ai-foundry)
 
-<img src="../../../translated_images/cs/devcontainer.21126c9d6de64494.webp" alt="Screenshot: Dev container setup" width="50%">
+<img src="../../../translated_images/cs/devcontainer.21126c9d6de64494.webp" alt="Snímek obrazovky: Nastavení dev kontejneru" width="50%">
 
-<img src="../../../translated_images/cs/image-3.bf93d533bbc84268.webp" alt="Screenshot: Dev container build complete" width="50%">
+<img src="../../../translated_images/cs/image-3.bf93d533bbc84268.webp" alt="Snímek obrazovky: Dokončení sestavení dev kontejneru" width="50%">
 
-#### Možnost C: Použijte stávající lokální instalaci
+#### Možnost C: Použijte svou stávající lokální instalaci
 
-**Pro vývojáře s již existujícím Java prostředím**
+**Pro vývojáře se stávajícími Java prostředími**
 
 Požadavky:
 - [Java 21+](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html) 
 - [Maven 3.9+](https://maven.apache.org/download.cgi)
 - [VS Code](https://code.visualstudio.com) nebo preferované IDE
 
-Postup:
-1. Naklonujte tento repozitář do svého počítače
+Kroky:
+1. Naklonujte tento repozitář na svůj počítač
 2. Otevřete projekt ve svém IDE
-3. Pokračujte na [Krok 2: Provision Azure AI Foundry](#krok-2-provision-azure-ai-foundry)
+3. Pokračujte do [Kroku 2: Nasazení Azure AI Foundry](#krok-2-nasazení-azure-ai-foundry)
 
-> **Tip**: Pokud máte zařízení s nízkým výkonem, ale chcete používat VS Code lokálně, využijte GitHub Codespaces! Můžete připojit svůj lokální VS Code ke cloudovému Codespace a mít tak výhody obou světů.
+> **Profesionální tip**: Máte-li stroj s nízkým výkonem, ale chcete VS Code lokálně, použijte GitHub Codespaces! Můžete připojit svůj lokální VS Code k cloud-hostovanému Codespace pro to nejlepší z obou světů.
 
-<img src="../../../translated_images/cs/image-2.fc0da29a6e4d2aff.webp" alt="Screenshot: created local devcontainer instance" width="50%">
+<img src="../../../translated_images/cs/image-2.fc0da29a6e4d2aff.webp" alt="Snímek obrazovky: vytvořená lokální instance devcontaineru" width="50%">
 
-## Krok 2: Provision Azure AI Foundry
 
-Nasadíte AI modely z kurzu do Azure AI Foundry jako kód. Ze složky kořene repozitáře spusťte:
+## Krok 2: Nasazení Azure AI Foundry
+
+Nasazení AI modelů kurzu do Azure AI Foundry jako kód. Z kořenové složky repozitáře:
 
 ```bash
 cd 02-SetupDevEnvironment
@@ -114,107 +117,119 @@ azd auth login
 az login
 azd up
 ```
-  
-`azd` vás vyzve k zadání názvu prostředí a regionu, provisionuje účet Azure AI Foundry s deploymenty `gpt-4o-mini` a `text-embedding-3-small`, a zapíše endpoint do souboru `.env` příkladu — vše s **bezklíčovou** autentizací (bez API klíčů).
 
-> **Plný průvodce:** Viz [Průvodce nastavením Azure AI Foundry](getting-started-azure-openai.md) pro předpoklady, manuální (portal) alternativu, doporučení regionu a informace o nákladech a úklidu.
+`azd` se zeptá na název prostředí, předplatné a lokaci, nasadí Azure AI Foundry účet s nasazeními `gpt-5.6-luna` a `text-embedding-3-small` a zapíše endpoint do `.env` příkladu - vše s **bezklíčovou** autentizací (žádné API klíče).
+
+> **Kompletní průvodce:** Viz [Průvodce nastavením Azure AI Foundry](getting-started-azure-openai.md) pro požadavky, manuální (portalovou) alternativu, doporučení lokality a poznámky k nákladům/ukončení.
 
 ## Krok 3: Otestujte své nastavení
 
-Po zprovoznění Foundry modelů otestujte připojení pomocí příkladové aplikace v [`02-SetupDevEnvironment/examples/basic-chat-azure`](../../../02-SetupDevEnvironment/examples/basic-chat-azure).
+Jakmile máte nasazené modely Foundry, otestujte připojení pomocí ukázkové aplikace v [`02-SetupDevEnvironment/examples/basic-chat-azure`](../../../02-SetupDevEnvironment/examples/basic-chat-azure).
 
-1. Otevřete terminál ve vývojovém prostředí.
-2. Přejděte do příkladu:  
+1. Otevřete terminál ve svém vývojovém prostředí.
+2. Přejděte do příkladu:
    ```bash
    cd 02-SetupDevEnvironment/examples/basic-chat-azure
    ```
-  
-3. Ujistěte se, že jste přihlášeni (bezklíčová autentizace vyžaduje token):  
+3. Ujistěte se, že jste přihlášeni (bezklíčová autentizace vyžaduje token):
    ```bash
    az login
    ```
-  
-   > Pokud jste spustili `azd up`, `.env` se endpointem už byl vytvořen automaticky.
-4. Spusťte aplikaci:  
+   > Pokud jste spustili `azd up`, `.env` soubor s vaším endpointem byl již zapsán.
+4. Spusťte aplikaci:
    ```bash
    mvn clean spring-boot:run
    ```
-  
-Měli byste vidět odpověď z modelu `gpt-4o-mini`.
 
-### Pochopení příkladového kódu
+Měli byste vidět odpověď od modelu `gpt-5.6-luna`.
 
-Příklad v `examples/basic-chat-azure` je aplikace Spring Boot využívající **Spring AI** k připojení k Azure AI Foundry s bezklíčovou autentizací.
+### Porozumění příkladovému kódu
+
+[basic-chat příklad](./examples/basic-chat-azure/README.md) používá **Spring Boot 4.1.1** a **Spring AI 2.0.1**. Spring AI `ChatClient` je postaven na oficiálním OpenAI Java SDK, které se připojuje k Azure OpenAI **v1** endpointu s bezklíčovou autentizací.
 
 **Co tento kód dělá:**
-- **Připojuje se** k Azure AI Foundry pomocí přihlášení do Azure (Microsoft Entra ID) — bez API klíče
-- **Odesílá** prompt modelu `gpt-4o-mini`
+- **Připojuje** se k Azure AI Foundry pomocí vašeho Azure přihlášení (Microsoft Entra ID) — bez API klíče
+- **Odesílá** dotaz modelu `gpt-5.6-luna`
 - **Přijímá** a zobrazuje odpověď AI
-- **Ověřuje**, že je nastavení správné a funguje
+- **Ověřuje**, že je nastavení správné
 
-**Klíčová závislost** (v `pom.xml`):  
+**Klíčové závislosti** (výpis z [pom.xml](../../../02-SetupDevEnvironment/examples/basic-chat-azure/pom.xml)):
 ```xml
 <dependency>
     <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-starter-model-azure-openai</artifactId>
+    <artifactId>spring-ai-starter-model-openai</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.openai</groupId>
+    <artifactId>openai-java</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.azure</groupId>
+    <artifactId>azure-identity</artifactId>
+    <version>${azure-identity.version}</version>
 </dependency>
 ```
-  
-**Konfigurace** (`application.yml`):  
+
+POM spravuje OpenAI Java **4.63.1** a explicitně nastavuje Azure Identity **1.18.6**. Spring AI 2 odstranil Azure-specifický starter; Azure Identity je stále potřeba pro credential bean.
+
+**Konfigurace** ([application.yml](../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml)):
 ```yaml
 spring:
   ai:
-    azure:
-      openai:
-        # Endpoint only - no api-key. Spring AI uses DefaultAzureCredential (keyless).
-        endpoint: ${AZURE_OPENAI_ENDPOINT}
-        chat:
-          options:
-            deployment-name: ${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+    openai:
+      base-url: ${AZURE_OPENAI_ENDPOINT}
+      microsoft-foundry: true
+      chat:
+        model: ${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
+        reasoning-effort: none
+        max-completion-tokens: 500
 ```
 
+Bezklíčová autentizace je explicitně nastavena v [BasicChatApplication.java](../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/java/com/example/BasicChatApplication.java), není odvozena z nepřítomnosti API klíče. Její bearer credential používá `DefaultAzureCredential` s přístupem `https://ai.azure.com/.default`, a `OpenAIClient` cílí na `/openai/v1`. Aplikace poskytuje tohoto klienta chat modelu Spring AI, takže globální `OPENAI_API_KEY` nemůže přepsat Azure autentizaci.
+
+Nastavení chatu je přímo pod `spring.ai.openai.chat`, bez bloku `options`. Lekce zachovává chatové dokončování s `reasoning-effort: none` a maximem 500 tokenů; nenastavuje `temperature` ani `max-tokens`. Viz [referenci konfigurace příkladu](./examples/basic-chat-azure/README.md#spring-configuration) pro volbu API a doporučení ohledně volání nástrojů.
 
 ## Shrnutí
 
-Skvělé! Nyní máte vše nastaveno:
+Po dokončení výše uvedených kroků budete mít:
 
-- Zprovozněné modely Azure AI Foundry jako kód pomocí Bicep + `azd`
-- Běží vaše Java vývojové prostředí (Codespaces, dev container, nebo lokální)
-- Připojení k Azure AI Foundry s bezklíčovou autentizací (Microsoft Entra ID) — žádné API klíče
-- Otestováno vše funkční jednoduchým příkladem komunikujícím s modelem
+- Nasazené Azure AI Foundry modely jako kód s Bicep + `azd`
+- Nastavené vývojové prostředí pro Javu (ať už Codespaces, dev kontejnery nebo lokální)
+- Připojení k Azure AI Foundry pomocí bezklíčové autentizace (Microsoft Entra ID) — žádné API klíče
+- Otestováno, že vše funguje jednoduchým příkladem, který komunikuje s vaším modelem
 
 ## Další kroky
 
-[Kapitola 3: Základní techniky GenAI](../03-CoreGenerativeAITechniques/README.md)
+[Kapitola 3: Základní techniky generativní AI](../03-CoreGenerativeAITechniques/README.md)
 
 ## Řešení problémů
 
 Máte problémy? Zde jsou běžné potíže a řešení:
 
-- **Selhání autentizace (401/403)?**  
-  - Spusťte `az login` — autentizace je bezklíčová, musíte být přihlášeni  
-  - Zkontrolujte, že máte roli **Cognitive Services OpenAI User** na daném zdroji  
-  - Pokud jste právě provedli provisioning, počkejte chvíli, než se role projeví
+- **Selhává autentizace (401/403)?** 
+  - Spusťte `az login` — autentizace je bezklíčová, musíte být přihlášeni
+  - Ověřte, že váš účet má roli **Cognitive Services OpenAI User** k danému zdroji
+  - Pokud jste právě nasadili, počkejte minutu, než se role projeví
 
-- **Maven nenalezen?**  
-  - Pokud používáte dev container/Codespaces, Maven by měl být předinstalovaný  
-  - U lokálního nastavení se ujistěte, že máte Java 21+ a Maven 3.9+  
-  - Zkuste příkaz `mvn --version` pro ověření instalace
+- **Maven nenalezen?** 
+  - Pokud používáte dev kontejnery/Codespaces, Maven by měl být předinstalovaný
+  - Pro lokální nastavení zajistěte instalaci Java 21+ a Maven 3.9+
+  - Zkuste `mvn --version` pro ověření instalace
 
-- **`azd` nenalezen nebo provisioning selhává?**  
-  - Nainstalujte [Azure Developer CLI](https://aka.ms/azure-dev/install) a spusťte `azd auth login`  
-  - Vyberte region, kde je `gpt-4o-mini` dostupný (např. `eastus2`)  
-  - Viz [průvodce nastavením Azure AI Foundry](getting-started-azure-openai.md) pro podrobnosti
+- **`azd` nenalezen nebo selhává nasazení?** 
+  - Nainstalujte [Azure Developer CLI](https://aka.ms/azure-dev/install) a spusťte `azd auth login`
+  - Vyberte lokaci, kde jsou dostupné `gpt-5.6-luna` a `text-embedding-3-small` (např. `eastus2`) s dostatečnou kvótou ve vašem předplatném
+  - Viz [Průvodce nastavením Azure AI Foundry](getting-started-azure-openai.md) pro podrobnosti
 
-- **Dev container se nespouští?**  
-  - Ověřte, že Docker Desktop běží (pro lokální vývoj)  
-  - Zkuste container přebuildovat: `Ctrl+Shift+P` → "Dev Containers: Rebuild Container"
+- **Dev kontejner se nespouští?** 
+  - Ujistěte se, že Docker Desktop běží (pro lokální vývoj)
+  - Zkuste přestavět kontejner: `Ctrl+Shift+P` → "Dev Containers: Rebuild Container"
 
-- **Chyby při kompilaci aplikace?**  
-  - Ujistěte se, že jste ve správném adresáři: `02-SetupDevEnvironment/examples/basic-chat-azure`  
-  - Zkuste `mvn clean compile` pro vyčištění a znovukompilování
+- **Chyby kompilace aplikace?**
+  - Ujistěte se, že jste ve správném adresáři: `02-SetupDevEnvironment/examples/basic-chat-azure`
+  - Zkuste čistit a kompilovat znovu: `mvn clean compile`
 
-> **Potřebujete pomoc?**: Stále máte problémy? Otevřete issue v repozitáři a rádi vám pomůžeme.
+> **Potřebujete pomoc?**: Máte-li stále problémy, otevřete issue v repozitáři a rádi pomůžeme.
 
 ---
 
