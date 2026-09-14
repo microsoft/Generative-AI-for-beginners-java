@@ -26,8 +26,8 @@ Both paths use **keyless authentication** (Microsoft Entra ID) — there are no 
 The Bicep templates in [`infra/`](../../../02-SetupDevEnvironment/infra) provision:
 
 - An **Azure AI Foundry** account (`Microsoft.CognitiveServices/accounts`, kind `AIServices`) with a project
-- A **chat** deployment — `gpt-4o-mini`
-- An **embedding** deployment — `text-embedding-3-small` (used in later chapters)
+- A **chat** deployment - GPT-5.6 Luna (`gpt-5.6-luna`), version `2026-07-09`, with `GlobalStandard` capacity `10` (10 requests/minute and 10,000 tokens/minute for this model)
+- An **embedding** deployment - `text-embedding-3-small`, version `1` (used in later chapters)
 - A **keyless role assignment** (`Cognitive Services OpenAI User`) so you sign in with `az login` instead of managing keys
 
 ## Prerequisites
@@ -48,11 +48,11 @@ cd 02-SetupDevEnvironment
 azd auth login
 az login
 
-# Set up the Foundry account + model deployments
+# Provision the Foundry account + model deployments
 azd up
 ```
 
-`azd` prompts for an **environment name** (for example `genai-java`) and a **region**. Choose a region where `gpt-4o-mini` and `text-embedding-3-small` are available — for example `eastus2` or `swedencentral`.
+`azd` prompts for an **environment name** (for example `genai-java`), **subscription**, and **region**. Choose your own subscription and a region where `gpt-5.6-luna` and `text-embedding-3-small` are available, for example `eastus2`. Confirm that the subscription has sufficient quota for the model and deployment type in that region; availability and quota vary by subscription.
 
 When provisioning finishes, azd:
 
@@ -76,7 +76,7 @@ Prefer the portal? Create the resources by hand:
 1. Go to the [Azure AI Foundry portal](https://ai.azure.com/) and sign in.
 2. **Create a project** (this also creates an AI Foundry resource). Give it a name like `GenAIJava`.
 3. In your project, open **Models + endpoints** → **Deploy model** → **Deploy base model**.
-4. Deploy **gpt-4o-mini** (deployment name `gpt-4o-mini`). Repeat for **text-embedding-3-small** if you want the embedding examples.
+4. Deploy **GPT-5.6 Luna** (model and deployment name `gpt-5.6-luna`, version `2026-07-09`) with **Global Standard** capacity `10`. Repeat for **text-embedding-3-small**, version `1`, if you want the embedding examples.
 5. From **Overview**, copy the **endpoint** (for example `https://<resource>.openai.azure.com/`).
 6. Grant yourself keyless access: on the resource, open **Access control (IAM)** → **Add role assignment** → assign **Cognitive Services OpenAI User** to your account.
 
@@ -97,8 +97,10 @@ Edit `.env` with your endpoint (no key — auth is keyless):
 
 ```bash
 AZURE_OPENAI_ENDPOINT=https://<your-resource>.openai.azure.com/
-AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
+AZURE_OPENAI_DEPLOYMENT=gpt-5.6-luna
 ```
+
+Use the resource's Azure OpenAI endpoint, not a project URL. The basic-chat app resolves it to `/openai/v1` and configures an explicit bearer-token client; an API key is not required.
 
 > **Security note:** There is no API key to store. You authenticate with Microsoft Entra ID via `az login` (locally) or a managed identity (in Azure). The `.env` file holds only non-secret settings and is already covered by `.gitignore`.
 
@@ -113,7 +115,7 @@ az login          # if you aren't already signed in
 mvn clean spring-boot:run
 ```
 
-You should see a response from the `gpt-4o-mini` model!
+You should see a response from the `gpt-5.6-luna` model. Run examples sequentially to stay within the small default quota; if you receive HTTP 429, wait for the retry interval before trying again.
 
 > **VS Code users:** Press `F5` to run. The app loads your `.env` automatically.
 
@@ -121,8 +123,8 @@ You should see a response from the `gpt-4o-mini` model!
 
 ## What's Next?
 
-**Setup complete!** You now have:
-- Azure AI Foundry with `gpt-4o-mini` and `text-embedding-3-small` deployed
+After provisioning and successfully running the example, you will have:
+- Azure AI Foundry with `gpt-5.6-luna` and `text-embedding-3-small` deployed
 - Keyless authentication (Microsoft Entra ID) — no keys to manage
 - A local `.env` with your endpoint and deployment names
 - A Java development environment ready to go
@@ -134,8 +136,8 @@ You should see a response from the `gpt-4o-mini` model!
 - [Azure Developer CLI (azd)](https://aka.ms/azure-dev/install)
 - [Keyless authentication with Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
 - [Azure AI Foundry Documentation](https://learn.microsoft.com/azure/ai-foundry/)
-- [Spring AI Azure OpenAI Documentation](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
-- [Azure OpenAI Java SDK](https://learn.microsoft.com/java/api/overview/azure/ai-openai-readme)
+- [Spring AI 2 OpenAI Java SDK transition](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [Official OpenAI Java SDK with Azure OpenAI v1](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
 
 ## Additional Resources
 

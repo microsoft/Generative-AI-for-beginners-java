@@ -52,13 +52,14 @@
 - **[→ Start Chapter 1](./01-IntroToGenAI/README.md)**
 
 ### **Chapter 2: Development Environment Setup**
-- **Azure AI Foundry**: Provision model deployments as code with Bicep and the Azure Developer CLI (azd)
-- **Spring Boot + Spring AI**: Best practices for enterprise AI application development
+- **Azure AI Foundry**: Provision GPT-5.6 Luna chat and text-embedding-3-small embeddings with Bicep and the Azure Developer CLI (azd)
+- **Spring Boot 4.1.1 + Spring AI 2.0.1**: Learn with `ChatClient`, backed by the official OpenAI Java SDK and Azure OpenAI v1
 - **Keyless Authentication**: Connect securely with Microsoft Entra ID — no API keys to manage
 - **Development Tools**: Docker containers, VS Code, and GitHub Codespaces configuration
 - **[→ Start Chapter 2](./02-SetupDevEnvironment/README.md)**
 
 ### **Chapter 3: Core Generative AI Techniques**
+- **Official OpenAI Java SDK**: Call Azure OpenAI v1 directly with keyless authentication
 - **Prompt Engineering**: Techniques for optimal AI model responses
 - **Embeddings & Vector Operations**: Implement semantic search and similarity matching
 - **Retrieval-Augmented Generation (RAG)**: Combine AI with your own data sources

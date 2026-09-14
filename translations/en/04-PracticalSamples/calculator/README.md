@@ -4,6 +4,7 @@
 
 - [What You Will Learn](#what-you-will-learn)
 - [Prerequisites](#prerequisites)
+- [Dependency Versions](#dependency-versions)
 - [Understanding the Project Structure](#understanding-the-project-structure)
 - [Core Components Explained](#core-components-explained)
   - [1. Main Application](#1-main-application)
@@ -11,6 +12,7 @@
   - [3. Direct MCP Client](#3-direct-mcp-client)
   - [4. AI-Powered Client](#4-ai-powered-client)
 - [Running the Examples](#running-the-examples)
+- [Offline Tests](#offline-tests)
 - [How It All Works Together](#how-it-all-works-together)
 - [Next Steps](#next-steps)
 
@@ -28,9 +30,32 @@ This tutorial explains how to build a calculator service using the Model Context
 Before starting, make sure you have:
 - Java 21 or higher installed
 - Maven for dependency management
-- An Azure AI Foundry model deployment (provision it with `azd up` — see [Chapter 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md))
-- The [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli), signed in with `az login` (keyless auth)
 - Basic understanding of Java and Spring Boot
+
+Only the AI clients require an Azure OpenAI deployment and an authenticated `DefaultAzureCredential`,
+such as an existing Azure CLI sign-in locally or a managed identity in Azure. The identity needs
+the Cognitive Services OpenAI User role on the resource. See [Chapter 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md).
+The server, direct SDK client, and all automated tests need no Azure account or model access.
+
+## Dependency Versions
+
+Release dependencies verified on 2026-09-14:
+
+| Dependency | Version |
+| --- | --- |
+| Spring Boot | 4.1.1 |
+| Spring AI | 2.0.1 |
+| MCP Java SDK (Spring AI-managed) | 2.0.0 |
+| LangChain4j / core | 1.20.0 |
+| LangChain4j MCP | 1.20.0-beta30 |
+| LangChain4j official OpenAI adapter | 1.20.0-beta30 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
+| JUnit Jupiter (Boot-managed) | 6.0.3 |
+
+The MCP and official OpenAI adapters are published beta releases in Maven Central, not snapshots.
+Their versions differ from LangChain4j core. No snapshot or milestone repositories are needed.
+Client-only dependencies have test scope because the runnable examples live under `src/test/java`.
 
 ## Understanding the Project Structure
 
@@ -44,7 +69,7 @@ calculator/
 └── src/test/java/com/microsoft/mcp/sample/client/
     ├── SDKClient.java                     # Direct MCP communication
     ├── LangChain4jClient.java            # AI-powered client
-    └── Bot.java                          # Simple chat interface
+    └── Bot.java                          # Chat interface and interactive entrypoint
 ```
 
 ## Core Components Explained
@@ -100,7 +125,7 @@ public class CalculatorService {
     // More calculator operations...
     
     private String formatResult(double a, String operator, double b, double result) {
-        return String.format("%.2f %s %.2f = %.2f", a, operator, b, result);
+        return String.format(java.util.Locale.ROOT, "%.2f %s %.2f = %.2f", a, operator, b, result);
     }
 }
 ```
@@ -125,180 +150,159 @@ public class CalculatorService {
 
 ### 3. Direct MCP Client
 
-**File:** `SDKClient.java`
+See [SDKClient.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/SDKClient.java).
 
-This client talks directly to the MCP server without using AI. It manually calls specific calculator functions:
+This client uses `HttpClientStreamableHttpTransport` at `/mcp`, initializes the connection,
+pings the server, and follows tool-list pagination. It checks that all nine expected tools
+exist and calls each of them, including `modulus` and `help`, without an AI model.
+
+The current request builder looks like this:
 
 ```java
-public class SDKClient {
-    
-    public static void main(String[] args) {
-        McpClientTransport transport = WebFluxSseClientTransport.builder(
-            WebClient.builder().baseUrl("http://localhost:8080")
-        ).build();
-        new SDKClient(transport).run();
-    }
-    
-    public void run() {
-        var client = McpClient.sync(this.transport).build();
-        client.initialize();
-        
-        // List available tools
-        ListToolsResult toolsList = client.listTools();
-        System.out.println("Available Tools = " + toolsList);
-        
-        // Call specific calculator functions
-        CallToolResult resultAdd = client.callTool(
-            new CallToolRequest("add", Map.of("a", 5.0, "b", 3.0))
-        );
-        System.out.println("Add Result = " + resultAdd);
-        
-        CallToolResult resultSqrt = client.callTool(
-            new CallToolRequest("squareRoot", Map.of("number", 16.0))
-        );
-        System.out.println("Square Root Result = " + resultSqrt);
-        
-        client.closeGracefully();
-    }
-}
+var request = CallToolRequest.builder("add")
+    .arguments(Map.of("a", 5.0, "b", 3.0))
+    .build();
+var result = client.callTool(request);
 ```
 
-**What this does:**
-1. **Connects** to the calculator server at `http://localhost:8080` using the builder pattern
-2. **Lists** all available tools (our calculator functions)
-3. **Calls** specific functions with exact parameters
-4. **Prints** the results directly
-
-**Note:** This example uses the Spring AI 1.1.0-SNAPSHOT dependency, which introduced a builder pattern for the `WebFluxSseClientTransport`. If you're using an older stable version, you might need to use the direct constructor instead.
-
-**When to use this:** When you know exactly which calculation you want to perform and want to call it programmatically.
+Protocol errors fail the client instead of printing a misleading success. The MCP client
+is closed with try-with-resources, including when discovery or a tool call fails.
 
 ### 4. AI-Powered Client
 
-**File:** `LangChain4jClient.java`
+See [LangChain4jClient.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/LangChain4jClient.java)
+and [Bot.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/Bot.java).
 
-This client uses an AI model (GPT-4o-mini) that can automatically decide which calculator tools to use:
+`OpenAiOfficialChatModel` implements the current LangChain4j `ChatModel` API.
+`StreamableHttpMcpTransport` connects it to the same `/mcp` endpoint as the SDK client.
+`AiServices` discovers the tools and manages the tool-call/result conversation.
+
+The default deployment is **GPT-5.6 Luna**, with reasoning explicitly disabled:
 
 ```java
-public class LangChain4jClient {
-    
-    public static void main(String[] args) throws Exception {
-        // Set up the AI model (Azure AI Foundry, keyless auth via Microsoft Entra ID)
-        String endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1";
-        String token = new DefaultAzureCredentialBuilder().build()
-                .getToken(new TokenRequestContext().addScopes("https://ai.azure.com/.default"))
-                .block().getToken();
-        ChatLanguageModel model = OpenAiOfficialChatModel.builder()
-                .baseUrl(baseUrl)
-                .apiKey(token)
-                .modelName("gpt-4o-mini")
-                .build();
-
-        // Connect to our calculator MCP server
-        McpTransport transport = new HttpMcpTransport.Builder()
-                .sseUrl("http://localhost:8080/sse")
-                .logRequests(true)  // Shows what the AI is doing
-                .logResponses(true)
-                .build();
-
-        McpClient mcpClient = new DefaultMcpClient.Builder()
-                .transport(transport)
-                .build();
-
-        // Give the AI access to our calculator tools
-        ToolProvider toolProvider = McpToolProvider.builder()
-                .mcpClients(List.of(mcpClient))
-                .build();
-
-        // Create an AI bot that can use our calculator
-        Bot bot = AiServices.builder(Bot.class)
-                .chatLanguageModel(model)
-                .toolProvider(toolProvider)
-                .build();
-
-        // Now we can ask the AI to do calculations in natural language
-        String response = bot.chat("Calculate the sum of 24.5 and 17.3 using the calculator service");
-        System.out.println(response);
-
-        response = bot.chat("What's the square root of 144?");
-        System.out.println(response);
-    }
-}
+var parameters = OpenAiOfficialChatRequestParameters.builder()
+    .modelName("gpt-5.6-luna")
+    .reasoningEffort("none")
+    .maxCompletionTokens(1024)
+    .parallelToolCalls(false)
+    .build();
 ```
 
-**What this does:**
-1. **Creates** an AI model connection using keyless authentication (Microsoft Entra ID)
-2. **Connects** the AI to our calculator MCP server
-3. **Gives** the AI access to all our calculator tools
-4. **Allows** natural language requests like "Calculate the sum of 24.5 and 17.3"
+These defaults apply to every completion, including follow-ups after tool execution.
+The client uses a refreshable `BearerTokenCredential` backed by `DefaultAzureCredential`
+and the `https://ai.azure.com/.default` scope, not a one-time token passed as an API key.
+Resource URLs and URLs already ending in `/openai/v1` are both accepted.
 
-**The AI automatically:**
-- Understands you want to add numbers
-- Chooses the `add` tool
-- Calls `add(24.5, 17.3)`
-- Returns the result in a natural response
+The bot keeps a bounded conversation history, prints `Tool executed: ...` with the actual
+MCP result, and fails if a response skips tools. Tool loops are limited to four round trips.
+Authentication, model, MCP, and tool errors propagate; automatic model retries are disabled.
+Both the MCP transport/client and the official OpenAI client are closed on success or failure.
 
 ## Running the Examples
 
 ### Step 1: Start the Calculator Server
 
-First, sign in and set your Azure AI Foundry endpoint (needed for the AI client — keyless auth, no API key):
+No Azure configuration is needed for the server. Commands below run from this sample's directory.
+The example uses port **18081** to avoid conflicting with another sample; the default remains 8080.
 
-**Windows:**
-```cmd
-az login
-set AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-```
-
-**Linux/macOS:**
-```bash
-az login
-export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-```
-
-Start the server:
-```bash
+```powershell
 cd 04-PracticalSamples/calculator
-mvn clean spring-boot:run
+mvn spring-boot:run "-Dspring-boot.run.arguments=--server.port=18081"
 ```
 
-The server will start on `http://localhost:8080`. You should see:
-```
-Started McpServerApplication in X.XXX seconds
-```
+The MCP endpoint is `http://localhost:18081/mcp`. Health and discovery information are at
+`http://localhost:18081/health` and `http://localhost:18081/info`.
+Streamable HTTP replaces the old SSE-only transport; `/sse` and `/v1/tools` are not endpoints.
 
 ### Step 2: Test with Direct Client
 
-In a **NEW** terminal with the Server still running, run the direct MCP client:
-```bash
+In another PowerShell terminal:
+
+```powershell
 cd 04-PracticalSamples/calculator
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient" -Dexec.classpathScope=test
+$env:MCP_SERVER_URL = "http://localhost:18081"
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.SDKClient" "-Dexec.classpathScope=test"
 ```
 
-You'll see output like:
-```
-Available Tools = [add, subtract, multiply, divide, power, squareRoot, modulus, absolute, help]
-Add Result = 5.00 + 3.00 = 8.00
-Square Root Result = √16.00 = 4.00
-```
+No input is needed. All nine tools are exercised. Expected arithmetic results include
+8, 6, 42, 5, 256, 4, 2, and 5.5, followed by the help text.
 
 ### Step 3: Test with AI Client
 
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient" -Dexec.classpathScope=test
+After authenticating as described in the prerequisites, configure the AI client in the same terminal:
+
+```powershell
+$env:AZURE_OPENAI_ENDPOINT = "https://your-resource.openai.azure.com/"
+$env:AZURE_OPENAI_DEPLOYMENT = "gpt-5.6-luna"
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.LangChain4jClient" "-Dexec.classpathScope=test" "-Dexec.args=--prompt 'Calculate the sum of 24.5 and 17.3 using the calculator service'"
 ```
 
-You'll see the AI automatically using tools:
-```
-The sum of 24.5 and 17.3 is 41.8.
-The square root of 144 is 12.
+Expect a `Tool executed: add` line with `41.80`, followed by the model's answer.
+The single-prompt mode exits without waiting for input. To run the original four-prompt demo:
+
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.LangChain4jClient" "-Dexec.classpathScope=test" "-Dexec.args=--demo"
 ```
 
-### Step 4: Close the MCP Server
+The demo calls `add`, `squareRoot`, `help`, and the chained `power` then `divide` operation.
+Expected numeric answers are 41.8, 12, and 64. Omitting arguments also runs this demo.
 
-When you're done testing, you can stop the AI client by pressing `Ctrl+C` in its terminal. The MCP server will keep running until you stop it.
-To stop the server, press `Ctrl+C` in the terminal where it's running.
+### Step 4: Run the Interactive Bot
+
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.Bot" "-Dexec.classpathScope=test"
+```
+
+Enter `Multiply 6 by 7 using the calculator service`, then `exit` or `quit`.
+Expect an actual `multiply` tool result of 42. Blank lines are ignored; EOF also ends the session.
+For a noninteractive smoke test of this entrypoint:
+
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.Bot" "-Dexec.classpathScope=test" "-Dexec.args=--prompt 'Multiply 6 by 7 using the calculator service'"
+```
+
+Both AI entrypoints accept `--prompt "question"`, `--demo`, and `--interactive`.
+Invalid options fail before opening a connection. Each Maven `-D...` argument is fully quoted
+for PowerShell. On Bash, use `export NAME=value` instead of `$env:NAME = "value"`.
+
+**Quota:** Run AI samples sequentially. A simple prompt normally needs two model requests;
+the complete demo normally needs nine, including tool-result follow-ups. With a shared 10 RPM
+deployment, allow a fresh quota window before the next AI run. A 429 fails visibly without
+automatic retries; follow the service's retry-after guidance. Actual request counts depend on the model.
+Offline tests do not consume any quota and do not establish live Luna availability or answer quality.
+
+### Configuration and Shutdown
+
+| Setting | Default / behavior |
+| --- | --- |
+| `MCP_SERVER_URL` | `http://localhost:8080`; base URL, without `/mcp` |
+| `-Dmcp.server.url=...` | Overrides `MCP_SERVER_URL` for all clients |
+| `AZURE_OPENAI_ENDPOINT` | Required only for AI clients; resource URL or `/openai/v1` URL |
+| `AZURE_OPENAI_DEPLOYMENT` | `gpt-5.6-luna`; an Azure deployment name |
+| `AZURE_OPENAI_MAX_COMPLETION_TOKENS` | `1024`; positive integer |
+| Reasoning effort | Always `none`, including tool-loop follow-ups |
+
+An overridden deployment must support `reasoning_effort=none` and `max_completion_tokens`.
+The clients do not read a `.env` file automatically. Stop the server with `Ctrl+C` after testing.
+Clients return normally without `System.exit` or shutdown sleeps.
+
+## Offline Tests
+
+```powershell
+mvn -B -ntp clean verify
+```
+
+All tests are offline with respect to Azure: the protocol suite starts a Spring server and
+an OpenAI-compatible stub on random loopback ports, then closes them. Maven may still need
+to download dependencies. No credentials, live deployment, or pre-existing MCP server are used.
+
+- Calculator unit tests cover all arithmetic operations, decimal results, help, and domain errors.
+- MCP tests cover initialization, discovery, all nine tool calls, tool failures, and health/info.
+- The AI protocol tests execute the full demo and interactive Bot against the real calculator,
+  verify tool results feed the next completion, and inspect every HTTP body for Luna,
+  `reasoning_effort: "none"`, and `max_completion_tokens` with no legacy `max_tokens`.
+- Configuration/input tests cover deployment and endpoint overrides, blank lines, EOF, exit/quit,
+  single-prompt mode, invalid options, and error propagation. Quota tests prove 429 is not retried.
 
 ## How It All Works Together
 
