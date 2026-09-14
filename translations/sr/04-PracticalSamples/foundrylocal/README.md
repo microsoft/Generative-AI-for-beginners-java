@@ -1,354 +1,230 @@
-# Foundry Local Spring Boot Туторијал
+# Foundry локални Spring Boot туторијал
 
-## Садржај
+Покрените мали језички модел на свом рачунару и позовите његов OpenAI-компатибилан
+REST крајњи организам из Java конзолног апликације. Без Azure распоређивања, Azure пријаве,
+кључа API облака или облачног извршавања. **GPT-5.6 Luna је само за Azure; немојте
+га конфигурисати као Foundry локални модел.**
 
-- [Услови](#услови)
-- [Преглед пројекта](#преглед-пројекта)
-- [Разумевање кода](#разумевање-кода)
-  - [1. Конфигурација апликације (application.properties)](#1-конфигурација-апликације-applicationproperties)
-  - [2. Главна апликацијска класа (Application.java)](#2-главна-апликацијска-класа-applicationjava)
-  - [3. Слој AI сервиса (FoundryLocalService.java)](#3-слој-ai-сервиса-foundrylocalservicejava)
-  - [4. Пројектне зависности (pom.xml)](#4-пројектне-зависности-pomxml)
-- [Како све функционише заједно](#како-све-функционише-заједно)
-- [Подешавање Foundry Local](#подешавање-foundry-local)
-- [Покретање апликације](#покретање-апликације)
-- [Очекивани излаз](#очекивани-излаз)
-- [Следећи кораци](#следећи-кораци)
-- [Решавање проблема](#решавање-проблема)
+## Верзије и предуслови
 
+| Компонента | Верзија |
+| --- | --- |
+| Java | 21 или новији |
+| Maven | 3.6.3 или новији |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Foundry Local SDK (локални REST сервер) | 2.0.1 |
+| Node.js (локални REST сервер) | 20 или новији |
+| Foundry Local CLI (опционо, посебно издање) | 0.10.3 preview |
 
-## Услови
+Spring Boot управља верзијама Spring Framework, Jackson, JUnit и Maven плугина.
+Овај пример директно користи OpenAI Java SDK, а не Spring AI. Стари неупотребљени
+Spring AI милестоне својство и репозиторјум су уклоњени.
 
-Пре почетка овог туторијала, уверите се да имате:
+Препоручени почетни модел је **Qwen 2.5 0.5B**, CPU варијанта
+`qwen2.5-0.5b-instruct-generic-cpu:4` (приближно 822 MB у каталогу).
+Не захтева извршавање помоћу GPU-а. Други подржани, кеширани мали модели
+могу бити изабрани експлицитно. Инсталација модела и извршног окружења захтева приступ мрежи;
+упити и извршавање остају локални. Foundry Local може и даље избацити минималну дијагностику
+извршног окружења чак и са онемогућеном непотребном телеметријом.
 
-- **Java 21 или новију** верзију инсталирану на вашем систему
-- **Maven 3.6+** за изградњу пројекта
-- **Foundry Local** инсталиран и покренут
+Покрените следеће команде из овог директоријума узорака.
 
-### **Инсталирање Foundry Local:**
+## Изградња и тестирање Јава апликације
 
-> **Напомена:** Foundry Local CLI је доступан само на **Windows** и **macOS**. Linux је подржан преко [Foundry Local SDKs](https://github.com/microsoft/Foundry-Local) (Python, JavaScript, C#, Rust).
-
-```bash
-# Виндоус
-winget install Microsoft.FoundryLocal
-
-# макОС
-brew tap microsoft/foundrylocal
-brew install foundrylocal
+```powershell
+mvn clean verify
 ```
 
-Проверите инсталацију:
-```bash
+HTTP уговорни тестови покрећу привремени локални сервер и тестирају стварни
+OpenAI Java SDK. Обухватају сериализацију захтева, откривање модела, експлицитни избор модела,
+неодређене или неисправне листе модела, HTTP неуспехе, празне одговоре,
+локалне URL-ове и пропагацију грешака команде. Не захтевају модел или
+мрежни приступ осим инсталације Maven зависности. Тест уживо је по жељи.
+
+## Покрени локални модел
+
+### Препоручено: фиксни SDK сервер
+
+Не постоји нативни Foundry Local Java SDK. Мали Node.js помоћник хостује
+званични SDK REST сервер; апликација и захтеви за ћаскање остају у Јави.
+
+Инсталирајте фиксне зависности извршења:
+
+```powershell
+npm ci
+```
+
+Ако Windows x64 не може да приступи NuGet за време нативне инсталације SDK-а, користите приложену
+резервну верзију. Она преузима одговарајући званични GitHub архива извршног окружења, проверава
+SHA-256 дигест издања и поставља DLL датотеке поред нативног додатка. Не
+онемогућава TLS валидацију, не захтева подизање права или не мења изворни код SDK-а.
+
+```powershell
+npm ci --ignore-scripts
+pwsh -File ./scripts/install-foundry-runtime.ps1
+```
+
+Прикажи моделе већ кеширане на овом рачунару:
+
+```powershell
+npm run start:foundry -- --list
+```
+
+При првом покретању, експлицитно дозволите преузимање малог CPU модела:
+
+```powershell
+npm run start:foundry -- --model qwen2.5-0.5b-instruct-generic-cpu:4 --download --port 5273
+```
+
+При наредним покретањима, изоставите `--download` да бисте захтевали кеширан модел:
+
+```powershell
+npm run start:foundry -- --model qwen2.5-0.5b-instruct-generic-cpu:4 --port 5273
+```
+
+Помоћник преферира одговарајући кеширан модел, прихвата надимак или тачан идентификатор варијанте,
+и одбија недостајући модел осим ако није дат `--download`. Региструје само
+извршног провајдера изабраног модела када је потребан. Кеширане GPU варијанте и даље могу
+захтевати компатибилне пакете извршног провајдера и драјвере.
+
+Ако је порт 5273 заузет, проследите `--port 0` за доступан порт. Помоћник исписује
+`FOUNDRY_LOCAL_BASE_URL`, тачан `FOUNDRY_LOCAL_MODEL` ИД и његов PID када је спреман.
+Користите исписани крајњи организам у Јави. Оставите овај терминал отвореним док Јава ради;
+**Ctrl+C** зауставља REST сервер и ослобађа модел.
+
+Подразумевани кеш је `~/.foundry/cache/models`. Поставите `FOUNDRY_LOCAL_CACHE_DIR` за
+другачији постојећи кеш. Логови и стање помоћника се пишу унутар овог узорка у
+`target/foundry-local` директоријуму. Зауставите помоћника пре покретања `mvn clean`.
+
+### Опционо: Foundry Local CLI
+
+CLI и SDK имају независна издања: CLI **0.10.3** укључује SDK **1.2.4**;
+горе наведени помоћник користи SDK **2.0.1**. Инсталација најновијег CLI не инсталира
+најновији језички SDK. Погледајте [CLI напомене о издању](https://github.com/microsoft/Foundry-Local/releases/tag/cli-preview-0.10.3).
+
+На Windows-у, користите команду за инсталацију по кориснику ако CLI није инсталиран:
+
+```powershell
+winget install --id Microsoft.FoundryLocal --exact --source winget --scope user --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
+```
+
+Или надоградите постојећу инсталацију:
+
+```powershell
+winget upgrade --id Microsoft.FoundryLocal --exact --source winget --scope user --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
 foundry --version
 ```
 
-## Преглед пројекта
+CLI 0.10.x замењује старе `foundry service` команде са `foundry server`:
 
-Овај пројекат се састоји од четири главне компоненте:
-
-1. **Application.java** - главна улазна тачка Spring Boot апликације
-2. **FoundryLocalService.java** - сервисни слој који обрађује комуникацију са AI-ом
-3. **application.properties** - конфигурација за повезивање са Foundry Local
-4. **pom.xml** - Maven зависности и конфигурација пројекта
-
-## Разумевање кода
-
-### 1. Конфигурација апликације (application.properties)
-
-**Датотека:** `src/main/resources/application.properties`
-
-```properties
-foundry.local.base-url=http://localhost:5273/v1
-# foundry.local.model is auto-detected from Foundry Local. Set it here to override:
-# foundry.local.model=Phi-4-mini-instruct-cuda-gpu:5
+```powershell
+foundry server start --port 5273
+foundry cache list
+foundry model load qwen2.5-0.5b-instruct-generic-cpu:4
+foundry server status --output json
 ```
 
-**Шта ово ради:**
-- **base-url**: Назначује где је покренут Foundry Local, укључујући путању `/v1` ради компатибилности са OpenAI API. Подразумевани порт је `5273`. Ако је порт другачији, проверите га са `foundry service status`.
-- **model** (опционо): Назив AI модела за генерисање текста. **Апликација аутоматски детектује модел** тако што на почетку пита Foundry Local `/v1/models` endpoint, па га не морате ручно подешавати. Ипак, можете га ручно поставити да бисте надјачали аутоматско детектовање ако је потребно.
+`model load` захтева већ преузети модел. Проверите `foundry model --help` за
+команде за преузимање. Користите стварни крајњи организам из излаза статуса; CLI иначе
+подразумевано користи аутоматски додељени порт. Немојте покретати CLI и SDK помоћника
+на истом порту. Када завршите:
 
-**Кључни концепт:** Spring Boot аутоматски учитава ове особине и чини их доступним апликацији коришћењем анотације `@Value`.
-
-### 2. Главна апликацијска класа (Application.java)
-
-**Датотека:** `src/main/java/com/example/Application.java`
-
-```java
-@SpringBootApplication
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(Application.class);
-        app.setWebApplicationType(WebApplicationType.NONE);  // Није потребан веб сервер
-        app.run(args);
-    }
+```powershell
+foundry server stop
 ```
 
-**Шта ово ради:**
-- `@SpringBootApplication` омогућава Spring Boot аутоконфигурацију
-- `WebApplicationType.NONE` говори Spring-у да је ово командно-линијска апликација, а не веб сервер
-- главна метода покреће Spring апликацију
+## Покрени Јава апликацију
 
-**Demo Runner:**
-```java
-@Bean
-public CommandLineRunner foundryLocalRunner(FoundryLocalService foundryLocalService) {
-    return args -> {
-        System.out.println("=== Foundry Local Demo ===");
-        System.out.println("Calling Foundry Local service...");
-        
-        String testMessage = "Hello! Can you tell me what you are and what model you're running?";
-        System.out.println("Sending message: " + testMessage);
-        
-        String response = foundryLocalService.chat(testMessage);
-        System.out.println("Response from Foundry Local:");
-        System.out.println(response);
-        System.out.println("=========================");
-    };
-}
-```
+У другом терминалу подесите крајњи организам и тачан ИД модела исписан од стране вашег сервера:
 
-**Шта ово ради:**
-- `@Bean` креира компоненту којом управља Spring
-- `CommandLineRunner` извршава код након што Spring Boot стартује
-- `foundryLocalService` аутоматски убризгава Spring (dependency injection)
-- Слање тест поруке AI-у и приказ одговора
-
-### 3. Слој AI сервиса (FoundryLocalService.java)
-
-**Датотека:** `src/main/java/com/example/FoundryLocalService.java`
-
-#### Инјекција конфигурације:
-```java
-@Service
-public class FoundryLocalService {
-    
-    @Value("${foundry.local.base-url:http://localhost:5273/v1}")
-    private String baseUrl;
-    
-    @Value("${foundry.local.model:}")
-    private String model;    // Аутоматски детектовано ако је празно
-```
-
-**Шта ово ради:**
-- `@Service` говори Spring-у да ова класа пружа бизнис логику
-- `@Value` убризгава конфигурационе вредности из application.properties
-- Модел подразумевано буде празан, што покреће **аутоматско детектовање** из Foundry Local при покретању. То значи да апликација ради са било којим моделом учитаним у Foundry Local без потребе за ручном конфигурацијом.
-
-#### Иницијализација клијента:
-```java
-@PostConstruct
-public void init() {
-    // Аутоматски откриј модел из Foundry Local ако није експлицитно конфигурисан
-    if (model == null || model.isBlank()) {
-        model = detectModel();
-    }
-
-    this.openAIClient = OpenAIOkHttpClient.builder()
-            .baseUrl(baseUrl)                // Основни URL већ укључује /v1 из конфигурације
-            .apiKey("not-needed")            // Локални сервер не захтева прави API кључ
-            .build();
-}
-```
-
-**Шта ово ради:**
-- `@PostConstruct` покреће ову методу након што Spring направи сервис
-- Ако није конфигурисан модел, упућује захтев Foundry Local `/v1/models` endpoint-у и бира први учитани модел
-- Креира OpenAI клијента који показује на вашу локалну Foundry Local инстанцу
-- Основни URL из `application.properties` већ укључује `/v1` ради компатибилности са OpenAI API
-- API кључ је постављен на "not-needed" јер локални развој не захтева аутентификацију
-
-#### Метода за ћаскање:
-```java
-public String chat(String message) {
-    try {
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(model)                    // Који АИ модел користити
-                .addUserMessage(message)         // Ваше питање/упит
-                .maxCompletionTokens(150)        // Ограничите дужину одговора
-                .temperature(0.7)                // Контролишите креативност (0.0-1.0)
-                .build();
-        
-        ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
-        
-        // Извуците одговор АИ из резултата API-ја
-        if (chatCompletion.choices() != null && !chatCompletion.choices().isEmpty()) {
-            return chatCompletion.choices().get(0).message().content().orElse("No response found");
-        }
-        
-        return "No response content found";
-    } catch (Exception e) {
-        throw new RuntimeException("Error calling chat completion: " + e.getMessage(), e);
-    }
-}
-```
-
-**Шта ово ради:**
-- **ChatCompletionCreateParams**: Конфигурише AI захтев
-  - `model`: Назначује који AI модел да се користи (мора тачно одговарати ID-у из `foundry model list`)
-  - `addUserMessage`: Додаје вашу поруку у разговор
-  - `maxCompletionTokens`: Ограничава дужину одговора (чува ресурсе)
-  - `temperature`: Контролише степеницу случајности (0.0 = детерминистички, 1.0 = креативан)
-- **API позив**: Слање захтева Foundry Local-у
-- **Обрада одговора**: Безбедно извлачење текста одговора од AI-а
-- **Обрада грешака**: Омотање изузетака са корисним порукама о грешкама
-
-### 4. Пројектне зависности (pom.xml)
-
-**Кључне зависности:**
-
-```xml
-<!-- Spring Boot - Application framework -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter</artifactId>
-    <version>${spring-boot.version}</version>
-</dependency>
-
-<!-- OpenAI Java SDK - For AI API calls -->
-<dependency>
-    <groupId>com.openai</groupId>
-    <artifactId>openai-java</artifactId>
-    <version>2.12.0</version>
-</dependency>
-
-<!-- Jackson - JSON processing -->
-<dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-    <version>2.17.0</version>
-</dependency>
-```
-
-**Шта оне раде:**
-- **spring-boot-starter**: Пружа основну Spring Boot функционалност
-- **openai-java**: Службени OpenAI Java SDK за комуникацију са API
-- **jackson-databind**: Обрађује JSON сериализацију/десериализацију за API позиве
-
-## Како све функционише заједно
-
-Ево комплетног тока када покренете апликацију:
-
-1. **Покретање:** Spring Boot стартује и учитава `application.properties`
-2. **Креирање сервиса:** Spring креира `FoundryLocalService` и убризгава конфигурационе вредности
-3. **Детекција модела:** Ако модел није конфигурисан, сервис пита Foundry Local `/v1/models` endpoint и аутоматски користи први доступни модел
-4. **Подешавање клијента:** `@PostConstruct` иницијализује OpenAI клијента за повезивање са Foundry Local
-5. **Извршење демоа:** `CommandLineRunner` се извршава након старта
-6. **AI позив:** Демо позива `foundryLocalService.chat()` са тест поруком
-7. **API захтев:** Сервис креира и шаље OpenAI-компатибилан захтев Foundry Local-у
-8. **Обрада одговора:** Сервис извлачи и враћа одговор AI-а
-9. **Приказ:** Апликација исписује одговор и излази
-
-## Подешавање Foundry Local
-
-1. **Инсталирајте Foundry Local** користећи упутства у одељку [Претпоставка](#услови).
-
-2. **Покрените сервис** (ако већ није покренут):
-   ```bash
-   foundry service start
-   ```
-
-3. **Проверите статус сервиса** да бисте били сигурни да ради и запамтите порт:
-   ```bash
-   foundry service status
-   ```
-
-4. **Преузмите и покрените модел** (преузима се приликом првог покретања, касније се кешира):
-   ```bash
-   foundry model run phi-4-mini
-   ```
-   Ово отвара интерактивну ћаскање сесију. Излаз из ње је са `Ctrl+C`. Модел остаје учитан у сервису.
-
-   > **Савет:** Покрените `foundry model list` за преглед свих доступних модела. Замените `phi-4-mini` било којим алјасом из каталога (нпр. `qwen2.5-0.5b` за мањи/бржи модел).
-
-5. **Проверите да је модел учитан:**
-   ```bash
-   foundry service ps
-   ```
-
-6. **Ажурирајте `application.properties` ако је потребно:**
-   - Подразумевани `base-url` (`http://localhost:5273/v1`) одговара подразумеваном CLI порту. Ажурирајте само ако `foundry service status` прикаже други порт.
-   - Модел се **аутоматски детектује** при покретању — није потребна додатна конфигурација.
-
-   ```properties
-   foundry.local.base-url=http://localhost:5273/v1
-   # Model is auto-detected. Uncomment below to override:
-   # foundry.local.model=Phi-4-mini-instruct-cuda-gpu:5
-   ```
-
-## Покретање апликације
-
-### Корак 1: Уверите се да је модел учитан у Foundry Local
-```bash
-foundry service ps
-```
-Ако нема модела, учитајте један:
-```bash
-foundry model run phi-4-mini
-```
-
-### Корак 2: Изградите и покрените апликацију
-У другом терминалу:
-```bash
-cd 04-PracticalSamples/foundrylocal
+```powershell
+$env:FOUNDRY_LOCAL_BASE_URL = "http://127.0.0.1:5273/v1"
+$env:FOUNDRY_LOCAL_MODEL = "qwen2.5-0.5b-instruct-generic-cpu:4"
 mvn spring-boot:run
 ```
 
-Или изградите и покрените као JAR:
-```bash
-mvn clean package
+Или покрените паковану апликацију:
+
+```powershell
 java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
 ```
 
-## Очекивани излаз
+Једина Јава улазна тачка је `com.example.Application`. Исписује изабрани
+крајњи организам, стварни ИД модела, питање и генерисани одговор, затим затвара свој Spring
+контекст и HTTP клијента. Неуспех при извршавању или недостајући текст одговора производи
+излазни код грешке уместо успеха.
 
+### Конфигурација
+
+| Променљива окружења | Подразумевано | Намена |
+| --- | --- | --- |
+| `FOUNDRY_LOCAL_BASE_URL` | `http://127.0.0.1:5273/v1` | Локални HTTP крајњи организам, укључујући `/v1` |
+| `FOUNDRY_LOCAL_MODEL` | Празно | Тачан ИД модела; иначе изабери једини рекламирани модел |
+| `FOUNDRY_LOCAL_PROMPT` | Једнос реченице питање о локалним моделима | Питање послато конзолном покретачу |
+
+Одговарајући Spring аргументи су `--foundry.local.base-url=...`,
+`--foundry.local.model=...`, и `--foundry.local.prompt=...`.
+Прихватају се само локални HTTP крајњи сервиси. Удаљени/облачни сервиси, уграђене
+акредитиве, упитни низови и путање без `/v1` се одбијају.
+
+Празна поставка модела функционише само када `/v1/models` рекламира тачно један модел.
+Рекламирани модел није нужно и учитан. Ако је више модела рекламирано,
+подесите тачан учитани ИД уместо да се ослањате на поредак у каталогу.
+
+Захтеви користе `temperature=0`, ограничење излаза од 150 токена, тајмаут од 120 секунди и
+без аутоматских покушаја. Поље захтева `max_tokens` је намерно: подржано је
+од стране Foundry Local REST уговора, иако OpenAI Java декларише то као старо
+за новије облачне моделе. Идентификација модела долази из конфигурације или
+откривања, не из самопрогласа модела.
+
+## Потврда уживо
+
+Са покренутим локалним сервером, покрените све тестове укључујући по жељи тест уживо.
+Замените порт крајњег организма вредношћу коју је исписао ваш сервер. У PowerShell-у цитирајте
+Maven својства са тачком:
+
+```powershell
+mvn "-Dfoundry.local.live=true" "-Dfoundry.local.base-url=http://127.0.0.1:5273/v1" "-Dfoundry.local.model=qwen2.5-0.5b-instruct-generic-cpu:4" verify
 ```
-=== Foundry Local Demo ===
-Calling Foundry Local service...
-Sending message: Hello! Can you tell me what you are and what model you're running?
-Response from Foundry Local:
-Hello! I'm Phi, an AI developed by Microsoft. I can assist with a wide variety of 
-tasks including answering questions, helping with analysis, creative writing, coding, 
-and general conversation. How can I help you today?
-=========================
-```
 
-## Следећи кораци
+Тест уживо позива `Application.main`, даје чињеницу "Главни град Француске је Париз," пита за град,
+и проверава да ли је стварни генерисани текст `Париз`. Проверава семантички резултат, а не само
+успешан HTTP статус.
 
-За више примера погледајте [Поглавље 04: Практични примери](../README.md)
+Ово је интеграциони тест, а не мерило тачности. Током потврде,
+овај 0.5B модел је одговорио на посебан упит "2 + 2" са `3` преко Јаве и директно
+REST-а. Не ослањајте се на њега за аритметику или чињеничну тачност без независне
+верификације; користите детерминистичке алате за израчуне.
 
 ## Решавање проблема
 
-### Уобичајени проблеми
+| Симптом | Провера |
+| --- | --- |
+| Веза одбијена | Сачекајте поруку да је спремно; користите исписани порт и `/v1` пут. |
+| Више рекламираних модела | Поставите `FOUNDRY_LOCAL_MODEL` на тачан ИД учитаног модела. |
+| Модел недостаје | Користите `--list`, или експлицитно дозволите преузимање са `--download`. |
+| GPU провајдер не ради или се замрзава | Користите мали CPU модел. Кеширани GPU модел и даље треба свој провајдер. |
+| CLI остаје `initializing` | Прочитајте `foundry server logs --lines 80`; зауставите демон и користите SDK помоћника. |
+| NuGet TLS/преузимање неуспех | Поправите мрежни приступ или користите верификовану резервну верзију за Windows x64 изнад. Не онемогућавајте TLS. |
+| Порт је заузет | Користите `--port 0` и конфигуришите Јаву са исписаним крајњим организмом. |
+| Нема избора или празан текст | Апликација намерно не успева; погледајте логове модела и окружења. |
 
-**"Connection refused" или "Service unavailable"**
-- Проверите сервис: `foundry service status`
-- Поново покрените ако је потребно: `foundry service restart`
-- Проверите да порт у `application.properties` одговара порталној вредности из `foundry service status`
-- Уверите се да URL завршава са `/v1`: `http://localhost:5273/v1`
+## Извор и референце
 
-**"No model found" при покретању**
-- Апликација аутоматски детектује модел. Уверите се да је учитан бар један модел: `foundry service ps`
-- Ако нема учитаних модела: `foundry model run phi-4-mini`
-- Ако сте ручно поставили име модела у `application.properties`, проверите да одговара из `foundry model list`
-
-**Грешке "400 Bad Request"**
-- Проверите да основни URL укључује `/v1`: `http://localhost:5273/v1`
-- Уверите се да користите `maxCompletionTokens()` у коду (не застарели `maxTokens()`)
-
-**Maven грешке при компилацији**
-- Уверите се да имате Java 21 или новију: `java -version`
-- Очистите и поново компајлирајте: `mvn clean compile`
-- Проверите интернет конекцију за преузимање зависности
-
-**Проблеми са везом ка сервису**
-- Ако видите `Request to local service failed`, покрените: `foundry service restart`
-- Проверите учитане моделе: `foundry service ps`
-- Погледајте логове сервиса: `foundry service diag`
+- [Application.java](../../../../04-PracticalSamples/foundrylocal/src/main/java/com/example/Application.java): једнократни Spring Boot покретач.
+- [FoundryLocalService.java](../../../../04-PracticalSamples/foundrylocal/src/main/java/com/example/FoundryLocalService.java): типизирано откривање и локални завршетци ћаскања.
+- [FoundryLocalServiceTest.java](../../../../04-PracticalSamples/foundrylocal/src/test/java/com/example/FoundryLocalServiceTest.java): HTTP уговор, покретач и тестови уживо.
+- [start-foundry.mjs](../../../../04-PracticalSamples/foundrylocal/scripts/start-foundry.mjs): званични SDK REST сервер са селекцијом кешираног модела и чишћењем.
+- [install-foundry-runtime.ps1](../../../../04-PracticalSamples/foundrylocal/scripts/install-foundry-runtime.ps1): верификована нативна резервна верзија за Windows x64.
+- [application.properties](../../../../04-PracticalSamples/foundrylocal/src/main/resources/application.properties), [pom.xml](../../../../04-PracticalSamples/foundrylocal/pom.xml) и [package.json](../../../../04-PracticalSamples/foundrylocal/package.json): конфигурација и зависности.
+- [Foundry Local REST интеграција](https://learn.microsoft.com/azure/foundry-local/how-to/how-to-integrate-with-inference-sdks).
+- [Foundry Local 2.0.1 издање и белешке о миграцији](https://github.com/microsoft/Foundry-Local/releases/tag/v2.0.1).
+- [Поглавље 04: Практични примери](../README.md).
 
 ---
 
 <!-- CO-OP TRANSLATOR DISCLAIMER START -->
-**Одрицање одговорности**:
-Овај документ је преведен коришћењем AI преводилачке услуге [Co-op Translator](https://github.com/Azure/co-op-translator). Иако тежимо прецизности, молимо да имате у виду да аутоматизовани преводи могу садржати грешке или нетачности. Оригинални документ на његовом матерњем језику треба сматрати ауторитетом. За критичне информације препоручује се професионални људски превод. Нисмо одговорни за било каква неспоразума или погрешне интерпретације које произилазе из употребе овог превода.
+**Изјава о одрицању одговорности**:
+Овај документ је преведен коришћењем услуге за аутоматски превод [Co-op Translator](https://github.com/Azure/co-op-translator). Иако тежимо тачности, имајте у виду да аутоматски преводи могу садржати грешке или нетачности. Оригинални документ на његовом изворном језику треба сматрати ауторитативним извором. За критичне информације препоручује се професионални људски превод. Нисмо одговорни за било каква неспоразума или погрешна тумачења која произилазе из коришћења овог превода.
 <!-- CO-OP TRANSLATOR DISCLAIMER END -->

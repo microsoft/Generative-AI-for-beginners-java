@@ -1,35 +1,37 @@
-# Основни разговор са Azure AI Foundry - пример од почетка до краја
+# Основни ћаскање са Azure AI Foundry - пример од краја до краја
 
-Овај пример је једноставна Spring Boot апликација која се повезује са **Azure AI Foundry** моделом користећи **аутоентификацију без кључа** (Microsoft Entra ID) и тестира вашу конфигурацију. Користи Spring AI-јев `ChatClient`.
+Овај пример је једноставна Spring Boot апликација која се повезује на **Azure AI Foundry** модел користећи **аутификацију без кључа** (Microsoft Entra ID) и тестира вашу поставку. Користи Spring AI `ChatClient`, који се ослања на **званични OpenAI Java SDK** и **Azure OpenAI v1** крајњу тачку.
+
+Верзије у [pom.xml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/pom.xml) су Spring Boot **4.1.1**, Spring AI **2.0.1**, OpenAI Java **4.63.1**, Azure Identity **1.18.6** и dotenv-java **3.2.0**. Пример користи `spring-ai-starter-model-openai` и експлицитно декларише `openai-java` и `azure-identity`; Spring AI 2 је уклонио стари Azure OpenAI стартер.
 
 ## Садржај
 
-- [Предуслови](#предуслови)
+- [Услови](#услови)
 - [Брзи почетак](#брзи-почетак)
-- [Како функционише аутентификација](#како-функционише-аутентификација)
+- [Како аутентификација функционише](#како-аутентификација-функционише)
 - [Покретање апликације](#покретање-апликације)
-  - [Коришћење maven-а](#коришћење-maven-а)
+  - [Коришћење Maven-а](#коришћење-maven-а)
   - [Коришћење VS Code-а](#коришћење-vs-code-а)
-  - [Очекивани резултат](#очекивани-резултат)
+  - [Очекивани излаз](#очекивани-излаз)
 - [Референца конфигурације](#референца-конфигурације)
   - [Променљиве окружења](#променљиве-окружења)
   - [Spring конфигурација](#spring-конфигурација)
 - [Решавање проблема](#решавање-проблема)
-  - [Чести проблеми](#чести-проблеми)
-  - [Режим за отклањање грешака](#режим-за-отклањање-грешака)
+  - [Уобичајени проблеми](#уобичајени-проблеми)
+  - [Дебаг мод](#дебаг-мод)
 - [Следећи кораци](#следећи-кораци)
 - [Ресурси](#ресурси)
 
-## Предуслови
+## Услови
 
-Пре покретања овог примера, обезбедите да имате:
+Пре покретања овог примера, уверите се да имате:
 
-- Azure AI Foundry ресурс са `gpt-4o-mini` распоређивањем — поставите га помоћу `azd up` или ручно преко [Azure AI Foundry упутства за покретање](../../getting-started-azure-openai.md)
-- Ролa **Cognitive Services OpenAI User** на том ресурсу (Bicep шаблони то аутоматски додељују)
-- [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli), пријављен корисником преко `az login`
-- Јава 21+ и Maven 3.9+
+- Azure AI Foundry ресурс са `gpt-5.6-luna` деплојем - обезбедите га користећи `azd up` или ручно преко [Azure AI Foundry упутства за подешавање](../../getting-started-azure-openai.md)
+- Улога **Cognitive Services OpenAI User** на том ресурсу (Bicep шаблони постављају ово за вас)
+- [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli), пријављен са `az login`
+- Java 21+ и Maven 3.9+
 
-> **Није потребан API кључ** — аутентификација је без кључа преко Microsoft Entra ID-а.
+> **Без потребе за API кључем** — аутентификација је без кључа преко Microsoft Entra ID.
 
 ## Брзи почетак
 
@@ -37,23 +39,29 @@
 # 1. Идите до пројекта
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 
-# 2. Пријавите се да би безкључна аутентикација добила токен
+# 2. Пријавите се како би безкључна аутентификација могла добити токен
 az login
 
 # 3. Конфигуришите крајњу тачку
-#    - Ако сте покренули `azd up`, .env је написан за вас (прескочите ово).
-#    - У супротном копирајте шаблон и подесите AZURE_OPENAI_ENDPOINT:
+#    - Ако сте покренули `azd up`, .env је аутоматски креиран (прескочите ово).
+#    - У супротном, копирајте шаблон и подесите AZURE_OPENAI_ENDPOINT:
 cp .env.example .env
 
 # 4. Покрените апликацију
 mvn spring-boot:run
 ```
 
-## Како функционише аутентификација
+## Како аутентификација функционише
 
-Овај пример се аутентификује са **Microsoft Entra ID** — нема API кључ.
+Овај пример аутентификује се преко **Microsoft Entra ID** — нема API кључа.
 
-Када је постављен само `spring.ai.azure.openai.endpoint` (без api-key), Spring AI гради Azure OpenAI клијента са [`DefaultAzureCredential`](https://learn.microsoft.com/java/api/com.azure.identity.defaultazurecredential). Тај креденцијал аутоматски проналази токен из ваше локалне `az login` сесије или из managed identity када се извршава у Azure-у — тако да исти код ради на оба места без промена.
+Апликација експлицитно подешава аутентификацију у [BasicChatApplication.java](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/java/com/example/BasicChatApplication.java):
+
+1. `azureCredential()` креира `BearerTokenCredential` користећи `AuthenticationUtil.getBearerTokenSupplier` са `DefaultAzureCredential` и опсегом `https://ai.azure.com/.default`.
+2. `azureOpenAiClient()` гради `OpenAIClient` помоћу `OpenAIOkHttpClient.builder()`, резолује крајњу тачку ресурса на `/openai/v1`, и поставља bearer credential са `.credential(...)`.
+3. `azureChatModel()` даје тог клијента Spring AI-ју `OpenAiChatModel`, који подржава `ChatClient` из овог примера.
+
+Ови експлицитни bean-ови спречавају да глобални `OPENAI_API_KEY` преустане Azure аутентификацију. Само изостајање API кључа из YAML фајла није потпуна аутентификација. `DefaultAzureCredential` може користити вашу `az login` сесију локално или управљани идентитет у Azure; идентитет који се бира мора имати горе наведене улоге на ресурсу.
 
 ## Покретање апликације
 
@@ -69,13 +77,18 @@ mvn spring-boot:run
 2. Притисните `F5` или користите панел "Run and Debug"
 3. Изаберите конфигурацију "Spring Boot-BasicChatApplication"
 
-> **Напомена**: VS Code конфигурација аутоматски учитава ваш .env фајл
+> **Напомена**: Апликација учитава `.env` из радног директоријума, укључујући покретање из VS Code-а.
 
-### Очекивани резултат
+### Очекивани излаз
 
-```
+Илустративни излаз након успешног покретања (стартуп логови изостављени; формулација одговора варира):
+
+```text
 Starting Basic Chat with Azure OpenAI...
-Environment variables loaded successfully
+Environment variables loaded from .env file
+Endpoint: https://your-resource.openai.azure.com/
+Deployment: gpt-5.6-luna
+Auth: keyless (Microsoft Entra ID via DefaultAzureCredential)
 Connecting to Azure OpenAI...
 Sending prompt: What is AI in a short sentence? Max 100 words.
 
@@ -91,80 +104,100 @@ Success! Azure OpenAI connection is working correctly.
 
 ### Променљиве окружења
 
-| Променљива | Опис | Обавезна | Пример |
-|------------|-------|----------|--------|
-| `AZURE_OPENAI_ENDPOINT` | Foundry (Azure OpenAI) URL крајње тачке | Да | `https://my-resource.openai.azure.com/` |
-| `AZURE_OPENAI_DEPLOYMENT` | Назив распоређеног chat модела | Не | `gpt-4o-mini` (подразумевано) |
+| Променљива | Опис | Обавезно | Пример |
+|----------|-------------|----------|---------|
+| `AZURE_OPENAI_ENDPOINT` | URL крајње тачке Foundry (Azure OpenAI) | Да | `https://my-resource.openai.azure.com/` |
+| `AZURE_OPENAI_DEPLOYMENT` | Име деплоја чата модела | Не | `gpt-5.6-luna` (подразумевано) |
 
-> Не постоји промењива API кључа — аутентификација је без кључа (Microsoft Entra ID преко `az login`).
+> Не постоји променљива за API кључ — аутентификација је без кључа (Microsoft Entra ID преко `az login`).
 
 ### Spring конфигурација
 
-Фајл `application.yml` конфигурише:
-- **Endpoint**: `${AZURE_OPENAI_ENDPOINT}` - Из променљиве окружења
-- **Deployment**: `${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}` - Из променљиве окружења са резервном вредношћу
-- **Auth**: без кључа — није постављен `api-key`, тако да Spring AI користи `DefaultAzureCredential`
-- **Температура**: `0.7` - Контролише креативност (0.0 = детерминистички, 1.0 = креативан)
-- **Макс токена**: `500` - Максимална дужина одговора
+Подешавања у [application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml) користе префикс `spring.ai.openai` и простране чат особине (без `options` блока):
+
+```yaml
+spring:
+  ai:
+    openai:
+      base-url: ${AZURE_OPENAI_ENDPOINT}
+      microsoft-foundry: true
+      chat:
+        model: ${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
+        reasoning-effort: none
+        max-completion-tokens: 500
+```
+
+`model` је **име Azure деплоја**. Аутентификација долази из експлицитних bean-ова описаних горе, а не из подешавања `api-key`. У овом примеру је онемогућено резоновање и ограничен број завршних токена на 500; `temperature` и наслеђени `max-tokens` нису подешени.
+
+Microsoft препоручује [званични OpenAI SDK са Azure OpenAI v1 и Responses API за нове апликације](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java). Chat Completions остаје подржан за овај постојећи пример заснован на порукама. За GPT-5.6, захтеви који укључују алате у Chat Completions морају подесити `reasoning_effort` на `none`; за комбиновање резоновања са алатима користите Responses. Погледајте [позив алата са моделима резоновања](https://learn.microsoft.com/azure/foundry/openai/how-to/reasoning#tool-calling-with-reasoning-models).
 
 ## Решавање проблема
 
-### Чести проблеми
+### Уобичајени проблеми
 
 <details>
-<summary><strong>Грешка: 401 / "PermissionDenied" / проблеми са токеном</strong></summary>
+<summary><strong>Грешка: 401 / "PermissionDenied" / грешке са токеном</strong></summary>
 
-- Покрените `az login` — аутентификација без кључа захтева активну пријаву за добијање токена
-- Проверите да ваш налог има ролу **Cognitive Services OpenAI User** на ресурсу
-- Ако сте управо додели ролу, сачекајте минуту да се промена примени
-- Потврдите да сте у исправном tenant-у/претплати (`az account show`)
+- Покрените `az login` — аутентификацији без кључа је потребна активна пријава да добије токен
+- Проверите да ваш налог има улогу **Cognitive Services OpenAI User** на ресурсу
+- Ако сте управо доделили улогу, сачекајте минут да се промена пропагира
+- Потврдите да сте у исправном тенанту/претплати (`az account show`)
 </details>
 
 <details>
-<summary><strong>Грешка: "The endpoint is not valid" / проблеми са везом</strong></summary>
+<summary><strong>Грешка: "Крајња тачка није валидна" / грешке везе</strong></summary>
 
-- Проверите да је `AZURE_OPENAI_ENDPOINT` пуни базни URL (нпр. `https://your-resource.openai.azure.com/`)
-- Проверите доследност завршног слеша
-- Потврдите да крајња тачка одговара вашем распоређеном ресурсу (`azd env get-values`)
+- Проверите да је `AZURE_OPENAI_ENDPOINT` пуни базични URL (нпр. `https://your-resource.openai.azure.com/`)
+- Проверите конзистентност косе црте на крају
+- Потврдите да крајња тачка одговара вашем обезбеђеном ресурсу (`azd env get-values`)
 </details>
 
 <details>
-<summary><strong>Грешка: "The deployment was not found"</strong></summary>
+<summary><strong>Грешка: "Деплој није пронађен"</strong></summary>
 
-- Проверите да `AZURE_OPENAI_DEPLOYMENT` одговара називу распоређеног модела у Azure-у
-- Потврдите да је модел успешно распоређен и активан
-- Подразумевани назив распоређивања је `gpt-4o-mini`
+- Потврдите да `AZURE_OPENAI_DEPLOYMENT` одговара имену деплоја у Azure
+- Проверите да је модел успешно деплојован и активан
+- Подразумевано име деплоја је `gpt-5.6-luna`
+</details>
+
+<details>
+<summary><strong>Грешка: 429 / премашен лимит захтева</strong></summary>
+
+- Подразумевани GPT-5.6 Luna деплој има Global Standard капацитет 10: 10 захтева/минут и 10,000 токена/минут
+- Покретајте примере узастопно и сачекајте интервал поновног покушаја сервиса пре поновног покушаја
+- Овај основни пример онемогућава аутоматске SDK поновне покушаје, тако да се неуспели захтев директно пријављује
 </details>
 
 <details>
 <summary><strong>VS Code: Променљиве окружења се не учитавају</strong></summary>
 
-- Проверите да је ваш `.env` фајл у коренском директоријуму пројекта (на истом нивоу као `pom.xml`)
-- Покушајте да покренете `mvn spring-boot:run` у уграђеном терминалу VS Code-а
-- Проверите да је Java додатак у VS Code-у правилно инсталиран
+- Уверите се да је ваш `.env` фајл у коренском директоријуму пројекта (на истом нивоу као `pom.xml`)
+- Покушајте да покренете `mvn spring-boot:run` у интегрисаном терминалу VS Code-а
+- Проверите да је VS Code Java екстензија правилно инсталирана
 </details>
 
-### Режим за отклањање грешака
+### Дебаг мод
 
-Да бисте омогућили детаљније логовање, уклоните коментаре са ових линија у `application.yml`:
+Да бисте активирали детаљно логовање, уклоните коментаре са ових линија у [application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml):
 
 ```yaml
 logging:
   level:
-    org.springframework.ai: DEBUG
-    com.azure: DEBUG
+    "[org.springframework.ai]": DEBUG
+    "[com.azure]": DEBUG
 ```
 
 ## Следећи кораци
 
-**Постављање завршено!** Наставите са учењем:
+**Подешавање завршено!** Наставите своје учење:
 
 [Поглавље 3: Основне технике генеративне вештачке интелигенције](../../../03-CoreGenerativeAITechniques/README.md)
 
 ## Ресурси
 
-- [Spring AI Azure OpenAI документација](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
-- [Аутентификација без кључа помоћу Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
+- [Преход на Spring AI 2 OpenAI Java SDK](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [Званични OpenAI Java SDK са Azure OpenAI v1](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
+- [Аутентификација без кључа са Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
 - [Azure AI Foundry портал](https://ai.azure.com/)
 - [Azure AI Foundry документација](https://learn.microsoft.com/azure/ai-foundry/)
 

@@ -1,4 +1,13 @@
-# Vodič za generiranje priča o kućnim ljubimcima za početnike
+# Vodič za generiranje priče o ljubimcu za početnike
+
+Prenesite fotografiju ljubimca, analizirajte je s GPT-5.6 Luna i generirajte priču iz dobivene opisne informacije. Za oba zahtjeva modela koristi se `reasoning_effort: none`.
+
+| Komponenta | Verzija |
+| --- | --- |
+| Java | 21 ili noviji |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
 
 ## Sadržaj
 
@@ -7,32 +16,33 @@
 - [Objašnjenje osnovnih komponenti](#objašnjenje-osnovnih-komponenti)
   - [1. Glavna aplikacija](#1-glavna-aplikacija)
   - [2. Web kontroler](#2-web-kontroler)
-  - [3. Servis za priče](#3-servis-za-priče)
+  - [3. Servis priče](#3-servis-priče)
   - [4. Web predlošci](#4-web-predlošci)
   - [5. Konfiguracija](#5-konfiguracija)
 - [Pokretanje aplikacije](#pokretanje-aplikacije)
-- [Kako sve to funkcionira zajedno](#kako-sve-to-funkcionira-zajedno)
+- [Offline testovi](#offline-testovi)
+- [Kako sve funkcionira zajedno](#kako-sve-funkcionira-zajedno)
 - [Razumijevanje AI integracije](#razumijevanje-ai-integracije)
 - [Sljedeći koraci](#sljedeći-koraci)
 
 ## Preduvjeti
 
-Prije početka, provjerite imate li:
-- Instaliranu Javu 21 ili noviju verziju
+Prije početka provjerite imate li:
+- Java 21 ili noviju verziju instaliranu
 - Maven za upravljanje ovisnostima
-- Azure AI Foundry model deployment (postavite ga s `azd up` — vidi [Poglavlje 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md)), prijavljeni putem `az login` (autentifikacija bez ključa)
-- Osnovno znanje Jave, Spring Boota i web razvoja
+- Azure AI Foundry implementaciju GPT-5.6 Luna naziva `gpt-5.6-luna` ili `AZURE_OPENAI_DEPLOYMENT` preklopnik koji pokazuje na tu implementaciju. Pogledajte [Poglavlje 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md) za postavljanje i prijavu s `az login` za autentifikaciju bez ključa. Implementacija mora podržavati unos slike i `reasoning_effort: none`.
+- Osnovno razumijevanje Jave, Spring Boota i web razvoja
 
 ## Razumijevanje strukture projekta
 
-Projekt priče o kućnim ljubimcima sadrži nekoliko važnih datoteka:
+Projekt priče o ljubimcu ima nekoliko važnih datoteka:
 
 ```
 petstory/
 ├── src/main/java/com/example/petstory/
 │   ├── PetStoryApplication.java       # Main Spring Boot application
 │   ├── PetController.java             # Web request handler
-│   ├── StoryService.java              # AI story generation service
+│   ├── StoryService.java              # AI image analysis and story generation
 │   └── SecurityConfig.java            # Security configuration
 ├── src/main/resources/
 │   ├── application.properties         # App configuration
@@ -48,7 +58,7 @@ petstory/
 
 **Datoteka:** `PetStoryApplication.java`
 
-Ovo je ulazna točka naše Spring Boot aplikacije:
+Ovo je ulazna točka za našu Spring Boot aplikaciju:
 
 ```java
 @SpringBootApplication
@@ -62,207 +72,48 @@ public class PetStoryApplication {
 **Što ovo radi:**
 - `@SpringBootApplication` anotacija omogućuje automatsku konfiguraciju i skeniranje komponenti
 - Pokreće ugrađeni web poslužitelj (Tomcat) na portu 8080
-- Automatski kreira sve potrebne Spring beane i servise
+- Automatski stvara sve potrebne Spring beane i servise
 
 ### 2. Web kontroler
 
-**Datoteka:** `PetController.java`
+**Datoteka:** [PetController.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/PetController.java)
 
-Ovaj kontroler obrađuje sve web zahtjeve i interakcije s korisnikom:
+| Endpoint | Zahtjev | Uspješan odgovor |
+| --- | --- | --- |
+| `GET /` | Bez tijela | HTML obrazac za prijenos s CSRF tokenom |
+| `POST /analyze-image` | `multipart/form-data`, polje datoteke `image` | JSON: `{"description":"Razigrani ljubimac..."}` |
+| `POST /generate-story` | `application/x-www-form-urlencoded`, polje `description` | HTML stranica s rezultatom s opisom i generiranom pričom |
 
-```java
-@Controller
-public class PetController {
-    
-    private final StoryService storyService;
-    
-    public PetController(StoryService storyService) {
-        this.storyService = storyService;
-    }
-    
-    @GetMapping("/")
-    public String index() {
-        return "index";  // Vraća predložak index.html
-    }
-    
-    @PostMapping("/generate-story")
-    public String generateStory(@RequestParam("description") String description, 
-                               Model model, 
-                               RedirectAttributes redirectAttributes) {
-        
-        // Validacija unosa
-        if (description.trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Please provide a description.");
-            return "redirect:/";
-        }
-        
-        // Očistite unos radi sigurnosti
-        String sanitizedDescription = sanitizeInput(description);
-        
-        // Generiraj priču s rukovanjem pogreškama
-        try {
-            String story = storyService.generateStory(sanitizedDescription);
-            model.addAttribute("caption", sanitizedDescription);
-            model.addAttribute("story", story);
-            return "result";  // Vraća predložak result.html
-            
-        } catch (Exception e) {
-            // Koristi rezervnu priču ako AI zakaže
-            String fallbackStory = generateFallbackStory(sanitizedDescription);
-            model.addAttribute("story", fallbackStory);
-            return "result";
-        }
-    }
-    
-    private String sanitizeInput(String input) {
-        return input.replaceAll("[<>\"'&]", "")  // Remove dangerous characters
-                   .trim()
-                   .substring(0, Math.min(input.length(), 500));  // Ograniči duljinu
-    }
-}
-```
+Oba POST endpointa zahtijevaju kolačić sesije i CSRF token dobivene iz `GET /`. Skripta prijenosa šalje skrivenu vrijednost `_csrf` u zaglavlju `X-CSRF-TOKEN`; slanje priče šalje ga kao `_csrf` polje obrasca. API klijenti moraju sačuvati kolačić između zahtjeva. Ovo su endpointi za obrasce, a ne JSON zahtjevi.
 
-**Ključne značajke:**
+Opisi moraju biti neprazni i ne dulji od 1000 znakova. Kontroler uklanja razmake sa započetka i kraja te uklanja `<`, `>`, dvostruke navodnike, apostrofe i `&` prije nego što ih proslijedi servisu. Predložak rezultata također escape-a izlaz modela s `th:text`.
 
-1. **Rukovanje rutama**: `@GetMapping("/")` prikazuje obrazac za upload, `@PostMapping("/generate-story")` obrađuje predaje
-2. **Validacija unosa**: Provjerava prazne opise i ograničenja duljine
-3. **Sigurnost**: Sanitizira korisnički unos kako bi spriječio XSS napade
-4. **Rukovanje pogreškama**: Pruža zamjenske priče kad AI servis zakaže
-5. **Povezivanje modela**: Prosljeđuje podatke u HTML predloške koristeći Springov `Model`
+Neuspjesi pri validaciji slike vraćaju HTTP 400 s poljem `error`; neuspjesi modela vraćaju HTTP 502 s poljem `error` i bez `description`. Nevaljani opisi priče ili neuspjesi modela preusmjeravaju na `/` s vidljivom porukom o pogrešci. Nedostajuća obavezna polja vraćaju HTTP 400, a nedostajući ili nevaljani CSRF tokeni vraćaju HTTP 403. Nema rezerviranih opisa ni priča prikazanih kao uspješni AI rezultati.
 
-**Sustav zamjene:**
-Kontroler uključuje unaprijed napisane predloške priča koji se koriste kad AI servis nije dostupan:
+### 3. Servis priče
 
-```java
-private String generateFallbackStory(String description) {
-    String[] storyTemplates = {
-        "Meet the most wonderful pet in the world – a furry ball of energy...",
-        "Once upon a time, there lived a remarkable pet whose heart was as big...",
-        "In a cozy home filled with love, there lived an extraordinary pet..."
-    };
-    
-    // Koristite hash opisa za dosljedne odgovore
-    int index = Math.abs(description.hashCode() % storyTemplates.length);
-    return storyTemplates[index];
-}
-```
+**Datoteka:** [StoryService.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/StoryService.java)
 
-### 3. Servis za priče
+Službeni OpenAI Java SDK 4.63.1 poziva Azure AI Foundry OpenAI-kompatibilni Chat Completions API. Azure Identity 1.18.6 osigurava Microsoft Entra bearer token preko `DefaultAzureCredential`; nije potreban API ključ.
 
-**Datoteka:** `StoryService.java`
+| Operacija | Ulaz | `max_completion_tokens` |
+| --- | --- | --- |
+| `analyzeImage` | Bajtovi slike kodirani kao base64 data URL s uploadanim MIME tipom | 300 |
+| `generateStory` | Opis ljubimca u korisničkoj poruci | 800 |
 
-Ovaj servis komunicira s Azure AI Foundry za generiranje priča koristeći autentifikaciju bez ključa:
+Oba zahtjeva koriste konfiguriranu implementaciju, prema zadanim postavkama `gpt-5.6-luna`, i eksplicitno postavljaju `ReasoningEffort.NONE` (`reasoning_effort: none`). Nijedan zahtjev ne šalje `temperature` ili zastarjeli parametar `max_tokens`.
 
-```java
-@Service
-public class StoryService {
-    
-    private final OpenAIClient openAIClient;
-    private final String modelName;
-    
-    public StoryService(@Value("${azure.openai.endpoint:}") String endpoint,
-                       @Value("${azure.openai.deployment:gpt-4o-mini}") String modelName) {
-        this.modelName = modelName;
-        if (endpoint == null || endpoint.isBlank()) {
-            endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        }
-        
-        // OpenAI-kompatibilna točka kraja Foundryja nalazi se pod /openai/v1/
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1/";
-        
-        // Autentifikacija bez ključa s Microsoft Entra ID (bez API ključa)
-        DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-        this.openAIClient = OpenAIOkHttpClient.builder()
-                .baseUrl(baseUrl)
-                .credential(BearerTokenCredential.create(
-                        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-                .build();
-    }
-    
-    public String generateStory(String description) {
-        String systemPrompt = "You are a creative storyteller who writes fun, " +
-                             "family-friendly short stories about pets. " +
-                             "Keep stories under 500 words and appropriate for all ages.";
-        
-        String userPrompt = "Write a fun short story about a pet described as: " + description;
-        
-        // Konfigurirajte AI zahtjev
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(modelName)
-                .addSystemMessage(systemPrompt)
-                .addUserMessage(userPrompt)
-                .maxCompletionTokens(500)  // Ograniči duljinu odgovora
-                .temperature(0.8)          // Kontroliraj kreativnost (0.0-1.0)
-                .build();
-        
-        // Pošalji zahtjev i dobij odgovor
-        ChatCompletion response = openAIClient.chat().completions().create(params);
-        
-        return response.choices().get(0).message().content().orElse("");
-    }
-}
-```
-
-**Ključne komponente:**
-
-1. **OpenAI klijent**: Koristi službeni OpenAI Java SDK konfiguriran za Azure AI Foundry (autentifikacija bez ključa)
-2. **Sistemski prompt**: Postavlja ponašanje AI-a za pisanje obiteljskih priča o kućnim ljubimcima
-3. **Kornički prompt**: Precizno govori AI-u koju priču napisati na temelju opisa
-4. **Parametri**: Kontrolira duljinu i razinu kreativnosti priče
-5. **Rukovanje pogreškama**: Bacaju se iznimke koje kontroler hvata i obrađuje
+Analiza slike prihvaća JPEG, PNG, GIF i WebP, odbacuje prazne slike i datoteke veće od 10 MB te ograničava opis na 1000 znakova. Upit za priču traži obiteljsku kratku priču. Prazni izbori ili sadržaj modela bez teksta su pogreške, a neuspjesi se evidentiraju za dijagnostiku na strani poslužitelja. SDK klijent se zatvara kad se aplikacija zaustavi.
 
 ### 4. Web predlošci
 
-**Datoteka:** `index.html` (obrazac za upload)
+**Datoteka:** [index.html](../../../../04-PracticalSamples/petstory/src/main/resources/templates/index.html) (Obrazac za prijenos)
 
-Glavna stranica gdje korisnici opisuju svoje ljubimce:
+Stranica započinje izborom fotografije, a ne tekstualnim područjem za opis. **Analyze Image** prikazuje odabranu fotografiju i šalje je na `/analyze-image`. Uspješan odgovor prikazuje opis, popunjava skriveno polje `description` i otkriva **Generate Story**. Ta tipka šalje postojeći obrazac na `/generate-story`.
 
-```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Pet Story Generator</title>
-    <!-- CSS styling -->
-</head>
-<body>
-    <div class="container">
-        <h1>Pet Story Generator</h1>
-        <p>Describe your pet and we'll create a fun story about them!</p>
-        
-        <!-- Error message display -->
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-        
-        <!-- Story generation form -->
-        <form action="/generate-story" method="post">
-            <div class="form-group">
-                <label for="description">Describe your pet:</label>
-                <textarea id="description" name="description" 
-                         placeholder="Tell us about your pet - what they look like, their personality, favorite activities..."
-                         maxlength="1000" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Generate Story</button>
-        </form>
-        
-        <!-- Image upload section with client-side processing -->
-        <div class="upload-section">
-            <h2>Or Upload a Photo</h2>
-            <input type="file" id="imageInput" accept="image/*" />
-            <button onclick="analyzeImage()" class="upload-btn">Analyze Image</button>
-        </div>
-        
-        <script>
-            // Client-side image analysis using Transformers.js
-            async function analyzeImage() {
-                // Image processing code here
-                // Generates description automatically from uploaded image
-            }
-        </script>
-    </div>
-</body>
-</html>
-```
+Nema preuzimanja modela u pregledniku niti ovisnosti o CDN-u. Analiza slike odvija se na poslužitelju preko konfigurirane Azure implementacije. Neuspjesi ostaju vidljivi i ne dopuštaju generiranje priče s izmišljenim opisom. Odabirom druge datoteke briše se prethodna analiza.
 
-**Datoteka:** `result.html` (prikaz priče)
+**Datoteka:** `result.html` (Prikaz priče)
 
 Prikazuje generiranu priču:
 
@@ -299,10 +150,10 @@ Prikazuje generiranu priču:
 
 **Značajke predloška:**
 
-1. **Integracija s Thymeleafom**: Koristi `th:` atribute za dinamički sadržaj
-2. **Odazivni dizajn**: CSS stilovi za mobilne uređaje i desktop računala
-3. **Rukovanje pogreškama**: Prikazuje korisničke poruke o neuspjehu validacije
-4. **Obrada na strani klijenta**: JavaScript za analizu slika (koristeći Transformers.js)
+1. **Integracija Thymeleaf:** Koristi `th:` atribute za dinamički sadržaj
+2. **Prilagodljiv dizajn:** CSS stilizacija za mobilne i desktop uređaje
+3. **Rukovanje pogreškama:** Prikazuje validacijske pogreške korisnicima
+4. **Rukovanje prijenosom:** JavaScript prikazuje pregled fotografije, šalje multipart zahtjev zaštićen CSRF-om i prikazuje vraćeni opis
 
 ### 5. Konfiguracija
 
@@ -322,21 +173,21 @@ logging.level.com.example.petstory=INFO
 
 # Azure AI Foundry (keyless) configuration
 azure.openai.endpoint=${AZURE_OPENAI_ENDPOINT:}
-azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
 ```
 
 **Objašnjenje konfiguracije:**
 
-1. **Upload datoteka**: Dozvoljava slike veličine do 10MB
-2. **Logiranje**: Kontrolira što se zapisuje tijekom izvođenja
-3. **Azure AI Foundry**: Navodi endpoint i model deployment za korištenje (autentifikacija bez ključa)
-4. **Sigurnost**: Konfiguracija rukovanja pogreškama kako ne bi izložila osjetljive informacije
+1. **Prijenos datoteka:** Maksimalna veličina kako za datoteku, tako i za cijeli multipart zahtjev je 10 MB; držite fotografije ispod tog ograničenja da ostavite mjesta za multipart zaglavlja
+2. **Evidencija:** Kontrolira što se bilježi tijekom izvođenja
+3. **Azure AI Foundry:** Definira krajnju točku i implementaciju modela za korištenje (autentifikacija bez ključa)
+4. **Sigurnost:** CSRF zaštita ostaje uključena; dijagnostika modela bilježi se na poslužitelju, a kontroler prikazuje generičke poruke o pogreškama modela
 
 ## Pokretanje aplikacije
 
-### Korak 1: Prijavite se i postavite endpoint
+### Korak 1: Prijava i postavljanje krajnje točke
 
-Autentifikacija je bez ključa (Microsoft Entra ID), stoga nema API ključa. Prijavite se i postavite svoj Foundry endpoint:
+Autentifikacija je bez ključa (Microsoft Entra ID), pa nema API ključa. Prijavite se i postavite svoju Foundry krajnju točku:
 
 **Windows (Command Prompt):**
 ```cmd
@@ -357,20 +208,22 @@ export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 ```
 
 **Zašto je ovo potrebno:**
-- Azure AI Foundry koristi Microsoft Entra ID za autentifikaciju zahtjeva za predviđanje
-- Autentifikacija bez ključa znači da nema tajni u izvornom kodu ili okruženju
+- Azure AI Foundry koristi Microsoft Entra ID za autentifikaciju zahtjeva za zaključivanje
+- Autentifikacija bez ključa znači da nema tajni u vašem izvornom kodu ili okruženju
 - Vaš račun mora imati ulogu **Cognitive Services OpenAI User** na resursu
 
-### Korak 2: Izgradite i pokrenite
+Zadani naziv implementacije je `gpt-5.6-luna`. Ako vaša implementacija GPT-5.6 Luna ima drugi naziv, postavite `AZURE_OPENAI_DEPLOYMENT` u istom terminalu prije pokretanja aplikacije. I analiza slike i generiranje priče koriste ovu postavku.
+
+### Korak 2: Izgradnja i pokretanje
 
 Idite u direktorij projekta:
 ```bash
 cd 04-PracticalSamples/petstory
 ```
 
-Izgradite aplikaciju:
+Izgradite samostalni izvršni JAR i pokrenite sve offline testove:
 ```bash
-mvn clean compile
+mvn clean package
 ```
 
 Pokrenite poslužitelj:
@@ -380,65 +233,61 @@ mvn spring-boot:run
 
 Aplikacija će se pokrenuti na `http://localhost:8080`.
 
+Alternativno, pokrenite paketirani JAR na slobodnom portu, primjerice:
+
+```bash
+java -jar target/pet-story-app-0.0.1-SNAPSHOT.jar --server.port=8083
+```
+
+Za tu naredbu otvorite `http://localhost:8083/`. Isti su `/analyze-image` i `/generate-story` putevi dostupni na odabranom portu.
+
 ### Korak 3: Testirajte aplikaciju
 
-1. **Otvorite** `http://localhost:8080` u pregledniku
-2. **Opširno opišite** svog ljubimca u tekstualnom polju (npr. "Razigrani zlatni retriver koji voli donositi lopticu")
-3. **Kliknite** "Generate Story" za dobivanje priče koju je generirao AI
-4. **Alternativno**, učitajte sliku ljubimca za automatsko generiranje opisa
-5. **Pogledajte** kreativnu priču baziranu na opisu vašeg ljubimca
+1. **Otvorite** `http://localhost:8080` u vašem pregledniku
+2. **Odaberite** jasnu fotografiju ljubimca u JPEG, PNG, GIF ili WebP formatu, manju od 10 MB
+3. **Kliknite** "Analyze Image" i pričekajte opis ljubimca
+4. **Kliknite** "Generate Story" nakon uspješne analize
+5. **Pogledajte** priču i koristite poveznicu na stranici rezultata za povratak na obrazac za prijenos
 
-## Kako sve to funkcionira zajedno
+Uspješan tijek od fotografije do priče ostvaruje dva poziva modelu, jedan po gumbu. Live inferencija troši kvotu vaše implementacije i može izazvati naknade; pokrećite testove uzastopno pri dijeljenju ograničene implementacije. Učitavanje početne stranice ne poziva model.
 
-Evo kompletnog toka kada generirate priču o kućnom ljubimcu:
+## Offline testovi
 
-1. **Korisnički unos**: Opisujete svog ljubimca u web obrascu
-2. **Slanje obrasca**: Preglednik šalje POST zahtjev na `/generate-story`
-3. **Obrada u kontroleru**: `PetController` validira i sanitizira unos
-4. **Poziv AI servisu**: `StoryService` šalje zahtjev modelu Azure AI Foundry
-5. **Generiranje priče**: AI kreira kreativnu priču na temelju opisa
-6. **Rukovanje odgovorom**: Kontroler prima priču i dodaje je u model
-7. **Prikaz predloška**: Thymeleaf renderira `result.html` s pričom
-8. **Prikaz korisniku**: Korisnik vidi generiranu priču u pregledniku
+Iz uzorka direktorija pokrenite:
+
+```bash
+mvn test
+```
+
+[StoryServiceTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/StoryServiceTest.java) snima stvarne OpenAI SDK zahtjeve pomoću loopback HTTP fiksture. Provjerava implementaciju oba zahtjeva, `reasoning_effort: none`, limite tokena, input slike, validaciju, prazne odgovore i greške uzlaznog toka.
+
+[PetControllerTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/PetControllerTest.java) koristi MockMvc s mockiranim servisom modela za testiranje prikazanih Thymeleaf stranica, ugovora o prijenosu, CSRF-a, validacije, escape-a izlaza i vidljivih grešaka. Ti testovi ne zahtijevaju Azure vjerodajnice i nikada ne pozivaju plaćenu Azure inferenciju. Maven zapisuje Surefire izvještaje u `target/surefire-reports`.
+
+## Kako sve funkcionira zajedno
+
+Evo kompletnog tijeka kada generirate priču o ljubimcu:
+
+1. **Odabir fotografije:** Birate sliku ljubimca u obrascu za prijenos
+2. **Prijenos slike:** "Analyze Image" šalje multipart POST na `/analyze-image` s CSRF zaglavljem
+3. **Analiza slike:** `StoryService` šalje sliku GPT-5.6 Luni s postavkom reasoning na `none`
+4. **Prikaz opisa:** Preglednik prikazuje vraćeni opis i sprema ga u obrazac
+5. **Slanje priče:** "Generate Story" šalje `description` i `_csrf` na `/generate-story`
+6. **Generiranje priče:** Kontroler validira opis i poziva istu implementaciju s reasoningom postavljenim na `none`
+7. **Renderiranje predloška:** Thymeleaf escape-a i prikazuje opis i priču na stranici rezultata
 
 **Tijek rukovanja pogreškama:**
-Ako AI servis zakaže:
-1. Kontroler hvata iznimku
-2. Generira zamjensku priču koristeći unaprijed napisane predloške
-3. Prikazuje zamjensku priču uz napomenu o nedostupnosti AI usluge
-4. Korisnik i dalje dobiva priču, osiguravajući dobar korisnički doživljaj
+Ako model ne uspije, poslužitelj evidentira uzrok. Analiza slike vraća HTTP 502 i preglednik prikazuje pogrešku bez prikaza "Generate Story". Generiranje priče preusmjerava na obrazac s porukom o pogrešci. Nijedan put ne zamjenjuje tiho unaprijed napisani rezultat.
 
 ## Razumijevanje AI integracije
 
 ### Azure AI Foundry (bez ključa)
-Aplikacija koristi Azure AI Foundry s autentifikacijom bez ključa (Microsoft Entra ID):
+Servis konfigurira SDK s vašom resursnom `/openai/v1/` krajnjom točkom. `DefaultAzureCredential` i `AuthenticationUtil.getBearerTokenSupplier` opskrbljuju Microsoft Entra tokene za `https://ai.azure.com/.default`. Lokalni razvoj može koristiti vašu Azure CLI prijavu; Azure-hostana aplikacija može koristiti upravljani identitet s potrebnim dopuštenjima resursa.
 
-```java
-// Autentifikacija bez ključa - bez API ključa
-DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-this.openAIClient = OpenAIOkHttpClient.builder()
-    .baseUrl(endpoint + "openai/v1/")
-    .credential(BearerTokenCredential.create(
-        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-    .build();
-```
-
-### Inženjering prompta
-Servis koristi pažljivo kreirane promptove za dobre rezultate:
-
-```java
-String systemPrompt = "You are a creative storyteller who writes fun, " +
-                     "family-friendly short stories about pets. " +
-                     "Keep stories under 500 words and appropriate for all ages.";
-```
+### Inženjering promptova
+Za analiza slike traži opažljive značajke ljubimca u kratkom odlomku i nalaže modelu da tretira tekst na slici kao podatke, a ne upute. Generiranje priče koristi vraćeni opis u zasebnom, obiteljskom pisanju. Nijedan poziv ne omogućuje reasoning niti postavlja override temperature.
 
 ### Obrada odgovora
-AI odgovor se ekstrahira i validira:
-
-```java
-ChatCompletion response = openAIClient.chat().completions().create(params);
-String story = response.choices().get(0).message().content().orElse("");
-```
+Zajednički handler odgovora odbacuje nedostatak izbora i prazni ili samo razmaci sadržaj, uklanja razmake i čuva greške uzlaznog modela. Opisi slika su ograničeni na 1000 znakova da stanu u sljedeći obrazac priče. Izvorni neuspjeh modela se čuva za dijagnostiku, ali se ne prikazuje korisniku.
 
 ## Sljedeći koraci
 
