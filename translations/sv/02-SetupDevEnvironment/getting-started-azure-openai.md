@@ -1,19 +1,19 @@
 # Installera utvecklingsmiljön för Azure AI Foundry
 
-> Denna guide ställer in **Azure AI Foundry**-modeller för Java AI-apparna i denna kurs, med **nyckellös** autentisering (Microsoft Entra ID) — inga API-nycklar att hantera. Ny med verktygen? Börja med [guider för utvecklingsmiljön](./README.md).
+> Den här guiden ställer in **Azure AI Foundry**-modeller för Java AI-apparna i den här kursen, med **nyckellös** autentisering (Microsoft Entra ID) – inga API-nycklar att hantera. Ny med verktygen? Börja med [guider för utvecklingsmiljön](./README.md).
 
-Denna guide ställer in **Azure AI Foundry**-modeller för Java AI-apparna i denna kurs. Du har två vägar:
+Den här guiden ställer in **Azure AI Foundry**-modeller för Java AI-apparna i den här kursen. Du har två vägar:
 
-- **Alternativ A — Provisionera med `azd` + Bicep (rekommenderas):** ett kommando distribuerar Foundry-kontot och modellerna som kod. Ingen klickning i portalen.
+- **Alternativ A — Provisions med `azd` + Bicep (rekommenderas):** en kommandorad distribuerar Foundry-kontot och modeller som kod. Ingen portalnavigering.
 - **Alternativ B — Skapa resurser manuellt** i Azure AI Foundry-portalen.
 
-Båda vägarna använder **nyckellös autentisering** (Microsoft Entra ID) — det finns inga API-nycklar att kopiera eller läcka.
+Båda vägarna använder **nyckellös autentisering** (Microsoft Entra ID) – inga API-nycklar att kopiera eller läcka.
 
 ## Innehållsförteckning
 
 - [Vad som skapas](#vad-som-skapas)
 - [Förutsättningar](#förutsättningar)
-- [Alternativ A: Provisionering med azd + Bicep (Rekommenderas)](#option-a-provision-with-azd--bicep-recommended)
+- [Alternativ A: Provision med azd + Bicep (Rekommenderas)](#option-a-provision-with-azd--bicep-recommended)
 - [Alternativ B: Skapa resurser manuellt](#alternativ-b-skapa-resurser-manuellt)
 - [Konfigurera din miljö](#konfigurera-din-miljö)
 - [Testa din installation](#testa-din-installation)
@@ -25,19 +25,19 @@ Båda vägarna använder **nyckellös autentisering** (Microsoft Entra ID) — d
 
 Bicep-mallarna i [`infra/`](../../../02-SetupDevEnvironment/infra) provisionerar:
 
-- Ett **Azure AI Foundry**-konto (`Microsoft.CognitiveServices/accounts`, sort `AIServices`) med ett projekt
-- En **chat**-distribution — `gpt-4o-mini`
-- En **embedding**-distribution — `text-embedding-3-small` (används i senare kapitel)
-- En **nyckellös rolltilldelning** (`Cognitive Services OpenAI User`) så att du loggar in med `az login` istället för att hantera nycklar
+- Ett **Azure AI Foundry**-konto (`Microsoft.CognitiveServices/accounts`, typ `AIServices`) med ett projekt
+- En **chat** implementation – GPT-5.6 Luna (`gpt-5.6-luna`), version `2026-07-09`, med `GlobalStandard` kapacitet `10` (10 förfrågningar/minut och 10 000 tokens/minut för denna modell)
+- En **embedding** implementation – `text-embedding-3-small`, version `1` (används i senare kapitel)
+- En **nyckellös rolltilldelning** (`Cognitive Services OpenAI User`) så att du kan logga in med `az login` istället för att hantera nycklar
 
 ## Förutsättningar
 
-- Ett [Azure-abonnemang](https://azure.microsoft.com/free/)
+- Ett [Azure-prenumeration](https://azure.microsoft.com/free/)
 - [Azure Developer CLI (`azd`)](https://aka.ms/azure-dev/install)
 - [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli)
 - [Java 21+](https://learn.microsoft.com/java/openjdk/download) och [Maven 3.9+](https://maven.apache.org/download.cgi)
 
-## Alternativ A: Provisionering med azd + Bicep (Rekommenderas)
+## Alternativ A: Provision med azd + Bicep (Rekommenderas)
 
 Från mappen `02-SetupDevEnvironment`:
 
@@ -48,18 +48,18 @@ cd 02-SetupDevEnvironment
 azd auth login
 az login
 
-# Tilldela Foundry-kontot + modellutplaceringar
+# Tillhandahåll Foundry-kontot + modellinstallationer
 azd up
 ```
 
-`azd` frågar efter ett **miljönamn** (t.ex. `genai-java`) och en **region**. Välj en region där `gpt-4o-mini` och `text-embedding-3-small` finns tillgängliga — till exempel `eastus2` eller `swedencentral`.
+`azd` frågar efter ett **miljönamn** (t.ex. `genai-java`), **prenumeration** och **region**. Välj din prenumeration och en region där `gpt-5.6-luna` och `text-embedding-3-small` är tillgängliga, till exempel `eastus2`. Bekräfta att prenumerationen har tillräcklig kvot för modellen och distributionstypen i regionen; tillgänglighet och kvot varierar per prenumeration.
 
-När provisioneringen är klar, gör azd följande:
+När provisioneringen är klar gör azd:
 
 1. Distribuerar allt som definieras i [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep).
-2. Kör en post-provision hook som skriver [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) med din endpoint och distributionsnamn (inga hemligheter).
+2. Kör en efterprovisionerings-hook som skriver [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) med din endpoint och distribueringsnamn (inga hemligheter).
 
-> **Tips:** Kör `azd up` igen när som helst för att tillämpa ändringar. Kör `azd down` för att ta bort allt och sluta generera kostnader.
+> **Tips:** Kör `azd up` igen när som helst för att tillämpa ändringar. Kör `azd down` för att ta bort allt och stoppa kostnader.
 
 För att se de genererade inställningarna:
 
@@ -75,36 +75,38 @@ Föredrar du portalen? Skapa resurserna manuellt:
 
 1. Gå till [Azure AI Foundry-portalen](https://ai.azure.com/) och logga in.
 2. **Skapa ett projekt** (det skapar också en AI Foundry-resurs). Ge det ett namn som `GenAIJava`.
-3. I ditt projekt, öppna **Models + endpoints** → **Deploy model** → **Deploy base model**.
-4. Distribuera **gpt-4o-mini** (distributionsnamn `gpt-4o-mini`). Upprepa för **text-embedding-3-small** om du vill ha embedding-exemplen.
-5. Från **Översikt**, kopiera **endpoint** (t.ex. `https://<resource>.openai.azure.com/`).
-6. Ge dig själv nyckellös åtkomst: på resursen, öppna **Access control (IAM)** → **Add role assignment** → tilldela **Cognitive Services OpenAI User** till ditt konto.
+3. I projektet, öppna **Models + endpoints** → **Deploy model** → **Deploy base model**.
+4. Distribuera **GPT-5.6 Luna** (modell och distribueringsnamn `gpt-5.6-luna`, version `2026-07-09`) med **Global Standard** kapacitet `10`. Upprepa för **text-embedding-3-small**, version `1`, om du vill ha embedding-exemplen.
+5. På **Översikt**, kopiera **endpoint** (t.ex. `https://<resource>.openai.azure.com/`).
+6. Ge dig själv nyckellös åtkomst: öppna på resursen **Access control (IAM)** → **Add role assignment** → tilldela **Cognitive Services OpenAI User** till ditt konto.
 
-> **Har du fortfarande problem?** Se [dokumentationen för Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects).
+> **Fortfarande problem?** Se [Azure AI Foundry-dokumentationen](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects).
 
 ## Konfigurera din miljö
 
-**Om du använde Alternativ A (`azd up`)** är din inställningsfil redan skapad — inget att konfigurera. Hoppa till [Testa din installation](#testa-din-installation).
+**Om du använde Alternativ A (`azd up`)** är din inställningsfil redan skapad – inget att konfigurera. Hoppa till [Testa din installation](#testa-din-installation).
 
-**Om du använde Alternativ B (manuellt)**, skapa exempelns `.env`-fil själv:
+**Om du använde Alternativ B (manuell)**, skapa exempelns `.env`-fil själv:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 cp .env.example .env
 ```
 
-Redigera `.env` med din endpoint (ingen nyckel — autentisering är nyckellös):
+Redigera `.env` med din endpoint (ingen nyckel – autentiseringen är nyckellös):
 
 ```bash
 AZURE_OPENAI_ENDPOINT=https://<your-resource>.openai.azure.com/
-AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
+AZURE_OPENAI_DEPLOYMENT=gpt-5.6-luna
 ```
 
-> **Säkerhetsnotis:** Det finns ingen API-nyckel att lagra. Du autentiserar med Microsoft Entra ID via `az login` (lokalt) eller en hanterad identitet (i Azure). `.env`-filen innehåller bara icke-hemliga inställningar och är redan undantagen i `.gitignore`.
+Använd resursens Azure OpenAI-endpoint, inte en projekt-URL. Basic-chat-appen omdirigerar den till `/openai/v1` och konfigurerar en explicit behörighetstokenklient; en API-nyckel krävs inte.
+
+> **Säkerhetsnotering:** Det finns ingen API-nyckel att lagra. Du autentiserar med Microsoft Entra ID via `az login` (lokalt) eller en hanterad identitet (i Azure). `.env`-filen innehåller endast icke-hemliga inställningar och omfattas redan av `.gitignore`.
 
 ## Testa din installation
 
-Se till att du är inloggad så att nyckellös autentisering kan få en token, sedan kör exemplet:
+Se till att du är inloggad så att nyckellös autentisering kan hämta en token, och kör sedan exemplet:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
@@ -113,34 +115,34 @@ az login          # om du inte redan är inloggad
 mvn clean spring-boot:run
 ```
 
-Du bör se ett svar från `gpt-4o-mini`-modellen!
+Du bör få ett svar från `gpt-5.6-luna`-modellen. Kör exemplen i följd för att hålla dig inom den lilla standardkvoten; om du får HTTP 429, vänta på retryintervallet innan du försöker igen.
 
-> **VS Code-användare:** Tryck på `F5` för att köra. Appen läser automatiskt in din `.env`.
+> **VS Code-användare:** Tryck `F5` för att köra. Appen laddar din `.env` automatiskt.
 
-> **Fullständigt exempel:** Se [Basic Chat with Azure AI Foundry-exemplet](./examples/basic-chat-azure/README.md) för detaljer och felsökning.
+> **Fullständigt exempel:** Se [Basic Chat med Azure AI Foundry-exemplet](./examples/basic-chat-azure/README.md) för detaljer och felsökning.
 
 ## Vad händer härnäst?
 
-**Installation klar!** Nu har du:
-- Azure AI Foundry med `gpt-4o-mini` och `text-embedding-3-small` distribuerade
-- Nyckellös autentisering (Microsoft Entra ID) — inga nycklar att hantera
-- En lokal `.env` med din endpoint och distributionsnamn
+Efter provisionering och lyckad körning av exemplet kommer du att ha:
+- Azure AI Foundry med `gpt-5.6-luna` och `text-embedding-3-small` distribuerade
+- Nyckellös autentisering (Microsoft Entra ID) – inga nycklar att hantera
+- En lokal `.env` med din endpoint och distribueringsnamn
 - En Java-utvecklingsmiljö redo att använda
 
-**Fortsätt till** [Kapitel 3: Kärntekniker för generativ AI](../03-CoreGenerativeAITechniques/README.md) för att börja bygga AI-applikationer!
+**Fortsätt till** [Kapitel 3: Kärntekniker för Generativ AI](../03-CoreGenerativeAITechniques/README.md) för att börja bygga AI-applikationer!
 
 ## Resurser
 
 - [Azure Developer CLI (azd)](https://aka.ms/azure-dev/install)
 - [Nyckellös autentisering med Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
 - [Azure AI Foundry-dokumentation](https://learn.microsoft.com/azure/ai-foundry/)
-- [Spring AI Azure OpenAI-dokumentation](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
-- [Azure OpenAI Java SDK](https://learn.microsoft.com/java/api/overview/azure/ai-openai-readme)
+- [Spring AI 2 OpenAI Java SDK-övergång](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [Officiellt OpenAI Java SDK med Azure OpenAI v1](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
 
 ## Ytterligare resurser
 
 - [Ladda ner VS Code](https://code.visualstudio.com/Download)
-- [Skaffa Docker Desktop](https://www.docker.com/products/docker-desktop)
+- [Hämta Docker Desktop](https://www.docker.com/products/docker-desktop)
 - [Dev Container-konfiguration](../../../.devcontainer/devcontainer.json)
 
 ---
