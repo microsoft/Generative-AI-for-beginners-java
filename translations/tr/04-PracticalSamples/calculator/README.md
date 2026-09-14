@@ -1,40 +1,65 @@
-# Yeni Başlayanlar için MCP Hesap Makinesi Eğitimi
+# Başlangıç Seviyesi MCP Hesaplayıcı Eğitimi
 
 ## İçindekiler
 
-- [Neleri Öğreneceksiniz](#neleri-öğreneceksiniz)
+- [Öğrenecekleriniz](#öğrenecekleriniz)
 - [Ön Koşullar](#ön-koşullar)
-- [Proje Yapısını Anlamak](#proje-yapısını-anlamak)
-- [Temel Bileşenler Açıklaması](#temel-bileşenler-açıklaması)
+- [Bağımlılık Sürümleri](#bağımlılık-sürümleri)
+- [Proje Yapısını Anlama](#proje-yapısını-anlama)
+- [Temel Bileşenlerin Açıklaması](#temel-bileşenlerin-açıklaması)
   - [1. Ana Uygulama](#1-ana-uygulama)
-  - [2. Hesap Makinesi Servisi](#2-hesap-makinesi-servisi)
-  - [3. Doğrudan MCP İstemcisi](#3-doğrudan-mcp-istemcisi)
-  - [4. Yapay Zeka Destekli İstemci](#4-yapay-zeka-destekli-istemci)
+  - [2. Hesaplayıcı Servisi](#2-hesaplayıcı-servisi)
+  - [3. Doğrudan MCP İstemcisi](#3-doğrudan-mcp-i̇stemcisi)
+  - [4. Yapay Zekâ Destekli İstemci](#4-yapay-zekâ-destekli-i̇stemci)
 - [Örneklerin Çalıştırılması](#örneklerin-çalıştırılması)
-- [Hepsi Nasıl Birlikte Çalışır](#hepsi-nasıl-birlikte-çalışır)
+- [Çevrimdışı Testler](#çevrimdışı-testler)
+- [Hepsinin Birlikte Nasıl Çalıştığı](#tümünün-birlikte-nasıl-çalıştığı)
 - [Sonraki Adımlar](#sonraki-adımlar)
 
-## Neleri Öğreneceksiniz
+## Öğrenecekleriniz
 
-Bu eğitim, Model Context Protocol (MCP) kullanarak nasıl bir hesap makinesi servisi oluşturacağınızı açıklar. Şunları anlayacaksınız:
+Bu eğitim, Model Context Protocol (MCP) kullanarak bir hesaplayıcı servisi nasıl oluşturulacağını açıklar. Şunları anlayacaksınız:
 
-- Yapay zekanın araç olarak kullanabileceği bir servis oluşturma
-- MCP servisleriyle doğrudan iletişim kurma ayarlamaları
-- Yapay zeka modellerinin hangi araçları otomatik seçebileceği
+- Yapay zekânın bir araç olarak kullanabileceği bir servis nasıl oluşturulur
+- MCP servisleri ile doğrudan iletişim nasıl kurulur
+- Yapay zeka modellerinin hangi araçları otomatik olarak seçeceği
 - Doğrudan protokol çağrıları ile yapay zekâ destekli etkileşimler arasındaki fark
 
 ## Ön Koşullar
 
-Başlamadan önce şunlara sahip olduğunuzdan emin olun:
-- Java 21 veya daha yüksek sürümü yüklü
+Başlamadan önce, şunlara sahip olduğunuzdan emin olun:
+- Java 21 veya daha yenisi kurulu
 - Bağımlılık yönetimi için Maven
-- Bir Azure AI Foundry model dağıtımı (sağlamak için `azd up` komutunu kullanın — bkz. [Bölüm 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md))
-- [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) yüklü ve `az login` ile oturum açılmış (anahtarsız kimlik doğrulama)
 - Java ve Spring Boot hakkında temel bilgi
 
-## Proje Yapısını Anlamak
+Sadece yapay zekâ istemcileri Azure OpenAI dağıtımı ve kimlik doğrulanmış `DefaultAzureCredential` gerektirir,
+örneğin yerel bir Azure CLI oturum açma veya Azure'da yönetilen kimlik gibi. Kimlik,
+kaynaktaki Cognitive Services OpenAI Kullanıcı rolüne sahip olmalıdır. Bkz. [Bölüm 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md).
+Sunucu, doğrudan SDK istemcisi ve tüm otomatik testler için Azure hesabı veya model erişimi gerekmez.
 
-Hesap makinesi projesinde birkaç önemli dosya bulunmaktadır:
+## Bağımlılık Sürümleri
+
+Yayın bağımlılıkları 2026-09-14 tarihinde doğrulanmıştır:
+
+| Bağımlılık | Sürüm |
+| --- | --- |
+| Spring Boot | 4.1.1 |
+| Spring AI | 2.0.1 |
+| MCP Java SDK (Spring AI tarafından yönetilen) | 2.0.0 |
+| LangChain4j / çekirdek | 1.20.0 |
+| LangChain4j MCP | 1.20.0-beta30 |
+| LangChain4j resmi OpenAI adaptörü | 1.20.0-beta30 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
+| JUnit Jupiter (Boot tarafından yönetilen) | 6.0.3 |
+
+MCP ve resmi OpenAI adaptörleri Maven Central'da yayınlanmış beta sürümlerdir, snapshot değil.
+Sürümleri LangChain4j çekirdeğinden farklıdır. Snapshot veya milestone depolarına gerek yoktur.
+Sadece istemci bağımlılıkları test kapsamındadır çünkü çalıştırılabilir örnekler `src/test/java` altında yer alır.
+
+## Proje Yapısını Anlama
+
+Hesaplayıcı projesinde birkaç önemli dosya vardır:
 
 ```
 calculator/
@@ -44,16 +69,16 @@ calculator/
 └── src/test/java/com/microsoft/mcp/sample/client/
     ├── SDKClient.java                     # Direct MCP communication
     ├── LangChain4jClient.java            # AI-powered client
-    └── Bot.java                          # Simple chat interface
+    └── Bot.java                          # Chat interface and interactive entrypoint
 ```
 
-## Temel Bileşenler Açıklaması
+## Temel Bileşenlerin Açıklaması
 
 ### 1. Ana Uygulama
 
 **Dosya:** `McpServerApplication.java`
 
-Bu, hesap makinesi servisimizin giriş noktasıdır. Standart bir Spring Boot uygulamasıdır ancak bir özel ek içerir:
+Bu, hesaplayıcı servisimizin giriş noktasıdır. Standart bir Spring Boot uygulaması olup, özel bir ekleme içerir:
 
 ```java
 @SpringBootApplication
@@ -70,16 +95,16 @@ public class McpServerApplication {
 }
 ```
 
-**Yaptıkları:**
-- 8080 portunda Spring Boot web sunucusunu başlatır
-- Hesap makinesi yöntemlerimizi MCP araçları olarak kullanılabilir hale getiren `ToolCallbackProvider` oluşturur
-- `@Bean` anotasyonu, Spring’in bunu diğer bileşenlerin kullanabileceği bir bileşen olarak yönetmesini sağlar
+**Bunu yapar:**
+- 8080 portunda bir Spring Boot web sunucusu başlatır
+- Hesaplayıcı yöntemlerimizi MCP araçları olarak kullanılabilir kılan bir `ToolCallbackProvider` oluşturur
+- `@Bean` anotasyonu, Spring'in bunu diğer bölümlerin kullanabileceği bir bileşen olarak yönetmesini belirtir
 
-### 2. Hesap Makinesi Servisi
+### 2. Hesaplayıcı Servisi
 
 **Dosya:** `CalculatorService.java`
 
-Bütün matematik işlemleri burada gerçekleşir. Her yöntem `@Tool` ile işaretlenerek MCP üzerinden erişilebilir olur:
+Tüm matematik işlemlerinin gerçekleştiği yerdir. Her yöntem `@Tool` ile işaretlenmiş olup MCP üzerinden erişilebilir:
 
 ```java
 @Service
@@ -100,221 +125,200 @@ public class CalculatorService {
     // Daha fazla hesap makinesi işlemi...
     
     private String formatResult(double a, String operator, double b, double result) {
-        return String.format("%.2f %s %.2f = %.2f", a, operator, b, result);
+        return String.format(java.util.Locale.ROOT, "%.2f %s %.2f = %.2f", a, operator, b, result);
     }
 }
 ```
 
-**Öne çıkan özellikler:**
+**Önemli özellikler:**
 
-1. **`@Tool` Anotasyonu:** Dış istemcilerin bu metodu çağırabileceğini MCP’ye bildirir
-2. **Açık Açıklamalar:** Her aracın, yapay zekanın ne zaman kullanacağını anlamasına yardımcı olan açıklamaları vardır
-3. **Tutarlı Dönüş Formatı:** Tüm işlemler "5.00 + 3.00 = 8.00" gibi insan tarafından okunabilir stringler döndürür
-4. **Hata Yönetimi:** Sıfıra bölme ve negatif karekök hatalarını mesajlarla bildirir
+1. **`@Tool` Anotasyonu**: MCP'ye bu yöntemin harici istemcilerce çağrılabileceğini bildirir
+2. **Açık Açıklamalar**: Her aracın ne zaman kullanılacağını yapay zeka modellerinin anlamasını kolaylaştıran açıklaması vardır
+3. **Tutarlı Dönüş Formatı**: Tüm işlemler "5.00 + 3.00 = 8.00" gibi insan tarafından okunabilir metin döner
+4. **Hata Yönetimi**: Sıfıra bölme ve negatif karekök durumunda hata mesajları döner
 
 **Mevcut İşlemler:**
 - `add(a, b)` - İki sayıyı toplar
-- `subtract(a, b)` - İkinci sayıdan birincisini çıkarır
+- `subtract(a, b)` - İkinciden birincisini çıkarır
 - `multiply(a, b)` - İki sayıyı çarpar
-- `divide(a, b)` - Birinci sayıyı ikinciye böler (sıfır kontrolü ile)
-- `power(base, exponent)` - Taban sayıyı üssüne yükseltir
+- `divide(a, b)` - Birincisini ikincisine böler (sıfır kontrolü ile)
+- `power(base, exponent)` - Tabanı üs kuvvetine yükseltir
 - `squareRoot(number)` - Karekök hesaplar (negatif kontrolü ile)
-- `modulus(a, b)` - Bölümünden kalan değeri verir
-- `absolute(number)` - Mutlak değeri verir
-- `help()` - Tüm işlemler hakkında bilgi döner
+- `modulus(a, b)` - Bölümden kalan değeri döner
+- `absolute(number)` - Mutlak değeri döner
+- `help()` - Tüm işlemler hakkında bilgi verir
 
 ### 3. Doğrudan MCP İstemcisi
 
-**Dosya:** `SDKClient.java`
+Bkz. [SDKClient.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/SDKClient.java).
 
-Bu istemci, yapay zeka kullanmadan MCP sunucusuna doğrudan konuşur. Belirli hesap makinesi fonksiyonlarını manuel olarak çağırır:
+Bu istemci `/mcp` üzerinde `HttpClientStreamableHttpTransport` kullanır, bağlantıyı başlatır,
+sunucuyu pingler ve araç-listesi sayfalandırmasını takip eder. Dokuz beklenen aracın hepsinin
+varlığını kontrol eder ve yapay zeka modeli olmadan `modulus` ve `help` dahil her birini çağırır.
 
-```java
-public class SDKClient {
-    
-    public static void main(String[] args) {
-        McpClientTransport transport = WebFluxSseClientTransport.builder(
-            WebClient.builder().baseUrl("http://localhost:8080")
-        ).build();
-        new SDKClient(transport).run();
-    }
-    
-    public void run() {
-        var client = McpClient.sync(this.transport).build();
-        client.initialize();
-        
-        // Mevcut araçları listele
-        ListToolsResult toolsList = client.listTools();
-        System.out.println("Available Tools = " + toolsList);
-        
-        // Belirli hesap makinesi fonksiyonlarını çağır
-        CallToolResult resultAdd = client.callTool(
-            new CallToolRequest("add", Map.of("a", 5.0, "b", 3.0))
-        );
-        System.out.println("Add Result = " + resultAdd);
-        
-        CallToolResult resultSqrt = client.callTool(
-            new CallToolRequest("squareRoot", Map.of("number", 16.0))
-        );
-        System.out.println("Square Root Result = " + resultSqrt);
-        
-        client.closeGracefully();
-    }
-}
-```
-
-**Yaptıkları:**
-1. Builder deseni kullanarak `http://localhost:8080` adresindeki hesap makinesi sunucusuna bağlanır
-2. Tüm mevcut araçları listeler (hesap makinesi fonksiyonlarımız)
-3. Belirli fonksiyonları tam parametrelerle çağırır
-4. Sonuçları doğrudan yazdırır
-
-**Not:** Bu örnek, `WebFluxSseClientTransport` için builder desenini tanıtan Spring AI 1.1.0-SNAPSHOT bağımlılığını kullanır. Daha eski stabil sürümler için doğrudan yapıcı kullanılmalıdır.
-
-**Ne zaman kullanmalı:** Hangi hesaplamayı yapmak istediğinizi tam bildiğinizde ve bunu programatik olarak çağırmak istediğinizde.
-
-### 4. Yapay Zeka Destekli İstemci
-
-**Dosya:** `LangChain4jClient.java`
-
-Bu istemci, hesap makinesi araçlarını otomatik seçebilen GPT-4o-mini modelini kullanır:
+Mevcut istek oluşturucu şöyle görünür:
 
 ```java
-public class LangChain4jClient {
-    
-    public static void main(String[] args) throws Exception {
-        // AI modelini ayarlayın (Azure AI Foundry, Microsoft Entra ID aracılığıyla anahtarsız kimlik doğrulama)
-        String endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1";
-        String token = new DefaultAzureCredentialBuilder().build()
-                .getToken(new TokenRequestContext().addScopes("https://ai.azure.com/.default"))
-                .block().getToken();
-        ChatLanguageModel model = OpenAiOfficialChatModel.builder()
-                .baseUrl(baseUrl)
-                .apiKey(token)
-                .modelName("gpt-4o-mini")
-                .build();
-
-        // Hesap makinesi MCP sunucumuza bağlanın
-        McpTransport transport = new HttpMcpTransport.Builder()
-                .sseUrl("http://localhost:8080/sse")
-                .logRequests(true)  // AI'nın ne yaptığını gösterir
-                .logResponses(true)
-                .build();
-
-        McpClient mcpClient = new DefaultMcpClient.Builder()
-                .transport(transport)
-                .build();
-
-        // AI'a hesap makinesi araçlarımıza erişim verin
-        ToolProvider toolProvider = McpToolProvider.builder()
-                .mcpClients(List.of(mcpClient))
-                .build();
-
-        // Hesap makinemizi kullanabilen bir AI botu oluşturun
-        Bot bot = AiServices.builder(Bot.class)
-                .chatLanguageModel(model)
-                .toolProvider(toolProvider)
-                .build();
-
-        // Artık AI'ya doğal dilde hesaplama yapmasını isteyebiliriz
-        String response = bot.chat("Calculate the sum of 24.5 and 17.3 using the calculator service");
-        System.out.println(response);
-
-        response = bot.chat("What's the square root of 144?");
-        System.out.println(response);
-    }
-}
+var request = CallToolRequest.builder("add")
+    .arguments(Map.of("a", 5.0, "b", 3.0))
+    .build();
+var result = client.callTool(request);
 ```
 
-**Yaptıkları:**
-1. Anahtarsız kimlik doğrulama (Microsoft Entra ID) kullanarak yapay zeka model bağlantısı oluşturur
-2. Yapay zekayı MCP hesap makinesi sunucusuna bağlar
-3. Yapay zekaya tüm hesap makinesi araçlarına erişim sağlar
-4. "24.5 ile 17.3'ün toplamını hesapla" gibi doğal dil isteklerine izin verir
+Protokol hataları istemciyi yanıltıcı bir başarı yerine başarısız kılar. MCP istemcisi,
+keşif veya araç çağrısı başarısız olduğunda da dahil olmak üzere try-with-resources ile kapatılır.
 
-**Yapay zeka otomatik olarak:**
-- Toplama istediğinizi anlar
-- `add` aracını seçer
-- `add(24.5, 17.3)` çağrısı yapar
-- Sonucu doğal bir yanıt olarak döner
+### 4. Yapay Zekâ Destekli İstemci
+
+Bkz. [LangChain4jClient.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/LangChain4jClient.java)
+ve [Bot.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/Bot.java).
+
+`OpenAiOfficialChatModel` mevcut LangChain4j `ChatModel` API'sini uygular.
+`StreamableHttpMcpTransport` bunu SDK istemcisi ile aynı `/mcp` uç noktasına bağlar.
+`AiServices` araçları keşfeder ve araç çağrısı/sonuç sohbetini yönetir.
+
+Varsayılan dağıtım, akıl yürütmenin açıkça devre dışı bırakıldığı **GPT-5.6 Luna** dır:
+
+```java
+var parameters = OpenAiOfficialChatRequestParameters.builder()
+    .modelName("gpt-5.6-luna")
+    .reasoningEffort("none")
+    .maxCompletionTokens(1024)
+    .parallelToolCalls(false)
+    .build();
+```
+
+Bu varsayılanlar, araç yürütmesinden sonra takipler dahil tüm tamamlamalar için geçerlidir.
+İstemci, `DefaultAzureCredential` tarafından desteklenen yenilenebilir bir `BearerTokenCredential`
+ve `https://ai.azure.com/.default` kapsamı kullanır, API anahtarı olarak geçirilen tek seferlik bir jeton değil.
+Kaynak URL'leri ve `/openai/v1` ile biten URL'ler her ikisi de kabul edilir.
+
+Bot sınırlandırılmış bir konuşma geçmişi tutar, gerçek MCP sonucu ile birlikte `Tool executed: ...` yazdırır
+ve eğer yanıt araçları atlar ise başarısız olur. Araç döngüleri dört tur ile sınırlıdır.
+Kimlik doğrulama, model, MCP ve araç hataları yayılır; otomatik model tekrar denemeleri devre dışıdır.
+MCP taşıyıcı/istemci ve resmi OpenAI istemci başarı veya başarısızlıkta kapatılır.
 
 ## Örneklerin Çalıştırılması
 
-### Adım 1: Hesap Makinesi Sunucusunu Başlatın
+### Adım 1: Hesaplayıcı Sunucusunu Başlatın
 
-Öncelikle oturum açın ve Azure AI Foundry uç noktanızı ayarlayın (yapay zeka istemcisi için gerekli — anahtarsız kimlik doğrulama, API anahtarı yok):
+Sunucu için Azure yapılandırması gerekmez. Aşağıdaki komutlar bu örneğin dizininden çalıştırılır.
+Örnek, başka bir örnekle çakışmayı önlemek için **18081** portunu kullanır; varsayılan 8080 olarak kalır.
 
-**Windows:**
-```cmd
-az login
-set AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-```
-
-**Linux/macOS:**
-```bash
-az login
-export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-```
-
-Sunucuyu başlatın:
-```bash
+```powershell
 cd 04-PracticalSamples/calculator
-mvn clean spring-boot:run
+mvn spring-boot:run "-Dspring-boot.run.arguments=--server.port=18081"
 ```
 
-Sunucu `http://localhost:8080` adresinde başlayacaktır. Şu görüntülenir:
-```
-Started McpServerApplication in X.XXX seconds
-```
+MCP uç noktası `http://localhost:18081/mcp` adresindedir. Sağlık ve keşif bilgileri ise
+`http://localhost:18081/health` ve `http://localhost:18081/info` adreslerinde bulunur.
+Akışa uygun HTTP, eski sadece SSE taşımasını değiştirir; `/sse` ve `/v1/tools` uç noktalar değildir.
 
 ### Adım 2: Doğrudan İstemci ile Test Edin
 
-Sunucu çalışırken **YENİ** bir terminal açın ve doğrudan MCP istemcisini çalıştırın:
-```bash
+Başka bir PowerShell terminalinde:
+
+```powershell
 cd 04-PracticalSamples/calculator
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient" -Dexec.classpathScope=test
+$env:MCP_SERVER_URL = "http://localhost:18081"
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.SDKClient" "-Dexec.classpathScope=test"
 ```
 
-Şöyle bir çıktı görürsünüz:
-```
-Available Tools = [add, subtract, multiply, divide, power, squareRoot, modulus, absolute, help]
-Add Result = 5.00 + 3.00 = 8.00
-Square Root Result = √16.00 = 4.00
-```
+Girdi gerekmez. Tüm dokuz araç çalıştırılır. Beklenen aritmetik sonuçlar arasında
+8, 6, 42, 5, 256, 4, 2 ve 5.5 bulunur, ardından yardım metni gelir.
 
-### Adım 3: Yapay Zeka İstemcisi ile Test Edin
+### Adım 3: AI İstemcisi ile Test Edin
 
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient" -Dexec.classpathScope=test
-```
+Ön koşullarda açıklandığı gibi kimlik doğrulamasından sonra, aynı terminalde AI istemcisini yapılandırın:
 
-Yapay zekanın araçları otomatik kullanışını görürsünüz:
-```
-The sum of 24.5 and 17.3 is 41.8.
-The square root of 144 is 12.
+```powershell
+$env:AZURE_OPENAI_ENDPOINT = "https://your-resource.openai.azure.com/"
+$env:AZURE_OPENAI_DEPLOYMENT = "gpt-5.6-luna"
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.LangChain4jClient" "-Dexec.classpathScope=test" "-Dexec.args=--prompt 'Calculate the sum of 24.5 and 17.3 using the calculator service'"
 ```
 
-### Adım 4: MCP Sunucusunu Kapatın
+`Tool executed: add` satırını `41.80` değeriyle ve ardından modelin cevabını bekleyin.
+Tek istemlik mod, giriş beklemeden çıkar. Orijinal dört istemlik demoyu çalıştırmak için:
 
-Testiniz bittiğinde, yapay zeka istemcisini terminalinde `Ctrl+C` ile durdurabilirsiniz. MCP sunucusu ise siz durdurana kadar çalışmaya devam edecektir.
-Sunucuyu durdurmak için çalıştığı terminalde `Ctrl+C` tuşlarına basın.
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.LangChain4jClient" "-Dexec.classpathScope=test" "-Dexec.args=--demo"
+```
 
-## Hepsi Nasıl Birlikte Çalışır
+Demo `add`, `squareRoot`, `help` ve zincirlenmiş `power` sonra `divide` işlemlerini çağırır.
+Beklenen sayısal yanıtlar 41.8, 12 ve 64'tür. Argümanlar atlanarak da bu demo çalışır.
 
-Yapay zekadan "5 + 3 nedir?" diye sordunuz diyelim:
+### Adım 4: Etkileşimli Botu Çalıştırın
 
-1. **Siz** yapay zekaya doğal dilde soru sorarsınız
-2. **Yapay zeka** isteğinizi analiz eder ve toplama istediğinizi anlar
-3. **Yapay zeka** MCP sunucusuna çağrı yapar: `add(5.0, 3.0)`
-4. **Hesap Makinesi Servisi** işlemi yapar: `5.0 + 3.0 = 8.0`
-5. **Hesap Makinesi Servisi** sonucu döner: `"5.00 + 3.00 = 8.00"`
-6. **Yapay zeka** sonucu alır ve doğal bir yanıt hazırlar
-7. **Siz** "5 ile 3'ün toplamı 8'dir" yanıtını alırsınız
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.Bot" "-Dexec.classpathScope=test"
+```
+
+`Multiply 6 by 7 using the calculator service` yazın, ardından `exit` veya `quit` komutunu verin.
+Gerçek bir `multiply` araç sonucu olarak 42 bekleyin. Boş satırlar yoksayılır; EOF da oturumu sona erdirir.
+Bu giriş noktası için etkileşimsiz hızlı bir test yapmak üzere:
+
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.Bot" "-Dexec.classpathScope=test" "-Dexec.args=--prompt 'Multiply 6 by 7 using the calculator service'"
+```
+
+Her iki AI giriş noktası da `--prompt "question"`, `--demo` ve `--interactive` seçeneklerini kabul eder.
+Geçersiz seçenekler bağlantı açılmadan önce başarısız olur. Her Maven `-D...` argümanı PowerShell için tam olarak tırnaklanmıştır.
+Bash kullanıyorsanız, `$env:NAME = "value"` yerine `export NAME=value` kullanın.
+
+**Kotaya Dikkat:** AI örneklerini sırayla çalıştırın. Basit bir istem normalde iki model isteği gerektirir;
+tam demo ise dokuz istek gerektirir, araç-sonuç takipleri dahil. Paylaşılan 10 RPM
+dağıtımla, bir sonraki AI çalıştırması için taze bir kota penceresi bekleyin. 429 hatası otomatik yenileme olmadan görünür şekilde başarısız olur;
+servis tarafından verilen retry-after talimatlarını takip edin. Gerçek istek sayıları modele bağlıdır.
+Çevrimdışı testler hiçbir kota tüketmez ve canlı Luna kullanılabilirliği veya yanıt kalitesi sağlamaz.
+
+### Yapılandırma ve Kapatma
+
+| Ayar | Varsayılan / davranış |
+| --- | --- |
+| `MCP_SERVER_URL` | `/mcp` olmadan baz URL, `http://localhost:8080` |
+| `-Dmcp.server.url=...` | Tüm istemciler için `MCP_SERVER_URL` değerini geçersiz kılar |
+| `AZURE_OPENAI_ENDPOINT` | Yalnızca AI istemcileri için gerekir; kaynak URL'si veya `/openai/v1` URL'si |
+| `AZURE_OPENAI_DEPLOYMENT` | `gpt-5.6-luna`; bir Azure dağıtım adı |
+| `AZURE_OPENAI_MAX_COMPLETION_TOKENS` | `1024`; pozitif tam sayı |
+| Akıl yürütme çabası | Araç döngüsü takipleri dahil her zaman `none` |
+
+Geçersiz kılınan dağıtımın `reasoning_effort=none` ve `max_completion_tokens` değerlerini desteklemesi gerekir.
+İstemciler `.env` dosyasını otomatik okumaz. Testten sonra sunucuyu `Ctrl+C` ile durdurun.
+İstemciler `System.exit` veya kapanış beklemeleri olmadan normal şekilde döner.
+
+## Çevrimdışı Testler
+
+```powershell
+mvn -B -ntp clean verify
+```
+
+Tüm testler Azure ile bağlantısızdır: protokol paketi rastgele loopback portlarında çalışan bir Spring sunucu
+ve OpenAI uyumlu bir stub başlatır ve ardından kapatır. Maven yine de bağımlılıkları indirebilir.
+Kimlik bilgisi, canlı dağıtım veya önceden var olan MCP sunucusu kullanılmaz.
+
+- Hesaplayıcı birim testleri tüm aritmetik işlemleri, ondalık sonuçları, yardımı ve alan hatalarını kapsar.
+- MCP testleri başlatma, keşif, dokuz aracı çağırma, araç hataları ve sağlık/bilgi durumlarını kapsar.
+- AI protokol testleri gerçek hesaplayıcı ile tam demoyu ve etkileşimli Botu çalıştırır,
+  araç sonuçlarının sonraki tamamlamaya beslenmesini doğrular ve her HTTP gövdesini Luna,
+  `reasoning_effort: "none"` ve kalıtımsız `max_completion_tokens` için denetler.
+- Yapılandırma/girdi testleri dağıtım ve uç nokta geçersizliklerini, boş satırları, EOF, çıkış/quit,
+  tek istemlik modu, geçersiz seçenekleri ve hata yayılımını kapsar. Kota testleri 429 hatasının yeniden denenmediğini kanıtlar.
+
+## Tümünün Birlikte Nasıl Çalıştığı
+
+AI'ye "5 + 3 nedir?" diye sorduğunuzda tam süreç şöyledir:
+
+1. **Siz** AI'ye doğal dilde sorarsınız
+2. **AI** isteğinizi analiz eder ve toplama istediğinizi anlar
+3. **AI** MCP sunucusunu çağırır: `add(5.0, 3.0)`
+4. **Hesaplayıcı Servisi** çalışır: `5.0 + 3.0 = 8.0`
+5. **Hesaplayıcı Servisi** şunu döner: `"5.00 + 3.00 = 8.00"`
+6. **AI** sonucu alır ve doğal bir yanıt formatlar
+7. **Siz** şu yanıtı alırsınız: "5 ile 3'ün toplamı 8'dir"
 
 ## Sonraki Adımlar
 
-Daha fazla örnek için, bkz. [Bölüm 04: Pratik örnekler](../README.md)
+Daha fazla örnek için bkz. [Bölüm 04: Pratik örnekler](../README.md)
 
 ---
 

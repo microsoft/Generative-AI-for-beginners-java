@@ -2,35 +2,60 @@
 
 ## Spis treści
 
-- [Czego się nauczysz](#czego-si%C4%99-nauczysz)
-- [Wymagania wstępne](#wymagania-wst%C4%99pne)
+- [Czego się nauczysz](#czego-się-nauczysz)
+- [Wymagania wstępne](#wymagania-wstępne)
+- [Wersje zależności](#wersje-zależności)
 - [Zrozumienie struktury projektu](#zrozumienie-struktury-projektu)
-- [Wyjaśnienie kluczowych komponentów](#wyja%C5%9Bnienie-kluczowych-komponent%C3%B3w)
-  - [1. Główna aplikacja](#1-g%C5%82%C3%B3wna-aplikacja)
+- [Wyjaśnienie głównych składników](#wyjaśnienie-głównych-składników)
+  - [1. Główna aplikacja](#1-główna-aplikacja)
   - [2. Serwis kalkulatora](#2-serwis-kalkulatora)
-  - [3. Bezpośredni klient MCP](#3-bezpo%C5%9Bredni-klient-mcp)
-  - [4. Klient zasilany SI](#4-klient-zasilany-si)
-- [Uruchamianie przykładów](#uruchamianie-przyk%C5%82ad%C3%B3w)
-- [Jak to wszystko działa razem](#jak-to-wszystko-dzia%C5%82a-razem)
+  - [3. Bezpośredni klient MCP](#3-bezpośredni-klient-mcp)
+  - [4. Klient wspierany przez AI](#4-klient-wspierany-przez-ai)
+- [Uruchamianie przykładów](#uruchamianie-przykładów)
+- [Testy offline](#testy-offline)
+- [Jak to wszystko współgra](#jak-to-wszystko-współgra)
 - [Kolejne kroki](#kolejne-kroki)
 
 ## Czego się nauczysz
 
-Ten samouczek wyjaśnia, jak zbudować serwis kalkulatora przy użyciu Model Context Protocol (MCP). Zrozumiesz:
+Ten samouczek wyjaśnia, jak zbudować serwis kalkulatora używając Model Context Protocol (MCP). Dowiesz się:
 
-- Jak stworzyć serwis, którego SI może używać jako narzędzia
-- Jak skonfigurować bezpośrednią komunikację z serwisami MCP
-- Jak modele SI mogą automatycznie wybierać, których narzędzi używać
-- Różnicę między bezpośrednimi wywołaniami protokołu a interakcjami wspieranymi przez SI
+- Jak stworzyć serwis, z którego AI może korzystać jako z narzędzia
+- Jak skonfigurować bezpośrednią komunikację z usługami MCP
+- Jak modele AI mogą automatycznie wybierać, których narzędzi użyć
+- Różnica między bezpośrednimi wywołaniami protokołu a interakcjami wspomaganymi przez AI
 
 ## Wymagania wstępne
 
 Przed rozpoczęciem upewnij się, że masz:
 - Zainstalowaną Javę 21 lub nowszą
-- Maven do zarządzania zależnościami
-- Wdrożenie modelu Azure AI Foundry (załóż je za pomocą `azd up` — zobacz [Rozdział 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md))
-- [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli), zalogowane poleceniem `az login` (uwierzytelnianie bezkluczowe)
+- Mavena do zarządzania zależnościami
 - Podstawową znajomość Javy i Spring Boot
+
+Tylko klienci AI wymagają wdrożenia Azure OpenAI i uwierzytelnionego `DefaultAzureCredential`,
+na przykład przez lokalne zalogowanie się do Azure CLI lub zarządzaną tożsamość w Azure. Tożsamość musi mieć
+rolę użytkownika Cognitive Services OpenAI na zasobie. Zobacz [Rozdział 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md).
+Serwer, bezpośredni klient SDK oraz wszystkie automatyczne testy nie potrzebują konta Azure ani dostępu do modelu.
+
+## Wersje zależności
+
+Zweryfikowane zależności na dzień 2026-09-14:
+
+| Zależność | Wersja |
+| --- | --- |
+| Spring Boot | 4.1.1 |
+| Spring AI | 2.0.1 |
+| MCP Java SDK (zarządzany przez Spring AI) | 2.0.0 |
+| LangChain4j / core | 1.20.0 |
+| LangChain4j MCP | 1.20.0-beta30 |
+| Oficjalny adapter OpenAI LangChain4j | 1.20.0-beta30 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
+| JUnit Jupiter (zarządzany przez Boot) | 6.0.3 |
+
+Adaptery MCP i oficjalny OpenAI są opublikowanymi wersjami beta w Maven Central, nie snapshotami.
+Ich wersje różnią się od LangChain4j core. Nie są potrzebne repozytoria snapshot ani milestone.
+Zależności tylko dla klienta mają zakres testowy, ponieważ wykonalne przykłady znajdują się pod `src/test/java`.
 
 ## Zrozumienie struktury projektu
 
@@ -44,16 +69,16 @@ calculator/
 └── src/test/java/com/microsoft/mcp/sample/client/
     ├── SDKClient.java                     # Direct MCP communication
     ├── LangChain4jClient.java            # AI-powered client
-    └── Bot.java                          # Simple chat interface
+    └── Bot.java                          # Chat interface and interactive entrypoint
 ```
 
-## Wyjaśnienie kluczowych komponentów
+## Wyjaśnienie głównych składników
 
 ### 1. Główna aplikacja
 
 **Plik:** `McpServerApplication.java`
 
-Jest to punkt startowy naszego serwisu kalkulatora. To standardowa aplikacja Spring Boot z jednym specjalnym dodatkiem:
+To punkt startowy naszego serwisu kalkulatora. Jest to standardowa aplikacja Spring Boot z jednym specjalnym dodatkiem:
 
 ```java
 @SpringBootApplication
@@ -71,15 +96,15 @@ public class McpServerApplication {
 ```
 
 **Co to robi:**
-- Uruchamia serwer webowy Spring Boot na porcie 8080
-- Tworzy `ToolCallbackProvider`, który udostępnia nasze metody kalkulatora jako narzędzia MCP
-- Adnotacja `@Bean` mówi Springowi, aby zarządzał tym jako komponentem, którego mogą używać inne części
+- Uruchamia serwer sieciowy Spring Boot na porcie 8080
+- Tworzy `ToolCallbackProvider`, który udostępnia metody kalkulatora jako narzędzia MCP
+- Adnotacja `@Bean` mówi Springowi, aby zarządzał tym jako komponentem, z którego mogą korzystać inne części
 
 ### 2. Serwis kalkulatora
 
 **Plik:** `CalculatorService.java`
 
-Tu odbywa się cała matematyka. Każda metoda oznaczona jest adnotacją `@Tool`, aby była dostępna przez MCP:
+To tutaj odbywają się wszystkie działania matematyczne. Każda metoda jest oznaczona `@Tool`, aby była dostępna przez MCP:
 
 ```java
 @Service
@@ -97,224 +122,203 @@ public class CalculatorService {
         return formatResult(a, "-", b, result);
     }
     
-    // Więcej operacji kalkulatora...
+    // Więcej działań kalkulatora...
     
     private String formatResult(double a, String operator, double b, double result) {
-        return String.format("%.2f %s %.2f = %.2f", a, operator, b, result);
+        return String.format(java.util.Locale.ROOT, "%.2f %s %.2f = %.2f", a, operator, b, result);
     }
 }
 ```
 
 **Kluczowe cechy:**
 
-1. **Adnotacja `@Tool`**: Informuje MCP, że metoda może być wywoływana przez zewnętrznych klientów
-2. **Jasne opisy**: Każde narzędzie ma opis, który pomaga modelom SI zrozumieć, kiedy go użyć
-3. **Spójny format zwrotu**: Wszystkie operacje zwracają czytelne dla człowieka ciągi znaków, np. "5.00 + 3.00 = 8.00"
+1. **Adnotacja `@Tool`**: Informuje MCP, że ta metoda może być wywołana przez zewnętrznych klientów
+2. **Jasne opisy**: Każde narzędzie ma opis pomagający modelom AI zrozumieć, kiedy je używać
+3. **Spójny format zwracanych wartości**: Wszystkie operacje zwracają czytelne dla człowieka napisy, np. "5.00 + 3.00 = 8.00"
 4. **Obsługa błędów**: Dzielenie przez zero i pierwiastek z liczby ujemnej zwracają komunikaty o błędach
 
 **Dostępne operacje:**
 - `add(a, b)` - Dodaje dwie liczby
 - `subtract(a, b)` - Odejmuje drugą od pierwszej
 - `multiply(a, b)` - Mnoży dwie liczby
-- `divide(a, b)` - Dzieli pierwszą przez drugą (ze sprawdzeniem dzielenia przez zero)
-- `power(base, exponent)` - Potęguje podstawę do wykładnika
-- `squareRoot(number)` - Oblicza pierwiastek kwadratowy (ze sprawdzeniem ujemnej wartości)
+- `divide(a, b)` - Dzieli pierwszą przez drugą (z weryfikacją dzielenia przez zero)
+- `power(base, exponent)` - Podnosi podstawę do potęgi wykładnika
+- `squareRoot(number)` - Oblicza pierwiastek kwadratowy (z weryfikacją na ujemne)
 - `modulus(a, b)` - Zwraca resztę z dzielenia
 - `absolute(number)` - Zwraca wartość bezwzględną
 - `help()` - Zwraca informacje o wszystkich operacjach
 
 ### 3. Bezpośredni klient MCP
 
-**Plik:** `SDKClient.java`
+Zobacz [SDKClient.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/SDKClient.java).
 
-Ten klient komunikuje się bezpośrednio z serwerem MCP, nie używając SI. Ręcznie wywołuje konkretne funkcje kalkulatora:
+Ten klient używa `HttpClientStreamableHttpTransport` pod `/mcp`, inicjalizuje połączenie,
+wysyła ping do serwera i obsługuje stronicowanie listy narzędzi. Sprawdza, czy istnieje wszystkich dziewięć oczekiwanych narzędzi
+i wywołuje każde z nich, w tym `modulus` i `help`, bez modelu AI.
 
-```java
-public class SDKClient {
-    
-    public static void main(String[] args) {
-        McpClientTransport transport = WebFluxSseClientTransport.builder(
-            WebClient.builder().baseUrl("http://localhost:8080")
-        ).build();
-        new SDKClient(transport).run();
-    }
-    
-    public void run() {
-        var client = McpClient.sync(this.transport).build();
-        client.initialize();
-        
-        // Wyświetl dostępne narzędzia
-        ListToolsResult toolsList = client.listTools();
-        System.out.println("Available Tools = " + toolsList);
-        
-        // Wywołaj określone funkcje kalkulatora
-        CallToolResult resultAdd = client.callTool(
-            new CallToolRequest("add", Map.of("a", 5.0, "b", 3.0))
-        );
-        System.out.println("Add Result = " + resultAdd);
-        
-        CallToolResult resultSqrt = client.callTool(
-            new CallToolRequest("squareRoot", Map.of("number", 16.0))
-        );
-        System.out.println("Square Root Result = " + resultSqrt);
-        
-        client.closeGracefully();
-    }
-}
-```
-
-**Co to robi:**
-1. **Łączy się** z serwerem kalkulatora pod adresem `http://localhost:8080` używając wzorca buildera
-2. **Wyświetla** listę wszystkich dostępnych narzędzi (naszych funkcji kalkulatora)
-3. **Wywołuje** konkretne funkcje z dokładnymi parametrami
-4. **Drukuje** wyniki bezpośrednio
-
-**Uwaga:** Ten przykład używa zależności Spring AI 1.1.0-SNAPSHOT, która wprowadziła wzorzec buildera dla `WebFluxSseClientTransport`. Jeżeli używasz starszej stabilnej wersji, być może trzeba będzie użyć bezpośredniego konstruktora.
-
-**Kiedy to używać:** Gdy dokładnie wiesz, jakie obliczenie chcesz wykonać i chcesz wywołać je programowo.
-
-### 4. Klient zasilany SI
-
-**Plik:** `LangChain4jClient.java`
-
-Ten klient używa modelu SI (GPT-4o-mini), który automatycznie decyduje, których narzędzi kalkulatora użyć:
+Aktualny kreator zapytań wygląda tak:
 
 ```java
-public class LangChain4jClient {
-    
-    public static void main(String[] args) throws Exception {
-        // Skonfiguruj model AI (Azure AI Foundry, uwierzytelnianie bezkluczowe przez Microsoft Entra ID)
-        String endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1";
-        String token = new DefaultAzureCredentialBuilder().build()
-                .getToken(new TokenRequestContext().addScopes("https://ai.azure.com/.default"))
-                .block().getToken();
-        ChatLanguageModel model = OpenAiOfficialChatModel.builder()
-                .baseUrl(baseUrl)
-                .apiKey(token)
-                .modelName("gpt-4o-mini")
-                .build();
-
-        // Połącz się z naszym serwerem kalkulatora MCP
-        McpTransport transport = new HttpMcpTransport.Builder()
-                .sseUrl("http://localhost:8080/sse")
-                .logRequests(true)  // Pokazuje, co robi AI
-                .logResponses(true)
-                .build();
-
-        McpClient mcpClient = new DefaultMcpClient.Builder()
-                .transport(transport)
-                .build();
-
-        // Daj AI dostęp do naszych narzędzi kalkulatora
-        ToolProvider toolProvider = McpToolProvider.builder()
-                .mcpClients(List.of(mcpClient))
-                .build();
-
-        // Utwórz bota AI, który może korzystać z naszego kalkulatora
-        Bot bot = AiServices.builder(Bot.class)
-                .chatLanguageModel(model)
-                .toolProvider(toolProvider)
-                .build();
-
-        // Teraz możemy prosić AI o wykonywanie obliczeń w języku naturalnym
-        String response = bot.chat("Calculate the sum of 24.5 and 17.3 using the calculator service");
-        System.out.println(response);
-
-        response = bot.chat("What's the square root of 144?");
-        System.out.println(response);
-    }
-}
+var request = CallToolRequest.builder("add")
+    .arguments(Map.of("a", 5.0, "b", 3.0))
+    .build();
+var result = client.callTool(request);
 ```
 
-**Co to robi:**
-1. **Tworzy** połączenie z modelem SI z uwierzytelnianiem bezkluczowym (Microsoft Entra ID)
-2. **Łączy** SI z naszym serwerem MCP kalkulatora
-3. **Daje** SI dostęp do wszystkich naszych narzędzi kalkulatora
-4. **Pozwala** na zapytania w języku naturalnym, np. "Oblicz sumę 24.5 i 17.3"
+Błędy protokołu powodują niepowodzenie klienta, zamiast mylącego komunikatu o sukcesie. Klient MCP
+jest zamykany za pomocą try-with-resources, także gdy wykrywanie lub wywołanie narzędzia się nie powiodą.
 
-**SI automatycznie:**
-- Rozumie, że chcesz dodać liczby
-- Wybiera narzędzie `add`
-- Wywołuje `add(24.5, 17.3)`
-- Zwraca wynik w naturalnym formacie odpowiedzi
+### 4. Klient wspierany przez AI
+
+Zobacz [LangChain4jClient.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/LangChain4jClient.java)
+i [Bot.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/Bot.java).
+
+`OpenAiOfficialChatModel` implementuje aktualne API LangChain4j `ChatModel`.
+`StreamableHttpMcpTransport` łączy go z tym samym endpointem `/mcp`, co klient SDK.
+`AiServices` wykrywa narzędzia i zarządza konwersacją wywołań narzędzi oraz wyników.
+
+Domyślne wdrożenie to **GPT-5.6 Luna**, z wyłączonym explicite rozumowaniem:
+
+```java
+var parameters = OpenAiOfficialChatRequestParameters.builder()
+    .modelName("gpt-5.6-luna")
+    .reasoningEffort("none")
+    .maxCompletionTokens(1024)
+    .parallelToolCalls(false)
+    .build();
+```
+
+Te domyślne ustawienia mają zastosowanie do każdego zakończenia, w tym follow-upów po wykonaniu narzędzia.
+Klient używa odświeżalnego `BearerTokenCredential` opartego na `DefaultAzureCredential`
+oraz zakresie `https://ai.azure.com/.default`, a nie jednorazowego tokena podanego jako klucz API.
+Akceptowane są zarówno URL zasobu, jak i URL kończące się już na `/openai/v1`.
+
+Bot utrzymuje ograniczoną historię rozmowy, drukuje `Tool executed: ...` z faktycznym
+wynikiem MCP i kończy działanie, jeśli odpowiedź pomija narzędzia. Pętle narzędzi są ograniczone do czterech rund.
+Błędy uwierzytelniania, modelu, MCP i narzędzi są propagowane; automatyczne powtarzanie dla modelu jest wyłączone.
+Zarówno transport/klient MCP, jak i oficjalny klient OpenAI są zamykane przy sukcesie lub porażce.
 
 ## Uruchamianie przykładów
 
 ### Krok 1: Uruchom serwer kalkulatora
 
-Najpierw zaloguj się i ustaw swój punkt końcowy Azure AI Foundry (potrzebne dla klienta SI — uwierzytelnianie bezkluczowe, bez klucza API):
+Serwer nie wymaga konfiguracji Azure. Poniższe polecenia uruchom z katalogu tego przykładu.
+Przykład używa portu **18081**, aby uniknąć konfliktu z innym przykładem; domyślny pozostaje 8080.
 
-**Windows:**
-```cmd
-az login
-set AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-```
-
-**Linux/macOS:**
-```bash
-az login
-export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-```
-
-Uruchom serwer:
-```bash
+```powershell
 cd 04-PracticalSamples/calculator
-mvn clean spring-boot:run
+mvn spring-boot:run "-Dspring-boot.run.arguments=--server.port=18081"
 ```
 
-Serwer uruchomi się pod adresem `http://localhost:8080`. Powinieneś zobaczyć:
-```
-Started McpServerApplication in X.XXX seconds
-```
+Punkt końcowy MCP to `http://localhost:18081/mcp`. Informacje o stanie i wykryciu są pod
+`http://localhost:18081/health` i `http://localhost:18081/info`.
+Streamable HTTP zastępuje stary transport tylko SSE; `/sse` i `/v1/tools` nie są endpointami.
 
-### Krok 2: Przetestuj klienta bezpośredniego
+### Krok 2: Testuj za pomocą klienta bezpośredniego
 
-W **NOWYM** terminalu z włączonym serwerem uruchom bezpośredniego klienta MCP:
-```bash
+W kolejnym terminalu PowerShell:
+
+```powershell
 cd 04-PracticalSamples/calculator
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient" -Dexec.classpathScope=test
+$env:MCP_SERVER_URL = "http://localhost:18081"
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.SDKClient" "-Dexec.classpathScope=test"
 ```
 
-Zobaczysz output taki jak:
-```
-Available Tools = [add, subtract, multiply, divide, power, squareRoot, modulus, absolute, help]
-Add Result = 5.00 + 3.00 = 8.00
-Square Root Result = √16.00 = 4.00
-```
+Nie jest potrzebne dane wejściowe. Przetestowane są wszystkie dziewięć narzędzi. Oczekiwane wyniki arytmetyczne to
+8, 6, 42, 5, 256, 4, 2 i 5.5, a następnie tekst pomocy.
 
-### Krok 3: Przetestuj klienta z SI
+### Krok 3: Testuj z klientem AI
 
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient" -Dexec.classpathScope=test
-```
+Po uwierzytelnieniu opisanym w wymaganiach wstępnych, skonfiguruj klienta AI w tym samym terminalu:
 
-Zobaczysz, jak SI automatycznie używa narzędzi:
-```
-The sum of 24.5 and 17.3 is 41.8.
-The square root of 144 is 12.
+```powershell
+$env:AZURE_OPENAI_ENDPOINT = "https://your-resource.openai.azure.com/"
+$env:AZURE_OPENAI_DEPLOYMENT = "gpt-5.6-luna"
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.LangChain4jClient" "-Dexec.classpathScope=test" "-Dexec.args=--prompt 'Calculate the sum of 24.5 and 17.3 using the calculator service'"
 ```
 
-### Krok 4: Zamknij serwer MCP
+Spodziewaj się linii `Tool executed: add` z wartością `41.80`, a potem odpowiedzi modelu.
+Tryb pojedynczej podpowiedzi wychodzi bez oczekiwania na dane. Aby uruchomić oryginalną demonstrację z czterema podpowiedziami:
 
-Po zakończeniu testów możesz zatrzymać klienta SI, naciskając `Ctrl+C` w jego terminalu. Serwer MCP będzie działał dalej, dopóki go nie zatrzymasz.
-Aby zatrzymać serwer, naciśnij `Ctrl+C` w terminalu, w którym jest uruchomiony.
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.LangChain4jClient" "-Dexec.classpathScope=test" "-Dexec.args=--demo"
+```
 
-## Jak to wszystko działa razem
+Demonstracja wywołuje `add`, `squareRoot`, `help` oraz łańcuchową operację `power` a następnie `divide`.
+Oczekiwane wyniki numeryczne to 41.8, 12 i 64. Pominięcie argumentów również uruchomi tę demonstrację.
 
-Oto pełny przebieg, gdy zapytasz SI „Ile to 5 + 3?”:
+### Krok 4: Uruchom interaktywnego bota
 
-1. **Ty** zadajesz SI pytanie w języku naturalnym
-2. **SI** analizuje prośbę i rozpoznaje, że chcesz wykonac dodawanie
-3. **SI** wywołuje serwer MCP: `add(5.0, 3.0)`
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.Bot" "-Dexec.classpathScope=test"
+```
+
+Wpisz `Multiply 6 by 7 using the calculator service`, następnie `exit` lub `quit`.
+Spodziewaj się faktycznego wyniku `multiply` równego 42. Puste linie są ignorowane; EOF kończy sesję.
+Aby wykonać nieinteraktywny test dymny tego punktu wejścia:
+
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.Bot" "-Dexec.classpathScope=test" "-Dexec.args=--prompt 'Multiply 6 by 7 using the calculator service'"
+```
+
+Oba punkty wejścia AI obsługują `--prompt "question"`, `--demo` oraz `--interactive`.
+Nieprawidłowe opcje przerywają działanie przed otwarciem połączenia. Każdy argument Maven `-D...` jest w pełni cytowany
+dla PowerShell. W Bash użyj `export NAME=value` zamiast `$env:NAME = "value"`.
+
+**Limit:** Uruchamiaj próbki AI kolejno. Prosta podpowiedź zazwyczaj wymaga dwóch zapytań do modelu;
+pełna demonstracja zwykle wymaga dziewięciu, włącznie z follow-upami wyników narzędzi. Przy współdzielonym wdrożeniu na 10 RPM
+odczekaj świeże okno limitu przed kolejnym uruchomieniem AI. Błąd 429 kończy się widocznie bez
+automatycznych powtórzeń; stosuj się do wytycznych usługi co do retry-after. Faktyczne liczby zapytań zależą od modelu.
+Testy offline nie zużywają żadnego limitu i nie ustanawiają dostępności Luna ani jakości odpowiedzi na żywo.
+
+### Konfiguracja i zamknięcie
+
+| Ustawienie | Domyślnie / zachowanie |
+| --- | --- |
+| `MCP_SERVER_URL` | `http://localhost:8080`; baza URL, bez `/mcp` |
+| `-Dmcp.server.url=...` | Nadpisuje `MCP_SERVER_URL` dla wszystkich klientów |
+| `AZURE_OPENAI_ENDPOINT` | Wymagane tylko dla klientów AI; URL zasobu lub URL `/openai/v1` |
+| `AZURE_OPENAI_DEPLOYMENT` | `gpt-5.6-luna`; nazwa wdrożenia Azure |
+| `AZURE_OPENAI_MAX_COMPLETION_TOKENS` | `1024`; dodatnia liczba całkowita |
+| Nakład pracy rozumowania | Zawsze `none`, w tym follow-upy pętli narzędzi |
+
+Nadpisanie wdrożenia musi wspierać `reasoning_effort=none` i `max_completion_tokens`.
+Klienci nie czytają automatycznie pliku `.env`. Zatrzymaj serwer za pomocą `Ctrl+C` po testach.
+Klienci kończą działanie normalnie bez `System.exit` lub opóźnień przy zamykaniu.
+
+## Testy offline
+
+```powershell
+mvn -B -ntp clean verify
+```
+
+Wszystkie testy są offline względem Azure: pakiet protokołów uruchamia serwer Spring oraz
+stub kompatybilny z OpenAI na losowych portach loopback, następnie je zamyka. Maven może nadal potrzebować
+pobrać zależności. Nie używa się danych uwierzytelniających, aktywnego wdrożenia ani wcześniej istniejącego serwera MCP.
+
+- Testy jednostkowe kalkulatora obejmują wszystkie operacje arytmetyczne, wyniki dziesiętne, pomoc oraz błędy domenowe.
+- Testy MCP obejmują inicjalizację, wykrywanie, wszystkie dziewięć wywołań narzędzi, błędy narzędzi oraz stan/informacje.
+- Testy protokołu AI wykonują pełną demonstrację i interaktywnego Bota przeciwko prawdziwemu kalkulatorowi,
+  weryfikują, że wyniki narzędzi są przekazywane dalej do kolejnych uzupełnień oraz inspekcjonują każde ciało HTTP pod kątem Luna,
+  `reasoning_effort: "none"` i `max_completion_tokens` bez przestarzałego `max_tokens`.
+- Testy konfiguracji/wejścia obejmują nadpisania wdrożeń i endpointów, puste linie, EOF, exit/quit,
+  tryb pojedynczej podpowiedzi, nieprawidłowe opcje oraz propagację błędów. Testy limitów pokazują, że 429 nie jest powtarzany.
+
+## Jak to wszystko współgra
+
+Oto pełny przebieg zdarzeń, gdy pytasz AI "Ile to 5 + 3?":
+
+1. **Ty** zadajesz AI pytanie w naturalnym języku
+2. **AI** analizuje twoją prośbę i rozumie, że chcesz dodać liczby
+3. **AI** wywołuje serwer MCP: `add(5.0, 3.0)`
 4. **Serwis kalkulatora** wykonuje: `5.0 + 3.0 = 8.0`
 5. **Serwis kalkulatora** zwraca: `"5.00 + 3.00 = 8.00"`
-6. **SI** odbiera wynik i formatuje odpowiedź naturalnym językiem
-7. **Ty** otrzymujesz: "Suma 5 i 3 to 8"
+6. **AI** otrzymuje wynik i formatuje naturalną odpowiedź
+7. **Ty** dostajesz: "Suma 5 i 3 to 8"
 
 ## Kolejne kroki
 
-Więcej przykładów znajdziesz w [Rozdziale 04: Praktyczne przykłady](../README.md)
+Aby zobaczyć więcej przykładów, zobacz [Rozdział 04: Praktyczne przykłady](../README.md)
 
 ---
 
