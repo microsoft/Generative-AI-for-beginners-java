@@ -1,61 +1,61 @@
-# Java向け生成AIの開発環境の設定
+# Generative AI for Java の開発環境のセットアップ
 
-> **クイックスタート:** Bicep + `azd` を使用して数分でコードとして **Azure AI Foundry** にAIモデルをプロビジョニング — 詳しくは [Azure AI Foundry セットアップガイド](getting-started-azure-openai.md) を参照してください。認証は<strong>キー不要</strong>（Microsoft Entra ID）で、APIキーの管理は不要です。
+> **クイックスタート：** Bicep + `azd` でコードとして数分で **Azure AI Foundry** に AI モデルをプロビジョニング — 詳細は [Azure AI Foundry Setup Guide](getting-started-azure-openai.md) を参照。認証は <strong>キー不要</strong>（Microsoft Entra ID）なので、API キーの管理は不要です。
 
-## 学べること
+## 何が学べるか
 
-- AIアプリケーション向けのJava開発環境のセットアップ
-- 使いたい開発環境の選択と設定（Codespacesを使ったクラウド優先、ローカルの開発コンテナ、または完全なローカルセットアップ）
-- Azure AI Foundryモデルへの接続によるセットアップのテスト
+- AI アプリケーション向けの Java 開発環境をセットアップ
+- 好みの開発環境（クラウド主体の Codespaces、ローカルの開発コンテナ、フルローカルセットアップ）を選択して設定
+- Azure AI Foundry モデルに接続してセットアップをテスト
 
 ## 目次
 
-- [学べること](#学べること)
+- [何が学べるか](#何が学べるか)
 - [はじめに](#はじめに)
-- [ステップ1: 開発環境のセットアップ](#ステップ1-開発環境のセットアップ)
-  - [オプションA: GitHub Codespaces（推奨）](#オプションa-github-codespaces推奨)
-  - [オプションB: ローカル開発コンテナ](#オプションb-ローカル開発コンテナ)
-  - [オプションC: 既存のローカルインストールを使用](#オプションc-既存のローカルインストールを使用)
-- [ステップ2: Azure AI Foundryのプロビジョニング](#ステップ2-azure-ai-foundryのプロビジョニング)
-- [ステップ3: セットアップのテスト](#ステップ3-セットアップのテスト)
+- [ステップ 1: 開発環境のセットアップ](#ステップ-1-開発環境をセットアップする)
+  - [オプション A: GitHub Codespaces（推奨）](#オプション-a-github-codespaces（推奨）)
+  - [オプション B: ローカル開発コンテナ](#オプション-b-ローカル開発コンテナ)
+  - [オプション C: 既存のローカル環境を使う](#オプション-c-既存のローカル環境を使う)
+- [ステップ 2: Azure AI Foundry のプロビジョニング](#ステップ-2-azure-ai-foundry-のプロビジョニング)
+- [ステップ 3: セットアップのテスト](#ステップ-3-セットアップのテスト)
 - [トラブルシューティング](#トラブルシューティング)
 - [まとめ](#まとめ)
 - [次のステップ](#次のステップ)
 
 ## はじめに
 
-この章では開発環境の設定方法を説明します。本コースではモデルに **Azure AI Foundry** を使用します。Bicep と Azure Developer CLI（`azd`）でコードとしてモデルをプロビジョニングし、<strong>キー不要認証</strong>（Microsoft Entra ID）で接続します。APIキーをコピーしたり管理したりする必要はありません。
+本章では開発環境のセットアップを案内します。このコース全体でモデルには **Azure AI Foundry** を使います。モデルを Bicep と Azure Developer CLI (`azd`) でコードとしてプロビジョニングし、<strong>キー不要認証</strong>（Microsoft Entra ID）で接続します — API キーをコピーしたり漏らしたりする必要はありません。
 
-**ローカルセットアップは不要です！** GitHub Codespacesを利用すればブラウザ上で完全な開発環境が利用可能で、そこからFoundryのプロビジョニングが行えます。
+**ローカルセットアップの必要なし！** ブラウザ内でフルの開発環境を提供する GitHub Codespaces を使い、そこで Foundry をプロビジョニングできます。
 
-本コースで **Azure AI Foundry** を使う理由は：
-- <strong>コードとしてプロビジョニング可能</strong> — 1回の `azd up` でアカウントとモデルの展開をデプロイ
-- <strong>キー不要</strong> — AzureサインインやマネージドIDで認証
-- <strong>本番対応済み</strong> — 同じコードがローカルとAzureの両方で実行可能
-- <strong>柔軟性</strong> — コードを変えずに展開名を変えるだけでモデルの切り替えが可能
+このコースで **Azure AI Foundry** を使う理由は：
+- <strong>コードとしてプロビジョニング可能</strong> — たった一度の `azd up` でアカウントとモデル配置をデプロイ
+- <strong>キー不要</strong> — Azure サインインまたはマネージド ID で認証
+- <strong>本番対応</strong> — 同じコードがローカルでも Azure 上でも動作
+- <strong>柔軟</strong> — コードを書き換えずにデプロイ名を変えるだけでモデル差し替え可能
 
-> <strong>注意</strong>: Azure AI Foundryの展開はトークン単位の従量課金（ペイ・アズ・ユー・ゴー）です。プロビジョニング、リージョン、コスト詳細については [Azure AI Foundryセットアップガイド](getting-started-azure-openai.md) を参照してください。
+> <strong>注意</strong>: Azure AI Foundry のデプロイはトークン単位の従量課金制です。プロビジョニング、地域、コストの詳細は [Azure AI Foundry setup guide](getting-started-azure-openai.md) を参照してください。
 
 
-## ステップ1: 開発環境のセットアップ
+## ステップ 1: 開発環境をセットアップする
 
 <a name="quick-start-cloud"></a>
 
-本コース向けに事前に設定済みの開発コンテナを用意しています。セットアップ時間を短縮し必要なツールを確実に揃えられます。お好みの開発方法を選択してください：
+Generative AI for Java コースに必要なすべてのツールが揃った事前設定済み開発コンテナを用意しました。セットアップ時間を短縮できます。好みの開発方法を選択してください：
 
-### 開発環境セットアップの選択肢：
+### 環境セットアップの選択肢：
 
-#### オプションA: GitHub Codespaces（推奨）
+#### オプション A: GitHub Codespaces（推奨）
 
-**ローカルセットアップ不要、2分でコーディング開始可能！**
+**2分でコーディング開始 - ローカルセットアップ不要！**
 
-1. このリポジトリをGitHubのアカウントにフォークする  
-   > <strong>注意</strong>: 基本設定を編集したい場合は [Dev Container Configuration](../../../.devcontainer/devcontainer.json) をご確認ください
-2. **Code** ボタン → **Codespaces** タブ → **...** → **New with options...** をクリック
-3. デフォルトのままでOK — 本コース用に作成されたカスタムdevcontainer「Generative AI Java Development Environment」が選択されます
+1. このリポジトリをあなたの GitHub アカウントにフォーク
+   > <strong>注意</strong>: 基本設定を編集したい場合は [Dev Container Configuration](../../../.devcontainer/devcontainer.json) を参照してください
+2. **Code** → **Codespaces** タブ → **...** → **New with options...** をクリック
+3. デフォルトを使う — これによりこのコース用の **Generative AI Java Development Environment** カスタム devcontainer 設定が選択されます
 4. **Create codespace** をクリック
-5. 約2分待って環境が準備されるのを待つ
-6. [ステップ2: Azure AI Foundryのプロビジョニング](#ステップ2-azure-ai-foundryのプロビジョニング) へ進む
+5. 約2分待って環境の準備完了を待つ
+6. [ステップ 2: Azure AI Foundry のプロビジョニング](#ステップ-2-azure-ai-foundry-のプロビジョニング) に進む
 
 <img src="../../../translated_images/ja/codespaces.9945ded8ceb431a5.webp" alt="Screenshot: Codespaces submenu" width="50%">
 
@@ -64,52 +64,52 @@
 <img src="../../../translated_images/ja/codespaces-create.b44a36f728660ab7.webp" alt="Screenshot: Create codespace options" width="50%">
 
 
-> **Codespacesの利点**:
+> **Codespacesのメリット**:
 > - ローカルインストール不要
-> - ブラウザがあればどのデバイスでも動作
-> - 全ツール・依存関係が事前構成済み
-> - 個人アカウントは月60時間無料
-> - 受講者全員に一貫した環境を提供
+> - ブラウザ対応の任意のデバイスで動作
+> - すべてのツールと依存関係が事前設定済み
+> - 個人アカウントは月 60 時間無料
+> - 全受講者に一貫した環境提供
 
-#### オプションB: ローカル開発コンテナ
+#### オプション B: ローカル開発コンテナ
 
-**Dockerを用いたローカル開発を好む開発者向け**
+**Docker を使ったローカル開発を好む開発者向け**
 
-1. このリポジトリをローカルにフォーク＆クローンする  
-   > <strong>注意</strong>: 基本設定を編集したい場合は [Dev Container Configuration](../../../.devcontainer/devcontainer.json) をご確認ください
+1. このリポジトリをフォークしてローカルマシンにクローン
+   > <strong>注意</strong>: 基本設定を編集したい場合は [Dev Container Configuration](../../../.devcontainer/devcontainer.json) を参照してください
 2. [Docker Desktop](https://www.docker.com/products/docker-desktop/) と [VS Code](https://code.visualstudio.com/) をインストール
-3. VS Codeに [Dev Containers拡張機能](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) をインストール
-4. VS Codeでリポジトリフォルダーを開く
-5. プロンプトが表示されたら **Reopen in Container** をクリック（または `Ctrl+Shift+P` → 「Dev Containers: Reopen in Container」）
-6. コンテナのビルドと起動を待つ
-7. [ステップ2: Azure AI Foundryのプロビジョニング](#ステップ2-azure-ai-foundryのプロビジョニング) へ進む
+3. VS Code に [Dev Containers 拡張機能](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) をインストール
+4. VS Codeでリポジトリフォルダを開く
+5. プロンプトが出たら **Reopen in Container** をクリック（または `Ctrl+Shift+P` → 「Dev Containers: Reopen in Container」）
+6. コンテナのビルドと起動が完了するのを待つ
+7. [ステップ 2: Azure AI Foundry のプロビジョニング](#ステップ-2-azure-ai-foundry-のプロビジョニング) に進む
 
 <img src="../../../translated_images/ja/devcontainer.21126c9d6de64494.webp" alt="Screenshot: Dev container setup" width="50%">
 
 <img src="../../../translated_images/ja/image-3.bf93d533bbc84268.webp" alt="Screenshot: Dev container build complete" width="50%">
 
-#### オプションC: 既存のローカルインストールを使用
+#### オプション C: 既存のローカル環境を使う
 
-**すでにJava環境を持つ開発者向け**
+**既存の Java 環境がある開発者向け**
 
 前提条件：
-- [Java 21+](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
+- [Java 21+](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html) 
 - [Maven 3.9+](https://maven.apache.org/download.cgi)
-- [VS Code](https://code.visualstudio.com) またはお好みのIDE
+- [VS Code](https://code.visualstudio.com) または好みの IDE
 
 手順：
 1. このリポジトリをローカルにクローン
 2. IDEでプロジェクトを開く
-3. [ステップ2: Azure AI Foundryのプロビジョニング](#ステップ2-azure-ai-foundryのプロビジョニング) へ進む
+3. [ステップ 2: Azure AI Foundry のプロビジョニング](#ステップ-2-azure-ai-foundry-のプロビジョニング) に進む
 
-> <strong>プロのヒント</strong>: 低スペックマシンでローカルにVS Codeを使いたい場合、GitHub Codespacesがおすすめ！ローカルのVS Codeからクラウド上のCodespaceに接続して両方の利点を活用できます。
+> <strong>プロのヒント</strong>: 低スペックなマシンでもローカルで VS Code を使いたい場合は GitHub Codespaces を使用！ローカルの VS Code からクラウドホストされた Codespace に接続して両方の利点を活かせます。
 
 <img src="../../../translated_images/ja/image-2.fc0da29a6e4d2aff.webp" alt="Screenshot: created local devcontainer instance" width="50%">
 
 
-## ステップ2: Azure AI Foundryのプロビジョニング
+## ステップ 2: Azure AI Foundry のプロビジョニング
 
-本コースのAIモデルをコードとしてAzure AI Foundryに展開します。リポジトリルートから：
+このコースの AI モデルを Azure AI Foundry にコードとしてデプロイします。リポジトリのルートから：
 
 ```bash
 cd 02-SetupDevEnvironment
@@ -117,105 +117,119 @@ azd auth login
 az login
 azd up
 ```
-  
-`azd` は環境名とリージョンを尋ね、`gpt-4o-mini` と `text-embedding-3-small` の展開を含むAzure AI Foundryアカウントをプロビジョニングし、例の `.env` にエンドポイントを書き込みます — すべて<strong>キー不要</strong>認証（APIキー不要）で行います。
 
-> **完全な手順:** 前提条件、手動（ポータル）による代替、リージョンの案内、コストやクリーンアップの注意点については [Azure AI Foundryセットアップガイド](getting-started-azure-openai.md) を参照してください。
+`azd` は環境名、サブスクリプション、リージョンを尋ね、`gpt-5.6-luna` と `text-embedding-3-small` のデプロイがある Azure AI Foundry アカウントをプロビジョニングし、エンドポイントを例の `.env` に書き込みます — すべて <strong>キー不要</strong> 認証（API キー不要）で行います。
 
-## ステップ3: セットアップのテスト
+> **詳細な手順:** 前提条件、手動（ポータル）代替、地域の推奨、費用・クリーンアップの注意点は [Azure AI Foundry Setup Guide](getting-started-azure-openai.md) を参照。
 
-Foundryモデルのプロビジョニングが完了したら、[`02-SetupDevEnvironment/examples/basic-chat-azure`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) のサンプルアプリで接続をテストします。
+## ステップ 3: セットアップのテスト
 
-1. 開発環境内のターミナルを開く。
-2. サンプルへ移動：  
+Foundry モデルのプロビジョニング完了後、[`02-SetupDevEnvironment/examples/basic-chat-azure`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) の例アプリで接続をテストします。
+
+1. 開発環境でターミナルを開く
+2. 例に移動：
    ```bash
    cd 02-SetupDevEnvironment/examples/basic-chat-azure
    ```
-3. サインインしているか確認（キー不要認証にはトークンが必要）：  
+3. サインイン済みか確認（キー不要認証はトークンが必要）：
    ```bash
    az login
    ```
-   > もし `azd up` を実行済みなら、エンドポイントが書き込まれた `.env` ファイルが既にあります。  
-4. アプリケーションを実行：  
+   > `azd up` を実行していれば、エンドポイント入りの `.env` は既に書き込まれています。
+4. アプリケーションを起動：
    ```bash
    mvn clean spring-boot:run
    ```
-  
-`gpt-4o-mini` モデルからの応答が見られるはずです。
 
-### サンプルコードの理解
+`gpt-5.6-luna` モデルからの応答が表示されるはずです。
 
-`examples/basic-chat-azure` にあるサンプルはSpring Bootアプリで、**Spring AI** を使いキー不要認証でAzure AI Foundryに接続します。
+### 例コードの理解
 
-**このコードの内容：**  
-- Azureサインイン（Microsoft Entra ID）でAzure AI Foundryに<strong>接続</strong>（APIキー不要）  
-- `gpt-4o-mini` モデルにプロンプトを<strong>送信</strong>  
-- AIの応答を<strong>受信</strong>し表示  
-- セットアップが正しく動作するか<strong>検証</strong>
+[basic-chat の例](./examples/basic-chat-azure/README.md) は **Spring Boot 4.1.1** と **Spring AI 2.0.1** を使用。Spring AI の `ChatClient` は公式 OpenAI Java SDK に基づき、Azure OpenAI **v1** エンドポイントへキー不要認証で接続します。
 
-<strong>重要な依存関係</strong>（`pom.xml`内）：  
+**このコードの動作：**
+- Azure AI Foundry に Azure サインイン（Microsoft Entra ID）で接続 — API キー不要
+- `gpt-5.6-luna` モデルにプロンプトを送信
+- AI の応答を受信して表示
+- セットアップが正しく動作していることを検証
+
+<strong>主な依存関係</strong>（[pom.xml](../../../02-SetupDevEnvironment/examples/basic-chat-azure/pom.xml) の抜粋）：
 ```xml
 <dependency>
     <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-starter-model-azure-openai</artifactId>
+    <artifactId>spring-ai-starter-model-openai</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.openai</groupId>
+    <artifactId>openai-java</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.azure</groupId>
+    <artifactId>azure-identity</artifactId>
+    <version>${azure-identity.version}</version>
 </dependency>
 ```
-  
-<strong>設定ファイル</strong>（`application.yml`）：  
+
+POM は OpenAI Java **4.63.1** と Azure Identity **1.18.6** を明示的に管理。Spring AI 2 は Azure 専用スターターを削除しましたが、認証用のクレデンシャル Bean に Azure Identity は必須。
+
+<strong>設定</strong>（[application.yml](../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml)）：
 ```yaml
 spring:
   ai:
-    azure:
-      openai:
-        # Endpoint only - no api-key. Spring AI uses DefaultAzureCredential (keyless).
-        endpoint: ${AZURE_OPENAI_ENDPOINT}
-        chat:
-          options:
-            deployment-name: ${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+    openai:
+      base-url: ${AZURE_OPENAI_ENDPOINT}
+      microsoft-foundry: true
+      chat:
+        model: ${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
+        reasoning-effort: none
+        max-completion-tokens: 500
 ```
 
+キー不要認証は [BasicChatApplication.java](../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/java/com/example/BasicChatApplication.java) で明示的に設定され、API キーなしから推測される形式ではありません。ベアラー認証は `DefaultAzureCredential` を使い、スコープは `https://ai.azure.com/.default`、`OpenAIClient` は `/openai/v1` をターゲットに。アプリはこのクライアントを Spring AI のチャットモデルに渡すため、グローバルな `OPENAI_API_KEY` は Azure 認証を上書きできません。
+
+チャット設定は `spring.ai.openai.chat` の直下にあり、`options` ブロックはなし。講義は `reasoning-effort: none`、500 トークンまでのチャット完了制限を保持しつつ、`temperature` や `max-tokens` は明示しません。API 選択やツール呼び出しの詳細は [例の設定リファレンス](./examples/basic-chat-azure/README.md#spring-configuration) を参照。
 
 ## まとめ
 
-素晴らしい！これで以下がすべて整いました：
+上記の手順を完了すると、以下ができるようになります：
 
-- Bicep + `azd` でコードとしてAzure AI Foundryモデルをプロビジョニング済み
-- Javaの開発環境が動作中（Codespacesでもdev containerでもローカルでも）
-- キー不要認証（Microsoft Entra ID）でAzure AI Foundryに接続済み — APIキー不要
-- モデルとやり取りする簡単な例で動作確認済み
+- Bicep + `azd` でコードとして Azure AI Foundry モデルをプロビジョニング
+- Java 開発環境が稼働（Codespaces、開発コンテナ、ローカルいずれでも可）
+- キー不要認証（Microsoft Entra ID）で Azure AI Foundry に接続 — API キー不要
+- 簡単な例でモデルとの通信ができることを確認
 
 ## 次のステップ
 
-[第3章: コア生成AI技術](../03-CoreGenerativeAITechniques/README.md)
+[第3章: Core Generative AI Techniques](../03-CoreGenerativeAITechniques/README.md)
 
 ## トラブルシューティング
 
-問題が発生していますか？よくある問題と解決法：
+問題がある場合の一般的な問題と解決策：
 
-- **認証が失敗する（401/403）？**  
-  - `az login` を実行 — 認証はキー不要なのでサインインが必要  
-  - アカウントにリソースの **Cognitive Services OpenAI User** ロールがあるか確認  
-  - プロビジョニング直後はロール割当の反映に数分かかることがあります
+- **認証が失敗する（401/403）？** 
+  - `az login` を実行 — 認証はキー不要なのでサインインが必要
+  - リソースに対してアカウントに **Cognitive Services OpenAI User** ロールがあるか確認
+  - プロビジョニング直後の場合、役割割当が反映されるまで少し待つ
 
-- **Mavenが見つからない？**  
-  - dev container/Codespaces利用ならMavenは事前インストール済み  
-  - ローカルセットアップの場合はJava 21+ と Maven 3.9+ がインストールされているか確認  
-  - `mvn --version` でインストール状況を確認
+- **Maven が見つからない？** 
+  - 開発コンテナ/Codespaces なら Maven はプリインストール済みのはず
+  - ローカルセットアップの場合は Java 21+ と Maven 3.9+ がインストールされているか確認
+  - `mvn --version` でインストールを確認
 
-- **`azd`が見つからない、またはプロビジョニングに失敗？**  
-  - [Azure Developer CLI](https://aka.ms/azure-dev/install) をインストールし `azd auth login` を実行  
-  - `gpt-4o-mini` が利用可能なリージョンを選択（例：`eastus2`）  
-  - 詳細は [Azure AI Foundryセットアップガイド](getting-started-azure-openai.md) を参照
+- **`azd` が見つからない、またはプロビジョニングに失敗？** 
+  - [Azure Developer CLI](https://aka.ms/azure-dev/install) をインストールし、`azd auth login` を実行
+  - `gpt-5.6-luna` と `text-embedding-3-small` が使えるリージョン（例: `eastus2`）を選び、サブスクリプションのクォータに余裕があるか確認
+  - 詳細は [Azure AI Foundry setup guide](getting-started-azure-openai.md) を参照
 
-- **Dev containerが起動しない？**  
-  - Docker Desktopが起動しているか確認（ローカル開発時）  
-  - コンテナの再ビルドを試す：`Ctrl+Shift+P` → 「Dev Containers: Rebuild Container」
+- **開発コンテナが起動しない？** 
+  - Docker Desktop が起動しているか確認（ローカル開発の場合）
+  - コンテナを再ビルドしてみる：`Ctrl+Shift+P` → 「Dev Containers: Rebuild Container」
 
-- **アプリケーションのコンパイルエラー？**  
-  - 正しいディレクトリにいるか確認：`02-SetupDevEnvironment/examples/basic-chat-azure`  
-  - `mvn clean compile` でクリーンビルドを試す
+- **アプリケーションのコンパイルエラー？**
+  - 正しいディレクトリにいるか確認：`02-SetupDevEnvironment/examples/basic-chat-azure`
+  - クリーンと再ビルドを試す：`mvn clean compile`
 
-> **サポートが必要ですか？** 問題が解決しない場合は、リポジトリでIssueを開いてください。お手伝いします。
+> **サポートが必要ですか？**: それでも問題がある場合は、リポジトリで issue を開いてください。対応します。
 
 ---
 
