@@ -1,354 +1,230 @@
-# Foundry Local Spring Boot הדרכה
+# מדריך Foundry Local Spring Boot
 
-## תוכן העניינים
-
-- [דרישות מוקדמות](#דרישות-מוקדמות)
-- [סקירת הפרויקט](#סקירת-הפרויקט)
-- [הבנת הקוד](#הבנת-הקוד)
-  - [1. הגדרות אפליקציה (application.properties)](#1-הגדרות-אפליקציה-applicationproperties)
-  - [2. מחלקת האפליקציה הראשית (Application.java)](#2-מחלקת-האפליקציה-הראשית-applicationjava)
-  - [3. שכבת שירות AI (FoundryLocalService.java)](#3-שכבת-שירות-ai-foundrylocalservicejava)
-  - [4. התלויות בפרויקט (pom.xml)](#4-התלויות-בפרויקט-pomxml)
-- [איך הכל עובד ביחד](#איך-הכל-עובד-ביחד)
-- [הגדרת Foundry Local](#הגדרת-foundry-local)
-- [הרצת האפליקציה](#הרצת-האפליקציה)
-- [פלט צפוי](#פלט-צפוי)
-- [שלבים הבאים](#שלבים-הבאים)
-- [פתרון תקלות](#פתרון-תקלות)
+הרץ מודל שפה קטן על המחשב שלך וקרא את נקודת הקצה REST התואמת ל-OpenAI
+מתוך אפליקציית קונסול Java. אין שימוש בפריסת Azure, כניסה ל-Azure,
+מפתח API לענן או הסקת מסקנות בענן. **GPT-5.6 Luna מיועד רק ל-Azure; אל תגדירו אותו כמודל Foundry Local.**
 
 
-## דרישות מוקדמות
+## גרסאות ותנאים מוקדמים
 
-לפני התחלת ההדרכה, ודא שיש לך:
+| רכיב | גרסה |
+| --- | --- |
+| Java | 21 או יותר חדש |
+| Maven | 3.6.3 או יותר חדש |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Foundry Local SDK (שרת REST מקומי) | 2.0.1 |
+| Node.js (שרת REST מקומי) | 20 או יותר חדש |
+| Foundry Local CLI (אופציונלי, גרסה נפרדת) | 0.10.3 preview |
 
-- **Java 21 ומעלה** מותקן במערכת שלך
-- **Maven 3.6+** לבניית הפרויקט
-- **Foundry Local** מותקן ופועל
+Spring Boot מנהל את גרסאות Spring Framework, Jackson, JUnit, ותוסף Maven.
+דוגמה זו משתמשת ב-OpenAI Java SDK ישירות, לא ב-Spring AI. תכונת Milestone המקורית והמאגר הישן של Spring AI הוסרו.
 
-### **התקן את Foundry Local:**
 
-> **הערה:** Foundry Local CLI זמין רק עבור **Windows** ו-**macOS**. לינוקס נתמכת דרך ה-[Foundry Local SDKs](https://github.com/microsoft/Foundry-Local) (Python, JavaScript, C#, Rust).
+דגם ההתחלה המומלץ הוא **Qwen 2.5 0.5B**, וריאנט CPU
+`qwen2.5-0.5b-instruct-generic-cpu:4` (כ-822 מגה בייט בקטלוג).
+הוא נמנע מלהצריך ספקי ביצוע GPU. דגמים קטנים נוספים הנתמכים והמטופלים באפשרותך לבחור במפורש.
+ההתקנה של המודל והסביבה דורשת גישה לרשת; הפקודות וההסקה נשארות מקומיות.
+Foundry Local עלול להוציא אבחונים מינימליים של זמן הריצה אפילו כאשר טלמטריה לא חיונית מושבתת.
 
-```bash
-# חלונות
-winget install Microsoft.FoundryLocal
 
-# מק או אס
-brew tap microsoft/foundrylocal
-brew install foundrylocal
+הרץ את הפקודות הבאות מתוך תיקיית הדוגמה הזו.
+
+## בנייה ובדיקה עם Java
+
+```powershell
+mvn clean verify
 ```
 
-אמת את ההתקנה:
-```bash
+בדיקות חוזה HTTP מפעילות שרת לולאה זמני ובודקות את OpenAI Java SDK בפועל.
+הן כוללות סריאליזציה של בקשות, גילוי מודל, בחירת מודל מפורשת,
+רשימות מודלים לא ברורות או שגויות, כישלונות HTTP, תגובות ריקות,
+כתובות URL מקומיות בלבד, והפצת שגיאות בשורת הפקודה. הן לא דורשות מודל או
+גישה לרשת מעבר להתקנת תלות Maven. הבדיקה החיה היא מבחן אופציונלי.
+
+## הפעלת המודל המקומי
+
+### מומלץ: שרת SDK מקובע
+
+אין SDK Java מקורית של Foundry Local. העזרן הקטן של Node.js מארח את
+שרת ה-REST הרשמי של ה-SDK; האפליקציה ובקשות הצ'אט נשארות ב-Java.
+
+התקן את התלויות של זמן הריצה המקובע:
+
+```powershell
+npm ci
+```
+
+אם חלונות x64 אינם מצליחים להגיע ל-NuGet במהלך התקנת SDK המקומית, השתמש בגיבוי המסופק.
+הגיבוי יוריד את ארכיון זמן הריצה הרשמי המתאים מ-GitHub, יבצע בדיקת SHA-256 על הגרסה,
+וימקם את הקובצי DLL לצד התוסף המקומי. הוא אינו
+מבטל אימות TLS, אינו דורש הרשאות גבוהות, ואינו משנה את קוד ה-SDK.
+
+```powershell
+npm ci --ignore-scripts
+pwsh -File ./scripts/install-foundry-runtime.ps1
+```
+
+רשום את המודלים שכבר מטופלים על מחשב זה:
+
+```powershell
+npm run start:foundry -- --list
+```
+
+בהרצה הראשונה, אפשר במפורש להוריד את מודל ה-CPU הקטן:
+
+```powershell
+npm run start:foundry -- --model qwen2.5-0.5b-instruct-generic-cpu:4 --download --port 5273
+```
+
+בהרצות הבאות, השמט את `--download` כדי לדרוש מודל מטופל:
+
+```powershell
+npm run start:foundry -- --model qwen2.5-0.5b-instruct-generic-cpu:4 --port 5273
+```
+
+העזרן מעדיף מודל מטופל תואם, מקבל כינוי או מזהה וריאנט מדויק,
+ומסרב למודל חסר אלא אם כן `--download` מסופק. הוא רשום רק את
+ספק הביצוע של המודל הנבחר כאשר נדרש. וריאנטים מטופלים ל-GPU עדיין
+עשויים להזדקק לחבילות וספקי מכשירים תואמים.
+
+אם הפורט 5273 תפוס, העבר `--port 0` לפורט פנוי. העוזר מדפיס
+את `FOUNDRY_LOCAL_BASE_URL`, את מזהה `FOUNDRY_LOCAL_MODEL` המדויק, ואת PID שלו כשהוא מוכן.
+השתמש בנקודת הקצה שהודפסה ב-Java. השאר טרמינל זה פתוח בזמן הרצת Java;
+**Ctrl+C** עוצר את שרת REST ומשחרר את המודל.
+
+המטמון הברירת מחדל הוא `~/.foundry/cache/models`. הגדירו `FOUNDRY_LOCAL_CACHE_DIR` למטמון קיים שונה.
+יומנים ומצב העוזר נרשמים תחת התיקייה של הדוגמה `target/foundry-local`. עצרו את העוזר לפני הרצת `mvn clean`.
+
+
+### אופציונלי: Foundry Local CLI
+
+ל-CLI ול-SDK יש שחרורים עצמאיים: CLI בגרסה **0.10.3** כולל SDK בגרסה **1.2.4**;
+העוזר שלמעלה משתמש ב-SDK גרסה **2.0.1**. התקנת ה-CLI העדכני ביותר אינה מתקינה את
+ה-SDK הכי עדכני לשפה. עיין ב[הערות השחרור של CLI](https://github.com/microsoft/Foundry-Local/releases/tag/cli-preview-0.10.3).
+
+ב-Windows, השתמש בפקודת ההתקנה למשתמש אם ה-CLI חסר:
+
+```powershell
+winget install --id Microsoft.FoundryLocal --exact --source winget --scope user --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
+```
+
+או עדכן התקנה קיימת:
+
+```powershell
+winget upgrade --id Microsoft.FoundryLocal --exact --source winget --scope user --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
 foundry --version
 ```
 
-## סקירת הפרויקט
+CLI 0.10.x מחליף את פקודות `foundry service` הישנות ב-`foundry server`:
 
-הפרויקט מורכב מארבעה מרכיבים עיקריים:
-
-1. **Application.java** - נקודת הכניסה הראשית לאפליקציית Spring Boot
-2. **FoundryLocalService.java** - שכבת שירות שמטפלת בתקשורת עם AI
-3. **application.properties** - הגדרות לחיבור ל-Foundry Local
-4. **pom.xml** - התלויות ובניית הפרויקט במייבן
-
-## הבנת הקוד
-
-### 1. הגדרות אפליקציה (application.properties)
-
-**קובץ:** `src/main/resources/application.properties`
-
-```properties
-foundry.local.base-url=http://localhost:5273/v1
-# foundry.local.model is auto-detected from Foundry Local. Set it here to override:
-# foundry.local.model=Phi-4-mini-instruct-cuda-gpu:5
+```powershell
+foundry server start --port 5273
+foundry cache list
+foundry model load qwen2.5-0.5b-instruct-generic-cpu:4
+foundry server status --output json
 ```
 
-**מה זה עושה:**
-- **base-url**: מציין היכן Foundry Local רץ, כולל הנתיב `/v1` לתאימות עם OpenAI API. הפורט המוגדר כברירת מחדל הוא `5273`. אם הפורט שונה, בדוק אותו עם `foundry service status`.
-- **model** (אופציונלי): שם דגם ה-AI לשימוש בהפקת טקסט. **ברירת המחדל היא זיהוי אוטומטי של הדגם** על ידי שאילתת נקודת הקצה `/v1/models` של Foundry Local בעת ההפעלה, כך שלא צריך להגדיר אותו. בכל זאת, ניתן להגדיר אותו במפורש אם רוצים לעקוף את הזיהוי האוטומטי.
+`model load` דורש מודל שהורד כבר. בדוק ב־`foundry model --help` את פקודות ההורדה.
+השתמש בנקודת הקצה בהפעלת הסטטוס; ה-CLI אחרת
+מבררת פורט שמוקצה באופן אוטומטי. אל תתחיל את העוזר של CLI ו-SDK
+על אותו פורט. בסיום:
 
-**עיקרון מרכזי:** Spring Boot טוען אוטומטית את ההגדרות האלו ומאפשר גישה אליהן דרך ההערה `@Value`.
-
-### 2. מחלקת האפליקציה הראשית (Application.java)
-
-**קובץ:** `src/main/java/com/example/Application.java`
-
-```java
-@SpringBootApplication
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(Application.class);
-        app.setWebApplicationType(WebApplicationType.NONE);  // אין צורך בשרת אינטרנט
-        app.run(args);
-    }
+```powershell
+foundry server stop
 ```
 
-**מה זה עושה:**
-- `@SpringBootApplication` מפעיל את האוטו-קונפיגורציה של Spring Boot
-- `WebApplicationType.NONE` מודיע לספרינג שמדובר באפליקציית שורת פקודה, לא בשרת ווב
-- המתודה הראשית מפעילה את אפליקציית Spring
+## הרץ את יישום ה-Java
 
-**הרצת הדמו:**
-```java
-@Bean
-public CommandLineRunner foundryLocalRunner(FoundryLocalService foundryLocalService) {
-    return args -> {
-        System.out.println("=== Foundry Local Demo ===");
-        System.out.println("Calling Foundry Local service...");
-        
-        String testMessage = "Hello! Can you tell me what you are and what model you're running?";
-        System.out.println("Sending message: " + testMessage);
-        
-        String response = foundryLocalService.chat(testMessage);
-        System.out.println("Response from Foundry Local:");
-        System.out.println(response);
-        System.out.println("=========================");
-    };
-}
-```
+בטרמינל שני, הגדר את נקודת הקצה ואת מזהה המודל המדויק שהודפסו על ידי השרת שלך:
 
-**מה זה עושה:**
-- `@Bean` יוצר רכיב שנשלט על ידי Spring
-- `CommandLineRunner` מריץ קוד אחרי ש-Spring Boot עולה
-- `foundryLocalService` מוזרק אוטומטית על ידי Spring (הזרקת תלויות)
-- שולח הודעת בדיקה ל-AI ומציג את התגובה
-
-### 3. שכבת שירות AI (FoundryLocalService.java)
-
-**קובץ:** `src/main/java/com/example/FoundryLocalService.java`
-
-#### הזרקת הגדרות:
-```java
-@Service
-public class FoundryLocalService {
-    
-    @Value("${foundry.local.base-url:http://localhost:5273/v1}")
-    private String baseUrl;
-    
-    @Value("${foundry.local.model:}")
-    private String model;    // זוהה אוטומטית אם ריק
-```
-
-**מה זה עושה:**
-- `@Service` מודיע לספרינג שזו מחלקה שמספקת לוגיקה עסקית
-- `@Value` מזריק ערכי הגדרות מתוך application.properties
-- ברירת המחדל של הדגם היא ריקה, מה שמפעיל **זיהוי אוטומטי** דרך Foundry Local בתחילת הריצה. זאת אומרת שהאפליקציה פועלת עם כל דגם שנטען ב-Foundry Local בלי צורך בהגדרות ידניות.
-
-#### אתחול הלקוח:
-```java
-@PostConstruct
-public void init() {
-    // זיהוי אוטומטי של הדגם מ-Foundry Local אם לא מוגדר במפורש
-    if (model == null || model.isBlank()) {
-        model = detectModel();
-    }
-
-    this.openAIClient = OpenAIOkHttpClient.builder()
-            .baseUrl(baseUrl)                // כתובת בסיס כבר כוללת /v1 מהקונפיגורציה
-            .apiKey("not-needed")            // לשרת מקומי לא צריך מפתח API אמיתי
-            .build();
-}
-```
-
-**מה זה עושה:**
-- `@PostConstruct` מריץ את השיטה הזו לאחר ש-Spring יוצר את השירות
-- אם לא הוגדר דגם, הוא שואל את נקודת הקצה `/v1/models` ב-Foundry Local ומקבל את הדגם הראשון שנטען
-- יוצר לקוח OpenAI שמצביע על השרת המקומי של Foundry Local שלך
-- ה-URL מהגדרות כולל כבר את הנתיב `/v1` לתאימות עם OpenAI API
-- מפתח ה-API מוגדר כ"not-needed" כי בפיתוח מקומי אין צורך באימות
-
-#### שיטת שיחה:
-```java
-public String chat(String message) {
-    try {
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(model)                    // איזה דגם בינה מלאכותית להשתמש
-                .addUserMessage(message)         // השאלה/הפנייה שלך
-                .maxCompletionTokens(150)        // הגבל את אורך התגובה
-                .temperature(0.7)                // שלוט ביצירתיות (0.0-1.0)
-                .build();
-        
-        ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
-        
-        // הפק את תגובת הבינה המלאכותית מתוצאת ה-API
-        if (chatCompletion.choices() != null && !chatCompletion.choices().isEmpty()) {
-            return chatCompletion.choices().get(0).message().content().orElse("No response found");
-        }
-        
-        return "No response content found";
-    } catch (Exception e) {
-        throw new RuntimeException("Error calling chat completion: " + e.getMessage(), e);
-    }
-}
-```
-
-**מה זה עושה:**
-- **ChatCompletionCreateParams**: מגדיר את בקשת ה-AI
-  - `model`: מגדיר את דגם ה-AI לשימוש (חייב להתאים במדויק ל-ID מרשימת הדגמים `foundry model list`)
-  - `addUserMessage`: מוסיף את ההודעה שלך לשיחה
-  - `maxCompletionTokens`: מגביל את אורך התגובה (חוסך במשאבים)
-  - `temperature`: שולט על רמת האקראיות (0.0 = דטרמיניסטי, 1.0 = יצירתי)
-- **קריאת API**: שולח את הבקשה ל-Foundry Local
-- **טיפול בתגובה**: מפיק בצורה בטוחה את הטקסט מהתגובה של ה-AI
-- **טיפול בשגיאות**: עוטף חריגות עם הודעות שגיאה מועילות
-
-### 4. התלויות בפרויקט (pom.xml)
-
-**תלויות עיקריות:**
-
-```xml
-<!-- Spring Boot - Application framework -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter</artifactId>
-    <version>${spring-boot.version}</version>
-</dependency>
-
-<!-- OpenAI Java SDK - For AI API calls -->
-<dependency>
-    <groupId>com.openai</groupId>
-    <artifactId>openai-java</artifactId>
-    <version>2.12.0</version>
-</dependency>
-
-<!-- Jackson - JSON processing -->
-<dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-    <version>2.17.0</version>
-</dependency>
-```
-
-**מה הן עושות:**
-- **spring-boot-starter**: מספק את ליבת הפונקציונליות של Spring Boot
-- **openai-java**: SDK רשמי של OpenAI עבור Java לתקשורת עם ה-API
-- **jackson-databind**: מטפלת בסריאליזציה/דסריאליזציה של JSON עבור קריאות API
-
-## איך הכל עובד ביחד
-
-הנה הזרימה המלאה כשהאפליקציה רצה:
-
-1. **הפעלה**: Spring Boot מתחיל וקורא את `application.properties`
-2. **יצירת שירות**: Spring יוצר את `FoundryLocalService` ומזריק לו את ערכי ההגדרות
-3. **זיהוי דגם**: אם לא הוגדר דגם, השירות שואל את נקודת הקצה `/v1/models` ומקבל אוטומטית את הדגם הזמין הראשון
-4. **הגדרת הלקוח**: `@PostConstruct` מאתחל את הלקוח של OpenAI שמתחבר ל-Foundry Local
-5. **הרצת הדמו**: `CommandLineRunner` רץ לאחר ההפעלה
-6. **קריאת AI**: הדמו קורא ל-`foundryLocalService.chat()` עם הודעת בדיקה
-7. **בקשת API**: השירות בונה ושולח בקשה תואמת OpenAI ל-Foundry Local
-8. **עיבוד תגובה**: השירות מפיק ומחזיר את תשובת ה-AI
-9. **הצגה**: האפליקציה מדפיסה את התגובה ופונה
-
-## הגדרת Foundry Local
-
-1. **התקן את Foundry Local** באמצעות ההוראות בקטע [דרישות מוקדמות](#דרישות-מוקדמות).
-
-2. **הפעל את השירות** (אם אינו כבר רץ):
-   ```bash
-   foundry service start
-   ```
-
-3. **בדוק את סטטוס השירות** לאישור שהוא פועל וראה את הפורט:
-   ```bash
-   foundry service status
-   ```
-
-4. **הורד והרץ דגם** (ההורדה תתבצע בהרצה הראשונה, בקאש להרצות הבאות):
-   ```bash
-   foundry model run phi-4-mini
-   ```
-   זה פותח שיחה אינטראקטיבית. ניתן לצאת באמצעות `Ctrl+C`. הדגם נשאר טעון בשירות.
-
-   > **עצה:** הרץ `foundry model list` כדי לראות את כל הדגמים הזמינים. החלף את `phi-4-mini` בכל כינוי מהרשימה (למשל: `qwen2.5-0.5b` לדגם קטן ומהיר יותר).
-
-5. **אמת שהדגם נטען:**
-   ```bash
-   foundry service ps
-   ```
-
-6. **עדכן את `application.properties` במידת הצורך:**
-   - ה-`base-url` המוגדר כברירת מחדל (`http://localhost:5273/v1`) תואם את פורט CLI ברירת המחדל. עדכן רק אם ב-`foundry service status` מופיע פורט שונה.
-   - הדגם **מתגלה אוטומטית** בעת ההפעלה — אין צורך בהגדרה ידנית.
-
-   ```properties
-   foundry.local.base-url=http://localhost:5273/v1
-   # Model is auto-detected. Uncomment below to override:
-   # foundry.local.model=Phi-4-mini-instruct-cuda-gpu:5
-   ```
-
-## הרצת האפליקציה
-
-### שלב 1: וודא שדגם נטען ב-Foundry Local
-```bash
-foundry service ps
-```
-אם אין דגמים ברשימה, טען אחד:
-```bash
-foundry model run phi-4-mini
-```
-
-### שלב 2: בניית והרצת האפליקציה
-בטרמינל נפרד:
-```bash
-cd 04-PracticalSamples/foundrylocal
+```powershell
+$env:FOUNDRY_LOCAL_BASE_URL = "http://127.0.0.1:5273/v1"
+$env:FOUNDRY_LOCAL_MODEL = "qwen2.5-0.5b-instruct-generic-cpu:4"
 mvn spring-boot:run
 ```
 
-או בנה והרץ כקובץ JAR:
-```bash
-mvn clean package
+או הרץ את היישום הארוז:
+
+```powershell
 java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
 ```
 
-## פלט צפוי
+נקודת הכניסה היחידה של Java היא `com.example.Application`. היא מדפיסה את נקודת
+הקצה שנבחרה, מזהה המודל המדויק, הפקודה והתגובה שנוצרה, ואז סוגרת את הקונטקסט של Spring ולקוח HTTP.
+כישלון בהסקה או חוסר בטקסט תגובה מייצר
+יציאה עם שגיאה במקום מציין הצלחה.
 
+### קונפיגורציה
+
+| משתנה סביבה | ברירת מחדל | מטרה |
+| --- | --- | --- |
+| `FOUNDRY_LOCAL_BASE_URL` | `http://127.0.0.1:5273/v1` | נקודת קצה HTTP לולאית, כולל `/v1` |
+| `FOUNDRY_LOCAL_MODEL` | ריקה | מזהה מודל מדויק; אחרת בחר את המודל היחיד שמפורסם |
+| `FOUNDRY_LOCAL_PROMPT` | שאלה במשפט אחד על מודלים מקומיים | הפקודה שנשלחת על ידי הקונסול |
+
+פרמטרי Spring שקולים הם `--foundry.local.base-url=...`,
+`--foundry.local.model=...`, ו־`--foundry.local.prompt=...`.
+מתקבלים רק נקודות קצה HTTP לולאיות. נקודות קצה מרוחקות/ענניות, אישורים מוטבעים,
+מחרוזות שאילתה, ונתיבים ללא `/v1` נדחים.
+
+הגדרת מודל ריקה עובדת רק כאשר `/v1/models` מפרסם בדיוק מודל אחד.
+מודל שמפורסם לא בהכרח טעון. אם מודלים רבים מפורסמים,
+הגדר את המזהה המדויק של המודל הטעון במקום להסתמך על סדר הקטלוג.
+
+הבקשות משתמשות ב־`temperature=0`, מגבלת פלט של 150 תווים, טווח זמן של 120 שניות, ו-
+ללא נסיונות חוזרים אוטומטיים. שדה `max_tokens` בבקשה הוא מכוון: הוא
+נתמך על ידי חוזה ה-REST המקומי של Foundry, אם כי OpenAI Java מתיישן
+שדה זה עבור דגמי ענן חדשים יותר. זהות הדגם מגיעה מהגדרה או
+גילוי, לא מהתביעות של הדגם לגבי עצמו.
+
+## אימות חי
+
+עם השרת המקומי פועל, הרץ את כל הבדיקות כולל בדיקת חיות אופציונלית.
+החלף את הפורט של נקודת הקצה בערך שהודפס על ידי השרת שלך. צטט מאפיינים ב־Maven עם נקודות ב־PowerShell:
+
+
+```powershell
+mvn "-Dfoundry.local.live=true" "-Dfoundry.local.base-url=http://127.0.0.1:5273/v1" "-Dfoundry.local.model=qwen2.5-0.5b-instruct-generic-cpu:4" verify
 ```
-=== Foundry Local Demo ===
-Calling Foundry Local service...
-Sending message: Hello! Can you tell me what you are and what model you're running?
-Response from Foundry Local:
-Hello! I'm Phi, an AI developed by Microsoft. I can assist with a wide variety of 
-tasks including answering questions, helping with analysis, creative writing, coding, 
-and general conversation. How can I help you today?
-=========================
-```
 
-## שלבים הבאים
+בדיקת החיות מפעילה את `Application.main`, מספקת את העובדה "בירת צרפת היא פריז," מבקשת את שם העיר, ומוודאת שטקסט שנוצר הוא
+`Paris`. היא בודקת תוצאה סמנטית, לא רק סטטוס HTTP מוצלח.
 
-לדוגמאות נוספות ראו [פרק 04: דוגמאות מעשיות](../README.md)
+
+ענה על נושא נפרד "2 + 2" ב־`3` דרך ג׳אווה וגם REST ישירות.
+אל תסתמך עליו לחישובים או דיוק עובדות ללא אימות עצמאי;
+השתמש בכלים דטרמיניסטיים עבור חישובים.
+
 
 ## פתרון תקלות
 
-### בעיות נפוצות
+| סימפטום | בדוק |
+| --- | --- |
+| חיבור נדחה | המתן להודעת מוכן; השתמש בפורט שהודפס ובנתיב `/v1`. |
+| מודלים מרובים מתפרסמים | הגדר את `FOUNDRY_LOCAL_MODEL` לזיהוי המדויק של הדגם הטעון. |
+| דגם חסר | השתמש ב־`--list`, או אפשר במפורש הורדה עם `--download`. |
+| ספק GPU נכשל או תקוע | השתמש בדגם CPU הקטן. דגם GPU שנמצא במטמון עדיין זקוק לספק שלו. |
+| CLI נשאר ב־`initializing` | קרא `foundry server logs --lines 80`; עצור את התהליך והשתמש בעוזר SDK. |
+| כשל TLS/הורדה של NuGet | תקן גישת רשת או השתמש במנגנון הגיבוי האמין של Windows x64 לעיל. אל תבטל TLS. |
+| פורט תפוס | השתמש ב־`--port 0` וקבע את Java עם נקודת הקצה שהודפסה. |
+| אין בחירות או טקסט ריק | האפליקציה נכשלת בכוונה; בדוק את לוגי הדגם והריצת זמן. |
 
-**"Connection refused" או "Service unavailable"**
-- בדוק את השירות: `foundry service status`
-- הפעל מחדש אם צריך: `foundry service restart`
-- אמת שהפורט ב-`application.properties` תואם ליציאת `foundry service status`
-- ודא שה-URL מסתיים ב-`/v1`: `http://localhost:5273/v1`
+## מקור והפניות
 
-**"No model found" בהפעלה**
-- האפליקציה מגלה את הדגם אוטומטית. ודא שיש לפחות דגם נטען: `foundry service ps`
-- אם אין דגמים נטועים: `foundry model run phi-4-mini`
-- אם הגדרת שם דגם ב-`application.properties`, ודא שהוא תואם ל`foundry model list`
-
-**שגיאות "400 Bad Request"**
-- ודא שה-URL כולל `/v1`: `http://localhost:5273/v1`
-- השתמש ב-`maxCompletionTokens()` בקוד שלך (ולא ב-`maxTokens()` שהוסר)
-
-**שגיאות קומפילציה במייבן**
-- ודא שיש Java 21 ומעלה: `java -version`
-- נקה ובנה מחדש: `mvn clean compile`
-- בדוק חיבור לאינטרנט להורדת תלויות
-
-**בעיות חיבור לשירות**
-- אם מופיע `Request to local service failed`, הפעל: `foundry service restart`
-- בדוק דגמים נטענים: `foundry service ps`
-- צפה בלוגים של השירות: `foundry service diag`
+- [Application.java](../../../../04-PracticalSamples/foundrylocal/src/main/java/com/example/Application.java): ריצה חד־פעמית עם Spring Boot.
+- [FoundryLocalService.java](../../../../04-PracticalSamples/foundrylocal/src/main/java/com/example/FoundryLocalService.java): גילוי טיפוסי והשלמות שיחה מקומיות.
+- [FoundryLocalServiceTest.java](../../../../04-PracticalSamples/foundrylocal/src/test/java/com/example/FoundryLocalServiceTest.java): חוזה HTTP, רץ, ובדיקות חיות.
+- [start-foundry.mjs](../../../../04-PracticalSamples/foundrylocal/scripts/start-foundry.mjs): שרת REST של SDK רשמי עם בחירת דגם במטמון וניקוי.
+- [install-foundry-runtime.ps1](../../../../04-PracticalSamples/foundrylocal/scripts/install-foundry-runtime.ps1): מנגנון גיבוי נייטיב ל־Windows x64 מאומת.
+- [application.properties](../../../../04-PracticalSamples/foundrylocal/src/main/resources/application.properties), [pom.xml](../../../../04-PracticalSamples/foundrylocal/pom.xml), ו־[package.json](../../../../04-PracticalSamples/foundrylocal/package.json): הגדרות ותלויות.
+- [Foundry Local REST integration](https://learn.microsoft.com/azure/foundry-local/how-to/how-to-integrate-with-inference-sdks).
+- [Foundry Local 2.0.1 release and migration notes](https://github.com/microsoft/Foundry-Local/releases/tag/v2.0.1).
+- [Chapter 04: Practical samples](../README.md).
 
 ---
 
 <!-- CO-OP TRANSLATOR DISCLAIMER START -->
-**כתב ויתור**:  
-מסמך זה תורגם באמצעות שירות התרגום הממוחשב [Co-op Translator](https://github.com/Azure/co-op-translator). בעוד שאנו שואפים לדיוק, יש לקחת בחשבון שתרגומים אוטומטיים עלולים להכיל שגיאות או אי דיוקים. המסמך המקורי בשפת המקור שלו הוא המקור הסמכותי. למידע קריטי מומלץ להשתמש בתרגום מקצועי על ידי מתרגם אנושי. אנו לא נושאים באחריות לכל אי הבנה או פירוש שגוי הנובע משימוש בתרגום זה.
+**כתב ויתור**:
+מסמך זה תורגם באמצעות שירות תרגום אוטומטי [Co-op Translator](https://github.com/Azure/co-op-translator). למרות שאנו שואפים לדיוק, יש לקחת בחשבון שתרגומים אוטומטיים עלולים להכיל שגיאות או אי-דיוקים. יש להחשיב את המסמך המקורי בשפתו הטבעית כמקור הסמכות. למידע קריטי מומלץ להשתמש בתרגום מקצועי על ידי מתרגם אדם. אנו לא אחראים לכל אי-הבנה או פירוש שגוי הנובע מהשימוש בתרגום זה.
 <!-- CO-OP TRANSLATOR DISCLAIMER END -->

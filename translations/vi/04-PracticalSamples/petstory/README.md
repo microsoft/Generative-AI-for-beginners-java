@@ -1,38 +1,48 @@
-# Hướng Dẫn Tạo Truyện Thú Cưng Cho Người Mới Bắt Đầu
+# Hướng Dẫn Tạo Truyện Về Thú Cưng Cho Người Mới Bắt Đầu
 
-## Mục Lục
+Tải ảnh thú cưng lên, phân tích bằng GPT-5.6 Luna, và tạo ra một câu chuyện dựa trên mô tả kết quả. Cả hai yêu cầu mô hình đều sử dụng `reasoning_effort: none`.
 
-- [Yêu Cầu Trước](#yêu-cầu-trước)
-- [Hiểu Cấu Trúc Dự Án](#hiểu-cấu-trúc-dự-án)
-- [Giải Thích Các Thành Phần Chính](#giải-thích-các-thành-phần-chính)
-  - [1. Ứng Dụng Chính](#1-ứng-dụng-chính)
-  - [2. Bộ Điều Khiển Web](#2-bộ-điều-khiển-web)
-  - [3. Dịch Vụ Truyện](#3-dịch-vụ-truyện)
-  - [4. Mẫu Web](#4-mẫu-web)
-  - [5. Cấu Hình](#5-cấu-hình)
-- [Chạy Ứng Dụng](#chạy-ứng-dụng)
-- [Cách Tất Cả Hoạt Động Cùng Nhau](#cách-tất-cả-hoạt-động-cùng-nhau)
-- [Hiểu Về Tích Hợp AI](#hiểu-về-tích-hợp-ai)
-- [Bước Tiếp Theo](#bước-tiếp-theo)
+| Thành phần | Phiên bản |
+| --- | --- |
+| Java | 21 hoặc cao hơn |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
 
-## Yêu Cầu Trước
+## Mục lục
 
-Trước khi bắt đầu, hãy đảm bảo bạn đã có:
-- Java 21 hoặc cao hơn đã cài đặt
-- Maven để quản lý các thư viện phụ thuộc
-- Một triển khai mô hình Azure AI Foundry (cấu hình với `azd up` — xem [Chương 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md)), đăng nhập bằng `az login` (xác thực không cần khóa)
-- Kiến thức cơ bản về Java, Spring Boot, và phát triển web
+- [Yêu cầu tiên quyết](#yêu-cầu-tiên-quyết)
+- [Hiểu cấu trúc dự án](#hiểu-cấu-trúc-dự-án)
+- [Giải thích các thành phần chính](#giải-thích-các-thành-phần-chính)
+  - [1. Ứng dụng chính](#1-ứng-dụng-chính)
+  - [2. Bộ điều khiển web](#2-bộ-điều-khiển-web)
+  - [3. Dịch vụ truyện](#3-dịch-vụ-truyện)
+  - [4. Mẫu web](#4-mẫu-web)
+  - [5. Cấu hình](#5-cấu-hình)
+- [Chạy ứng dụng](#chạy-ứng-dụng)
+- [Kiểm tra offline](#kiểm-tra-offline)
+- [Cách hoạt động tổng thể](#cách-hoạt-động-tổng-thể)
+- [Hiểu tích hợp AI](#hiểu-tích-hợp-ai)
+- [Bước tiếp theo](#bước-tiếp-theo)
 
-## Hiểu Cấu Trúc Dự Án
+## Yêu cầu tiên quyết
 
-Dự án truyện thú cưng có một số tập tin quan trọng:
+Trước khi bắt đầu, hãy chắc chắn bạn có:
+- Java 21 hoặc cao hơn đã được cài đặt
+- Maven để quản lý phụ thuộc
+- Một triển khai Azure AI Foundry của GPT-5.6 Luna tên là `gpt-5.6-luna`, hoặc một ghi đè `AZURE_OPENAI_DEPLOYMENT` trỏ tới triển khai đó. Xem [Chương 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md) để cấu hình và đăng nhập với `az login` cho xác thực không cần khóa. Triển khai này phải hỗ trợ nhập ảnh và `reasoning_effort: none`.
+- Hiểu biết cơ bản về Java, Spring Boot, và phát triển web
+
+## Hiểu cấu trúc dự án
+
+Dự án truyện thú cưng có một số tệp quan trọng:
 
 ```
 petstory/
 ├── src/main/java/com/example/petstory/
 │   ├── PetStoryApplication.java       # Main Spring Boot application
 │   ├── PetController.java             # Web request handler
-│   ├── StoryService.java              # AI story generation service
+│   ├── StoryService.java              # AI image analysis and story generation
 │   └── SecurityConfig.java            # Security configuration
 ├── src/main/resources/
 │   ├── application.properties         # App configuration
@@ -42,13 +52,13 @@ petstory/
 └── pom.xml                           # Maven dependencies
 ```
 
-## Giải Thích Các Thành Phần Chính
+## Giải thích các thành phần chính
 
-### 1. Ứng Dụng Chính
+### 1. Ứng dụng chính
 
-**Tập tin:** `PetStoryApplication.java`
+**Tệp:** `PetStoryApplication.java`
 
-Đây là điểm vào cho ứng dụng Spring Boot của chúng ta:
+Đây là điểm bắt đầu cho ứng dụng Spring Boot của chúng ta:
 
 ```java
 @SpringBootApplication
@@ -59,210 +69,51 @@ public class PetStoryApplication {
 }
 ```
 
-**Công dụng của phần này:**
-- Chú thích `@SpringBootApplication` cho phép tự động cấu hình và quét các thành phần
-- Khởi động máy chủ web nhúng (Tomcat) trên cổng 8080
-- Tự động tạo mọi bean và dịch vụ Spring cần thiết
+**Công việc thực hiện:**
+- Chú thích `@SpringBootApplication` kích hoạt cấu hình tự động và quét thành phần
+- Khởi động một máy chủ web nhúng (Tomcat) trên cổng 8080
+- Tự động tạo tất cả các bean và dịch vụ Spring cần thiết
 
-### 2. Bộ Điều Khiển Web
+### 2. Bộ điều khiển web
 
-**Tập tin:** `PetController.java`
+**Tệp:** [PetController.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/PetController.java)
 
-Phần này xử lý tất cả yêu cầu web và tương tác của người dùng:
+| Điểm cuối | Yêu cầu | Phản hồi thành công |
+| --- | --- | --- |
+| `GET /` | Không có thân yêu cầu | Biểu mẫu HTML tải lên cùng token CSRF |
+| `POST /analyze-image` | `multipart/form-data`, trường file `image` | JSON: `{"description":"Một thú cưng nghịch ngợm..."}` |
+| `POST /generate-story` | `application/x-www-form-urlencoded`, trường `description` | Trang kết quả HTML với mô tả và câu chuyện được tạo |
 
-```java
-@Controller
-public class PetController {
-    
-    private final StoryService storyService;
-    
-    public PetController(StoryService storyService) {
-        this.storyService = storyService;
-    }
-    
-    @GetMapping("/")
-    public String index() {
-        return "index";  // Trả về mẫu index.html
-    }
-    
-    @PostMapping("/generate-story")
-    public String generateStory(@RequestParam("description") String description, 
-                               Model model, 
-                               RedirectAttributes redirectAttributes) {
-        
-        // Kiểm tra đầu vào
-        if (description.trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Please provide a description.");
-            return "redirect:/";
-        }
-        
-        // Làm sạch đầu vào để đảm bảo an toàn
-        String sanitizedDescription = sanitizeInput(description);
-        
-        // Tạo câu chuyện với xử lý lỗi
-        try {
-            String story = storyService.generateStory(sanitizedDescription);
-            model.addAttribute("caption", sanitizedDescription);
-            model.addAttribute("story", story);
-            return "result";  // Trả về mẫu result.html
-            
-        } catch (Exception e) {
-            // Sử dụng câu chuyện dự phòng nếu AI thất bại
-            String fallbackStory = generateFallbackStory(sanitizedDescription);
-            model.addAttribute("story", fallbackStory);
-            return "result";
-        }
-    }
-    
-    private String sanitizeInput(String input) {
-        return input.replaceAll("[<>\"'&]", "")  // Remove dangerous characters
-                   .trim()
-                   .substring(0, Math.min(input.length(), 500));  // Giới hạn độ dài
-    }
-}
-```
+Cả hai điểm cuối POST đều yêu cầu cookie phiên làm việc và token CSRF lấy từ `GET /`. Script tải lên gửi giá trị ẩn `_csrf` trong header `X-CSRF-TOKEN`; gửi truyện thì gửi nó dưới dạng trường `_csrf` trong form. Khách hàng API phải giữ cookie giữa các yêu cầu. Đây là các điểm cuối dạng form, không phải yêu cầu JSON.
 
-**Các tính năng chính:**
+Mô tả phải không rỗng và không dài hơn 1000 ký tự. Bộ điều khiển cắt bớt mô tả và loại bỏ `<`, `>`, dấu ngoặc kép, dấu nháy và `&` trước khi chuyển cho dịch vụ. Mẫu kết quả cũng thoát đầu ra của mô hình bằng `th:text`.
 
-1. **Xử lý tuyến đường**: `@GetMapping("/")` hiển thị form tải lên, `@PostMapping("/generate-story")` xử lý gửi dữ liệu
-2. **Kiểm tra đầu vào**: Kiểm tra mô tả có trống và giới hạn độ dài
-3. **Bảo mật**: Làm sạch dữ liệu người dùng để tránh tấn công XSS
-4. **Xử lý lỗi**: Cung cấp truyện dự phòng khi dịch vụ AI không hoạt động
-5. **Ràng buộc mô hình**: Truyền dữ liệu sang mẫu HTML bằng `Model` của Spring
+Lỗi xác thực ảnh trả về HTTP 400 với trường `error`; lỗi mô hình trả HTTP 502 với trường `error` và không có `description`. Mô tả truyện không hợp lệ hoặc lỗi mô hình chuyển hướng về `/` với thông báo lỗi hiển thị. Thiếu trường bắt buộc trả HTTP 400, thiếu hoặc token CSRF không hợp lệ trả HTTP 403. Không có mô tả hoặc truyện thay thế được trình bày như kết quả AI thành công.
 
-**Hệ Thống Dự Phòng:**
-Bộ điều khiển bao gồm các mẫu truyện đã viết sẵn, được dùng khi dịch vụ AI không khả dụng:
+### 3. Dịch vụ truyện
 
-```java
-private String generateFallbackStory(String description) {
-    String[] storyTemplates = {
-        "Meet the most wonderful pet in the world – a furry ball of energy...",
-        "Once upon a time, there lived a remarkable pet whose heart was as big...",
-        "In a cozy home filled with love, there lived an extraordinary pet..."
-    };
-    
-    // Sử dụng băm mô tả để có phản hồi nhất quán
-    int index = Math.abs(description.hashCode() % storyTemplates.length);
-    return storyTemplates[index];
-}
-```
+**Tệp:** [StoryService.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/StoryService.java)
 
-### 3. Dịch Vụ Truyện
+SDK chính thức OpenAI Java 4.63.1 gọi API Chat Completions phù hợp OpenAI của Azure AI Foundry. Azure Identity 1.18.6 cung cấp token người giữ Microsoft Entra qua `DefaultAzureCredential`; không cần khóa API.
 
-**Tập tin:** `StoryService.java`
+| Hoạt động | Đầu vào | `max_completion_tokens` |
+| --- | --- | --- |
+| `analyzeImage` | Dữ liệu ảnh mã hóa base64 theo định dạng MIME tải lên | 300 |
+| `generateStory` | Mô tả thú cưng trong một tin nhắn người dùng | 800 |
 
-Dịch vụ này giao tiếp với Azure AI Foundry để tạo truyện bằng xác thực không cần khóa:
+Cả hai yêu cầu dùng triển khai cấu hình, mặc định `gpt-5.6-luna`, và thiết lập rõ `ReasoningEffort.NONE` (`reasoning_effort: none`). Không gửi `temperature` hay tham số `max_tokens` cũ.
 
-```java
-@Service
-public class StoryService {
-    
-    private final OpenAIClient openAIClient;
-    private final String modelName;
-    
-    public StoryService(@Value("${azure.openai.endpoint:}") String endpoint,
-                       @Value("${azure.openai.deployment:gpt-4o-mini}") String modelName) {
-        this.modelName = modelName;
-        if (endpoint == null || endpoint.isBlank()) {
-            endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        }
-        
-        // Điểm cuối tương thích OpenAI của Foundry nằm dưới /openai/v1/
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1/";
-        
-        // Xác thực không cần khóa với Microsoft Entra ID (không cần khóa API)
-        DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-        this.openAIClient = OpenAIOkHttpClient.builder()
-                .baseUrl(baseUrl)
-                .credential(BearerTokenCredential.create(
-                        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-                .build();
-    }
-    
-    public String generateStory(String description) {
-        String systemPrompt = "You are a creative storyteller who writes fun, " +
-                             "family-friendly short stories about pets. " +
-                             "Keep stories under 500 words and appropriate for all ages.";
-        
-        String userPrompt = "Write a fun short story about a pet described as: " + description;
-        
-        // Cấu hình yêu cầu AI
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(modelName)
-                .addSystemMessage(systemPrompt)
-                .addUserMessage(userPrompt)
-                .maxCompletionTokens(500)  // Giới hạn độ dài phản hồi
-                .temperature(0.8)          // Kiểm soát độ sáng tạo (0.0-1.0)
-                .build();
-        
-        // Gửi yêu cầu và nhận phản hồi
-        ChatCompletion response = openAIClient.chat().completions().create(params);
-        
-        return response.choices().get(0).message().content().orElse("");
-    }
-}
-```
+Phân tích ảnh chấp nhận JPEG, PNG, GIF, WebP; từ chối ảnh rỗng và tệp >10MB, mô tả kết quả giới hạn 1000 ký tự. Đề bài truyện yêu cầu truyện ngắn thân thiện gia đình. Lựa chọn rỗng hoặc nội dung mô hình trống là lỗi, lỗi được giữ lại nguyên nhân để chẩn đoán máy chủ. Khách đóng SDK sẽ được đóng khi ứng dụng tắt.
 
-**Các thành phần chính:**
+### 4. Mẫu web
 
-1. **OpenAI Client**: Sử dụng SDK Java OpenAI chính thức được cấu hình cho Azure AI Foundry (xác thực không khóa)
-2. **Yêu cầu hệ thống**: Đặt hành vi của AI để viết truyện thân thiện với gia đình về thú cưng
-3. **Yêu cầu người dùng**: Hướng dẫn AI viết câu chuyện chính xác dựa trên mô tả
-4. **Tham số**: Điều khiển độ dài truyện và mức độ sáng tạo
-5. **Xử lý lỗi**: Ném ngoại lệ mà bộ điều khiển bắt và xử lý
+**Tệp:** [index.html](../../../../04-PracticalSamples/petstory/src/main/resources/templates/index.html) (Biểu mẫu tải lên)
 
-### 4. Mẫu Web
+Trang bắt đầu với bộ chọn ảnh, không phải vùng nhập mô tả. **Phân tích ảnh** xem trước ảnh đã chọn và gửi đến `/analyze-image`. Phản hồi thành công hiển thị mô tả, điền trường `description` ẩn, và hiện nút **Tạo truyện**. Nút đó gửi form hiện có đến `/generate-story`.
 
-**Tập tin:** `index.html` (Form Tải Lên)
+Không có tải mô hình theo trình duyệt hay phụ thuộc CDN. Phân tích ảnh chạy trên máy chủ qua triển khai Azure đã cấu hình. Lỗi vẫn hiển thị và không cho phép tạo truyện với mô tả bịa đặt. Chọn file khác xóa phân tích trước đó.
 
-Trang chính nơi người dùng mô tả thú cưng của họ:
-
-```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Pet Story Generator</title>
-    <!-- CSS styling -->
-</head>
-<body>
-    <div class="container">
-        <h1>Pet Story Generator</h1>
-        <p>Describe your pet and we'll create a fun story about them!</p>
-        
-        <!-- Error message display -->
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-        
-        <!-- Story generation form -->
-        <form action="/generate-story" method="post">
-            <div class="form-group">
-                <label for="description">Describe your pet:</label>
-                <textarea id="description" name="description" 
-                         placeholder="Tell us about your pet - what they look like, their personality, favorite activities..."
-                         maxlength="1000" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Generate Story</button>
-        </form>
-        
-        <!-- Image upload section with client-side processing -->
-        <div class="upload-section">
-            <h2>Or Upload a Photo</h2>
-            <input type="file" id="imageInput" accept="image/*" />
-            <button onclick="analyzeImage()" class="upload-btn">Analyze Image</button>
-        </div>
-        
-        <script>
-            // Client-side image analysis using Transformers.js
-            async function analyzeImage() {
-                // Image processing code here
-                // Generates description automatically from uploaded image
-            }
-        </script>
-    </div>
-</body>
-</html>
-```
-
-**Tập tin:** `result.html` (Hiển Thị Truyện)
+**Tệp:** `result.html` (Hiển thị truyện)
 
 Hiển thị câu chuyện được tạo:
 
@@ -297,18 +148,18 @@ Hiển thị câu chuyện được tạo:
 </html>
 ```
 
-**Tính năng mẫu:**
+**Đặc điểm mẫu:**
 
 1. **Tích hợp Thymeleaf**: Sử dụng thuộc tính `th:` cho nội dung động
-2. **Thiết kế đáp ứng**: CSS cho điện thoại và máy tính để bàn
-3. **Xử lý lỗi**: Hiển thị lỗi kiểm tra cho người dùng
-4. **Xử lý phía client**: JavaScript để phân tích ảnh (dùng Transformers.js)
+2. **Thiết kế phản hồi**: CSS cho di động và máy tính để bàn
+3. **Xử lý lỗi**: Hiển thị lỗi xác thực cho người dùng
+4. **Xử lý tải lên**: JavaScript xem trước ảnh, gửi yêu cầu multipart có CSRF, và hiển thị mô tả trả về
 
-### 5. Cấu Hình
+### 5. Cấu hình
 
-**Tập tin:** `application.properties`
+**Tệp:** `application.properties`
 
-Cài đặt cấu hình cho ứng dụng:
+Thiết lập cấu hình cho ứng dụng:
 
 ```properties
 spring.application.name=pet-story-app
@@ -322,21 +173,21 @@ logging.level.com.example.petstory=INFO
 
 # Azure AI Foundry (keyless) configuration
 azure.openai.endpoint=${AZURE_OPENAI_ENDPOINT:}
-azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
 ```
 
 **Giải thích cấu hình:**
 
-1. **Tải tập tin**: Cho phép hình ảnh lên đến 10MB
-2. **Ghi nhật ký**: Điều khiển thông tin được ghi lại trong quá trình chạy
+1. **Tải tập tin**: Cả tập tin và toàn bộ yêu cầu multipart đều giới hạn 10MB; giữ ảnh dưới giới hạn để còn chỗ cho header multipart
+2. **Ghi log**: Điều khiển thông tin được ghi trong quá trình chạy
 3. **Azure AI Foundry**: Chỉ định điểm cuối và triển khai mô hình sử dụng (xác thực không khóa)
-4. **Bảo mật**: Cấu hình xử lý lỗi để không tiết lộ thông tin nhạy cảm
+4. **Bảo mật**: Bảo vệ CSRF vẫn bật; chẩn đoán mô hình được ghi trên máy chủ, bộ điều khiển hiển thị thông báo lỗi mô hình chung chung
 
-## Chạy Ứng Dụng
+## Chạy ứng dụng
 
-### Bước 1: Đăng Nhập và Đặt Điểm Cuối
+### Bước 1: Đăng nhập và đặt đầu cuối
 
-Xác thực không khóa (Microsoft Entra ID), nên không có khoá API. Đăng nhập và đặt điểm cuối Foundry của bạn:
+Xác thực không cần khóa (Microsoft Entra ID), nên không có khóa API. Đăng nhập và đặt đầu cuối Foundry của bạn:
 
 **Windows (Command Prompt):**
 ```cmd
@@ -358,19 +209,21 @@ export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 
 **Tại sao cần điều này:**
 - Azure AI Foundry dùng Microsoft Entra ID để xác thực các yêu cầu suy luận
-- Xác thực không khóa nghĩa là không có bí mật trong mã nguồn hoặc môi trường của bạn
+- Xác thực không khóa nghĩa là không có bí mật trong mã nguồn hay môi trường
 - Tài khoản của bạn cần vai trò **Cognitive Services OpenAI User** trên tài nguyên
 
-### Bước 2: Biên Dịch và Chạy
+Tên triển khai mặc định là `gpt-5.6-luna`. Nếu triển khai GPT-5.6 Luna của bạn có tên khác, hãy đặt biến `AZURE_OPENAI_DEPLOYMENT` trong cùng terminal trước khi bắt đầu ứng dụng. Cả phân tích ảnh và tạo truyện đều dùng thiết lập này.
 
-Đi đến thư mục dự án:
+### Bước 2: Xây dựng và chạy
+
+Điều hướng đến thư mục dự án:
 ```bash
 cd 04-PracticalSamples/petstory
 ```
 
-Biên dịch ứng dụng:
+Xây dựng tệp JAR thực thi độc lập và chạy tất cả kiểm tra offline:
 ```bash
-mvn clean compile
+mvn clean package
 ```
 
 Khởi động máy chủ:
@@ -378,71 +231,67 @@ Khởi động máy chủ:
 mvn spring-boot:run
 ```
 
-Ứng dụng sẽ khởi chạy tại `http://localhost:8080`.
+Ứng dụng sẽ chạy tại `http://localhost:8080`.
 
-### Bước 3: Thử Ứng Dụng
+Ngoài ra, khởi động tệp JAR trên một cổng tự do, ví dụ:
 
-1. **Mở** `http://localhost:8080` trên trình duyệt
-2. **Mô tả** thú cưng của bạn trong ô văn bản (ví dụ: "Một chú chó golden retriever nghịch ngợm thích nhặt bóng")
-3. **Nhấn** "Generate Story" để nhận truyện do AI tạo
-4. **Hoặc** tải lên ảnh thú cưng để tự động tạo mô tả
-5. **Xem** câu chuyện sáng tạo dựa trên mô tả thú cưng của bạn
+```bash
+java -jar target/pet-story-app-0.0.1-SNAPSHOT.jar --server.port=8083
+```
 
-## Cách Tất Cả Hoạt Động Cùng Nhau
+Với lệnh đó, mở `http://localhost:8083/`. Các tuyến `/analyze-image` và `/generate-story` đều có trên cổng được chọn.
 
-Dưới đây là quy trình đầy đủ khi bạn tạo câu chuyện cho thú cưng:
+### Bước 3: Kiểm tra ứng dụng
 
-1. **Nhập liệu người dùng**: Bạn mô tả thú cưng trên form web
-2. **Gửi form**: Trình duyệt gửi yêu cầu POST tới `/generate-story`
-3. **Xử lý bộ điều khiển**: `PetController` kiểm tra và làm sạch đầu vào
-4. **Gọi dịch vụ AI**: `StoryService` gửi yêu cầu tới mô hình Azure AI Foundry
-5. **Tạo truyện**: AI tạo câu chuyện sáng tạo dựa trên mô tả
-6. **Xử lý phản hồi**: Bộ điều khiển nhận truyện và thêm vào mô hình
-7. **Kết xuất mẫu**: Thymeleaf hiển thị `result.html` với truyện
-8. **Hiển thị**: Người dùng xem truyện được tạo trên trình duyệt
+1. **Mở** `http://localhost:8080` trong trình duyệt
+2. **Chọn** ảnh thú cưng rõ nét định dạng JPEG, PNG, GIF, hoặc WebP, dưới 10MB
+3. **Nhấn** "Phân tích ảnh" và chờ mô tả thú cưng
+4. **Nhấn** "Tạo truyện" sau khi phân tích thành công
+5. **Xem** truyện và dùng liên kết trên trang kết quả để quay lại biểu mẫu tải lên
 
-**Quy trình xử lý lỗi:**
-Nếu dịch vụ AI không thành công:
-1. Bộ điều khiển bắt ngoại lệ
-2. Tạo truyện dự phòng dùng mẫu viết sẵn
-3. Hiển thị truyện dự phòng và ghi chú AI không khả dụng
-4. Người dùng vẫn nhận truyện, đảm bảo trải nghiệm tốt
+Quy trình ảnh thành truyện thành công gọi hai lần mô hình, mỗi nút một lần. Suy luận trực tiếp tiêu thụ hạn mức triển khai và có thể phát sinh phí; chạy kiểm tra nhanh tuần tự khi chia sẻ triển khai bị giới hạn tần suất. Tải trang chủ không gọi mô hình.
 
-## Hiểu Về Tích Hợp AI
+## Kiểm tra offline
+
+Từ thư mục mẫu, chạy:
+
+```bash
+mvn test
+```
+
+[StoryServiceTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/StoryServiceTest.java) ghi lại các yêu cầu thực sự của SDK OpenAI bằng một fixture HTTP loopback. Nó kiểm tra khai triển, `reasoning_effort: none`, giới hạn token, payload ảnh, xác thực đầu vào, phản hồi rỗng, và lỗi thượng nguồn của cả hai yêu cầu.
+
+[PetControllerTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/PetControllerTest.java) dùng MockMvc với dịch vụ mô hình mô phỏng để kiểm thử các trang Thymeleaf được render, hợp đồng tải lên, CSRF, xác thực, thoát dữ liệu đầu ra, và lỗi hiển thị. Những kiểm tra này không cần thông tin Azure và không gọi suy luận Azure trả phí. Maven ghi báo cáo Surefire trong `target/surefire-reports`.
+
+## Cách hoạt động tổng thể
+
+Dưới đây là quy trình đầy đủ khi bạn tạo truyện cho thú cưng:
+
+1. **Chọn ảnh**: Bạn chọn ảnh thú cưng trong biểu mẫu tải lên
+2. **Tải ảnh lên**: "Phân tích ảnh" gửi POST multipart đến `/analyze-image` kèm header CSRF
+3. **Phân tích ảnh**: `StoryService` gửi ảnh đến GPT-5.6 Luna với chế độ reasoning đặt thành `none`
+4. **Hiển thị mô tả**: Trình duyệt hiển thị mô tả trả về và lưu nó vào form
+5. **Gửi truyện**: "Tạo truyện" gửi các trường `description` và `_csrf` đến `/generate-story`
+6. **Tạo truyện**: Bộ điều khiển xác thực mô tả và gọi cùng triển khai với reasoning là `none`
+7. **Render mẫu**: Thymeleaf thoát và hiển thị mô tả cùng truyện trên trang kết quả
+
+**Luồng xử lý lỗi:**
+Nếu mô hình lỗi, máy chủ ghi log nguyên nhân. Phân tích ảnh trả HTTP 502 và trình duyệt hiển thị lỗi mà không hiện "Tạo truyện". Tạo truyện chuyển hướng về form với thông báo lỗi. Không có lối đi nào thay thế âm thầm với kết quả có sẵn.
+
+## Hiểu tích hợp AI
 
 ### Azure AI Foundry (xác thực không khóa)
-Ứng dụng sử dụng Azure AI Foundry với xác thực không khóa (Microsoft Entra ID):
+Dịch vụ cấu hình SDK với điểm cuối `/openai/v1/` của tài nguyên bạn. `DefaultAzureCredential` và `AuthenticationUtil.getBearerTokenSupplier` cung cấp token Microsoft Entra cho `https://ai.azure.com/.default`. Phát triển cục bộ dùng đăng nhập Azure CLI của bạn; ứng dụng host trên Azure có thể dùng managed identity với quyền tài nguyên cần thiết.
 
-```java
-// Xác thực không khóa - không cần khóa API
-DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-this.openAIClient = OpenAIOkHttpClient.builder()
-    .baseUrl(endpoint + "openai/v1/")
-    .credential(BearerTokenCredential.create(
-        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-    .build();
-```
-
-### Kỹ thuật tạo yêu cầu (Prompt Engineering)
-Dịch vụ dùng các yêu cầu được thiết kế kỹ để có kết quả tốt:
-
-```java
-String systemPrompt = "You are a creative storyteller who writes fun, " +
-                     "family-friendly short stories about pets. " +
-                     "Keep stories under 500 words and appropriate for all ages.";
-```
+### Kỹ thuật Đề bài
+Yêu cầu phân tích ảnh quan sát các đặc điểm thú cưng trong đoạn văn ngắn và bảo mô hình xem đoạn chữ trong ảnh như dữ liệu, không phải lệnh. Tạo truyện dùng mô tả trả về trong yêu cầu viết riêng thân thiện với gia đình. Cả hai không bật reasoning hay điều chỉnh nhiệt độ.
 
 ### Xử lý phản hồi
-Phản hồi của AI được trích xuất và kiểm tra:
+Bộ xử lý phản hồi chia sẻ từ chối lựa chọn thiếu và nội dung trống hoặc chỉ toàn khoảng trắng, cắt bớt nội dung hợp lệ, và giữ nguyên lỗi thượng nguồn. Mô tả ảnh giới hạn ở 1000 ký tự để phù hợp form truyện phía sau. Lỗi mô hình gốc được giữ lại để chẩn đoán nhưng không được hiện với người dùng.
 
-```java
-ChatCompletion response = openAIClient.chat().completions().create(params);
-String story = response.choices().get(0).message().content().orElse("");
-```
+## Bước tiếp theo
 
-## Bước Tiếp Theo
-
-Để xem thêm ví dụ, xem [Chương 04: Ví dụ thực tiễn](../README.md)
+Để xem thêm ví dụ, hãy xem [Chương 04: Các mẫu thực hành](../README.md)
 
 ---
 
