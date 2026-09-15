@@ -1,27 +1,37 @@
-# Pet Story Generator Tutorial para sa mga Baguhan
+# Pet Story Generator Tutorial para sa mga Nagsisimula
 
-## Table of Contents
+Mag-upload ng larawan ng alagang hayop, suriin ito gamit ang GPT-5.6 Luna, at gumawa ng kwento mula sa resulta ng paglalarawan. Parehong gumagamit ang mga kahilingan ng modelo ng `reasoning_effort: none`.
+
+| Component | Bersyon |
+| --- | --- |
+| Java | 21 o mas mataas |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
+
+## Tala ng Mga Nilalaman
 
 - [Mga Kinakailangan](#mga-kinakailangan)
 - [Pag-unawa sa Istruktura ng Proyekto](#pag-unawa-sa-istruktura-ng-proyekto)
-- [Paliwanag ng Mga Pangunahing Bahagi](#paliwanag-ng-mga-pangunahing-bahagi)
-  - [1. Pangunahing Aplikasyon](#1-pangunahing-aplikasyon)
+- [Paliwanag ng mga Pangunahing Komponent](#paliwanag-ng-mga-pangunahing-komponent)
+  - [1. Main Application](#1-main-application)
   - [2. Web Controller](#2-web-controller)
   - [3. Story Service](#3-story-service)
-  - [4. Mga Web Template](#4-mga-web-template)
-  - [5. Pag-configure](#5-pag-configure)
+  - [4. Web Templates](#4-web-templates)
+  - [5. Configuration](#5-configuration)
 - [Pagpapatakbo ng Aplikasyon](#pagpapatakbo-ng-aplikasyon)
-- [Paano Ito Nagtutulungan](#paano-ito-nagtutulungan)
-- [Pag-unawa sa AI Integration](#pag-unawa-sa-ai-integration)
+- [Mga Offline na Pagsusulit](#mga-offline-na-pagsusulit)
+- [Paano Ito Lahat Gumagana Nang Sabay](#paano-ito-lahat-gumagana-nang-sabay)
+- [Pag-unawa sa Integrasyon ng AI](#pag-unawa-sa-integrasyon-ng-ai)
 - [Mga Susunod na Hakbang](#mga-susunod-na-hakbang)
 
 ## Mga Kinakailangan
 
-Bago magsimula, siguraduhing mayroon ka ng:
-- Java 21 o mas mataas na naka-install
-- Maven para sa pamamahala ng dependency
-- Isang Azure AI Foundry model deployment (i-provision gamit ang `azd up` — tingnan ang [Kabanata 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md)), naka-sign in gamit ang `az login` (keyless auth)
-- Pangunahing kaalaman sa Java, Spring Boot, at web development
+Bago magsimula, siguraduhing mayroon kang:
+- Java 21 o mas mataas ang naka-install
+- Maven para sa pangangasiwa ng dependency
+- Isang Azure AI Foundry deployment ng GPT-5.6 Luna na pinangalanang `gpt-5.6-luna`, o isang `AZURE_OPENAI_DEPLOYMENT` override na tumuturo sa deployment na iyon. Tingnan ang [Chapter 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md) para sa provisioning at mag-sign in gamit ang `az login` para sa keyless na pagpapatotoo. Dapat suportahan ng deployment ang image input at `reasoning_effort: none`.
+- Pangunahing pag-unawa sa Java, Spring Boot, at web development
 
 ## Pag-unawa sa Istruktura ng Proyekto
 
@@ -32,7 +42,7 @@ petstory/
 ├── src/main/java/com/example/petstory/
 │   ├── PetStoryApplication.java       # Main Spring Boot application
 │   ├── PetController.java             # Web request handler
-│   ├── StoryService.java              # AI story generation service
+│   ├── StoryService.java              # AI image analysis and story generation
 │   └── SecurityConfig.java            # Security configuration
 ├── src/main/resources/
 │   ├── application.properties         # App configuration
@@ -42,13 +52,13 @@ petstory/
 └── pom.xml                           # Maven dependencies
 ```
 
-## Paliwanag ng Mga Pangunahing Bahagi
+## Paliwanag ng mga Pangunahing Komponent
 
-### 1. Pangunahing Aplikasyon
+### 1. Main Application
 
 **File:** `PetStoryApplication.java`
 
-Ito ang entry point para sa ating Spring Boot application:
+Ito ang entry point para sa aming Spring Boot application:
 
 ```java
 @SpringBootApplication
@@ -60,211 +70,52 @@ public class PetStoryApplication {
 ```
 
 **Ano ang ginagawa nito:**
-- Ang `@SpringBootApplication` annotation ay nagpapagana ng auto-configuration at component scanning
-- Nagpapasimula ng embedded web server (Tomcat) sa port 8080
-- Awtomatikong lumilikha ng lahat ng kinakailangang Spring beans at services
+- Ang annotation na `@SpringBootApplication` ay nagpapagana ng auto-configuration at component scanning
+- Nagsisimula ng embedded web server (Tomcat) sa port 8080
+- Kusang lumilikha ng lahat ng kinakailangang Spring beans at services
 
 ### 2. Web Controller
 
-**File:** `PetController.java`
+**File:** [PetController.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/PetController.java)
 
-Ito ang humahawak sa lahat ng web requests at user interactions:
+| Endpoint | Request | Matagumpay na tugon |
+| --- | --- | --- |
+| `GET /` | Walang katawan | HTML upload form na may CSRF token |
+| `POST /analyze-image` | `multipart/form-data`, file field `image` | JSON: `{"description":"A playful pet..."}` |
+| `POST /generate-story` | `application/x-www-form-urlencoded`, field `description` | HTML resulta ng pahina na may paglalarawan at generated na kwento |
 
-```java
-@Controller
-public class PetController {
-    
-    private final StoryService storyService;
-    
-    public PetController(StoryService storyService) {
-        this.storyService = storyService;
-    }
-    
-    @GetMapping("/")
-    public String index() {
-        return "index";  // Nagbabalik ng index.html na template
-    }
-    
-    @PostMapping("/generate-story")
-    public String generateStory(@RequestParam("description") String description, 
-                               Model model, 
-                               RedirectAttributes redirectAttributes) {
-        
-        // Pag-validate ng input
-        if (description.trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Please provide a description.");
-            return "redirect:/";
-        }
-        
-        // Linisin ang input para sa seguridad
-        String sanitizedDescription = sanitizeInput(description);
-        
-        // Bumuo ng kuwento na may paghawak ng error
-        try {
-            String story = storyService.generateStory(sanitizedDescription);
-            model.addAttribute("caption", sanitizedDescription);
-            model.addAttribute("story", story);
-            return "result";  // Nagbabalik ng result.html na template
-            
-        } catch (Exception e) {
-            // Gumamit ng fallback na kuwento kung pumalya ang AI
-            String fallbackStory = generateFallbackStory(sanitizedDescription);
-            model.addAttribute("story", fallbackStory);
-            return "result";
-        }
-    }
-    
-    private String sanitizeInput(String input) {
-        return input.replaceAll("[<>\"'&]", "")  // Remove dangerous characters
-                   .trim()
-                   .substring(0, Math.min(input.length(), 500));  // Limitahan ang haba
-    }
-}
-```
+Parehong POST endpoints ay nangangailangan ng session cookie at CSRF token mula sa `GET /`. Ipinapadala ng upload script ang nakatagong `_csrf` value sa `X-CSRF-TOKEN` header; ipinapasa naman ito sa kwento bilang `_csrf` na form field. Dapat panatilihin ng mga API client ang cookie sa pagitan ng mga kahilingan. Ang mga ito ay form endpoints, hindi JSON request endpoints.
 
-**Pangunahing tampok:**
+Dapat hindi walang laman at hindi lalampas sa 1000 characters ang mga paglalarawan. Pinipino ng controller ang paglalarawan at tinatanggal ang `<`, `>`, double quotes, apostrophes, at `&` bago ito ipadala sa service. Pinoprotektahan din ng resulta ng template ang output ng modelo gamit ang `th:text`.
 
-1. **Route Handling**: `@GetMapping("/")` ay nagpapakita ng upload form, `@PostMapping("/generate-story")` ay nagpoproseso ng mga submission
-2. **Input Validation**: Sinusuri kung walang laman ang descriptions at mga limitasyon sa haba
-3. **Security**: Nililinis ang user input upang maiwasan ang XSS attacks
-4. **Error Handling**: Nagbibigay ng fallback stories kapag nabigo ang AI service
-5. **Model Binding**: Pinapasa ang data sa mga HTML template gamit ang Spring's `Model`
-
-**Fallback System:**
-Kasama sa controller ang mga pre-written na story templates na ginagamit kapag hindi available ang AI service:
-
-```java
-private String generateFallbackStory(String description) {
-    String[] storyTemplates = {
-        "Meet the most wonderful pet in the world – a furry ball of energy...",
-        "Once upon a time, there lived a remarkable pet whose heart was as big...",
-        "In a cozy home filled with love, there lived an extraordinary pet..."
-    };
-    
-    // Gamitin ang hash ng paglalarawan para sa mga pare-parehong tugon
-    int index = Math.abs(description.hashCode() % storyTemplates.length);
-    return storyTemplates[index];
-}
-```
+Ang mga pagkabigo sa pag-validate ng larawan ay nagbabalik ng HTTP 400 na may `error` na field; ang pagkabigo sa modelo ay nagbabalik ng HTTP 502 na may `error` na field at walang `description`. Ang mga di-wastong paglalarawan ng kwento o pagkabigo ng modelo ay nire-redirect sa `/` na may nakitang error. Ang nawawalang mga kinakailangang fields ay nagbabalik ng HTTP 400, at ang nawawala o di-wastong CSRF tokens ay nagbabalik ng HTTP 403. Walang fallback na paglalarawan o kwento ang ipinapakita bilang matagumpay na resulta ng AI.
 
 ### 3. Story Service
 
-**File:** `StoryService.java`
+**File:** [StoryService.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/StoryService.java)
 
-Ang serbisyo na ito ay nakikipag-ugnayan sa Azure AI Foundry para bumuo ng mga kwento gamit ang keyless authentication:
+Ang opisyal na OpenAI Java SDK 4.63.1 ay tumatawag sa Azure AI Foundry's OpenAI-compatible Chat Completions API. Nagbibigay ang Azure Identity 1.18.6 ng Microsoft Entra bearer token gamit ang `DefaultAzureCredential`; hindi kailangan ng API key.
 
-```java
-@Service
-public class StoryService {
-    
-    private final OpenAIClient openAIClient;
-    private final String modelName;
-    
-    public StoryService(@Value("${azure.openai.endpoint:}") String endpoint,
-                       @Value("${azure.openai.deployment:gpt-4o-mini}") String modelName) {
-        this.modelName = modelName;
-        if (endpoint == null || endpoint.isBlank()) {
-            endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        }
-        
-        // Ang OpenAI-compatible na endpoint ng Foundry ay matatagpuan sa ilalim ng /openai/v1/
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1/";
-        
-        // Keyless authentication gamit ang Microsoft Entra ID (walang API key)
-        DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-        this.openAIClient = OpenAIOkHttpClient.builder()
-                .baseUrl(baseUrl)
-                .credential(BearerTokenCredential.create(
-                        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-                .build();
-    }
-    
-    public String generateStory(String description) {
-        String systemPrompt = "You are a creative storyteller who writes fun, " +
-                             "family-friendly short stories about pets. " +
-                             "Keep stories under 500 words and appropriate for all ages.";
-        
-        String userPrompt = "Write a fun short story about a pet described as: " + description;
-        
-        // I-configure ang AI request
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(modelName)
-                .addSystemMessage(systemPrompt)
-                .addUserMessage(userPrompt)
-                .maxCompletionTokens(500)  // Limitahan ang haba ng sagot
-                .temperature(0.8)          // Kontrolin ang pagiging malikhain (0.0-1.0)
-                .build();
-        
-        // Ipadala ang request at kunin ang tugon
-        ChatCompletion response = openAIClient.chat().completions().create(params);
-        
-        return response.choices().get(0).message().content().orElse("");
-    }
-}
-```
+| Operasyon | Input | `max_completion_tokens` |
+| --- | --- | --- |
+| `analyzeImage` | Mga bytes ng larawan na naka-encode bilang base64 data URL na may MIME type ng na-upload na file | 300 |
+| `generateStory` | Isang paglalarawan ng alaga sa isang mensahe ng user | 800 |
 
-**Pangunahing bahagi:**
+Parehong kahilingan ay gumagamit ng na-configure na deployment, default sa `gpt-5.6-luna`, at tahasang itinatakda ang `ReasoningEffort.NONE` (`reasoning_effort: none`). Walang nagpapadala ng `temperature` o ng legacy na `max_tokens` parameter.
 
-1. **OpenAI Client**: Ginagamit ang opisyal na OpenAI Java SDK na naka-configure para sa Azure AI Foundry (keyless)
-2. **System Prompt**: Itinakda ang pag-uugali ng AI upang magsulat ng mga kwentong pang-pamilya tungkol sa mga alagang hayop
-3. **User Prompt**: Sinasabi sa AI kung anong kwento ang isusulat base sa description
-4. **Parameters**: Kinokontrol ang haba ng kwento at antas ng pagkamalikhain
-5. **Error Handling**: Nagbubuga ng mga exceptions na hinahawakan at pinamamahalaan ng controller
+Tinatanggap ng pagsusuri ng larawan ang JPEG, PNG, GIF, at WebP, tinatanggihan ang mga walang laman na larawan at mga file na higit sa 10MB, at nililimitahan ang resulta ng paglalarawan sa 1000 characters. Humihiling ang story prompt ng isang family-friendly na maikling kwento. Ang mga walang laman na pagpipilian o blangkong nilalaman ng modelo ay mga error, at pinananatili ang orihinal na sanhi ng pagkabigo para sa server-side diagnostics. Isinasara ang SDK client kapag nagsara ang application.
 
-### 4. Mga Web Template
+### 4. Web Templates
 
-**File:** `index.html` (Upload Form)
+**File:** [index.html](../../../../04-PracticalSamples/petstory/src/main/resources/templates/index.html) (Upload Form)
 
-Pangunahing pahina kung saan inilalarawan ng mga user ang kanilang mga alaga:
+Nagsisimula ang pahina sa isang photo picker, hindi sa isang description text area. **Analyze Image** ay nagbibigay ng preview ng napiling larawan at ipinapadala ito sa `/analyze-image`. Ang matagumpay na tugon ay nagpapakita ng paglalarawan, pinupuno ang nakatagong `description` field, at ipinapakita ang **Generate Story**. Ang button na iyon ay nagsusumite ng umiiral na form sa `/generate-story`.
 
-```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Pet Story Generator</title>
-    <!-- CSS styling -->
-</head>
-<body>
-    <div class="container">
-        <h1>Pet Story Generator</h1>
-        <p>Describe your pet and we'll create a fun story about them!</p>
-        
-        <!-- Error message display -->
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-        
-        <!-- Story generation form -->
-        <form action="/generate-story" method="post">
-            <div class="form-group">
-                <label for="description">Describe your pet:</label>
-                <textarea id="description" name="description" 
-                         placeholder="Tell us about your pet - what they look like, their personality, favorite activities..."
-                         maxlength="1000" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Generate Story</button>
-        </form>
-        
-        <!-- Image upload section with client-side processing -->
-        <div class="upload-section">
-            <h2>Or Upload a Photo</h2>
-            <input type="file" id="imageInput" accept="image/*" />
-            <button onclick="analyzeImage()" class="upload-btn">Analyze Image</button>
-        </div>
-        
-        <script>
-            // Client-side image analysis using Transformers.js
-            async function analyzeImage() {
-                // Image processing code here
-                // Generates description automatically from uploaded image
-            }
-        </script>
-    </div>
-</body>
-</html>
-```
+Walang browser model download o CDN dependency. Ang pagsusuri ng larawan ay tumatakbo sa server sa pamamagitan ng naka-configure na Azure deployment. Mananatiling nakikita ang mga pagkabigo at hindi pinapayagan ang pagbuo ng kwento gamit ang pekeng paglalarawan. Ang pagpili ng ibang file ay naglilinis ng naunang pagsusuri.
 
 **File:** `result.html` (Pagpapakita ng Kwento)
 
-Ipinapakita ang na-generate na kwento:
+Ipinapakita ang nabuo na kwento:
 
 ```html
 <!DOCTYPE html>
@@ -299,16 +150,16 @@ Ipinapakita ang na-generate na kwento:
 
 **Mga tampok ng template:**
 
-1. **Thymeleaf Integration**: Gumagamit ng `th:` na attributes para sa dynamic na nilalaman
+1. **Thymeleaf Integration**: Gumagamit ng `th:` attributes para sa dynamic na nilalaman
 2. **Responsive Design**: CSS styling para sa mobile at desktop
 3. **Error Handling**: Ipinapakita ang mga validation errors sa mga user
-4. **Client-side Processing**: JavaScript para sa pagsusuri ng imahe (gamit ang Transformers.js)
+4. **Upload Handling**: JavaScript na nagpe-preview ng larawan, nagpapadala ng CSRF-protected na multipart request, at nagpapakita ng ibinalik na paglalarawan
 
-### 5. Pag-configure
+### 5. Configuration
 
 **File:** `application.properties`
 
-Mga settings para sa aplikasyon:
+Mga setting ng configuration para sa aplikasyon:
 
 ```properties
 spring.application.name=pet-story-app
@@ -322,21 +173,21 @@ logging.level.com.example.petstory=INFO
 
 # Azure AI Foundry (keyless) configuration
 azure.openai.endpoint=${AZURE_OPENAI_ENDPOINT:}
-azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
 ```
 
-**Paliwanag ng configuration:**
+**Paliwanag sa configuration:**
 
-1. **File Upload**: Pinapayagan ang mga imahe hanggang 10MB
-2. **Logging**: Kinokontrol kung anong impormasyon ang nilalagay sa log habang tumatakbo
-3. **Azure AI Foundry**: Tinukoy ang endpoint at model deployment na gagamitin (keyless auth)
-4. **Security**: Pag-configure ng error handling upang hindi mailantad ang sensitibong impormasyon
+1. **Pag-upload ng File**: Parehong ang file at ang buong multipart request ay nililimitahan sa 10MB; panatilihing mas mababa sa limit ang mga larawan upang may puwang para sa multipart headers
+2. **Pag-log**: Kinokontrol kung anong impormasyon ang nilalathala habang tumatakbo ang aplikasyon
+3. **Azure AI Foundry**: Itinatakda ang endpoint at model deployment na gagamitin (keyless auth)
+4. **Seguridad**: Mananatiling naka-enable ang CSRF protection; ang mga diagnostic ng modelo ay nilalathala sa server, habang ang controller ay nagpapakita ng pangkalahatang mga mensahe ng pagkabigo ng modelo
 
 ## Pagpapatakbo ng Aplikasyon
 
-### Hakbang 1: Mag-sign In at I-set ang Iyong Endpoint
+### Hakbang 1: Mag-Sign In at Itakda ang Iyong Endpoint
 
-Ang authentication ay keyless (Microsoft Entra ID), kaya walang API key. Mag-sign in at i-set ang iyong Foundry endpoint:
+Ang pagpapatotoo ay keyless (Microsoft Entra ID), kaya walang API key. Mag-sign in at itakda ang iyong Foundry endpoint:
 
 **Windows (Command Prompt):**
 ```cmd
@@ -357,20 +208,22 @@ export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 ```
 
 **Bakit ito kailangan:**
-- Ginagamit ng Azure AI Foundry ang Microsoft Entra ID para i-authenticate ang mga inference requests
-- Ibig sabihin ng keyless auth na walang mga secret sa iyong source code o environment
+- Ginagamit ng Azure AI Foundry ang Microsoft Entra ID para i-authenticate ang mga inference request
+- Ang keyless auth ay nangangahulugang walang sikreto sa iyong source code o environment
 - Kailangan ng iyong account ang **Cognitive Services OpenAI User** role sa resource
+
+Ang default na pangalan ng deployment ay `gpt-5.6-luna`. Kung ang iyong GPT-5.6 Luna deployment ay may ibang pangalan, itakda ang `AZURE_OPENAI_DEPLOYMENT` sa parehong terminal bago simulan ang aplikasyon. Parehong image analysis at story generation ay gumagamit ng setting na ito.
 
 ### Hakbang 2: I-build at Patakbuhin
 
-Pumunta sa direktoryo ng proyekto:
+Pumunta sa directory ng proyekto:
 ```bash
 cd 04-PracticalSamples/petstory
 ```
 
-I-build ang aplikasyon:
+I-build ang standalone executable na JAR at patakbuhin ang lahat ng offline na pagsubok:
 ```bash
-mvn clean compile
+mvn clean package
 ```
 
 Simulan ang server:
@@ -378,71 +231,67 @@ Simulan ang server:
 mvn spring-boot:run
 ```
 
-Mag-uumpisa ang aplikasyon sa `http://localhost:8080`.
+Magsisimula ang aplikasyon sa `http://localhost:8080`.
 
-### Hakbang 3: Subukan ang Aplikasyon
+Bilang alternatibo, simulan ang naka-package na JAR sa isang libreng port, halimbawa:
+
+```bash
+java -jar target/pet-story-app-0.0.1-SNAPSHOT.jar --server.port=8083
+```
+
+Para sa utos na iyon, buksan ang `http://localhost:8083/`. Ang parehong mga ruta na `/analyze-image` at `/generate-story` ay available sa napiling port.
+
+### Hakbang 3: Subukan ang Application
 
 1. **Buksan** ang `http://localhost:8080` sa iyong browser
-2. **Ilarawan** ang iyong alaga sa text area (halimbawa, "Isang masiglang golden retriever na mahilig mag-fetch")
-3. **I-click** ang "Generate Story" para makakuha ng AI-generated na kwento
-4. **O kaya naman**, mag-upload ng larawan ng alaga upang awtomatikong makabuo ng description
-5. **Tingnan** ang malikhaing kwento base sa iyong paglalarawan ng alaga
+2. **Piliin** ang malinaw na larawan ng alaga sa format na JPEG, PNG, GIF, o WebP, na mas mababa sa 10MB
+3. **I-click ang** "Analyze Image" at hintayin ang paglalarawan ng alaga
+4. **I-click ang** "Generate Story" pagkatapos ng matagumpay na pagsusuri
+5. **Tingnan** ang kwento at gamitin ang link sa resulta ng pahina para bumalik sa upload form
 
-## Paano Ito Nagtutulungan
+Ang matagumpay na photo-to-story na daloy ay gumagawa ng dalawang tawag sa modelo, isa sa bawat button. Ang live inference ay kumokonsumo ng quota ng iyong deployment at maaaring magdulot ng bayarin; patakbuhin ang mga smoke test nang sunud-sunod kapag nagbabahagi ng rate-limited na deployment. Ang pag-load ng home page ay hindi tumatawag ng modelo.
 
-Narito ang buong daloy kapag nag-generate ka ng kwento ng alaga:
+## Mga Offline na Pagsusulit
 
-1. **User Input**: Ikinukwento mo ang iyong alaga sa web form
-2. **Form Submission**: Nagpapadala ang browser ng POST request sa `/generate-story`
-3. **Controller Processing**: Tine-validate at nililinis ng `PetController` ang input
-4. **AI Service Call**: Nagpapadala ang `StoryService` ng request sa Azure AI Foundry model
-5. **Story Generation**: Gumagawa ang AI ng malikhaing kwento base sa paglalarawan
-6. **Response Handling**: Tinatanggap ng controller ang kwento at idinadagdag ito sa model
-7. **Template Rendering**: Ipinapakita ng Thymeleaf ang `result.html` na may kwento
-8. **Display**: Nakikita ng user ang na-generate na kwento sa kanilang browser
+Mula sa sample directory, patakbuhin:
+
+```bash
+mvn test
+```
+
+[StoryServiceTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/StoryServiceTest.java) ay kumukuha ng totoong OpenAI SDK requests gamit ang loopback HTTP fixture. Sinusuri nito ang deployment ng parehong mga request, `reasoning_effort: none`, mga limitasyon ng token, payload ng larawan, input validation, walang laman na tugon, at upstream na mga pagkakamali.
+
+[PetControllerTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/PetControllerTest.java) ay gumagamit ng MockMvc na may mocked model service upang subukan ang mga rendered Thymeleaf na pahina, upload contract, CSRF, validation, pag-escape ng output, at nakikita na mga pagkabigo. Hindi kailangan ng mga pagsusulit na ito ang Azure credentials at hindi tumatawag sa bayad na Azure inference. Ang Maven ay nagsusulat ng Surefire reports sa ilalim ng `target/surefire-reports`.
+
+## Paano Ito Lahat Gumagana Nang Sabay
+
+Narito ang kumpletong daloy kapag gumagawa ka ng kwento ng alaga:
+
+1. **Pagpili ng Larawan**: Pumili ka ng larawan ng alaga sa upload form
+2. **Pag-upload ng Larawan**: Pinapadala ng "Analyze Image" ang multipart POST sa `/analyze-image` kasama ang CSRF header
+3. **Pagsusuri ng Larawan**: Pinapadala ng `StoryService` ang larawan sa GPT-5.6 Luna na may reasoning na naka-set sa `none`
+4. **Pagpapakita ng Paglalarawan**: Ipinapakita ng browser ang ibinalik na paglalarawan at iniimbak ito sa form
+5. **Pagsusumite ng Kwento**: Pinapadala ng "Generate Story" ang `description` at `_csrf` sa `/generate-story`
+6. **Pagbuo ng Kwento**: Vini-validate ng controller ang paglalarawan at tinatawag ang parehong deployment na may reasoning na naka-set sa `none`
+7. **Pag-render ng Template**: In-e-escape ng Thymeleaf at ipinapakita ang paglalarawan at kwento sa resulta ng pahina
 
 **Daloy ng Pag-handle ng Error:**
-Kung mabigo ang AI service:
-1. Nahuhuli ng controller ang exception
-2. Gumagawa ng fallback story gamit ang mga pre-written na template
-3. Ipinapakita ang fallback story kasama ang paalala tungkol sa hindi availability ng AI
-4. Nakakakuha pa rin ang user ng kwento, na nagpapanatili ng magandang karanasan
+Kung mabigo ang modelo, nilalathala ng server ang sanhi. Ang pagsusuri ng larawan ay nagbabalik ng HTTP 502 at ipinapakita ng browser ang error nang hindi ipinapakita ang "Generate Story". Ang pagbuo ng kwento ay nire-redirect sa form na may mensahe ng error. Walang landas ang tahimik na pumapalit ng pre-sinulat na resulta.
 
-## Pag-unawa sa AI Integration
+## Pag-unawa sa Integrasyon ng AI
 
 ### Azure AI Foundry (keyless)
-Gumagamit ang aplikasyon ng Azure AI Foundry gamit ang keyless authentication (Microsoft Entra ID):
-
-```java
-// Walang susi na pagpapatunay - walang API key
-DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-this.openAIClient = OpenAIOkHttpClient.builder()
-    .baseUrl(endpoint + "openai/v1/")
-    .credential(BearerTokenCredential.create(
-        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-    .build();
-```
+Kinokonekta ng serbisyo ang SDK sa endpoint na `/openai/v1/` ng iyong resource. Nagbibigay ang `DefaultAzureCredential` at `AuthenticationUtil.getBearerTokenSupplier` ng Microsoft Entra tokens para sa `https://ai.azure.com/.default`. Maaaring gamitin ng lokal na pag-develop ang Azure CLI sign-in; ang Azure-hosted app ay maaaring gumamit ng managed identity na may kinakailangang permiso sa resource.
 
 ### Prompt Engineering
-Maingat na ginawa ang mga prompt ng serbisyo upang makamit ang magagandang resulta:
+Ang pagsusuri ng larawan ay humihiling ng mga napapansing tampok ng alaga sa isang maikling talata at sinasabi sa modelo na ituring ang teksto sa larawan bilang data, hindi bilang mga utos. Ginagamit ng pagbuo ng kwento ang ibinalik na paglalarawan sa isang hiwalay, family-friendly na request para sa pagsulat. Walang tawag ang nagpapagana ng reasoning o nagtatakda ng temperature override.
 
-```java
-String systemPrompt = "You are a creative storyteller who writes fun, " +
-                     "family-friendly short stories about pets. " +
-                     "Keep stories under 500 words and appropriate for all ages.";
-```
-
-### Response Processing
-Ina-extract at tines-triktura ang sagot ng AI:
-
-```java
-ChatCompletion response = openAIClient.chat().completions().create(params);
-String story = response.choices().get(0).message().content().orElse("");
-```
+### Pagsusuri ng Tugon
+Tinanggihan ng pinag-isang response handler ang nawawalang mga pagpipilian at walang laman o blangkong nilalaman, pinipino ang wastong nilalaman, at pinananatili ang upstream failures. Nililimitahan sa 1000 characters ang mga paglalarawan ng larawan upang magkasya sa kasunod na story form. Ang orihinal na pagkabigo ng modelo ay pinananatili para sa diagnostics ngunit hindi ipinapakita sa user.
 
 ## Mga Susunod na Hakbang
 
-Para sa higit pang mga halimbawa, tingnan ang [Kabanata 04: Praktikal na mga halimbawa](../README.md)
+Para sa karagdagang mga halimbawa, tingnan ang [Chapter 04: Practical samples](../README.md)
 
 ---
 
