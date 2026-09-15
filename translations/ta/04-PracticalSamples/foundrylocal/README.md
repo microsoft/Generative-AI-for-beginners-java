@@ -1,354 +1,230 @@
-# Foundry Local Spring Boot Tutorial
+# Foundry உள்ளூர் ஸ்பிரிங் பூட் பயிற்சி
 
-## விஷயக் குறிப்பு
+உங்கள் சொந்த கணினியில் ஒரு சிறிய மொழி மாதிரியை இயக்கவும் அதன் OpenAI-போன்ற REST முடிவுக் கோப்பை
+ஒரு Java கன்சோல் செயலியில் அழைக்கவும். எந்த Azure பதிவேற்றமும், Azure உள்நுழைவும்,
+மேக API விசை அல்லது மேக உணர்வு பயன்படுத்தப்படவில்லை. **GPT-5.6 லூனா Azure மட்டுமே; இதை Foundry உள்ளூர் மாதிரியாக
+கட்டமைக்க வேண்டாம்.**
 
-- [முன்னணிப் பொருட்கள்](#முன்-நிபந்தனைகள்)
-- [திட்டத்தின் கையேடு](#திட்ட-கையேடு)
-- [குறியீட்டை புரிந்துகொள்வது](#குறியீட்டை-புரிந்துகொள்வது)
-  - [1. பயன்பாட்டு கட்டமைப்பு (application.properties)](#1-பயன்பாட்டு-கட்டமைப்பு-applicationproperties)
-  - [2. முதன்மை பயன்பாட்டுக் கிளாஸ் (Application.java)](#2-முதன்மை-பயன்பாட்டுக்-கிளாஸ்-applicationjava)
-  - [3. AI சேவை அடுக்கு (FoundryLocalService.java)](#3-ai-சேவை-அடுக்கு-foundrylocalservicejava)
-  - [4. திட்டத்தின் சார்பு கோப்புகள் (pom.xml)](#4-திட்டத்தின்-சார்பு-கோப்புகள்-pomxml)
-- [எப்பட்டவாறு இது ஒருங்கிணைக்கிறது](#எப்பட்டவாறு-இது-ஒருங்கிணைக்கிறது)
-- [Foundry Local அமைத்தல்](#foundry-local-அமைத்தல்)
-- [பயன்பாட்டை இயக்கல்](#பயன்பாட்டை-இயக்கல்)
-- [எதிர்பார்க்கப்படும் வெளியீடு](#எதிர்பார்க்கப்படும்-வெளியீடு)
-- [அடுத்த படிகள்](#அடுத்த-படிகள்)
-- [சிக்கல் தீர்வுகள்](#சிக்கல்-தீர்வுகள்)
+## பதிப்புகள் மற்றும் தேவைகள்
 
+| கூறு | பதிப்பு |
+| --- | --- |
+| ஜாவா | 21 அல்லது பிறகு |
+| மேவன் | 3.6.3 அல்லது பிறகு |
+| ஸ்ப்ரிங் பூட் | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Foundry உள்ளூர் SDK (உள்ளூர் REST சேவையகம்) | 2.0.1 |
+| Node.js (உள்ளூர் REST சேவையகம்) | 20 அல்லது பிறகு |
+| Foundry உள்ளூர் CLI (விருப்பமான, தனி வெளியீடு) | 0.10.3 முன்னோட்டம் |
 
-## முன் நிபந்தனைகள்
+ஸ்பிரிங் பூட் ஸ்பிரிங் ஃப்ரேம்வொர்க், ஜாக்சன், JUnit, மற்றும் மேவைன் பிளுகின் பதிப்புகளை நிர்வகிக்கிறது.
+இந்த எடுத்துக்காட்டு நேரடியாக OpenAI Java SDK இனை பயன்படுத்துகிறது, ஸ்பிரிங் AI இல்லை. பழைய பயன்படுத்தப்படாத
+ஸ்பிரிங் AI மைல்கல் சொத்து மற்றும் கோப்பகம் நீக்கப்பட்டு உள்ளது.
 
-இந்த பாடத்திட்டத்தைத் தொடங்குவதற்கு முன், நீங்கள் இதை உறுதிப்படுத்திக் கொள்ளுங்கள்:
+பரிந்துரைக்கப்படும் தொடக்க மாதிரி **Qwen 2.5 0.5B**, CPU வகை
+`qwen2.5-0.5b-instruct-generic-cpu:4` (அதிகப்படியான 822 MB வகை).  
+இது GPU செயலாக்க வழங்கிகளை வேண்டாமென தவிர்க்கிறது. மற்ற ஆதரவு, கேஷ் செய்யப்பட்ட சிறிய மாதிரிகள்
+தெளிவாக தேர்வு செய்யப்படலாம். மாதிரி மற்றும் இயக்க நேர நிறுவல் இணைய அணுகலைத் தேவைபடுத்துகிறது;
+உத்தரவாதங்கள் மற்றும் உணர்வு உள்ளூர் தான் இருக்கும். Foundry உள்ளூர் தேவையற்ற தொலைபாராட்டு நிறுத்தப்பட்டாலும் குறைந்தபட்ச இயக்க நேர
+கோட்பாடு வெளியீடு செய்யும்.
 
-- உங்கள் கணினியில் **Java 21 அல்லது அதற்கு மேற்பட்டது** நிறுவப்பட்டுள்ளது
-- திட்டத்தை கட்ட அரசாங்கி **Maven 3.6+** உள்ளது
-- **Foundry Local** நிறுவப்பட்டு இயக்கப்படுகின்றது
+இந்த மாதிரி அடைவு கோப்பகம் இருந்து பின்வரும் கட்டளைகளை இயக்கவும்.
 
-### **Foundry Local ஐ நிறுவவும்:**
+## ஜாவா தொகுக்கவும் சோதிக்கவும்
 
-> **குறிப்பு:** Foundry Local CLI **Windows** மற்றும் **macOS** இல் மட்டுமே கிடைக்கிறது. Linuxக்கு [Foundry Local SDKகள்](https://github.com/microsoft/Foundry-Local) (Python, JavaScript, C#, Rust) மூலம் ஆதரவு உள்ளது.
-
-```bash
-# விண்டோஸ்
-winget install Microsoft.FoundryLocal
-
-# மேகோஎஸ்
-brew tap microsoft/foundrylocal
-brew install foundrylocal
+```powershell
+mvn clean verify
 ```
 
-நிறுவல் சரிபார்க்கவும்:
-```bash
+HTTP ஒப்பந்த சோதனைகள் ஒரு தற்காலிக லூப்ப்பேக் சேவையகத்தைத் துவக்கு, OpenAI Java SDK ஐ உண்மையை பரிசோதிக்கிறது.
+இவை கோரிக்கை தொடர், மாதிரி கண்டுபிடிப்பு, தெளிவான மாதிரி தேர்வு,
+குழப்பமான அல்லது தவறான மாதிரி பட்டியல்கள், HTTP தோல்விகள், காலியான பதில்கள்,
+உள்ளூர் மட்டுமே URLகள், மற்றும் கட்டளை வரி தோல்வி பரவல் ஆகியவற்றைக் பரிசோதிக்கின்றன.
+அவற்றிற்கு மாதிரி அல்லது இணைய அணுகல் தேவையில்லை, ஆனால் மேவன் சார்ந்த பொருட்களை நிறுவ வேண்டும். நேரடி சோதனை விருப்பத்துடன்.
+
+## உள்ளூர் மாதிரியைத் துவக்கவும்
+
+### பரிந்துரைக்கப்படுகிறது: குறியிடப்பட்ட SDK சேவையகம்
+
+பாரம்பரிய Foundry உள்ளூர் Java SDK இல்லை. சிறிய Node.js உதவியாளர் அதிகாரப்பூர்வ SDK இன் REST சேவையகத்தைக் கையாண்டு;
+பயன்பாடும் சாட் கோரிக்கையும் Javaயில் தொடர்கிறது.
+
+குறியிடப்பட்ட இயக்க நேர சார்ந்த பொருட்களை நிறுவவும்:
+
+```powershell
+npm ci
+```
+
+Windows x64 SDK இயல்புநிலை நிறுவலின் போது NuGet-ஐ அணுக முடியாவிட்டால், வழங்கப்பட்ட
+மாற்றை பயன்படுத்தவும். இது பொருந்தும் அதிகாரப்பூர்வ GitHub இயக்க நேர ஆக்கை பதிவிறக்கு செய்து,
+வெளியீட்டின் SHA-256 டைஜெஸ்ட்டினை சரிபார்க்கிறது, அதன் DLLகளை இயல்புநிலை அட்நோனின் பக்கத்தில் வைக்கிறது.
+இது TLS சரிபார்ப்பை மாற்றாது, உயர்வு தேவைப்படாது அல்லது SDK மூலத்தை மாற்றாது.
+
+```powershell
+npm ci --ignore-scripts
+pwsh -File ./scripts/install-foundry-runtime.ps1
+```
+
+மின்னணுவில் ஏற்கனவே கேஷ் செய்யப்பட்ட மாதிரிகளை பட்டியலிடவும்:
+
+```powershell
+npm run start:foundry -- --list
+```
+
+முதல் முறையீட்டில், சிறிய CPU மாதிரி பதிவிறக்கத்தை தெளிவாக அனுமதிக்கவும்:
+
+```powershell
+npm run start:foundry -- --model qwen2.5-0.5b-instruct-generic-cpu:4 --download --port 5273
+```
+
+அதன் பின் இயக்கங்களில், கேஷ் செய்யப்பட்ட மாதிரி தேவை என்றால் `--download`-ஐ தவிர்க்கவும்:
+
+```powershell
+npm run start:foundry -- --model qwen2.5-0.5b-instruct-generic-cpu:4 --port 5273
+```
+
+உதவியாளர் பொருந்தும் கேஷ் மாதிரியை விரும்புகிறது, புனைபெயர் அல்லது சரியான வகை IDஐ எடுத்துக் கொள்ளும்,
+மற்றும் `--download` வழங்கப்படாவிட்டால் கோரிக்கை மாதிரியை மறுக்கிறது. தேர்ந்தெடுக்கப்பட்ட மாதிரியின்
+செயலாக்க வழங்கியை மட்டும் பதிவு செய்யும். கேஷ் செய்யப்பட்ட GPU வகைகள் பொருந்தும் செயலாக்க-வழங்குநர் தொகுதிகள் மற்றும் இயக்கிகள்
+தேவையாக இருக்கலாம்.
+
+5273 போர்ட் பூரணமாக இருந்தால், கிடைக்கும் போர்ட்டுக்கு `--port 0` வழங்கவும். உதவியாளர்
+`FOUNDRY_LOCAL_BASE_URL`, சரியான `FOUNDRY_LOCAL_MODEL` ID-ஐ, மற்றும் அதனுடைய PIDஐ அச்சிடும்.
+Javaயில் அச்சிடப்பட்ட முடிவைக் கையாண்டு. இந்த டெர்மினலை திறந்தபடி வைக்கவும்; **Ctrl+C** REST சேவையகத்தைக் நிறுத்தி மாதிரியை விடுவிக்கும்.
+
+
+இயல்புநிலை கேஷ் `~/.foundry/cache/models`. வெவ்வேறு ஏற்கனவே இருக்கும் கேஷ்க்கு `FOUNDRY_LOCAL_CACHE_DIR` ஐ அமைக்கவும்.
+பதிவு மற்றும் உதவியாளர் நிலை இந்த மாதிரி அடைவு `target/foundry-local` என்ற அடைவில் எழுதப்படும்.
+`mvn clean` இயக்குவதற்கு முன் உதவியாளரை நிறுத்தவும்.
+
+### விருப்பமாக: Foundry உள்ளூர் CLI
+
+CLI மற்றும் SDK தனித்தனி வெளியீடுகள்; CLI **0.10.3** SDK **1.2.4** உடன் சேர்த்து வருகிறது;
+மேலே உதவியாளர் SDK **2.0.1** பயன்படுத்துகிறது. சமீபத்திய CLI நிறுவுவது சமீபத்திய மொழி SDK-யை நிறுவாது.
+[CLI வெளியீடு குறிப்புகள்](https://github.com/microsoft/Foundry-Local/releases/tag/cli-preview-0.10.3) பார்க்கவும்.
+
+Windows இல் CLI இல்லாவிடில் பயனர் தனிப்பட்ட நிறுவல் கட்டளை பயன்படுத்தவும்:
+
+```powershell
+winget install --id Microsoft.FoundryLocal --exact --source winget --scope user --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
+```
+
+அல்லது தற்போது உள்ள நிறுவலை மேம்படுத்தவும்:
+
+```powershell
+winget upgrade --id Microsoft.FoundryLocal --exact --source winget --scope user --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
 foundry --version
 ```
 
-## திட்ட கையேடு
+CLI 0.10.x பழைய `foundry service` கட்டளைகளை `foundry server`-ஆக மாற்றுகிறது:
 
-இந்த திட்டம் நான்கு முக்கிய கூறுகளைக் கொண்டுள்ளது:
-
-1. **Application.java** - முதன்மை Spring Boot பயன்பாட்டு நுழைவாயில்
-2. **FoundryLocalService.java** - AI தொடர்புக்கு சேவை அடுக்கு
-3. **application.properties** - Foundry Local இணைப்பு கட்டமைப்பு
-4. **pom.xml** - Maven சார்பு கோப்புகள் மற்றும் திட்ட கட்டமைப்பு
-
-## குறியீட்டை புரிந்துகொள்வது
-
-### 1. பயன்பாட்டு கட்டமைப்பு (application.properties)
-
-**கோப்பு:** `src/main/resources/application.properties`
-
-```properties
-foundry.local.base-url=http://localhost:5273/v1
-# foundry.local.model is auto-detected from Foundry Local. Set it here to override:
-# foundry.local.model=Phi-4-mini-instruct-cuda-gpu:5
+```powershell
+foundry server start --port 5273
+foundry cache list
+foundry model load qwen2.5-0.5b-instruct-generic-cpu:4
+foundry server status --output json
 ```
 
-**இதன் செயல்:**
-- **base-url**: Foundry Local எங்கு இயங்கிக் கொண்டிருக்கிறதோ அதை குறிப்பிடுகிறது, `/v1` பாதை OpenAI API உடன் பொருந்தும் படி சேர்க்கப்பட்டுள்ளது. இயல்பு போர்டு என்பது `5273`. போர்டு வேறுபட்டால், `foundry service status` கொண்டு சரிபார்க்கவும்.
-- **model** (விருப்பமாக): எழுத்துக்களை உருவாக்கும் AI மாதிரியை பெயரிடுகிறது. **இயல்புநிலையில், செயலி Foundry Local `/v1/models` முடிவை பூர்வமாகக் கேட்கி மாதிரியை தானாக கண்டறிகிறது**, ஆகவே இதை அமைக்க தேவையில்லை. தேவையானால், நீங்கள் இதனை கைகளால் அமைக்கலாம்.
+`model load` ஏற்கனவே பதிவிறக்கப்பட்ட மாதிரியை தேவைபடுத்தும். `foundry model --help` கட்டளைகளைக்
+பார்த்து பதிவிறக்கும் கட்டளைகளை அறிந்துகொள்ளவும். நிலை வெளியீட்டின் உண்மையான முடிவை பயன்படுத்தவும்; CLI அதற்காக
+தானாக வழங்கிய போர்ட்டை பயன்படுத்தும். ஒரே போர்ட்டில் CLI மற்றும் SDK உதவியாளரைத் துவக்க வேண்டாம்.
+முடிந்ததும்:
 
-**முக்கிய கருத்து:** Spring Boot இவை கட்டமைப்பு மதிப்புகளை தானாக ஏற்றிக் கொண்டு, `@Value` குறிப்பை பயன்படுத்தி உங்கள் பயன்பாட்டுக்கு வழங்குகிறது.
-
-### 2. முதன்மை பயன்பாட்டுக் கிளாஸ் (Application.java)
-
-**கோப்பு:** `src/main/java/com/example/Application.java`
-
-```java
-@SpringBootApplication
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(Application.class);
-        app.setWebApplicationType(WebApplicationType.NONE);  // எந்த வலை சேவையகமும் தேவையில்லை
-        app.run(args);
-    }
+```powershell
+foundry server stop
 ```
 
-**இதன் செயல்:**
-- `@SpringBootApplication` Spring Boot தானாக கட்டமைப்பை இயக்குகிறது
-- `WebApplicationType.NONE` இந்த செயலி இணையதள சேவையகம் அல்ல, ஒரு கட்டளை வரி பயன்பாடா என்பது தெரிவிக்கிறது
-- முதன்மை முறை(Spring application) துவக்குகிறது
+## ஜாவா செயலியைக் இயக்கவும்
 
-**டெமோ ரன்னர்:**
-```java
-@Bean
-public CommandLineRunner foundryLocalRunner(FoundryLocalService foundryLocalService) {
-    return args -> {
-        System.out.println("=== Foundry Local Demo ===");
-        System.out.println("Calling Foundry Local service...");
-        
-        String testMessage = "Hello! Can you tell me what you are and what model you're running?";
-        System.out.println("Sending message: " + testMessage);
-        
-        String response = foundryLocalService.chat(testMessage);
-        System.out.println("Response from Foundry Local:");
-        System.out.println(response);
-        System.out.println("=========================");
-    };
-}
-```
+இரண்டாம் டெர்மினலில், உங்கள் சேவையகத்தால் அச்சிடப்பட்ட முடிவுக் கோப்பையும் சரியான மாதிரி ID-ஐ நிறுவவும்:
 
-**இதன் செயல்:**
-- `@Bean` Spring நிர்வகிக்கும் கூறை உருவாக்குகிறது
-- `CommandLineRunner` Spring Boot துவங்கிய பின் குறியீட்டை இயக்குகிறது
-- `foundryLocalService` Spring மூலம் தானாக உட்பெறப்படுகிறது (dependency injection)
-- AIக்கு ஒரு சோதனை செய்தியை அனுப்பி பதிலை காட்டுகிறது
-
-### 3. AI சேவை அடுக்கு (FoundryLocalService.java)
-
-**கோப்பு:** `src/main/java/com/example/FoundryLocalService.java`
-
-#### கட்டமைப்பு உட்புகுத்தல்:
-```java
-@Service
-public class FoundryLocalService {
-    
-    @Value("${foundry.local.base-url:http://localhost:5273/v1}")
-    private String baseUrl;
-    
-    @Value("${foundry.local.model:}")
-    private String model;    // காலியானது என தானாக கண்டறியப்பட்டது
-```
-
-**இதன் செயல்:**
-- `@Service` இந்த வகுப்பு வர்த்தக தாரகங்களை வழங்கிறதென Springக்கு கூறுகிறது
-- `@Value` கட்டமைப்புப் மதிப்புகளை application.properties இருந்து உட்புகுத்துகிறது
-- மாதிரி திறன் மேற்கோள் தெரியாது என்றால், இது Foundry Local ஐ ஆரம்பத்தில் கேட்டு கேட்கும் **தானியங்கி கண்டறிதலை** செயல்படுத்துகிறது. அப்படி இருந்தால், செயலி எந்த மாதிரியோ அந்த மாதிரியுடன் வேலை செய்கிறது
-
-#### கிளையண்ட் தொடக்கம்:
-```java
-@PostConstruct
-public void init() {
-    // தெளிவாக அமைக்கப்பட না இருந்தால் Foundry Local இல் இருந்து மாதிரியை தானாக கண்டறி
-    if (model == null || model.isBlank()) {
-        model = detectModel();
-    }
-
-    this.openAIClient = OpenAIOkHttpClient.builder()
-            .baseUrl(baseUrl)                // அடிப்படைக் URL ஏற்கனவே கட்டமைப்பிலிருந்து /v1 உடன் உள்ளது
-            .apiKey("not-needed")            // உள்ளூர் சேவையகத்திற்கு உண்மையான API சாவி தேவையில்லை
-            .build();
-}
-```
-
-**இதன் செயல்:**
-- `@PostConstruct` Spring சேவையை உருவாக்கிய பின் இந்த முறைக்கு அழைக்கிறது
-- மாதிரி சீரமைக்கப்படாவிட்டால், Foundry Local இன் `/v1/models` முடிகளை கேட்டு முதலாவது மாதிரியை தேர்ந்தெடுக்கிறது
-- உங்கள் உள்ளூர் Foundry Local ஆதாரத்துக்கு OpenAI கிளையண்ட் உருவாக்குகிறது
-- application.properties இல் base URL ஏற்கனவே `/v1` OpenAI API பொருந்திப்படுத்த உள்ளது
-- API விசை வளையமின்றி (authentication இல்லாமல்) "not-needed" என்று அமைக்கப்பட்டுள்ளது ஏனெனில் உள்ளூர் அபிவிருத்திக்கு அவசியம் இல்லை
-
-#### உரையாடல் முறை:
-```java
-public String chat(String message) {
-    try {
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(model)                    // எந்த AI மாதிரியை பயன்படுத்துவது
-                .addUserMessage(message)         // உங்கள் கேள்வி/கோரிக்கை
-                .maxCompletionTokens(150)        // பதிலின் நீளத்தை வரையறு
-                .temperature(0.7)                // படைப்பாற்றலை கட்டுப்படுத்து (0.0-1.0)
-                .build();
-        
-        ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
-        
-        // API முடிவில் இருந்து AI பதிலை அகற்று
-        if (chatCompletion.choices() != null && !chatCompletion.choices().isEmpty()) {
-            return chatCompletion.choices().get(0).message().content().orElse("No response found");
-        }
-        
-        return "No response content found";
-    } catch (Exception e) {
-        throw new RuntimeException("Error calling chat completion: " + e.getMessage(), e);
-    }
-}
-```
-
-**இதன் செயல்:**
-- **ChatCompletionCreateParams**: AI கோரிக்கையை கட்டமைக்கிறது
-  - `model`: பயன்படுத்த வேண்டிய AI மாதிரியை குறிப்பிடுகிறது (தகவல் `foundry model list` இல் உள்ள சரியான ID ஆக இருக்க வேண்டும்)
-  - `addUserMessage`: உரையாடலில் உங்கள் செய்தியை சேர்க்கிறது
-  - `maxCompletionTokens`: பதிலின் நீளத்தைக் கட்டுப்படுத்துகிறது (மூல நிதிகள் சேமிப்பு)
-  - `temperature`: சீரற்ற தன்மையை கட்டுப்படுத்துகிறது (0.0 = தீர்மானித்த, 1.0 = படைப்பாற்றல்)
-- **API அழைப்பு**: Foundry Localக்கு கோரிக்கையை அனுப்புகிறது
-- **பதில் கையாளுதல்**: AIயின் உரை பதிலை பாதுகாப்பாக எடுத்துக்கொள்கிறது
-- **பிழை கையாளுதல்**: உதவிகரமான பிழை செய்திகள் வழங்கி விலக்குகளை சுற்றி கொண்டுள்ளது
-
-### 4. திட்டத்தின் சார்பு கோப்புகள் (pom.xml)
-
-**முக்கிய சார்புகள்:**
-
-```xml
-<!-- Spring Boot - Application framework -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter</artifactId>
-    <version>${spring-boot.version}</version>
-</dependency>
-
-<!-- OpenAI Java SDK - For AI API calls -->
-<dependency>
-    <groupId>com.openai</groupId>
-    <artifactId>openai-java</artifactId>
-    <version>2.12.0</version>
-</dependency>
-
-<!-- Jackson - JSON processing -->
-<dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-    <version>2.17.0</version>
-</dependency>
-```
-
-**இவை செய்கின்றன:**
-- **spring-boot-starter**: முக்கிய Spring Boot செயல்பாடுகளை வழங்குகிறது
-- **openai-java**: அதிகாரபூர்வ OpenAI Java SDK API தொடர்புக்காக
-- **jackson-databind**: API அழைப்புகளுக்கான JSON தொடரமைப்பு/படி அகற்றல்களை கையாள்கிறது
-
-## எப்பட்டவாறு இது ஒருங்கிணைக்கிறது
-
-நீங்கள் செயல்பாட்டை இயக்கும் போது நிறைவேறும் முழுமையான நடைமுறை இங்கே:
-
-1. **துவக்கம்**: Spring Boot துவங்கி `application.properties` படிக்கிறது
-2. **சேவை உருவாக்கல்**: Spring `FoundryLocalService` உருவாக்கி கட்டமைப்பு மதிப்புகளை உட்புகுத்துகிறது
-3. **மாதிரி கண்டறிதல்**: மாதிரி அமைக்கப்படாவிட்டால், சேவை Foundry Local இன் `/v1/models` மூலம் கேட்டு முதலாவது கிடைக்கும் மாதிரியை தானாக பயன்படுத்துகிறது
-4. **கிளையண்ட் அமைப்பு**: `@PostConstruct` OpenAI கிளையண்டு Foundry Local ஐ இணைக்க உருவாக்கப்படும்
-5. **டெமோ நடைமுறை**: `CommandLineRunner` துவக்கத்திற்குப் பின் இயக்கப்படுகிறது
-6. **AI அழைப்பு**: டெமோ `foundryLocalService.chat()` ஐச் சோதனை செய்தியுடன் அழைக்கிறது
-7. **API கோரிக்கை**: சேவை OpenAI பொருத்தமான கோரிக்கையை Foundry Localக்கு அனுப்புகிறது
-8. **பதில் சுருக்கல்**: சேவை AI பதிலை எடுத்துக்கொண்டு திருப்பி அளிக்கிறது
-9. **காட்டுதல்**: பயன்பாடு பதிலை அச்சிடுகிறது மற்றும் வெளியேறுகிறது
-
-## Foundry Local அமைத்தல்
-
-1. [முன்னணிப் பொருட்கள்](#முன்-நிபந்தனைகள்) பகுதியில் உள்ள வழிமுறைகளைப் பின்பற்றி **Foundry Local ஐ நிறுவவும்**.
-
-2. சேவை இயக்கப்படவில்லை என்றால், சேவையை துவக்கவும்:
-   ```bash
-   foundry service start
-   ```
-
-3. சேவை இயங்குகிறதா என மற்றும் போர்ட்டை கண்டறியவும்:
-   ```bash
-   foundry service status
-   ```
-
-4. ஒரு மாதிரியை பதிவிறக்கி இயக்கவும் (முதல் முறையாக இயக்கும்போது பதிவிறக்கப்படுகிறது, அடுத்த முறைகளில் கேஷ் செய்யப்படுகிறது):
-   ```bash
-   foundry model run phi-4-mini
-   ```
-    இது ஒரு உள்ளடக்க உரையாடல் அம்சத்தைத் திறக்கும். `Ctrl+C` மூலம் வெளியேற முடியும். மாதிரி சேவையில் ஏற்கனவே இயங்கிக் கொண்டிருக்கிறது.
-
-   > **குறிப்பு:** கிடைக்கும் அனைத்து மாதிரிகளையும் பார்க்க `foundry model list` ஓட்டவும். `phi-4-mini` ஐ `qwen2.5-0.5b` போன்ற வேறு பெயரிட்ட மாதிரியில் மாற்றலாம் (சிறிய/வேகமான மாதிரி).
-
-5. மாதிரி ஏற்றப்பட்டதா என்று உறுதி செய்யவும்:
-   ```bash
-   foundry service ps
-   ```
-
-6. தேவையானால் `application.properties` இனை புதுப்பிக்கவும்:
-   - இயல்பு `base-url` (`http://localhost:5273/v1`) இயல்பு CLI போர்டுடன் பொருந்தும். `foundry service status` வில் வேறு போர்ட் இருந்தால் மட்டுமே மாற்றவும்.
-   - மாதிரி **தானாகத் துவக்கத்தில் கண்டறியப்படுகிறது** — கட்டமைப்பு தேவையில்லை.
-
-   ```properties
-   foundry.local.base-url=http://localhost:5273/v1
-   # Model is auto-detected. Uncomment below to override:
-   # foundry.local.model=Phi-4-mini-instruct-cuda-gpu:5
-   ```
-
-## பயன்பாட்டை இயக்கல்
-
-### படி 1: Foundry Localல் ஒரு மாதிரி ஏற்றப்பட்டுள்ளது என்று உறுதி செய்யவும்
-```bash
-foundry service ps
-```
-மாதிரிகள் இல்லாவிட்டால், ஒரு மாதிரியை ஏற்றவும்:
-```bash
-foundry model run phi-4-mini
-```
-
-### படி 2: பயன்பாட்டை கட்டி இயக்கவும்
-வேறு ஒரு டெர்மினலில்:
-```bash
-cd 04-PracticalSamples/foundrylocal
+```powershell
+$env:FOUNDRY_LOCAL_BASE_URL = "http://127.0.0.1:5273/v1"
+$env:FOUNDRY_LOCAL_MODEL = "qwen2.5-0.5b-instruct-generic-cpu:4"
 mvn spring-boot:run
 ```
 
-அல்லது JAR ஆக கட்டி இயக்கவும்:
-```bash
-mvn clean package
+அல்லது தொகுக்கப்பட்ட செயலியை இயக்கவும்:
+
+```powershell
 java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
 ```
 
-## எதிர்பார்க்கப்படும் வெளியீடு
+ஒரே ஜாவா நுழைவாயில் `com.example.Application`. இது தேர்ந்தெடுக்கப்பட்ட முடிவை,
+உண்மையான மாதிரி ID, உத்தேசம் மற்றும் உருவாக்கப்பட்ட பதிலை அச்சிடும், பின்னர் ஸ்பிரிங்
+சூழல் மற்றும் HTTP கிளையண்டை மூடும். தோற்படை உணர்வு அல்லது பதில்களின் இல்லாத பட்சத்தில்
+வெற்றிப்புதியின் பதிலுக்கு பதிலாக தோல்வி வெளியீடு வழங்கப்படும்.
 
+### கட்டமைப்பு
+
+| சுற்றுச்சூழல் மாறி | இயல்புநிலை | நோக்கம் |
+| --- | --- | --- |
+| `FOUNDRY_LOCAL_BASE_URL` | `http://127.0.0.1:5273/v1` | லூப்ப்பேக் HTTP முடிவுக் கோப்பு, `/v1` உட்பட |
+| `FOUNDRY_LOCAL_MODEL` | காலி | சரியான மாதிரி ID; இல்லையெனில் ஒரு மாதிரி தேர்வு செய்யப்படும் |
+| `FOUNDRY_LOCAL_PROMPT` | உள்ளூர் மாதிரிகளையென ஒரு வாக்கியம் கேள்வி | கன்சோல் இயக்கி அனுப்பும் உத்தேசம் |
+
+சமமான ஸ்பிரிங் வாதங்கள்: `--foundry.local.base-url=...`,
+`--foundry.local.model=...`, மற்றும் `--foundry.local.prompt=...`.
+மட்டும் லூப்ப்பேக் HTTP முடிவுகள் ஏற்கப்படும். தொலை/மேகம் முடிவுகள்,
+கூட்டு அடையாளங்கள், விசாரணை தொடர்கள் அல்லது `/v1` இல்லாத பாதைகள் நிராகரிக்கப்படுகின்றன.
+
+காலி மாதிரி அமைப்பு `/v1/models` இடையே ஒரே மாதிரி அறிவிக்கப்பட்டால் மட்டுமே வேலை செய்யும்.
+அறிவிக்கப்பட்ட மாதிரி அவசியமாய் ஏற்கப்பட்டதாக இல்லை. பல மாதிரிகள் அறிவிக்கப்பட்டால்,
+சரியான ஏற்றப்பட்ட IDஐ அமைக்கவும், பட்டியல் ஒழுங்கினால் நம்ப வேண்டாம்.
+
+கோரிக்கைகள் `temperature=0`, 150 டோக்கன் வெளியீடு வரம்பு, 120-விநாடிகள் காலாவதி,
+மற்றும் தானாக மீண்டும் முயற்சிகள் செய்யாது. `max_tokens` கோரிக்கை தளத்தில் நோக்கம்:  
+Foundry உள்ளூர் REST ஒப்பந்தத்தால் ஆதரிக்கபடும், ஆனால் OpenAI Java கொடுப்பனவு மறுக்கிறது  
+புதிய கிளவுட் மாடல்களுக்கு அந்த புலம். மாடல் அடையாளம் கட்டமைப்பு அல்லது
+கண்டுபிடிப்பு மூலம் வரும், மாடல் தன்னித்தான விவரங்களிலிருந்து அல்ல.
+
+## நேரடி சரிபார்ப்பு
+
+உள்ளூர் சர்வர் இயங்கும்போது, அனைத்து சோதனைகளையும் கொண்டுசெல், சேர்க்கப்பட்ட நேரடி சோதனை உட்பட.
+உங்கள் சர்வர் அச்சிடும் மதிப்பைக் கொண்டு எண்ட்பாயிண்டின் போர்ட்டை மாற்றவும். PowerShell இல் புள்ளிகள் கொண்ட
+Maven பண்புகளை மேற்கோள் செய்யவும்:
+
+```powershell
+mvn "-Dfoundry.local.live=true" "-Dfoundry.local.base-url=http://127.0.0.1:5273/v1" "-Dfoundry.local.model=qwen2.5-0.5b-instruct-generic-cpu:4" verify
 ```
-=== Foundry Local Demo ===
-Calling Foundry Local service...
-Sending message: Hello! Can you tell me what you are and what model you're running?
-Response from Foundry Local:
-Hello! I'm Phi, an AI developed by Microsoft. I can assist with a wide variety of 
-tasks including answering questions, helping with analysis, creative writing, coding, 
-and general conversation. How can I help you today?
-=========================
-```
 
-## அடுத்த படிகள்
+நேரடி சோதனை `Application.main` ஐ அழைக்கிறது, "பிரான்சின் தலைநகர் பாரிஸ்," என்ற தகவலை வழங்கி,
+நகரத்தை கேட்டு, உருவாக்கப்பட்ட உண்மையான உரை `Paris` ஆக இருக்க வேண்டும் என்று உறுதிப்படுத்துகிறது.
+இது வெற்றிகரமான HTTP நிலையை மட்டுமே அல்ல, கருத்து விளைவைக் கண்காணிக்கிறது.
 
-மேலும் உதாரணங்களுக்காக, [அத்தியாயம் 04: நடைமுறை உதாரணங்கள்](../README.md) பார்க்கவும்
+இது ஒருங்கிணைப்புப் பரிசோதனை, துல்லியத்திடையே மதிப்பீடு அல்ல. சரிபார்ப்பின்போது, இந்த
+0.5B மாடல் தனித்த "2 + 2" கேள்விக்கு Java மற்றும் நேரடி REST இருபோதிலும் `3` என்ற பதிலைத் தரியது.
+கணக்கு அல்லது உண்மையான துல்லியத்திற்காக தனித்துயிரியல் மறுபரிசீலனை இல்லாமல் இது மீதமிருப்பதுக்கு ஆதாரமாக உள்ளோம்.
+கணக்குகளை செய்வதற்கு தீர்மானமான கருவிகளை பயன்படுத்தவும்.
 
-## சிக்கல் தீர்வுகள்
+## பிழைதிருத்தம்
 
-### பொதுவான பிரச்சனைகள்
+| அறிகுறி | சரிபார்க்கவும் |
+| --- | --- |
+| இணைப்பு மறுக்கப்பட்டது | தயாரான தகவலை காத்திருக்கவும்; அச்சிடப்பட்ட போர்ட்டும் `/v1` பாதை பயன்படுத்தவும். |
+| பல மாடல்கள் தெரிவிக்கப்பட்டன | `FOUNDRY_LOCAL_MODEL` இல loaded மாடலின் சரியான ஐடியை அமைக்கவும். |
+| மாடல் காணவில்லை | `--list` ஐ பயன்படுத்தவும், அல்லது `--download` கொண்டு தெளிவாக பதிவிறக்கம் செய்ய அனுமதிக்கவும். |
+| GPU வழங்குநர் தோல்வியடையவோ அல்லது நிலைநிறுத்தப்படவோ செய்கிறது | சிறிய CPU மாடலை பயன்படுத்தவும். காசே செய்யப்பட்ட GPU மாடலும் அதன் வழங்குநரைப் பெற வேண்டும். |
+| CLI `initializing` ஆகவே இருக்கிறது | `foundry server logs --lines 80` ஐ வாசிக்கவும்; டெய்மனை நிறுத்தி SDK உதவியாளரை பயன்படுத்தவும். |
+| NuGet TLS/பதிவிறக்கம் தோல்வி | நெட்வொர்க் அணுகலை சரி செய்யவும் அல்லது மேலுள்ள சரிபார்க்கப்பட்ட விண்டோஸ் x64 மாற்றியைப் பயன்படுத்தவும். TLS ஐ முடக்கவேண்டாம். |
+| போர்ட் பிடிக்கப்பட்டுள்ளது | `--port 0` ஐ பயன்படுத்தவும் மற்றும் அச்சிடப்பட்ட எண்ட்பாயிண்டுடன் ஜாவாவை அமைக்கவும். |
+| தேர்வுகள் இல்லை அல்லது வெற்றிட உரை உள்ளது | செயலி திட்டமிட்டபடி தோல்வியடைக்கிறது; மாடல் மற்றும் ஓட்ட நேர பதிவுகளை ஆராயவும். |
 
-**"இணைப்பு நிராகரிக்கப்பட்டது" அல்லது "சேவை கிடைக்கவில்லை"**
-- சேவையை சரிபார்க்கவும்: `foundry service status`
-- தேவைப்பட்டால் மீண்டும் துவக்கவும்: `foundry service restart`
-- `application.properties` இல் போர்ட் `foundry service status`லுள்ளதுடன் பொருந்துகிறதா கண்டு கொள்ளவும்
-- URLக்கு `/v1` எழுத்து சேர்த்துள்ளீர்களா: `http://localhost:5273/v1`
+## மூலங்கள் மற்றும் குறிப்புகள்
 
-**"மாதிரி கிடைக்கவில்லை" துவக்கத்தில்**
-- செயலி தானாக மாதிரியை கண்டறிகிறது. குறைந்தது ஒரு மாதிரி ஏற்றப்பட்டிருக்க வேண்டும்: `foundry service ps`
-- மாதிரிகள் ஏற்றப்படவில்லை என்றால்: `foundry model run phi-4-mini`
-- `application.properties` இல் நீங்கள் மாதிரி பெயரை மாற்றினால், அது `foundry model list`இல் உள்ளதைப் பொருந்தியிருக்க வேண்டும்
-
-**"400 தவறான கோரிக்கை" பிழைகள்**
-- base URLல் `/v1` சேர்ப்பு சரிபார்க்கவும்: `http://localhost:5273/v1`
-- உங்கள் குறியீட்டில் `maxCompletionTokens()` பயன்படுத்தி உள்ளீர்களா (பழைய `maxTokens()` இல்லை என்பதை உறுதிசெய்யவும்)
-
-**Maven தொகுப்பு பிழைகள்**
-- Java 21 அல்லது மேலானது உள்ளதா: `java -version`
-- சுத்தமாக கட்டி முயற்சி செய்யவும்: `mvn clean compile`
-- சார்பு பதிவிறக்கத்திற்கு இணையதளம் சரிபார்க்கவும்
-
-**சேவை இணைப்பு பிரச்சினைகள்**
-- `Request to local service failed` எனினும், `foundry service restart` ஓட்டவும்
-- ஏற்றப்பட்ட மாதிரிகளை சரிபார்க்கவும்: `foundry service ps`
-- சேவை பதிவு கோப்புகளைப் பார்க்க: `foundry service diag`
+- [Application.java](../../../../04-PracticalSamples/foundrylocal/src/main/java/com/example/Application.java): ஒரே முறை Spring Boot ரன்னர்.
+- [FoundryLocalService.java](../../../../04-PracticalSamples/foundrylocal/src/main/java/com/example/FoundryLocalService.java): வகைப்படுத்தப்பட்ட கண்டுபிடிப்பு மற்றும் உள்ளூர் சந்தை முழுமைகள்.
+- [FoundryLocalServiceTest.java](../../../../04-PracticalSamples/foundrylocal/src/test/java/com/example/FoundryLocalServiceTest.java): HTTP ஒப்பந்தம், ரன்னர் மற்றும் நேரடி சோதனைகள்.
+- [start-foundry.mjs](../../../../04-PracticalSamples/foundrylocal/scripts/start-foundry.mjs): அதிகாரப்பூர்வ SDK REST சர்வர் காசே-மாடல் தேர்வு மற்றும் சுத்தம் செய்யும்.
+- [install-foundry-runtime.ps1](../../../../04-PracticalSamples/foundrylocal/scripts/install-foundry-runtime.ps1): சரிபார்க்கப்பட்ட விண்டோஸ் x64 இயல்புநிலை ஓட்டுநர் மாற்றி.
+- [application.properties](../../../../04-PracticalSamples/foundrylocal/src/main/resources/application.properties), [pom.xml](../../../../04-PracticalSamples/foundrylocal/pom.xml), மற்றும் [package.json](../../../../04-PracticalSamples/foundrylocal/package.json): கட்டமைப்பு மற்றும் சார்புகள்.
+- [Foundry Local REST integration](https://learn.microsoft.com/azure/foundry-local/how-to/how-to-integrate-with-inference-sdks).
+- [Foundry Local 2.0.1 release and migration notes](https://github.com/microsoft/Foundry-Local/releases/tag/v2.0.1).
+- [Chapter 04: Practical samples](../README.md).
 
 ---
 
 <!-- CO-OP TRANSLATOR DISCLAIMER START -->
-**தயவுசெய்து கவனிக்கவும்**:  
-இந்த ஆவணம் [Co-op Translator](https://github.com/Azure/co-op-translator) என்ற க人工 நுட்ப மொழி மாற்ற சேவையை பயன்படுத்தி மொழிமாற்றம் செய்யப்பட்டுள்ளது. நாங்கள் சரியானளவில் முயற்சி செய்தாலும், இயந்திர மொழிபெயர்ப்புகளில் பிழைகள் அல்லது தவறுகள் உள்ளதாயிருக்கலாம் என்பதை தயவுசெய்து அறிந்துகொள்ளுங்கள். முதன்மை மொழியில் இருக்கும் அசல் ஆவணம் அதிகாரபூர்வமான மூலமாகக் கொள்ளப்பட வேண்டும். முக்கியமான தகவல்களுக்கு, தொழில்முறை மனித மொழிபெயர்ப்பு பரிந்துரைக்கப்படுகிறது. இந்த மொழிபெயர்ப்பின் பயன்பாட்டு தொடர்பான எந்தப் புரிதல்களும் அல்லது தவறான விளக்கங்களுக்கும் நாங்கள் பொறுப்பேற்க மாட்டோம்.
+**மறுப்பு**:
+இந்த ஆவணம் AI மொழிபெயர்ப்பு சேவை [Co-op Translator](https://github.com/Azure/co-op-translator) பயன்படுத்தி மொழிபெயர்க்கப்பட்டுள்ளது. நாங்கள் துல்லியத்திற்காக முயற்சி செய்துள்ளோம், ஆனால் தானாக செய்யப்படும் மொழிபெயர்ப்புகளில் பிழைகள் அல்லது தவறுகள் இருக்கலாம் என்பதை கவனத்தில் கொள்ளவும். அசல் ஆவணம் அதன் தாய்மொழியில் அதிகாரப்பூர்வ ஆதாரமாக கருதப்பட வேண்டும். முக்கியமான தகவல்களுக்கு, தொழில்நுட்பமான மனித மொழிபெயர்ப்பு பரிந்துரைக்கப்படுகிறது. இந்த மொழிபெயர்ப்பைப் பயன்படுத்துவதால் ஏற்படும் எந்த தவறான புரிதல்கள் அல்லது தவறான விளக்கத்திற்கும் நாங்கள் பொறுப்பில்வில்லை.
 <!-- CO-OP TRANSLATOR DISCLAIMER END -->

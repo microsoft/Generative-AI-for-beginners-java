@@ -1,18 +1,18 @@
-# Setting Up the Development Environment for Generative AI for Java
+# How to Set Up Development Environment for Generative AI for Java
 
-> **Quick Start:** Provision your AI models on **Azure AI Foundry** as code with Bicep + `azd` for small time — see the [Azure AI Foundry Setup Guide](getting-started-azure-openai.md). Authentication no get key (Microsoft Entra ID), so no API keys wey you go manage.
+> **Quick Start:** Make your AI models ready on **Azure AI Foundry** as code wit Bicep + `azd` for just few minutes — check di [Azure AI Foundry Setup Guide](getting-started-azure-openai.md). Authentication no need key (Microsoft Entra ID), so no API keys for management.
 
 ## Wetin You Go Learn
 
-- Set up Java development environment for AI applications
-- Choose and configure your preferred development environment (cloud-first with Codespaces, local dev container, or full local setup)
-- Test your setup by connecting to Azure AI Foundry model
+- How to set up Java development environment for AI applications
+- How to choose plus arrange your preferred development environment (cloud-first wit Codespaces, local dev container, or full local setup)
+- Test if your setup dey work by connecting to Azure AI Foundry model
 
 ## Table of Contents
 
-- [Wetn You Go Learn](#wetin-you-go-learn)
+- [Wetin You Go Learn](#wetin-you-go-learn)
 - [Introduction](#introduction)
-- [Step 1: Set Up Your Development Environment](#step-1-set-up-your-development-environment)
+- [Step 1: How to Set Up Your Development Environment](#step-1-set-up-your-development-environment)
   - [Option A: GitHub Codespaces (Recommended)](#option-a-github-codespaces-recommended)
   - [Option B: Local Dev Container](#option-b-local-dev-container)
   - [Option C: Use Your Existing Local Installation](#option-c-use-your-existing-local-installation)
@@ -24,38 +24,38 @@
 
 ## Introduction
 
-This chapter go guide you how to set up development environment. We go use **Azure AI Foundry** for all di models for dis course. You go provision di models as code with Bicep and Azure Developer CLI (`azd`), then connect with **keyless authentication** (Microsoft Entra ID) — no API keys wey you go copy or leak.
+Dis chapter go guide you on how to set up development environment. We go use **Azure AI Foundry** for all di models inside dis course. You go provision the models as code wit Bicep and Azure Developer CLI (`azd`), den connect wit **keyless authentication** (Microsoft Entra ID) — no API keys to copy or leak.
 
-**No local setup necessary!** You fit use GitHub Codespaces, wey go give you full development environment inside your browser, and provision Foundry from there.
+**No need to set up anything for local!** You fit use GitHub Codespaces, wey go give you full development environment for your browser, plus you fit provision Foundry from there.
 
-We dey use **Azure AI Foundry** for dis course because e:
-- **Provisioned as code** — one `azd up` go deploy di account and model deployments
-- **Keyless** — authenticate with your Azure sign-in or managed identity
-- **Production-ready** — di same code fit run locally and for Azure
-- **Flexible** — you fit swap models by changing deployment name, no be your code
+We take use **Azure AI Foundry** for dis course because e:
+- **E dey provision as code** — one `azd up` go set up account and model deployments
+- **E no need key (Keyless)** — authenticate wit your Azure sign-in or managed identity
+- **E dey ready for production** — e fit run one kind both locally and for Azure
+- **E flexible** — you fit change model by just changing deployment name, no need change code
 
-> **Note**: Azure AI Foundry deployments dey charge by token (pay-as-you-go). See di [Azure AI Foundry setup guide](getting-started-azure-openai.md) for provisioning, region, and cost details.
+> **Note**: Azure AI Foundry deployment dey charge you per token (pay-as-you-go). Check di [Azure AI Foundry setup guide](getting-started-azure-openai.md) for provisioning, region, and cost info.
 
 
 ## Step 1: Set Up Your Development Environment
 
 <a name="quick-start-cloud"></a>
 
-We don create preconfigured development container to reduce setup time and make sure say you get all di tools you need for dis Generative AI for Java course. Choose your preferred development approach:
+We don create preconfigured development container to reduce setup time plus make sure sey you get all di tools dem wey you go need for Generative AI for Java course. Choose your preferred development way:
 
 ### Environment Setup Options:
 
 #### Option A: GitHub Codespaces (Recommended)
 
-**Start to code for 2 minutes - no local setup necessary!**
+**Start to dey code for 2 minutes - no need anything for local!**
 
-1. Fork this repository to your GitHub account
-   > **Note**: If you want change basic config, abeg check the [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
+1. Fork dis repository enter your GitHub account
+   > **Note**: If you wan edit di basic config, abeg check di [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
 2. Click **Code** → **Codespaces** tab → **...** → **New with options...**
-3. Use the defaults – this one go select **Dev container configuration**: **Generative AI Java Development Environment** custom devcontainer created for this course
+3. Use di defaults – e go choose **Dev container configuration**: **Generative AI Java Development Environment** custom devcontainer wey dem create for dis course
 4. Click **Create codespace**
-5. Wait ~2 minutes make environment ready
-6. Go to [Step 2: Provision Azure AI Foundry](#step-2-provision-azure-ai-foundry)
+5. Wait about ~2 minutes for environment make e ready
+6. Go next to [Step 2: Provision Azure AI Foundry](#step-2-provision-azure-ai-foundry)
 
 <img src="../../../translated_images/pcm/codespaces.9945ded8ceb431a5.webp" alt="Screenshot: Codespaces submenu" width="50%">
 
@@ -64,25 +64,25 @@ We don create preconfigured development container to reduce setup time and make 
 <img src="../../../translated_images/pcm/codespaces-create.b44a36f728660ab7.webp" alt="Screenshot: Create codespace options" width="50%">
 
 
-> **Benefits of Codespaces**:
-> - No local installation necessary
-> - E go work on any device wey get browser
-> - Pre-configured with all tools and dependencies
-> - Free 60 hours every month for personal accounts
-> - Consistent environment for all learners
+> **Wetin Codespaces Go Give You**:
+> - No need install anything for local
+> - E go work for any device wey get browser
+> - All tools plus dependencies don ready for you
+> - You get 60 free hours per month if na personal account
+> - Environment na same for all learners
 
 #### Option B: Local Dev Container
 
-**For developers wey like local development with Docker**
+**For developers wey prefer local development wit Docker**
 
-1. Fork and clone this repository to your local machine
-   > **Note**: If you want change basic config, abeg check the [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
+1. Fork and clone dis repository to your local machine
+   > **Note**: If you wan edit di basic config abeg check di [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
 2. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and [VS Code](https://code.visualstudio.com/)
-3. Install the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) for VS Code
-4. Open the repository folder inside VS Code
+3. Install di [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) for VS Code
+4. Open di repository folder for VS Code
 5. When e ask, click **Reopen in Container** (or use `Ctrl+Shift+P` → "Dev Containers: Reopen in Container")
 6. Wait make container build and start
-7. Go to [Step 2: Provision Azure AI Foundry](#step-2-provision-azure-ai-foundry)
+7. Go next to [Step 2: Provision Azure AI Foundry](#step-2-provision-azure-ai-foundry)
 
 <img src="../../../translated_images/pcm/devcontainer.21126c9d6de64494.webp" alt="Screenshot: Dev container setup" width="50%">
 
@@ -90,26 +90,26 @@ We don create preconfigured development container to reduce setup time and make 
 
 #### Option C: Use Your Existing Local Installation
 
-**For developers wey don get Java environments properly**
+**For developers wey get their own Java environments before**
 
-Prerequisites:
+Wetin you go need:
 - [Java 21+](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html) 
 - [Maven 3.9+](https://maven.apache.org/download.cgi)
 - [VS Code](https://code.visualstudio.com) or your preferred IDE
 
 Steps:
-1. Clone this repository to your local machine
-2. Open the project inside your IDE
-3. Go to [Step 2: Provision Azure AI Foundry](#step-2-provision-azure-ai-foundry)
+1. Clone dis repository for your local machine
+2. Open di project for your IDE
+3. Go next to [Step 2: Provision Azure AI Foundry](#step-2-provision-azure-ai-foundry)
 
-> **Pro Tip**: If your machine low-spec but you want VS Code locally, use GitHub Codespaces! You fit connect your local VS Code to cloud-hosted Codespace make you get best of both worlds.
+> **Pro Tip**: If your machine no too strong but you want VS Code for local, just use GitHub Codespaces! You fit connect your local VS Code to cloud-hosted Codespace make you get the best of both worlds.
 
 <img src="../../../translated_images/pcm/image-2.fc0da29a6e4d2aff.webp" alt="Screenshot: created local devcontainer instance" width="50%">
 
 
 ## Step 2: Provision Azure AI Foundry
 
-Deploy di course AI models to Azure AI Foundry as code. From di repository root:
+Deploy di AI models for di course to Azure AI Foundry as code. From di root of di repository:
 
 ```bash
 cd 02-SetupDevEnvironment
@@ -118,16 +118,16 @@ az login
 azd up
 ```
 
-`azd` go ask you environment name and region, go provision Azure AI Foundry account with `gpt-4o-mini` and `text-embedding-3-small` deployments, write the endpoint inside di example `.env` — all this na with **keyless** authentication (no API keys).
+`azd` go ask for environment name, subscription, and region, e go provision Azure AI Foundry account wit `gpt-5.6-luna` plus `text-embedding-3-small` deployments, and write endpoint go inside example `.env` - all with **keyless** authentication (no API keys).
 
-> **Full walkthrough:** See the [Azure AI Foundry Setup Guide](getting-started-azure-openai.md) for prerequisites, manual (portal) alternative, region guidance, and cost/cleanup notes.
+> **Full walkthrough:** Check di [Azure AI Foundry Setup Guide](getting-started-azure-openai.md) for wetin you go need before, manual portal option, region guide plus cost and cleanup info.
 
 ## Step 3: Test Your Setup
 
-Once your Foundry models don provision, test di connection with the example app inside [`02-SetupDevEnvironment/examples/basic-chat-azure`](../../../02-SetupDevEnvironment/examples/basic-chat-azure).
+Once you don provision Foundry models, test connection wit example app wey dey [`02-SetupDevEnvironment/examples/basic-chat-azure`](../../../02-SetupDevEnvironment/examples/basic-chat-azure).
 
-1. Open terminal inside your development environment.
-2. Go inside the example:
+1. Open terminal for your development environment.
+2. Go enter di example folder:
    ```bash
    cd 02-SetupDevEnvironment/examples/basic-chat-azure
    ```
@@ -135,53 +135,68 @@ Once your Foundry models don provision, test di connection with the example app 
    ```bash
    az login
    ```
-   > If you run `azd up`, `.env` file wey get your endpoint don already write for you.
-4. Run the application:
+   > If you don run `azd up`, your `.env` file with endpoint don already write.
+4. Run the app:
    ```bash
    mvn clean spring-boot:run
    ```
 
-You suppose see response from `gpt-4o-mini` model.
+You suppose see response from `gpt-5.6-luna` model.
 
-### How the Example Code Work
+### Understanding the Example Code
 
-The example under `examples/basic-chat-azure` na Spring Boot app wey dey use **Spring AI** to connect Azure AI Foundry with keyless authentication.
+The [basic-chat example](./examples/basic-chat-azure/README.md) use **Spring Boot 4.1.1** plus **Spring AI 2.0.1**. Spring AI `ChatClient` dey backed by official OpenAI Java SDK, wey connect to Azure OpenAI **v1** endpoint with keyless authentication.
 
 **Wetin dis code dey do:**
-- **Connect** to Azure AI Foundry using your Azure sign-in (Microsoft Entra ID) — no API key
-- **Send** prompt to `gpt-4o-mini` model
+- **Connect** to Azure AI Foundry wit your Azure sign-in (Microsoft Entra ID) — no API key
+- **Send** prompt to `gpt-5.6-luna` model
 - **Receive** and show AI response
-- **Check** say your setup dey work well
+- **Check Say** your setup dey work well well
 
-**Key Dependency** (for `pom.xml`):
+**Key Dependencies** (excerpt from [pom.xml](../../../02-SetupDevEnvironment/examples/basic-chat-azure/pom.xml)):
 ```xml
 <dependency>
     <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-starter-model-azure-openai</artifactId>
+    <artifactId>spring-ai-starter-model-openai</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.openai</groupId>
+    <artifactId>openai-java</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.azure</groupId>
+    <artifactId>azure-identity</artifactId>
+    <version>${azure-identity.version}</version>
 </dependency>
 ```
 
-**Configuration** (`application.yml`):
+Di POM dey manage OpenAI Java **4.63.1** and set Azure Identity **1.18.6** specially. Spring AI 2 comot Azure-specific starter; Azure Identity still need to fit the credential bean.
+
+**Configuration** ([application.yml](../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml)):
 ```yaml
 spring:
   ai:
-    azure:
-      openai:
-        # Endpoint only - no api-key. Spring AI uses DefaultAzureCredential (keyless).
-        endpoint: ${AZURE_OPENAI_ENDPOINT}
-        chat:
-          options:
-            deployment-name: ${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+    openai:
+      base-url: ${AZURE_OPENAI_ENDPOINT}
+      microsoft-foundry: true
+      chat:
+        model: ${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
+        reasoning-effort: none
+        max-completion-tokens: 500
 ```
+
+Keyless auth dey inside [BasicChatApplication.java](../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/java/com/example/BasicChatApplication.java), no take API key do am. E use `DefaultAzureCredential` wit `https://ai.azure.com/.default` scope, and `OpenAIClient` targets `/openai/v1`. Di app dey supply that client to Spring AI chat model, so `OPENAI_API_KEY` global no fit pass Azure authentication.
+
+Chat settings dey under `spring.ai.openai.chat` without `options` block. Di lesson still get Chat Completions wit `reasoning-effort: none` and 500-token cap; e no dey set `temperature` or `max-tokens`. Check di [example configuration reference](./examples/basic-chat-azure/README.md#spring-configuration) for API choice and how to call tools.
 
 ## Summary
 
-Correct! You don set up everything:
+After you finish all dis steps, you go get:
 
-- Provisioned Azure AI Foundry models as code with Bicep + `azd`
-- Your Java development environment dey run (whether Codespaces, dev containers, or local)
-- Connected to Azure AI Foundry with keyless authentication (Microsoft Entra ID) — no API keys
-- Test all works with simple example wey dey talk to your model
+- Provisioned Azure AI Foundry models as code wit Bicep + `azd`
+- Your Java development environment go dey ready (whether na Codespaces, dev containers, or local)
+- You don connect to Azure AI Foundry wit keyless authentication (Microsoft Entra ID) — no API keys
+- You test am with simple example wey dey talk to your model
 
 ## Next Steps
 
@@ -189,32 +204,32 @@ Correct! You don set up everything:
 
 ## Troubleshooting
 
-Get wahala? Here na common problems and how to fix dem:
+Get wahala? Here na common problems and how dem fit fix am:
 
-- **Authentication dey fail (401/403)?** 
-  - Run `az login` — authentication no need key, you must sign in
-  - Check say your account get **Cognitive Services OpenAI User** role on the resource
-  - If you just provision, wait small make role assignment go full propagate
+- **Authentication no dey work (401/403)?** 
+  - Run `az login` — authentication no need key, you gats sign in
+  - Check if your account get **Cognitive Services OpenAI User** role for the resource
+  - If you just provision am, wait small make role assignment finish spread
 
-- **Maven no dey?** 
-  - If you dey use dev containers/Codespaces, Maven dey pre-installed
+- **Maven no dey found?** 
+  - If na dev containers/Codespaces you dey use, Maven suppose don pre-install
   - For local setup, make sure Java 21+ and Maven 3.9+ dey installed
-  - Run `mvn --version` to check
+  - Try run `mvn --version` to check if e dey
 
-- **`azd` no dey or provisioning no dey work?** 
+- **`azd` no dey found or provisioning no dey work?** 
   - Install [Azure Developer CLI](https://aka.ms/azure-dev/install) and run `azd auth login`
-  - Choose region wey `gpt-4o-mini` dey available (e.g. `eastus2`)
-  - See [Azure AI Foundry setup guide](getting-started-azure-openai.md) for details
+  - Select region wey get `gpt-5.6-luna` and `text-embedding-3-small` (e.g. `eastus2`), make sure quota dey your subscription
+  - Check di [Azure AI Foundry setup guide](getting-started-azure-openai.md) for more info
 
-- **Dev container no dey start?** 
-  - Make sure Docker Desktop dey run (for local development)
-  - Try rebuild di container: `Ctrl+Shift+P` → "Dev Containers: Rebuild Container"
+- **Dev container no want start?** 
+  - Check if Docker Desktop dey run (for local development)
+  - Try rebuild container: `Ctrl+Shift+P` → "Dev Containers: Rebuild Container"
 
-- **Application get compile errors?**
-  - Make sure you dey inside correct directory: `02-SetupDevEnvironment/examples/basic-chat-azure`
-  - Try clean and rebuild: `mvn clean compile`
+- **Application compilation errors?**
+  - Make sure say you dey correct directory: `02-SetupDevEnvironment/examples/basic-chat-azure`
+  - Try run clean and build: `mvn clean compile`
 
-> **Need help?**: Still get wahala? Open issue inside repository, we go help you.
+> **Need help?**: Still get issue? Open issue for repository and we go help you.
 
 ---
 
