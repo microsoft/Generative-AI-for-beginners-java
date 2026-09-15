@@ -1,112 +1,115 @@
-# Java အတွက် Generative AI ဖန်တီးမှုဖွံ့ဖြိုးရေး ပတ်ဝန်းကျင် တပ်ဆင်ခြင်း
+# Java အတွက် Generative AI အတွက် ဖွံ့ဖြိုးတိုးတက်မှု ပတ်ဝန်းကျင်ကို စတင်တည်ဆောက်ခြင်း
 
-> **အဆင်ပြေစွာ စတင်ခြင်း:** AI မော်ဒယ်များကို **Azure AI Foundry** တွင် Bicep + `azd` ဖြင့် ကုဒ်အဖြစ် နည်းနည်း သုံအတွင်း စတင်အသုံးပြုပါ — [Azure AI Foundry Setup Guide](getting-started-azure-openai.md) ကိုကြည့်ပါ။ အတည်ပြုခြင်းမှာ **keyless** (Microsoft Entra ID) ဖြစ်သောကြောင့် API key မလိုအပ်ပါ။
+> **အမြန်အစ:** Bicep + `azd` နဲ့ သင့်ရဲ့ AI မော်ဒယ်များကို **Azure AI Foundry** ပေါ်မှာ ကုဒ်အဖြစ် မိနစ်ပိုင်းအတွင်းပေးပို့ပါ — [Azure AI Foundry စတင်တည်ဆောက်ခြင်း လမ်းညွှန်](getting-started-azure-openai.md) ကိုကြည့်ပါ။ သက်ဆိုင်ရာလက်မှတ် သက်သေများသည် **ကီးမပါဘဲဖြစ်သည်** (Microsoft Entra ID), ထို့ကြောင့် API key များကို စိုးရိမ်စ관리 ဖန်တီးရန် မလိုအပ်ပါ။
 
-## သင်ထိတွေ့မည့် အကြောင်းအရာများ
+## သင်တန်းအတွင်း သင်ယူနိုင်မည့်အရာများ
 
-- AI application များအတွက် Java ဖွံ့ဖြိုးရေးပတ်ဝန်းကျင် တပ်ဆင်ခြင်း
-- သင့်နှစ်သက်ရာ ဖွံ့ဖြိုးရေးပတ်ဝန်းကျင် (Codespaces ဖြင့် cloud-first, အလုပ်လုပ်ဖို့ Dev container, ဒါမှမဟုတ် ဒါယ့်ကိုယ်တိုင် local ဖြင့် စတင်ခြင်း) ရွေးချယ်၍ ချိန်ညှိခြင်း
-- သင့် အသင့်တင်ခြင်းကို Azure AI Foundry မော်ဒယ်တစ်ခုနှင့် ချိတ်ဆက်၍ စမ်းသပ်ခြင်း
+- AI အတွက် Java ဖွံ့ဖြိုးတိုးတက်မှု ပတ်ဝန်းကျင်တစ်ခုကို တပ်ဆင်ခြင်း
+- သင်ကြိုက်နှစ်သက်သော ဖွံ့ဖြိုးတိုးတက်မှု ပတ်ဝန်းကျင်ကို ရွေးချယ်ခြင်း (Codespaces နှင့် Cloud- ပထမဆုံး၊ ဒေသဆိုင်ရာ dev container သို့မဟုတ် ပြည့်စုံသော ဒေသဆိုင်ရာစီမံကိန်း)
+- Azure AI Foundry model နှင့်ချိတ်ဆက်ပြီး သင့်စနစ်ကို စမ်းသပ်ခြင်း
 
-## အကြောင်းအရာ စဉ်
+## အတွင်း အကြောင်းအရာများ စာရင်း
 
-- [သင်ထိတွေ့မည့် အကြောင်းအရာများ](#သင်ထိတွေ့မည့်-အကြောင်းအရာများ)
-- [နိဒါန်း](#နိဒါန်း)
-- [အဆင့် ၁: ဖွံ့ဖြိုးရေးပတ်ဝန်းကျင် တပ်ဆင်ခြင်း](#အဆင့်-၁-ဖွံ့ဖြိုးရေး-ပတ်ဝန်းကျင်-တပ်ဆင်ခြင်း)
+- [သင်ယူနိုင်မည့်အရာများ](#သင်တန်းအတွင်း-သင်ယူနိုင်မည့်အရာများ)
+- [အကျဉ်း](#အကျဉ်း)
+- [အဆင့် ၁: သင်၏ ဖွံ့ဖြိုးတိုးတက်မှု ပတ်ဝန်းကျင်ကို စတင်တည်ဆောက်ရန်](#အဆင့်-၁-သင်၏-ဖွံ့ဖြိုးတိုးတက်မှု-ပတ်ဝန်းကျင်ကို-စတင်တည်ဆောက်ပါ)
   - [ရွေးချယ်မှု A: GitHub Codespaces (အကြံပြု)](#ရွေးချယ်မှု-a-github-codespaces-အကြံပြု)
-  - [ရွေးချယ်မှု B: Local Dev Container](#ရွေးချယ်မှု-b-local-dev-container)
-  - [ရွေးချယ်မှု C: သင့်ရဲ့ ရှိပြီးသား Local တပ်ဆင်ထားမှု အသုံးပြုခြင်း](#ရွေးချယ်မှု-c-သင့်ရဲ့-ရှိပြီးသား-local-တပ်ဆင်မှု-အသုံးပြုခြင်း)
-- [အဆင့် ၂: Azure AI Foundry Provision ပြုလုပ်ခြင်း](#အဆင့်-၂-azure-ai-foundry-provision-ပြုလုပ်ခြင်း)
-- [အဆင့် ၃: သင့် Setup ကို စမ်းသပ်ခြင်း](#အဆင့်-၃-သင့်-setup-ကို-စမ်းသပ်ခြင်း)
-- [ပြဿနာဖြေရှင်းခြင်း](#ပြဿနာဖြေရှင်းခြင်း)
+  - [ရွေးချယ်မှု B: ဒေသဆိုင်ရာ Dev Container](#ရွေးချယ်မှု-b-ဒေသဆိုင်ရာ-dev-container)
+  - [ရွေးချယ်မှု C: သင်၏ ရှိပြီးသား ဒေသဆိုင်ရာ ထည့်သွင်းမှုကို သုံးပါ](#ရွေးချယ်မှု-c-သင့်ရဲ့-ရှိပြီးသား-ဒေသဆိုင်ရာ-ထည့်သွင်းမှုကို-သုံးပါ)
+- [အဆင့် ၂: Azure AI Foundry ပေးပို့ရန်](#အဆင့်-၂-azure-ai-foundry-ပေးပို့ခြင်း)
+- [အဆင့် ၃: သင်၏ စနစ်ကို စမ်းသပ်ပါ](#အဆင့်-၃-သင်၏-စနစ်ကို-စမ်းသပ်ပါ)
+- [ပြဿနာဖြေရှင်းမှု](#ပြဿနာဖြေရှင်းရန်)
 - [အနှစ်ချုပ်](#အနှစ်ချုပ်)
-- [နောက်တစ်ဆင့်များ](#နောက်တစ်ဆင့်များ)
+- [နောက်ဆက်တွဲအဆင့်များ](#နောက်ဆက်တွဲ-အဆင့်များ)
 
-## နိဒါန်း
+## အကျဉ်း
 
-ဤအခန်းတွင် ဖွံ့ဖြိုးရေးပတ်ဝန်းကျင် တပ်ဆင်ခြင်းကို လမ်းညွှန်ပါမည်။ ထိုကိစ္စအားလုံးတွင် **Azure AI Foundry** ကိုများစွာ အသုံးပြုမည်ဖြစ်သည်။ သင်သည် မော်ဒယ်များကို Bicep နှင့် Azure Developer CLI (`azd`) ဖြင့် ကုဒ်အဖြစ် provision ပြုလုပ်ပြီး၊ **keyless authentication** (Microsoft Entra ID) ဖြင့် ချိတ်ဆက်မည်ဖြစ်သည် — API key မလိုအပ်ပါ၊ ကူးယူခြင်း မရှိပါ။
+ဒီအခန်းမှာ ဖွံ့ဖြိုးတိုးတက်မှု ပတ်ဝန်းကျင် တစ်ခုကို စတင်တည်ဆောက်နည်းကို သင် လမ်းညွှန်ပေးပါမယ်။ ဒီသင်တန်းအတွင်း သုံးဖို့ **Azure AI Foundry** ကိုသုံးမယ်။ နောက်ဆုံးမှာ Bicep နဲ့ Azure Developer CLI (`azd`) ကို အသုံးပြုပြီး မော်ဒယ်များကို ကုဒ်အဖြစ် ပေးပို့ပြီး၊ **keyless authentication** (Microsoft Entra ID) နဲ့ ချိတ်ဆက်ပါမယ် — API key မလိုအပ်တော့ပါ။
 
-**Local တပ်ဆင်မှု မလိုအပ်ပါ!** GitHub Codespaces ကို သုံးနိုင်ပြီး၊ ၎င်းမှာ browser တစ်ခုထဲတွင် ပြည့်စုံသော ဖွံ့ဖြိုးရေးပတ်ဝန်းကျင် တပ်ဆင်ထားပြီး Foundry ကိုဆိုက်ရောက် provision လုပ်နိုင်ပါသည်။
+**ဒေသဆိုင်ရာစနစ် တပ်ဆင်ရန် လိုအပ်မှု မရှိပါ!** သင့်အနေဖြင့် GitHub Codespaces ကို အသုံးပြုနိုင်ပြီး browser မှတဆင့် အပြည့်အစုံ ဖွံ့ဖြိုးတိုးတက်မှု ပတ်ဝန်းကျင် ရနိုင်ပါတယ်၊ Foundry ကိုမှ အဲဒါမှ ပေးပို့ပါ။
 
-ဒီသင်တန်းတွင် **Azure AI Foundry** ကို သုံးကြတာ အကြောင်းကတော့-
-- **ကုဒ်အဖြစ် provision ပြုလုပ်တယ်** — `azd up` တစ်ကြိမ် run ဖို့သာလိုပြီး အကောင့်နဲ့ မော်ဒယ် deployment များ deploy လုပ်ပေးတယ်
-- **keyless authentication** — Azure သို့ sign-in ဖို့ သို့မဟုတ် managed identity နဲ့ authenticate လုပ်တယ်
-- **ပရော်ဒပ်ရှင်း အသင့်ဖြစ်** — ဒါကို local မှာ run ပေးနိုင်တယ်၊ Azure မှာ run ပေးနိုင်တယ်
-- **ညာဘက်ကောင်းသော ရွေးချယ်စရာ** — မော်ဒယ်များ အစားထိုးချိန်မှာ deployment အမည်ကိုပြောင်းရုံပဲ၊ မိမိကုဒ်ကို မပြောင်းရပါဘူး
+ဒီသင်တန်းအတွက် **Azure AI Foundry** ကို အသုံးပြုသည်မှာ -
+- **ကုဒ်အဖြစ် ပေးပို့ထားသော** — တစ်ခုတည်းသော `azd up` က အကောင့်နဲ့ မော်ဒယ် ပေးပို့မှုများကို တပ်ဆင်ပေးသည်
+- **Keyless** — Azure စာရင်းဝင်မှု သို့မဟုတ် managed identity ဖြင့် သက်သေပြောင်းရန်
+- **ထုတ်လုပ်မှုအဆင်သင့်** — ဒေသဆိုင်ရာနှင့် ဒေသတစ်နေရာချင်းမှာ တူညီသော ကုဒ်ကို အသုံးပြုနိုင်ခြင်း
+- **တိုးတက်မှု ခြင်းများအား လွယ်ကူသော** — မော်ဒယ်များကို deployment name ကို ပြောင်းခြင်းဖြင့် အစားထိုးနိုင်၊ သင့်ကုဒ်ကို မပြောင်းလဲပဲ
 
-> **မှတ်ချက်**: Azure AI Foundry deployments များမှာ token အရေအတွက်အလိုက် ဘားလ်ဖြစ်ကြောင်း (pay-as-you-go) ဖြစ်သည်။ Provisioning, region, နှင့် ကုန်ကျစရိတ် အသေးစိတ်အတွက် [Azure AI Foundry setup guide](getting-started-azure-openai.md) ကိုကြည့်ပါ။
+> **မှတ်ချက်**: Azure AI Foundry ပေးပို့မှုများကို token အလိုက် ငွေပေးချေမှုဖြင့် အလုပ်လုပ်သည် (pay-as-you-go)။ ပေးပို့ခြင်း၊ ဒေသနှင့် သက်သာမှုအသေးစိတ်အတွက် [Azure AI Foundry setup guide](getting-started-azure-openai.md) ကို ကြည့်ပါ။
 
-## အဆင့် ၁: ဖွံ့ဖြိုးရေး ပတ်ဝန်းကျင် တပ်ဆင်ခြင်း
+
+## အဆင့် ၁: သင်၏ ဖွံ့ဖြိုးတိုးတက်မှု ပတ်ဝန်းကျင်ကို စတင်တည်ဆောက်ပါ
 
 <a name="quick-start-cloud"></a>
 
-Generative AI for Java သင်တန်းမှာ လိုအပ်တဲ့ ကိရိယာတွေကို စုံလင်စွာ ထည့်သွင်းထားသော ပရီးကွန်ဖစ်(ရှင်း) ဖွံ့ဖြိုးရေး container တစ်ခုကို ရှာဖွေပြီး သင်၏ ဖွံ့ဖြိုးရေးနည်းလမ်းကို ရွေးချယ်ပါ။
+ဒီ Generative AI for Java သင်တန်းအတွက် လိုအပ်သော ကိရိယာများ အားလုံးပါတဲ့ preconfigured ဖွံ့ဖြိုးတိုးတက်မှု container တစ်ခုကို ရေးဆွဲပေးထားတာဖြစ်ပါတယ်။ သင်သဘောတူရာ ဖွံ့ဖြိုးတိုးတက်မှု နည်းလမ်းကို ရွေးချယ်ပါ။
 
-### ပတ်ဝန်းကျင်တပ်ဆင်ခြင်း ရွေးချယ်စရာများ -
+### ပတ်ဝန်းကျင် တည်ဆောက်ရေး ရွေးချယ်မှုများ
 
 #### ရွေးချယ်မှု A: GitHub Codespaces (အကြံပြု)
 
-**၂ မိနစ်အတွင်း ကုဒ်ရေးစတင်ပါ — local တပ်ဆင်မှု မလိုအပ်ပါ!**
+**၂ မိနစ်အတွင်း ကုဒ်ရေးဖွင့်နိုင်ပါပြီ - ဒေသဆိုင်ရာ စနစ် တပ်ဆင်ရန် မလိုအပ်ပါ!**
 
-1. ဤ repository ကို သင့် GitHub အကောင့်သို့ fork ပြုလုပ်ပါ
-   > **မှတ်ချက်**: မူလ config ကို ပြင်ချင်ပါက [Dev Container Configuration](../../../.devcontainer/devcontainer.json) ကို ကြည့်ရှုပါ
-2. **Code** → **Codespaces** ဇယား → **...** → **New with options...** ကို နှိပ်ပါ
-3. မူကြမ်း သတ်မှတ်ချက်များကို အသုံးချပါ – ၎င်းသည် **Dev container configuration** အဖြစ် **Generative AI Java Development Environment** ကိုရွေးပါ၊ သင်တန်းအတွက် ဖန်တီးထားသော custom devcontainer ဖြစ်ပါသည်
-4. **Create codespace** ကို နှိပ်ပါ
-5. ပတ်ဝန်းကျင် အသင့်ရှိရန် ~၂ မိနစ်စောင့်ပါ
-6. [အဆင့် ၂: Azure AI Foundry Provision ပြုလုပ်ခြင်း](#အဆင့်-၂-azure-ai-foundry-provision-ပြုလုပ်ခြင်း) သို့ ရောက်ရှိပါ
+၁။ ဒီ repository ကို သင့် GitHub အကောင့်သို့ Fork လုပ်ပါ
+   > **မှတ်ချက်**: အခြေခံ configuration ကို ပြင်ဆင်ချင်ရင် [Dev Container Configuration](../../../.devcontainer/devcontainer.json) ကို ကြည့်ပါ
+၂။ **Code** → **Codespaces** tab → **...** → **New with options...** ကိုနှိပ်ပါ
+၃။ ပုံမှန် အတိုင်းထားပြီး **Dev container configuration**: **Generative AI Java Development Environment** custom devcontainer ကို သတ်မှတ်ထားသည်ကို ရွေးပါ
+၄။ **Create codespace** ကို နိပ်ပါ
+၅။ ပတ်ဝန်းကျင် ပြင်ဆင်မှု ပြီးရန် ~၂ မိနစ် ခဏစောင့်ပါ
+၆။ မကြာမှီတွင် [အဆင့် ၂: Azure AI Foundry များ ပေးပို့ခြင်း](#အဆင့်-၂-azure-ai-foundry-ပေးပို့ခြင်း) သို့ ရောက်ပါ
 
-<img src="../../../translated_images/my/codespaces.9945ded8ceb431a5.webp" alt="Screenshot: Codespaces submenu" width="50%">
+<img src="../../../translated_images/my/codespaces.9945ded8ceb431a5.webp" alt="Codespaces submenu အကြောင်းပြပုံ" width="50%">
 
-<img src="../../../translated_images/my/image.833552b62eee7766.webp" alt="Screenshot: New with options" width="50%">
+<img src="../../../translated_images/my/image.833552b62eee7766.webp" alt="New with options စာမျက်နှာ" width="50%">
 
-<img src="../../../translated_images/my/codespaces-create.b44a36f728660ab7.webp" alt="Screenshot: Create codespace options" width="50%">
+<img src="../../../translated_images/my/codespaces-create.b44a36f728660ab7.webp" alt="Create codespace options များ" width="50%">
+
 
 > **Codespaces ၏ အားသာချက်များ**:
-> - Local တပ်ဆင်မှု မလိုအပ်ပါ
-> - ဘရောက်ဇာရှိရာ စက်တစ်လုံးလုံးတွင် အသုံးပြုနိုင်သည်
-> - ကိရိယာများနှင့် တိုးချဲ့ထည့်သွင်းမှုများအားလုံး မူကြားပြင်ဆင်ပြီး
-> - ကိုယ်ပိုင်အကောင့်များအတွက် တစ်လလျှင် လွတ်လပ်စွာ ၆၀ နာရီ
-> - သင်ယူသူအားလုံးအတွက် တည်ကြည့် ပတ်ဝန်းကျင်
+> - ဒေသဆိုင်ရာ ထည့်သွင်းမှု မလိုအပ်ပါ
+> - Browser ရှိ device မည်သည့်အရာတွင်မဆို အသုံးပြုနိုင်သည်
+> - ကိရိယာများ နှင့် လိုအပ်သော libraries များ အပြည့်အစုံ pre-configure ပြီးရှိသည်
+> - ကိုယ်ပိုင် အကောင့်များအတွက် လစဉ် ၆၀ နာရီ အခမဲ့
+> - သင်ယူသူတစ်ဦးချင်းစီအတွက် တည်ငြိမ်သည့် ပတ်ဝန်းကျင်ဖြစ်ပါသည်
 
-#### ရွေးချယ်မှု B: Local Dev Container
+#### ရွေးချယ်မှု B: ဒေသဆိုင်ရာ Dev Container
 
-**Docker ဖြင့် local development ကိုနှစ်သက်သည့် ဖွံ့ဖြိုးသူများအတွက်**
+**Docker နဲ့ ဒေသဆိုင်ရာ ဖွံ့ဖြိုးမှုလိုသူများအတွက်**
 
-1. ဤ repository ကို သင့် local ကွန်ပျူတာသို့ fork နှင့် clone ပြုလုပ်ပါ
-   > **မှတ်ချက်**: မူလ config ကို ပြင်ချင်ရင် [Dev Container Configuration](../../../.devcontainer/devcontainer.json) ကို ကြည့်ရှုပါ
-2. [Docker Desktop](https://www.docker.com/products/docker-desktop/) နှင့် [VS Code](https://code.visualstudio.com/) ကို တပ်ဆင်ပါ
-3. VS Code တွင် [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) ကို တပ်ဆင်ပါ
-4. Repository ဖိုတာကို VS Code ထဲ၌ ဖွင့်ပါ
-5. ဖိတ်ကြားချက်ရလာရင် **Reopen in Container** ကိုနှိပ်ပါ (သို့မဟုတ် `Ctrl+Shift+P` → "Dev Containers: Reopen in Container" ကို အသုံးပြုပါ)
-6. Container ရုပ်ပုံဖန်တီးပြီး စတင်မှုကို စောင့်ပါ
-7. [အဆင့် ၂: Azure AI Foundry Provision ပြုလုပ်ခြင်း](#အဆင့်-၂-azure-ai-foundry-provision-ပြုလုပ်ခြင်း) သို့ ရောက်ရှိပါ
+၁။ ဒီ repository ကို fork လုပ်ပြီး ဒေသဆိုင်ရာ စက်မှာ clone လုပ်ပါ
+   > **မှတ်ချက်**: အခြေခံ configuration ကို ပြင်ဆင်ချင်ရင် [Dev Container Configuration](../../../.devcontainer/devcontainer.json) ကို ကြည့်ပါ
+၂။ [Docker Desktop](https://www.docker.com/products/docker-desktop/) နှင့် [VS Code](https://code.visualstudio.com/) ကို ထည့်သွင်းပါ
+၃။ VS Code မှာ [Dev Containers ရွေးချယ်မှု](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) ကို တပ်ဆင်ပါ
+၄။ repository folder ကို VS Code မှာ ဖွင့်ပါ
+၅။ သတိပေးလာရင် **Reopen in Container** ကိုနိပ်ပါ (ဒါမှမဟုတ် `Ctrl+Shift+P` → "Dev Containers: Reopen in Container" ကိုအသုံးပြုပါ)
+၆။ container ကို ဆောက်ပြီး စတင်ရန် ခဏစောင့်ပါ
+၇။ [အဆင့် ၂: Azure AI Foundry ပေးပို့ခြင်း](#အဆင့်-၂-azure-ai-foundry-ပေးပို့ခြင်း) သို့ရှေ့တိုးပါ
 
-<img src="../../../translated_images/my/devcontainer.21126c9d6de64494.webp" alt="Screenshot: Dev container setup" width="50%">
+<img src="../../../translated_images/my/devcontainer.21126c9d6de64494.webp" alt="ကွန်ပျူတာ container စနစ်ဆောက်ခြင်း ပံုရိပ်" width="50%">
 
-<img src="../../../translated_images/my/image-3.bf93d533bbc84268.webp" alt="Screenshot: Dev container build complete" width="50%">
+<img src="../../../translated_images/my/image-3.bf93d533bbc84268.webp" alt="Dev container ဆောက်လုပ်မှု ပြီးစီးသည့် ပုံရိပ်" width="50%">
 
-#### ရွေးချယ်မှု C: သင့်ရဲ့ ရှိပြီးသား Local တပ်ဆင်မှု အသုံးပြုခြင်း
+#### ရွေးချယ်မှု C: သင့်ရဲ့ ရှိပြီးသား ဒေသဆိုင်ရာ ထည့်သွင်းမှုကို သုံးပါ
 
-**ရှိပြီးသား Java ပတ်ဝန်းကျင်ပေါ်မှာ ဖွံ့ဖြိုးသူများအတွက်**
+**ရှိပြီးသား Java ပတ်ဝန်းကျင်ထားရှိသူများအတွက်**
 
-လိုအပ်ချက်များ-
-- [Java 21+](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
+လိုအပ်ချက်များ:
+- [Java 21+](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html) 
 - [Maven 3.9+](https://maven.apache.org/download.cgi)
-- [VS Code](https://code.visualstudio.com) သို့မဟုတ် မနှစ်သက်ရာ IDE
+- [VS Code](https://code.visualstudio.com) သို့မဟုတ် သင်နှစ်သက်သော IDE
 
-ခြေလှမ်းများ-
-1. ဤ repository ကို သင့် local ကွန်ပျူတာသို့ clone ချပြီး ဖွင့်ပါ
-2. Project ကို သင့် IDE တွင် ဖွင့်ပါ
-3. [အဆင့် ၂: Azure AI Foundry Provision ပြုလုပ်ခြင်း](#အဆင့်-၂-azure-ai-foundry-provision-ပြုလုပ်ခြင်း) သို့ ရောက်ရှိပါ
+ဆက်လက်လုပ်ဆောင်ရန်:
+၁။ ဒီ repository ကို လိုကယ် စက်မှာ clone လုပ်ပါ
+၂။ သင့် IDE မှာ project ကိုဖွင့်ပါ
+၃။ [အဆင့် ၂: Azure AI Foundry ပေးပို့ခြင်း](#အဆင့်-၂-azure-ai-foundry-ပေးပို့ခြင်း) သို့ တက်ပါ
 
-> **အကြံပြုချက်**: သင့်စက် specs ต่ำသည်၊ ဒါပေမယ့် VS Code ကို local မှာ အသုံးချချင်တာဖြစ်လျှင် GitHub Codespaces ကို သုံးပါ! ကိုယ့် local VS Code ကို cloud-hosted Codespace နဲ့ ချိတ်ဆက်ပြီး နှစ်ဘက်စလုံး အကောင်းဆုံးကို ရနိုင်ပါတယ်။
+> **အကြံပေး:** low-spec စက်ရှိလည်း VS Code ကို ဒေသဆိုင်ရာ သုံးချင်ရင် GitHub Codespaces ကိုအသုံးပြုပါ! သင့်ဒေသဆိုင်ရာ VS Code ကို cloud-hosted Codespace နဲ့ ချိတ်ဆက်နိုင်ပါတယ်။
 
-<img src="../../../translated_images/my/image-2.fc0da29a6e4d2aff.webp" alt="Screenshot: created local devcontainer instance" width="50%">
+<img src="../../../translated_images/my/image-2.fc0da29a6e4d2aff.webp" alt="ဒေသဆိုင်ရာ devcontainer အခြေအနေ ဖန်တီးပြီး" width="50%">
 
-## အဆင့် ၂: Azure AI Foundry Provision ပြုလုပ်ခြင်း
 
-သင်တန်းအတွက် AI မော်ဒယ်များကို Azure AI Foundry တွင် ကုဒ်အဖြစ် deploy လုပ်ပါ။ Repository ရဲ့ root မှာ:
+## အဆင့် ၂: Azure AI Foundry ပေးပို့ခြင်း
+
+သင်တန်းရဲ့ AI မော်ဒယ်များကို Azure AI Foundry ပေါ် သတ်မှတ်ထားသော ကုဒ်အဖြစ် ပေးပို့ပါ။ Repository ရဲ့ အမြစ်နေရာမှ:
 
 ```bash
 cd 02-SetupDevEnvironment
@@ -115,107 +118,118 @@ az login
 azd up
 ```
 
+`azd` သည် ပတ်ဝန်းကျင်အမည်၊ subscription နှင့် ဒေသကို မေးမြန်းပြီး `gpt-5.6-luna` နှင့် `text-embedding-3-small` deployments ပါဝင်သော Azure AI Foundry အကောင့်ကို ပေးပို့ကာ example ရဲ့ `.env` ဖိုင်ထဲသို့ endpoint ကိုရေးတပ်ပေးသည် — အားလုံး **keyless** authentication နဲ့ (API key မလိုပါ)။
 
-`azd` က environment အမည်နဲ့ region ကို မေးမြန်းပြီး Azure AI Foundry အကောင့် ကို `gpt-4o-mini` နဲ့ `text-embedding-3-small` deployments တွေနဲ့ provision ပြုလုပ်သည်။ နမူနာ `.env` ဖိုင်ထဲမှာ endpoint ကို ရေးသွင်းပေးသည် — အားလုံး keyless authentication ဖြင့် (API key မလိုအပ်ပါ)။
+> **အပြည့်အစုံ လမ်းညွှန်:** မလိုအပ်သောအရာများ၊ ပို့စ်မန်နယ် (portal) ရွေးချယ်မှု၊ ဒေသလမ်းညွှန်နှင့် ကုန်ကျစရိတ်/ရှင်းလင်းမှု မှတ်စုများအတွက် [Azure AI Foundry Setup Guide](getting-started-azure-openai.md) ကို ကြည့်ပါ။
 
-> **အပြည့်အစုံ လမ်းညွှန်ချက်:** [Azure AI Foundry Setup Guide](getting-started-azure-openai.md) မှာ မလိုအပ်သည့် အချက်အလက်များ၊ မန်ဝယ် (portal) နည်းလမ်း၊ region ညွှန်ကြားချက်များ၊ နှင့် ကုန်ကျစရိတ်/ရှင်းလင်းရေးမှတ်စုများ ပါရှိသည်။
+## အဆင့် ၃: သင်၏ စနစ်ကို စမ်းသပ်ပါ
 
-## အဆင့် ၃: သင့် Setup ကို စမ်းသပ်ခြင်း
+Foundry model များ ပြင်ဆင်ပြီးပါက၊ example app ကို သုံးပြီး ချိတ်ဆက်မှုကို စမ်းသပ်ပါ။ နေရာမှာ [`02-SetupDevEnvironment/examples/basic-chat-azure`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) မှာရှိသည်။
 
-Foundry မော်ဒယ်များ provision ပြီးပါက၊ နမူနာအက်ပ်ကို [`02-SetupDevEnvironment/examples/basic-chat-azure`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) ထဲမှ စမ်းသပ်ပါ။
-
-1. ဖွံ့ဖြိုးရေး ပတ်ဝန်းကျင် ထဲမှ terminal ကို ဖွင့်ပါ
-2. နမူနာလမ်းကြောင်းသို့ သွားပါ
+၁။ သင့်ဖွံ့ဖြိုးတိုးတက်မှု ပတ်ဝန်းကျင်ထဲမှ terminal ကို ဖွင့်ပါ။
+၂။ example directory သို့သွားပါ:
    ```bash
    cd 02-SetupDevEnvironment/examples/basic-chat-azure
    ```
-3. စစ်ဆေးပါ သင် signed-in ဖြစ်ပါပြီလား (keyless auth သည် token လိုအပ်သည်)-
+3. သင့်ဟာ log in ဖြစ်ထားတာ သေချာပေါ့ (keyless auth က token လိုအပ်တယ်):
    ```bash
    az login
    ```
-   > သင် `azd up` ကို run လုပ်ပြီးဖြစ်ပါက `.env` ဖိုင်ထဲမှာ endpoint ရေးသားပြီးသားဖြစ်ပါပြီ။
-4. အက်ပ်ကို run ပါ-
+   > `azd up` ကို chạy လုပ်ခဲ့လျှင် endpoint ပါတဲ့ `.env` ဖိုင်တစ်ဖိုင်ကို ယခင်က သိမ်းထားတာဖြစ်ပါတယ်။
+၄။ အက်ပ်ကို chạy လုပ်ပါ:
    ```bash
    mvn clean spring-boot:run
    ```
 
+သင်သည် `gpt-5.6-luna` model ကနေ ပြန်ကြားစာတစ်ခုကို မြင်ရမည်။
 
-သင်သည် `gpt-4o-mini` မော်ဒယ်မှ တုံ့ပြန်ချက်တစ်ခုကိုမြင်ရမည်။
+### Example ကုဒ်ကို နားလည်မှု
 
-### နမူနာကုဒ် နားလည်ခြင်း
+[basic-chat example](./examples/basic-chat-azure/README.md) သည် **Spring Boot 4.1.1** နှင့် **Spring AI 2.0.1** ကို အသုံးပြုပြီး၊ Spring AI ၏ `ChatClient` သည် official OpenAI Java SDK ကို အခြေခံပြီး Azure OpenAI **v1** endpoint ကို keyless authentication နဲ့ ချိတ်ဆက်သည်။
 
-`examples/basic-chat-azure` မှာရှိသည့် နမူနာက Spring Boot app တစ်ခုဖြစ်ပြီး Azure AI Foundry နှင့် keyless authentication ဖြင့် ချိတ်ဆက်ရန် **Spring AI** ကို အသုံးပြုထားသည်။
+**ဒီကုဒ်၏လုပ်ဆောင်ချက်များ**:
+- Azure AI Foundry ကို သင့် Azure စာရင်းဝင်မှု (Microsoft Entra ID) ဖြင့် ချိတ်ဆက်ခြင်း — API key မလိုပါ
+- `gpt-5.6-luna` model ကို prompt တစ်ခု ပို့လိုက်သည်
+- AI ပြန်ပေးပို့သည့် ပြန်ကြားစာကို လက်ခံပြီး ပြသသည်
+- သင့်စနစ်အလုပ်လုပ်မှုကို မှန်ကန်စွာ သက်သေပြသည်
 
-**အဆိုပါကုဒ် စီမံချက်များ:**
-- **အာဇူးပေးနေသည်** Azure AI Foundry ကို သင့် Azure sign-in (Microsoft Entra ID) ဖြင့် ချိတ်ဆက်သည် — API key မလိုအပ်ပါ
-- **prompt တစ်ခု စာပို့သည်** `gpt-4o-mini` မော်ဒယ်သို့
-- **AI ထံမှ တုံ့ပြန်ချက်ကို လက်ခံပြီး ပြသသည်**
-- **သင့် setup မှန်ကန်ကြောင်း သက်သေပြသည်**
-
-**အဓိက ပံ့ပိုးမှု** (`pom.xml` မှာ):
+**အဓိက အချက်အလက်များ** ([pom.xml](../../../02-SetupDevEnvironment/examples/basic-chat-azure/pom.xml) မှ တစ်ချို့ယူယူထားသည်):
 ```xml
 <dependency>
     <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-starter-model-azure-openai</artifactId>
+    <artifactId>spring-ai-starter-model-openai</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.openai</groupId>
+    <artifactId>openai-java</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.azure</groupId>
+    <artifactId>azure-identity</artifactId>
+    <version>${azure-identity.version}</version>
 </dependency>
 ```
 
+POM သည် OpenAI Java **4.63.1** ကို စီမံခန့်ခွဲပြီး Azure Identity **1.18.6** ကို ရသောအတိုင်းသတ်မှတ်ထားသည်။ Spring AI 2 မှ Azure-specific starter ကို ဖယ်ရှားသော်လည်း Azure Identity သည် credential bean အတွက် ပြင်ဆင်ထားပါသည်။
 
-**ချိန်ညှိမှု** (`application.yml`):
+**အတည်ပြုချက်** ([application.yml](../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml)):
 ```yaml
 spring:
   ai:
-    azure:
-      openai:
-        # Endpoint only - no api-key. Spring AI uses DefaultAzureCredential (keyless).
-        endpoint: ${AZURE_OPENAI_ENDPOINT}
-        chat:
-          options:
-            deployment-name: ${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+    openai:
+      base-url: ${AZURE_OPENAI_ENDPOINT}
+      microsoft-foundry: true
+      chat:
+        model: ${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
+        reasoning-effort: none
+        max-completion-tokens: 500
 ```
 
+Keyless auth သည် [BasicChatApplication.java](../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/java/com/example/BasicChatApplication.java) မှာ တိတိကျကျ ဖော်ပြထားပြီး API key မပါဘဲ သတ်မှတ်ထားသည်။ Bearer credential သည် `DefaultAzureCredential` က `https://ai.azure.com/.default` scope ဖြင့်သုံးပြီး `OpenAIClient` သည် `/openai/v1` သို့ ရည်ညွှန်းသည်။ အက်ပ်သည် client ကို Spring AI chat model သို့ ပေးပို့သောကြောင့် global `OPENAI_API_KEY` သည် Azure authentication ကို ကျော်လွန်၍ မရနိုင်ပါ။
+
+Chat settings များသည် `spring.ai.openai.chat` အောက်တွင် တိုက်ရိုက်ရှိပြီး `options` block မပါ။ သင်ခန်းစာသည် reasoning-effort: none နှင့် ၅၀၀ token completion ကန့်သတ်ချက်ဖြင့် Chat Completions ကို ထိန်းသိမ်းထားပါသည်; temperature သို့မဟုတ် max-tokens မသတ်မှတ်ထားပါ။ API ရွေးချယ်မှု နှင့် tool-calling လမ်းညွှန်မှုများအတွက် [example configuration reference](./examples/basic-chat-azure/README.md#spring-configuration) ကို ကြည့်ပါ။
 
 ## အနှစ်ချုပ်
 
-ကောင်းပါပြီ! သင့်မှာ လုံးဝ ပြင်ဆင်ပြီးဖြစ်ပါပြီ-
+အထက်ပါ အဆင့်များ ပြီးမြောက်ပြီးပါက-
 
-- Azure AI Foundry မော်ဒယ်များကို ကုဒ်ဖြင့် Bicep + `azd` ဖြင့် provision ပြုလုပ်ခြင်း
-- သင့် Java ဖွံ့ဖြိုးရေး ပတ်ဝန်းကျင် အလုပ်ထဲမလားခြင်း (Codespaces, dev containers, ဒါမှမဟုတ် local)
-- Azure AI Foundry နှင့် keyless authentication (Microsoft Entra ID) ဖြင့် ချိတ်ဆက်မှု—API key မလိုအပ်ပါ
-- မော်ဒယ်ကို ပြောဆိုပြီး လွယ်ကူသော နမူနာဖြင့် စစ်ဆေးပြီး အလုပ်လုပ်မှုတိုက်တွန်းမှု
+- Bicep + `azd` ဖြင့် Azure AI Foundry မော်ဒယ်များကို ကုဒ်အဖြစ် ပေးပို့နိုင်မည်
+- သင့် Java ဖွံ့ဖြိုးတိုးတက်မှု ပတ်ဝန်းကျင်ကို စတင် ရှိမှာ ဖြစ်သည် ( Codespaces ဖြစ်မဖြစ်၊ dev container ဖြစ်မဖြစ် ဒေသဆိုင်ရာဖြစ်ပါစေ )
+- Azure AI Foundry ဖြင့် keyless authentication (Microsoft Entra ID) ဖြင့် ချိတ်ဆက်နိုင်မည် — API key မလိုဘူး
+- မော်ဒယ်နှင့် ပြောဆိုနိုင်သော ပုံမှန် example ကြောင့် စနစ်အားလုံး အလုပ်လုပ်လျက်ရှိ မြင်တွေ့ရမည်
 
-## နောက်တစ်ဆင့်များ
+## နောက်ဆက်တွဲ အဆင့်များ
 
-[အခန်း ၃: Core Generative AI Techniques](../03-CoreGenerativeAITechniques/README.md)
+[အခန်း ၃: Core Generative AI နည်းများ](../03-CoreGenerativeAITechniques/README.md)
 
-## ပြဿနာဖြေရှင်းခြင်း
+## ပြဿနာဖြေရှင်းရန်
 
-ပြဿနာရှိပါသလား? အောက်ပါ ပြဿနာများနှင့် ဖြေရှင်းနည်းများကို ကြည့်ပါ-
+ပြဿနာရှိနေပါသလား? ဒါတွေက အထူးသဖြင့် ဖြစ်တတ်သည့် ပြဿနာများ နဲ့ ဖြေရှင်းနည်းများဖြစ်သည် -
 
-- **Authentication မအောင်မြင်နေပါသလား (401/403)?**
-  - `az login` ကို run ပါ — authentication သည် keyless ဖြစ်သည်၊ သင့်အကောင့်ကို မှန်ကန်စွာ login ခဲ့ထားရမည်
-  - သင့် အကောင့်တွင် resource ပေါ်ရှိ **Cognitive Services OpenAI User** သတ်မှတ်ချက် ရှိကြောင်း စစ်ဆေးပါ
-  - သင် provision ပြုလုပ်ပြီးကြသည့် မိနစ်အနည်းငယ်စောင့်ပါ၊ role assignment သည် ဖြန့်ဖြူးတော့မည်ဖြစ်သည်
+- **Authentication မအောင်မြင်ပါက (401/403)?**
+  - `az login` ကို ကျင့်ပါ — authentication သည် keyless ဖြစ်သဖြင့် သင် စာရင်းဝင်ထားရပါမည်
+  - သင့်အကောင့်တွင် resource ပေါ်တွင် **Cognitive Services OpenAI User** မှတ်ပုံတင်ထားမှုရှိကြောင်း အတည်ပြုပါ
+  - သင် လက်ရှိ ပေးပို့ပြီးလျှင် role assignment က ပြန်လည် ထိန်းချုပ်မှု ပြုလုပ်ရန် မိနစ်တစ်ခုခန့် စောင့်ပါ
 
-- **Maven ကို မတွေ့မြင်ပါသလား?**
-  - dev containers / Codespaces ကို သုံးပါက Maven သည် မျှော်လင့်ထားသလို တပ်ဆင်ထားသည်
-  - local တပ်ဆင်မှုအတွက် Java 21+ နှင့် Maven 3.9+ တပ်ဆင်ရေးကို သေချာစွာ စစ်ဆေးပါ
-  - `mvn --version` ဖြင့် တပ်ဆင်မှုကို စစ်ဆေးပါ
+- **Maven မတွေ့ပါ?**
+  - dev containers/Codespaces ကိုသုံးလျှင် Maven သည် လက်ရှိတွင် ထည့်သွင်းပြီးဖြစ်သည်
+  - ဒေသဆိုင်ရာ စနစ်တပ်ဆင်မှု အတွက် Java 21+ နှင့် Maven 3.9+ များ ရှိကြောင်း သေချာစစ်ဆေးပါ
+  - `mvn --version` ကို အသုံးပြု ပြီး ထည့်သွင်းမှု လက်ရှိရှိမှုကို ရှာဖွေပါ
 
-- **`azd` မတွေ့ရ သို့မဟုတ် provisioning မအောင်မြင်ပါသလား?**
-  - [Azure Developer CLI](https://aka.ms/azure-dev/install) ကို တပ်ဆင်ပြီး `azd auth login` ကို run ပါ
-  - `gpt-4o-mini` ဝန်ဆောင်မှုရှိတဲ့ region ကို ရွေးချယ်ပါ (ဥပမာ: `eastus2`)
-  - [Azure AI Foundry setup guide](getting-started-azure-openai.md) တွင် အသေးစိတ်ဖော်ပြထားသည်
+- **`azd` မတွေ့ပါ သို့မဟုတ် ပေးပို့မှု မအောင်မြင်ပါသလား?**
+  - [Azure Developer CLI](https://aka.ms/azure-dev/install) ကို ထည့်သွင်းပြီး `azd auth login` ကို chạy လုပ်ပါ
+  - `gpt-5.6-luna` နှင့် `text-embedding-3-small` မော်ဒယ်များရှိတဲ့ ဒေသတစ်ခု ရွေးချယ်ပါ (ဥပမာ- `eastus2`), subscription တွင် လုံလောက်တဲ့ quota ရှိရန် သတိပြုပါ
+  - အချက်အလက်အပြည့်အစုံအတွက် [Azure AI Foundry setup guide](getting-started-azure-openai.md) ကို ကြည့်ပါ
 
-- **Dev container က စတင်မနေပါသလား?**
-  - Docker Desktop သည် လည်ပတ်နေကြောင်း သေချာစေရန် (local dev အတွက်)
-  - container ကို ပြန်ဖန်တီးရန် ကြိုးစားပါ: `Ctrl+Shift+P` → "Dev Containers: Rebuild Container"
+- **Dev container စတင်မရပါသလား?**
+  - Docker Desktop က စတင် ရှိနေမှုကို အတည်ပြုပါ (ဒေသဆိုင်ရာ ဖွံ့ဖြိုးမှုအတွက်)
+  - container ကို ပြန်ဆောက်ကြည့်ပါ: `Ctrl+Shift+P` → "Dev Containers: Rebuild Container"
 
-- **အက်ပ် ဖွဲ့စည်းမှုနဲ့ ပြဿနာရှိပါသလား?**
-  - သင် ၀င်ထားသည့် ဖိုဒါ သို့ `02-SetupDevEnvironment/examples/basic-chat-azure` ဖြစ်ကြောင်း အတည်ပြုပါ
-  - သန့်ရှင်း၍ ပြန်ဖွဲ့ရန်: `mvn clean compile`
+- **Application ကွန်ပိုင် လုပ်ရာတွင် အမှားများရှိပါသလား?**
+  - သင် ဟာမှန်ကန်သော directory တွင် ရှိကြောင်း သေချာပါစေ: `02-SetupDevEnvironment/examples/basic-chat-azure`
+  - စက်လှုပ်inzaနဲ့ပြန်ဆောက်ကြည့်ပါ: `mvn clean compile`
 
-> **အကူအညီလိုပါသလား?**: ပြဿနာရှိနေဆဲလျှင် repository ထဲတွင် issue တစ်ခုဖွင့်ပါ၊ ကျွန်ုပ်တို့ကူညီပေးပါမည်။
+> **ကူညီလိုပါသလား?**: ပြဿနာရှိသေးပါသလား? စာရင်းတွင် issue တစ်ခု ဖွင့်ပြီး ကူညီပေးပါမည်။
 
 ---
 

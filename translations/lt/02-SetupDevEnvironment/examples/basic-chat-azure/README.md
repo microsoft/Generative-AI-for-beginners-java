@@ -1,47 +1,49 @@
-# Pagrindinis pokalbis su Azure AI Foundry – nuo pradžios iki pabaigos pavyzdys
+# Pagrindinis pokalbis su Azure AI Foundry – pilnas pavyzdys nuo pradžios iki pabaigos
 
-Šis pavyzdys yra paprasta Spring Boot programa, kuri jungiasi prie **Azure AI Foundry** modelio naudodama **autentifikaciją be rakto** (Microsoft Entra ID) ir tikrina jūsų sąranką. Ji naudoja Spring AI `ChatClient`.
+Šis pavyzdys yra paprasta Spring Boot programa, kuri jungiasi prie **Azure AI Foundry** modelio, naudodama **autentifikaciją be rakto** (Microsoft Entra ID), ir tikrina jūsų nustatymus. Ji naudoja Spring AI `ChatClient`, pagrįstą **oficialiu OpenAI Java SDK** ir **Azure OpenAI v1** galutiniu tašku.
+
+Versijos [pom.xml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/pom.xml) faile yra Spring Boot **4.1.1**, Spring AI **2.0.1**, OpenAI Java **4.63.1**, Azure Identity **1.18.6** ir dotenv-java **3.2.0**. Pavyzdyje naudojamas `spring-ai-starter-model-openai` ir aiškiai deklaruojami `openai-java` bei `azure-identity`; Spring AI 2 pašalino seną Azure OpenAI starterį.
 
 ## Turinys
 
-- [Prieš pradedant](#prieš-pradedant)
-- [Greitas pradėjimas](#greitas-pradėjimas)
+- [Prieš sąlygos](#prieš-sąlygos)
+- [Greitas startas](#greitas-startas)
 - [Kaip veikia autentifikacija](#kaip-veikia-autentifikacija)
-- [Programos paleidimas](#programos-paleidimas)
+- [Programos vykdymas](#programos-paleidimas)
   - [Naudojant Maven](#naudojant-maven)
   - [Naudojant VS Code](#naudojant-vs-code)
-  - [Laukimas išvesties](#laukiama-išvestis)
+  - [Laukiamas išėjimas](#laukiamas-išėjimas)
 - [Konfigūracijos nuoroda](#konfigūracijos-nuoroda)
   - [Aplinkos kintamieji](#aplinkos-kintamieji)
   - [Spring konfigūracija](#spring-konfigūracija)
-- [Klaidų šalinimas](#klaidų-šalinimas)
+- [Trikčių šalinimas](#trikčių-šalinimas)
   - [Dažnos problemos](#dažnos-problemos)
   - [Derinimo režimas](#derinimo-režimas)
 - [Kiti žingsniai](#kiti-žingsniai)
 - [Ištekliai](#ištekliai)
 
-## Prieš pradedant
+## Prieš sąlygos
 
 Prieš paleisdami šį pavyzdį, įsitikinkite, kad turite:
 
-- Azure AI Foundry išteklių su `gpt-4o-mini` diegimu — įdiekite jį naudodami `azd up` arba rankiniu būdu per [Azure AI Foundry parengimo vadovą](../../getting-started-azure-openai.md)
-- **Cognitive Services OpenAI User** vaidmenį tame išteklyje (jis automatiškai priskiriamas per Bicep šablonus)
-- [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli), prisijungus naudodami `az login`
+- Azure AI Foundry išteklių su `gpt-5.6-luna` diegimu - paruoškite jį naudodami `azd up` arba rankiniu būdu pagal [Azure AI Foundry diegimo vadovą](../../getting-started-azure-openai.md)
+- **Cognitive Services OpenAI User** rolė tame išteklyje (Bicep šablonai tai priskiria automatiškai)
+- [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli), prisijungęs per `az login`
 - Java 21+ ir Maven 3.9+
 
-> **API raktas nereikalingas** — autentifikacija vykdoma be rakto per Microsoft Entra ID.
+> **API rakto nereikia** — autentifikacija vykdoma be rakto per Microsoft Entra ID.
 
-## Greitas pradėjimas
+## Greitas startas
 
 ```bash
-# 1. Pereikite prie projekto
+# 1. Eikite į projektą
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 
-# 2. Prisijunkite, kad be rakto autentifikavimas galėtų gauti žetoną
+# 2. Prisijunkite, kad keyless autentifikacija galėtų gauti žetoną
 az login
 
 # 3. Konfigūruokite galinį tašką
-#    - Jei vykdėte `azd up`, .env buvo parašytas už jus (praleiskite šį žingsnį).
+#    - Jei vykdėte `azd up`, .env failas jau buvo sukurtas jums (praleiskite šį žingsnį).
 #    - Priešingu atveju nukopijuokite šabloną ir nustatykite AZURE_OPENAI_ENDPOINT:
 cp .env.example .env
 
@@ -51,9 +53,15 @@ mvn spring-boot:run
 
 ## Kaip veikia autentifikacija
 
-Šis pavyzdys autentifikuojasi su **Microsoft Entra ID** – API rakto nėra.
+Šis pavyzdys naudoja autentifikaciją su **Microsoft Entra ID** — API rakto nėra.
 
-Kai nustatytas tik `spring.ai.azure.openai.endpoint` (ir nėra api-rakto), Spring AI sukuria Azure OpenAI klientą naudodama [`DefaultAzureCredential`](https://learn.microsoft.com/java/api/com.azure.identity.defaultazurecredential). Ši kredencialų tvarka automatiškai suranda tokeną iš jūsų vietinės `az login` sesijos arba iš valdomos tapatybės, kai veikia Azure aplinkoje – todėl tas pats kodas veikia abejose vietose be pakeitimų.
+Programa aiškiai konfigūruoja autentifikaciją faile [BasicChatApplication.java](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/java/com/example/BasicChatApplication.java):
+
+1. `azureCredential()` sukuria `BearerTokenCredential` naudojant `AuthenticationUtil.getBearerTokenSupplier` su `DefaultAzureCredential` ir sritimi `https://ai.azure.com/.default`.
+2. `azureOpenAiClient()` sukuria `OpenAIClient` naudojant `OpenAIOkHttpClient.builder()`, nurodo išteklių galinį tašką `/openai/v1` ir prideda prieigos tokeną su `.credential(...)`.
+3. `azureChatModel()` perduoda tą klientą Spring AI `OpenAiChatModel`, kuris aptarnauja pamokos `ChatClient`.
+
+Šie aiškūs bean'ai neleidžia globaliam `OPENAI_API_KEY` perrašyti Azure autentifikacijos. Vien tik API rakto nedeklaravimas YAML faile nėra autentifikacijos nustatymas. `DefaultAzureCredential` gali naudoti jūsų vietinę `az login` sesiją arba valdytą identitetą Azure; pasirinktai identitetui turi būti priskirta aukščiau nurodyta išteklių rolė.
 
 ## Programos paleidimas
 
@@ -69,13 +77,18 @@ mvn spring-boot:run
 2. Paspauskite `F5` arba naudokite "Run and Debug" panelę
 3. Pasirinkite "Spring Boot-BasicChatApplication" konfigūraciją
 
-> **Pastaba**: VS Code konfigūracija automatiškai įkelia jūsų `.env` failą
+> **Pastaba**: programa krauna `.env` failą iš savo darbo katalogo, įskaitant paleidžiant iš VS Code.
 
-### Laukiama išvestis
+### Laukiamas išėjimas
 
-```
+Iliustracinis išėjimas po sėkmingo paleidimo (paleidimo žurnalai nepateikiami; atsakymo tekstas gali skirtis):
+
+```text
 Starting Basic Chat with Azure OpenAI...
-Environment variables loaded successfully
+Environment variables loaded from .env file
+Endpoint: https://your-resource.openai.azure.com/
+Deployment: gpt-5.6-luna
+Auth: keyless (Microsoft Entra ID via DefaultAzureCredential)
 Connecting to Azure OpenAI...
 Sending prompt: What is AI in a short sentence? Max 100 words.
 
@@ -92,78 +105,98 @@ Success! Azure OpenAI connection is working correctly.
 ### Aplinkos kintamieji
 
 | Kintamasis | Aprašymas | Privalomas | Pavyzdys |
-|------------|-----------|------------|----------|
-| `AZURE_OPENAI_ENDPOINT` | Foundry (Azure OpenAI) galinio taško URL | Taip | `https://my-resource.openai.azure.com/` |
-| `AZURE_OPENAI_DEPLOYMENT` | Pokalbio modelio diegimo pavadinimas | Ne | `gpt-4o-mini` (numatytasis) |
+|----------|-------------|----------|---------|
+| `AZURE_OPENAI_ENDPOINT` | Foundry (Azure OpenAI) galutinio taško URL | Taip | `https://my-resource.openai.azure.com/` |
+| `AZURE_OPENAI_DEPLOYMENT` | Pokalbių modelio diegimo pavadinimas | Ne | `gpt-5.6-luna` (numatytasis) |
 
-> Nėra **API rakto** kintamojo – autentifikacija vykdoma be rakto (Microsoft Entra ID per `az login`).
+> Nėra **API rakto** kintamojo — autentifikacija vykdoma be rakto (Microsoft Entra ID per `az login`).
 
 ### Spring konfigūracija
 
-`application.yml` faile konfigūruojama:
-- **Endpoint**: `${AZURE_OPENAI_ENDPOINT}` – iš aplinkos kintamojo
-- **Diegimas**: `${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}` – iš aplinkos kintamojo su numatytuoju
-- **Autentifikacija**: be rakto – nėra nustatyto `api-key`, todėl Spring AI naudoja `DefaultAzureCredential`
-- **Temperatūra**: `0.7` – valdo kūrybiškumą (0.0 = deterministinis, 1.0 = kūrybingas)
-- **Maks. žetonai**: `500` – maksimalus atsakymo ilgis
+Nustatymai faile [application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml) naudoja prefiksą `spring.ai.openai` ir išskleistus pokalbių parametrus (nėra `options` bloko):
 
-## Klaidų šalinimas
+```yaml
+spring:
+  ai:
+    openai:
+      base-url: ${AZURE_OPENAI_ENDPOINT}
+      microsoft-foundry: true
+      chat:
+        model: ${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
+        reasoning-effort: none
+        max-completion-tokens: 500
+```
+
+`model` yra **Azure diegimo pavadinimas**. Autentifikacija gaunama iš aukščiau aprašytų aiškių bean'ų, o ne iš `api-key` parametro. Pamokoje išjungiamos loginės dedukcijos ir ribojami užbaigimo tokenai iki 500; `temperature` ir senasis `max-tokens` nenurodyti.
+
+Microsoft rekomenduoja [oficialų OpenAI SDK su Azure OpenAI v1 ir Responses API naujoms programoms](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java). Pokalbių užbaigimai vis dar palaikomi šioje esamoje žinutėms skirtai pamokoje. GPT-5.6 atveju užklausos, kuriose naudojami įrankiai su Pokalbių užbaigimais, turi nustatyti `reasoning_effort` į `none`; derinant su įrankiais naudokite Responses API. Daugiau žr. [įrankių kvietimą su loginiais modeliais](https://learn.microsoft.com/azure/foundry/openai/how-to/reasoning#tool-calling-with-reasoning-models).
+
+## Trikčių šalinimas
 
 ### Dažnos problemos
 
 <details>
 <summary><strong>Klaida: 401 / "PermissionDenied" / tokeno klaidos</strong></summary>
 
-- Paleiskite `az login` – autentifikacijai be rakto reikia aktyvaus prisijungimo tokenui gauti
-- Patikrinkite, ar jūsų paskyra turi **Cognitive Services OpenAI User** vaidmenį tame išteklyje
-- Jei ką tik priskyrėte vaidmenį, palaukite minutę, kol jis pritaikys korekcijas
-- Patvirtinkite, kad esate tinkamame nuomininke/subscription (komanda `az account show`)
+- Paleiskite `az login` — autentifikacijai be rakto reikia aktyvios prisijungimo sesijos norint gauti tokeną
+- Patikrinkite, ar jūsų paskyrai priskirta **Cognitive Services OpenAI User** rolė ištekliui
+- Jei ką tik priskyrėte rolę, palaukite minutę, kol ji įsigalios
+- Patikrinkite, ar esate teisingame nuomotojo/prenumeratos kontekste (`az account show`)
 </details>
 
 <details>
-<summary><strong>Klaida: "Endpoint nėra galiojantis" / ryšio klaidos</strong></summary>
+<summary><strong>Klaida: "The endpoint is not valid" / ryšio klaidos</strong></summary>
 
-- Įsitikinkite, kad `AZURE_OPENAI_ENDPOINT` yra pilnas pagrindinis URL (pvz., `https://your-resource.openai.azure.com/`)
-- Patikrinkite, ar nėra problemų su galiniu brūkšniu (/)
-- Patikrinkite, ar galinis taškas atitinka jūsų paruoštą išteklių (`azd env get-values`)
+- Įsitikinkite, kad `AZURE_OPENAI_ENDPOINT` yra pilnas bazinis URL (pvz., `https://your-resource.openai.azure.com/`)
+- Patikrinkite, ar galinio taško URL tvarkingas ir turi tinkamą kylančią brūkšnį
+- Patikrinkite, ar galutinis taškas sutampa su jūsų diegiamu ištekliumi (`azd env get-values`)
 </details>
 
 <details>
-<summary><strong>Klaida: "Diegimo nerasta"</strong></summary>
+<summary><strong>Klaida: "The deployment was not found"</strong></summary>
 
-- Patikrinkite, ar `AZURE_OPENAI_DEPLOYMENT` atitinka diegimo pavadinimą Azure aplinkoje
-- Įsitikinkite, kad modelis yra sėkmingai įdiegtas ir aktyvus
-- Numatytoji diegimo pavadinimas yra `gpt-4o-mini`
+- Patikrinkite, ar `AZURE_OPENAI_DEPLOYMENT` atitinka diegimo pavadinimą Azure
+- Patikrinkite, ar modelis sėkmingai įdiegtas ir aktyvus
+- Numatytoji diegimo pavadinimas yra `gpt-5.6-luna`
 </details>
 
 <details>
-<summary><strong>VS Code: Aplinkos kintamieji neįkelti</strong></summary>
+<summary><strong>Klaida: 429 / viršytas užklausų dažnio limitas</strong></summary>
 
-- Įsitikinkite, kad jūsų `.env` failas yra projekto šakniniame kataloge (lygyje su `pom.xml`)
+- Numatytoji GPT-5.6 Luna diegimo talpa Global Standard 10: 10 užklausų/min ir 10 000 tokenų/min
+- Vykdykite pavyzdžius paeiliui ir laukite paslaugos pakartojimo intervalo prieš bandydami dar kartą
+- Šis paprastas pavyzdys išjungia automatinį SDK pakartojimą, tad nepavykęs užklausimas pranešamas tiesiogiai
+</details>
+
+<details>
+<summary><strong>VS Code: Aplinkos kintamieji nekraunami</strong></summary>
+
+- Įsitikinkite, kad `.env` failas yra projekto šakniniame kataloge (ta pačia vieta kaip `pom.xml`)
 - Pabandykite paleisti `mvn spring-boot:run` VS Code integruotoje terminalo aplinkoje
-- Patikrinkite, ar VS Code Java plėtinys yra tinkamai įdiegtas
+- Patikrinkite, ar VS Code Java papildinys tinkamai įdiegtas
 </details>
 
 ### Derinimo režimas
 
-Norėdami įjungti išsamesnį žurnalavimą, atkomentuokite šias eilutes `application.yml` faile:
+Norėdami įjungti išsamius žurnalus, atkomentuokite šias eilutes faile [application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml):
 
 ```yaml
 logging:
   level:
-    org.springframework.ai: DEBUG
-    com.azure: DEBUG
+    "[org.springframework.ai]": DEBUG
+    "[com.azure]": DEBUG
 ```
 
 ## Kiti žingsniai
 
-**Sąranka baigta!** Tęskite mokymosi kelią:
+**Nustatymas baigtas!** Tęskite mokymosi kelią:
 
-[3 skyrius: Pagrindinės generatyvios AI technikos](../../../03-CoreGenerativeAITechniques/README.md)
+[3 skyrius: Pagrindinės generatyvios dirbtinio intelekto technikos](../../../03-CoreGenerativeAITechniques/README.md)
 
 ## Ištekliai
 
-- [Spring AI Azure OpenAI dokumentacija](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
+- [Spring AI 2 OpenAI Java SDK perėjimas](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [Oficialus OpenAI Java SDK su Azure OpenAI v1](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
 - [Autentifikacija be rakto su Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
 - [Azure AI Foundry portalas](https://ai.azure.com/)
 - [Azure AI Foundry dokumentacija](https://learn.microsoft.com/azure/ai-foundry/)
