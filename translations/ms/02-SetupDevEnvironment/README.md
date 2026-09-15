@@ -1,60 +1,60 @@
-# Menyiapkan Persekitaran Pembangunan untuk Generative AI bagi Java
+# Menyediakan Persekitaran Pembangunan untuk Generative AI bagi Java
 
-> **Mula Cepat:** Sediakan model AI anda di **Azure AI Foundry** sebagai kod dengan Bicep + `azd` dalam beberapa minit — lihat [Panduan Persediaan Azure AI Foundry](getting-started-azure-openai.md). Pengesahan adalah **tanpa kekunci** (Microsoft Entra ID), jadi tiada kunci API untuk diuruskan.
+> **Mula Cepat:** Sediakan model AI anda di **Azure AI Foundry** sebagai kod dengan Bicep + `azd` dalam beberapa minit — lihat [Panduan Penyediaan Azure AI Foundry](getting-started-azure-openai.md). Pengesahan adalah **tanpa kunci** (Microsoft Entra ID), jadi tiada kunci API yang perlu diuruskan.
 
-## Apa yang Anda Akan Pelajari
+## Apa Yang Akan Anda Pelajari
 
-- Menyiapkan persekitaran pembangunan Java untuk aplikasi AI
-- Memilih dan mengkonfigurasi persekitaran pembangunan pilihan anda (awan dahulu dengan Codespaces, bekas dev tempatan, atau tetapan penuh tempatan)
-- Uji tetapan anda dengan menyambung kepada model Azure AI Foundry
+- Sediakan persekitaran pembangunan Java untuk aplikasi AI
+- Pilih dan konfigurasikan persekitaran pembangunan pilihan anda (utama awan dengan Codespaces, bekas dev tempatan, atau persediaan tempatan penuh)
+- Uji persediaan anda dengan menyambung ke model Azure AI Foundry
 
 ## Jadual Kandungan
 
-- [Apa yang Anda Akan Pelajari](#apa-yang-anda-akan-pelajari)
+- [Apa Yang Akan Anda Pelajari](#apa-yang-akan-anda-pelajari)
 - [Pengenalan](#pengenalan)
-- [Langkah 1: Menyiapkan Persekitaran Pembangunan Anda](#langkah-1-menyiapkan-persekitaran-pembangunan-anda)
+- [Langkah 1: Sediakan Persekitaran Pembangunan Anda](#langkah-1-sediakan-persekitaran-pembangunan-anda)
   - [Pilihan A: GitHub Codespaces (Disyorkan)](#pilihan-a-github-codespaces-disyorkan)
   - [Pilihan B: Bekas Dev Tempatan](#pilihan-b-bekas-dev-tempatan)
   - [Pilihan C: Gunakan Pemasangan Tempatan Sedia Ada Anda](#pilihan-c-gunakan-pemasangan-tempatan-sedia-ada-anda)
 - [Langkah 2: Sediakan Azure AI Foundry](#langkah-2-sediakan-azure-ai-foundry)
-- [Langkah 3: Uji Tetapan Anda](#langkah-3-uji-tetapan-anda)
+- [Langkah 3: Uji Persediaan Anda](#langkah-3-uji-persediaan-anda)
 - [Penyelesaian Masalah](#penyelesaian-masalah)
 - [Ringkasan](#ringkasan)
 - [Langkah Seterusnya](#langkah-seterusnya)
 
 ## Pengenalan
 
-Bab ini akan memandu anda melalui penyediaan persekitaran pembangunan. Kita akan menggunakan **Azure AI Foundry** untuk model sepanjang kursus ini. Anda menyediakan model sebagai kod dengan Bicep dan Azure Developer CLI (`azd`), kemudian sambung dengan **pengesahan tanpa kekunci** (Microsoft Entra ID) — tiada kunci API untuk disalin atau bocor.
+Bab ini akan membimbing anda melalui penyediaan persekitaran pembangunan. Kami akan menggunakan **Azure AI Foundry** untuk model-model sepanjang kursus ini. Anda menyediakan model sebagai kod dengan Bicep dan Azure Developer CLI (`azd`), kemudian sambung dengan **pengesahan tanpa kunci** (Microsoft Entra ID) — tiada kunci API untuk disalin atau bocor.
 
-**Tiada tetapan tempatan diperlukan!** Anda boleh gunakan GitHub Codespaces, yang menyediakan persekitaran pembangunan penuh dalam pelayar anda, dan menyediakan Foundry dari situ.
+**Tiada persediaan tempatan diperlukan!** Anda boleh menggunakan GitHub Codespaces, yang menyediakan persekitaran pembangunan penuh dalam pelayar anda, dan menyediakan Foundry dari sana.
 
 Kami menggunakan **Azure AI Foundry** untuk kursus ini kerana ia:
-- **Disediakan sebagai kod** — satu `azd up` menyebarkan akaun dan penyebaran model
-- **Tanpa kekunci** — sahkan dengan log masuk Azure anda atau identiti pengurus
-- **Sedia untuk produksi** — kod yang sama berjalan secara tempatan dan di Azure
-- **Fleksibel** — tukar model dengan mengubah nama penyebaran, bukan kod anda
+- **Disediakan sebagai kod** — satu `azd up` menyebarkan akaun dan penempatan model
+- **Tanpa kunci** — sahkan dengan log masuk Azure anda atau identiti terurus
+- **Sedia untuk produksi** — kod yang sama berjalan secara lokal dan di Azure
+- **Fleksibel** — tukar model dengan menukar nama penempatan, bukan kod anda
 
-> **Nota**: Penyebaran Azure AI Foundry dikenakan bayaran mengikut token (bayar ikut penggunaan). Lihat [panduan persediaan Azure AI Foundry](getting-started-azure-openai.md) untuk butiran penyediaan, rantau, dan kos.
+> **Nota**: Penempatan Azure AI Foundry dikenakan bayaran mengikut token (bayar mengikut penggunaan). Lihat [panduan penyediaan Azure AI Foundry](getting-started-azure-openai.md) untuk butiran penyediaan, wilayah, dan kos.
 
 
-## Langkah 1: Menyiapkan Persekitaran Pembangunan Anda
+## Langkah 1: Sediakan Persekitaran Pembangunan Anda
 
 <a name="quick-start-cloud"></a>
 
-Kami telah mencipta bekas pembangunan yang telah dipra-konfigurasi untuk meminimumkan masa penyediaan dan memastikan anda mempunyai semua alat yang diperlukan untuk kursus Generative AI bagi Java ini. Pilih pendekatan pembangunan pilihan anda:
+Kami telah mencipta bekas pembangunan yang telah dikonfigurasikan awal untuk meminimumkan masa penyediaan dan memastikan anda mempunyai semua alat yang diperlukan untuk kursus Generative AI for Java ini. Pilih pendekatan pembangunan yang anda gemari:
 
 ### Pilihan Penyediaan Persekitaran:
 
 #### Pilihan A: GitHub Codespaces (Disyorkan)
 
-**Mula menulis kod dalam 2 minit - tiada tetapan tempatan diperlukan!**
+**Mula menulis kod dalam 2 minit - tiada persediaan tempatan diperlukan!**
 
 1. Fork repositori ini ke akaun GitHub anda
-   > **Nota**: Jika anda ingin mengubah config asas sila lihat [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
+   > **Nota**: Jika anda ingin sunting konfigurasi asas sila lihat [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
 2. Klik **Code** → tab **Codespaces** → **...** → **New with options...**
-3. Gunakan lalai – ini akan memilih **Dev container configuration**: **Persekitaran Pembangunan Generative AI Java** custom devcontainer yang dibuat untuk kursus ini
+3. Gunakan tetapan lalai – ini akan memilih **Konfigurasi bekas pembangunan**: **Generative AI Java Development Environment** devcontainer khusus untuk kursus ini
 4. Klik **Create codespace**
-5. Tunggu kira-kira 2 minit sehingga persekitaran sedia
+5. Tunggu ~2 minit untuk persekitaran sedia
 6. Teruskan ke [Langkah 2: Sediakan Azure AI Foundry](#langkah-2-sediakan-azure-ai-foundry)
 
 <img src="../../../translated_images/ms/codespaces.9945ded8ceb431a5.webp" alt="Screenshot: Codespaces submenu" width="50%">
@@ -64,10 +64,10 @@ Kami telah mencipta bekas pembangunan yang telah dipra-konfigurasi untuk meminim
 <img src="../../../translated_images/ms/codespaces-create.b44a36f728660ab7.webp" alt="Screenshot: Create codespace options" width="50%">
 
 
-> **Faedah Codespaces**:
+> **Kelebihan Codespaces**:
 > - Tiada pemasangan tempatan diperlukan
-> - Berfungsi pada mana-mana peranti dengan pelayar
-> - Dipra-konfigurasi dengan semua alat dan kebergantungan
+> - Berfungsi di mana-mana peranti dengan pelayar
+> - Pra-konfigurasi dengan semua alat dan kebergantungan
 > - 60 jam percuma sebulan untuk akaun peribadi
 > - Persekitaran konsisten untuk semua pelajar
 
@@ -76,11 +76,11 @@ Kami telah mencipta bekas pembangunan yang telah dipra-konfigurasi untuk meminim
 **Untuk pembangun yang lebih suka pembangunan tempatan dengan Docker**
 
 1. Fork dan klon repositori ini ke mesin tempatan anda
-   > **Nota**: Jika anda ingin mengubah config asas sila lihat [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
+   > **Nota**: Jika anda ingin sunting konfigurasi asas sila lihat [Dev Container Configuration](../../../.devcontainer/devcontainer.json)
 2. Pasang [Docker Desktop](https://www.docker.com/products/docker-desktop/) dan [VS Code](https://code.visualstudio.com/)
 3. Pasang [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) dalam VS Code
 4. Buka folder repositori dalam VS Code
-5. Apabila diminta, klik **Reopen in Container** (atau gunakan `Ctrl+Shift+P` → "Dev Containers: Reopen in Container")
+5. Bila digesa, klik **Reopen in Container** (atau gunakan `Ctrl+Shift+P` → "Dev Containers: Reopen in Container")
 6. Tunggu bekas dibina dan dimulakan
 7. Teruskan ke [Langkah 2: Sediakan Azure AI Foundry](#langkah-2-sediakan-azure-ai-foundry)
 
@@ -102,7 +102,7 @@ Langkah:
 2. Buka projek dalam IDE anda
 3. Teruskan ke [Langkah 2: Sediakan Azure AI Foundry](#langkah-2-sediakan-azure-ai-foundry)
 
-> **Petua Pro**: Jika anda mempunyai mesin berspesifikasi rendah tetapi mahu VS Code secara tempatan, gunakan GitHub Codespaces! Anda boleh sambungkan VS Code tempatan anda ke Codespace yang dihoskan di awan untuk yang terbaik dari kedua-dua dunia.
+> **Petua Pro**: Jika anda mempunyai mesin spesifikasi rendah tapi mahu VS Code secara tempatan, gunakan GitHub Codespaces! Anda boleh sambungkan VS Code tempatan anda ke Codespace hos awan untuk mendapat yang terbaik dari kedua-dua dunia.
 
 <img src="../../../translated_images/ms/image-2.fc0da29a6e4d2aff.webp" alt="Screenshot: created local devcontainer instance" width="50%">
 
@@ -118,20 +118,20 @@ az login
 azd up
 ```
 
-`azd` akan meminta nama persekitaran dan rantau, menyediakan akaun Azure AI Foundry dengan penyebaran `gpt-4o-mini` dan `text-embedding-3-small`, dan menulis titik hujung dalam `.env` contoh — semua dengan pengesahan **tanpa kekunci** (tiada kunci API).
+`azd` akan meminta nama persekitaran, langganan, dan wilayah, menyediakan akaun Azure AI Foundry dengan penempatan `gpt-5.6-luna` dan `text-embedding-3-small`, dan menulis titik hujung ke `.env` contoh - semua dengan pengesahan **tanpa kunci** (tiada kunci API).
 
-> **Panduan penuh:** Lihat [Panduan Persediaan Azure AI Foundry](getting-started-azure-openai.md) untuk prasyarat, alternatif manual (portal), panduan rantau, dan nota kos/pembersihan.
+> **Panduan lengkap:** Lihat [Panduan Penyediaan Azure AI Foundry](getting-started-azure-openai.md) untuk prasyarat, alternatif manual (portal), panduan wilayah, dan nota kos/pembersihan.
 
-## Langkah 3: Uji Tetapan Anda
+## Langkah 3: Uji Persediaan Anda
 
-Setelah model Foundry anda disediakan, uji sambungan dengan aplikasi contoh dalam [`02-SetupDevEnvironment/examples/basic-chat-azure`](../../../02-SetupDevEnvironment/examples/basic-chat-azure).
+Setelah model Foundry anda disediakan, uji sambungan dengan aplikasi contoh di [`02-SetupDevEnvironment/examples/basic-chat-azure`](../../../02-SetupDevEnvironment/examples/basic-chat-azure).
 
 1. Buka terminal dalam persekitaran pembangunan anda.
 2. Navigasi ke contoh:
    ```bash
    cd 02-SetupDevEnvironment/examples/basic-chat-azure
    ```
-3. Pastikan anda sudah log masuk (pengesahan tanpa kekunci memerlukan token):
+3. Pastikan anda telah masuk (pengesahan tanpa kunci memerlukan token):
    ```bash
    az login
    ```
@@ -141,80 +141,95 @@ Setelah model Foundry anda disediakan, uji sambungan dengan aplikasi contoh dala
    mvn clean spring-boot:run
    ```
 
-Anda harus melihat respons daripada model `gpt-4o-mini`.
+Anda harus melihat respons dari model `gpt-5.6-luna`.
 
 ### Memahami Kod Contoh
 
-Contoh di bawah `examples/basic-chat-azure` adalah aplikasi Spring Boot yang menggunakan **Spring AI** untuk menyambung ke Azure AI Foundry dengan pengesahan tanpa kekunci.
+[Contoh basic-chat](./examples/basic-chat-azure/README.md) menggunakan **Spring Boot 4.1.1** dan **Spring AI 2.0.1**. `ChatClient` Spring AI disokong oleh SDK Java OpenAI rasmi, menyambung ke titik hujung Azure OpenAI **v1** dengan pengesahan tanpa kunci.
 
-**Apa yang dilakukan kod ini:**
-- **Menyambung** ke Azure AI Foundry menggunakan log masuk Azure anda (Microsoft Entra ID) — tanpa kunci API
-- **Menghantar** prompt kepada model `gpt-4o-mini`
+**Apa yang kod ini lakukan:**
+- **Menyambung** ke Azure AI Foundry menggunakan log masuk Azure anda (Microsoft Entra ID) — tiada kunci API
+- **Menghantar** prompt ke model `gpt-5.6-luna`
 - **Menerima** dan memaparkan respons AI
-- **Mengesahkan** tetapan anda berfungsi dengan betul
+- **Memastikan** persediaan anda berfungsi dengan betul
 
-**Kebergantungan Utama** (dalam `pom.xml`):
+**Kebergantungan Utama** (petikan dari [pom.xml](../../../02-SetupDevEnvironment/examples/basic-chat-azure/pom.xml)):
 ```xml
 <dependency>
     <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-starter-model-azure-openai</artifactId>
+    <artifactId>spring-ai-starter-model-openai</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.openai</groupId>
+    <artifactId>openai-java</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.azure</groupId>
+    <artifactId>azure-identity</artifactId>
+    <version>${azure-identity.version}</version>
 </dependency>
 ```
 
-**Konfigurasi** (`application.yml`):
+POM mengurus OpenAI Java **4.63.1** dan menetapkan Azure Identity **1.18.6** secara eksplisit. Spring AI 2 menghilangkan starter khusus Azure; Azure Identity masih diperlukan untuk bean kredensial.
+
+**Konfigurasi** ([application.yml](../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml)):
 ```yaml
 spring:
   ai:
-    azure:
-      openai:
-        # Endpoint only - no api-key. Spring AI uses DefaultAzureCredential (keyless).
-        endpoint: ${AZURE_OPENAI_ENDPOINT}
-        chat:
-          options:
-            deployment-name: ${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+    openai:
+      base-url: ${AZURE_OPENAI_ENDPOINT}
+      microsoft-foundry: true
+      chat:
+        model: ${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
+        reasoning-effort: none
+        max-completion-tokens: 500
 ```
+
+Pengesahan tanpa kunci dikonfigurasikan eksplisit dalam [BasicChatApplication.java](../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/java/com/example/BasicChatApplication.java), bukan ditafsir dari kunci API yang tiada. Kredensial bearer menggunakan `DefaultAzureCredential` dengan skop `https://ai.azure.com/.default`, dan `OpenAIClient` menyasarkan `/openai/v1`. Aplikasi membekalkan klien itu ke model chat Spring AI, jadi `OPENAI_API_KEY` global tidak dapat menimpa pengesahan Azure.
+
+Tetapan chat berada terus di bawah `spring.ai.openai.chat`, tanpa blok `options`. Pengajaran mengekalkan Chat Completions dengan `reasoning-effort: none` dan had 500 token; ia tidak menetapkan `temperature` atau `max-tokens`. Lihat [rujukan konfigurasi contoh](./examples/basic-chat-azure/README.md#spring-configuration) untuk pilihan API dan panduan pemanggilan alat.
 
 ## Ringkasan
 
-Hebat! Anda kini mempunyai semua yang diperlukan:
+Setelah melengkapkan langkah-langkah di atas, anda akan mempunyai:
 
-- Model Azure AI Foundry disediakan sebagai kod dengan Bicep + `azd`
+- Model Azure AI Foundry yang disediakan sebagai kod dengan Bicep + `azd`
 - Persekitaran pembangunan Java anda berjalan (sama ada Codespaces, bekas dev, atau tempatan)
-- Disambung ke Azure AI Foundry dengan pengesahan tanpa kekunci (Microsoft Entra ID) — tiada kunci API
-- Uji semuanya berfungsi dengan contoh mudah yang berbual dengan model anda
+- Sambungan ke Azure AI Foundry dengan pengesahan tanpa kunci (Microsoft Entra ID) — tiada kunci API
+- Uji semuanya berfungsi dengan contoh mudah yang bercakap dengan model anda
 
 ## Langkah Seterusnya
 
-[Bab 3: Teknik Teras Generative AI](../03-CoreGenerativeAITechniques/README.md)
+[Bab 3: Teknik Generative AI Teras](../03-CoreGenerativeAITechniques/README.md)
 
 ## Penyelesaian Masalah
 
-Ada masalah? Berikut adalah masalah biasa dan penyelesaiannya:
+Ada masalah? Ini adalah masalah biasa dan penyelesaiannya:
 
 - **Pengesahan gagal (401/403)?** 
-  - Jalankan `az login` — pengesahan adalah tanpa kekunci, jadi anda mesti log masuk
+  - Jalankan `az login` — pengesahan tanpa kunci, jadi anda mesti log masuk
   - Sahkan akaun anda mempunyai peranan **Cognitive Services OpenAI User** pada sumber
-  - Jika baru sahaja menyediakan, tunggu sebentar untuk penganugerahan peranan disebarkan
+  - Jika baru sahaja menyedia, tunggu sebentar supaya tugasan peranan tersebar
 
 - **Maven tidak dijumpai?** 
-  - Jika menggunakan bekas dev/Codespaces, Maven sudah dipasang terlebih dahulu
-  - Untuk tetapan tempatan, pastikan Java 21+ dan Maven 3.9+ dipasang
+  - Jika menggunakan bekas dev/Codespaces, Maven sepatutnya telah dipasang
+  - Untuk penyediaan tempatan, pastikan Java 21+ dan Maven 3.9+ dipasang
   - Cuba `mvn --version` untuk sahkan pemasangan
 
-- **`azd` tidak ditemui atau penyediaan gagal?** 
+- **`azd` tidak dijumpai atau penyediaan gagal?** 
   - Pasang [Azure Developer CLI](https://aka.ms/azure-dev/install) dan jalankan `azd auth login`
-  - Pilih rantau di mana `gpt-4o-mini` tersedia (contoh `eastus2`)
-  - Lihat [panduan persediaan Azure AI Foundry](getting-started-azure-openai.md) untuk butiran
+  - Pilih wilayah yang menyokong `gpt-5.6-luna` dan `text-embedding-3-small` (contoh `eastus2`), dengan kuota cukup dalam langganan anda
+  - Lihat [panduan penyediaan Azure AI Foundry](getting-started-azure-openai.md) untuk butiran
 
-- **Bekas dev tidak mula?** 
-  - Pastikan Docker Desktop sedang berjalan (untuk pembangunan tempatan)
+- **Bekas dev tidak bermula?** 
+  - Pastikan Docker Desktop berjalan (untuk pembangunan tempatan)
   - Cuba bina semula bekas: `Ctrl+Shift+P` → "Dev Containers: Rebuild Container"
 
 - **Ralat kompilasi aplikasi?**
-  - Pastikan anda berada dalam direktori betul: `02-SetupDevEnvironment/examples/basic-chat-azure`
+  - Pastikan anda berada di direktori betul: `02-SetupDevEnvironment/examples/basic-chat-azure`
   - Cuba bersihkan dan bina semula: `mvn clean compile`
 
-> **Perlu bantuan?**: Masih ada masalah? Buka isu dalam repositori dan kami akan membantu anda.
+> **Perlu bantuan?**: Masih ada masalah? Buka isu dalam repositori dan kami akan bantu anda.
 
 ---
 

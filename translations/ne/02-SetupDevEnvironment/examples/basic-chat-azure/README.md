@@ -1,61 +1,69 @@
-# Azure AI Foundry सँग आधारभूत कुराकानी - अन्तदेखि-अन्त उदाहरण
+# Azure AI Foundry सँग आधारभूत च्याट - अन्त्यदेखि अन्त्यसम्म उदाहरण
 
-यस उदाहरणले एउटा साधारण Spring Boot अनुप्रयोग हो जुन **Azure AI Foundry** मोडेलसँग **keyless authentication** (Microsoft Entra ID) प्रयोग गरेर जडान हुन्छ र तपाईंको सेटअप जाँच गर्दछ। यसले Spring AI को `ChatClient` प्रयोग गर्दछ।
+यो उदाहरण एउटा सरल Spring Boot अनुप्रयोग हो जुन **Azure AI Foundry** मोडेलमा **keyless authentication** (Microsoft Entra ID) प्रयोग गरेर जडान गर्छ र तपाईंको सेटअप परीक्षण गर्छ। यसले Spring AI को `ChatClient` प्रयोग गर्छ, जुन **आधिकारिक OpenAI Java SDK** र **Azure OpenAI v1** एन्डपोइन्टले समर्थित छ।
+
+[pom.xml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/pom.xml) मा संस्करणहरू Spring Boot **4.1.1**, Spring AI **2.0.1**, OpenAI Java **4.63.1**, Azure Identity **1.18.6**, र dotenv-java **3.2.0** हुन्। नमूनाले `spring-ai-starter-model-openai` प्रयोग गर्छ र स्पष्ट रूपमा `openai-java` र `azure-identity` घोषणा गर्छ; Spring AI 2 ले पुरानो Azure OpenAI स्टार्टर हटायो।
 
 ## सामग्री तालिका
 
-- [पूर्व आवश्यकताहरू](#पूर्व-आवश्यकताहरू)
-- [छिटो सुरुवात](#छिटो-सुरुवात)
+- [पूर्वआवश्यकताहरू](#पूर्वआवश्यकताहरू)
+- [चाँडो सुरु गर्ने तरिका](#चाँडो-सुरु-गर्ने-तरिका)
 - [प्रमाणीकरण कसरी काम गर्छ](#प्रमाणीकरण-कसरी-काम-गर्छ)
-- [अनुप्रयोग चलाउने तरिका](#अनुप्रयोग-चलाउने-तरिका)
+- [अनुप्रयोग चलाउने](#अनुप्रयोग-चलाउने)
   - [Maven प्रयोग गर्दै](#maven-प्रयोग-गर्दै)
   - [VS Code प्रयोग गर्दै](#vs-code-प्रयोग-गर्दै)
-  - [अपेक्षित नतिजा](#अपेक्षित-नतिजा)
+  - [अपेक्षित आउटपुट](#अपेक्षित-आउटपुट)
 - [कन्फिगरेसन सन्दर्भ](#कन्फिगरेसन-सन्दर्भ)
   - [पर्यावरण चरहरू](#वातावरण-चरहरू)
   - [Spring कन्फिगरेसन](#spring-कन्फिगरेसन)
 - [समस्या समाधान](#समस्या-समाधान)
-  - [सार्वजनिक समस्याहरू](#सार्वजनिक-समस्याहरू)
+  - [सामान्य समस्याहरू](#सामान्य-समस्याहरू)
   - [डिबग मोड](#डिबग-मोड)
-- [अर्को चरणहरू](#अर्को-चरणहरू)
-- [संसाधनहरू](#स्रोतहरू)
+- [अगाडि के गर्ने](#अगाडिका-चरणहरू)
+- [स्रोतहरू](#स्रोतहरू)
 
-## पूर्व आवश्यकताहरू
+## पूर्वआवश्यकताहरू
 
-यस उदाहरण चलाउनुअघि सुनिश्चित गर्नुहोस् कि तपाईंसँग:
+यो उदाहरण चलाउनु अघि, सुनिश्चित गर्नुहोस् कि तपाईंसँग छ:
 
-- एउटा Azure AI Foundry स्रोत जसमा `gpt-4o-mini` डिप्लोयमेन्ट छ — यसलाई `azd up` मार्फत वा म्यानुअली [Azure AI Foundry सेटअप गाइड](../../getting-started-azure-openai.md) बाट प्रावधान गर्नुहोस्
-- उक्त स्रोतमा **Cognitive Services OpenAI User** भूमिका (Bicep टेम्प्लेटहरूले यो तपाईंका लागि सेट गर्छन्)
-- [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli), जुन `az login` सँग साइन इन गरिएको छ
+- `gpt-5.6-luna` तैनाथी भएको Azure AI Foundry स्रोत - यो `azd up` वा म्यानुअली [Azure AI Foundry सेटअप मार्गनिर्देशन](../../getting-started-azure-openai.md) मार्फत प्रावधान गर्न सकिन्छ
+- सो स्रोतमा **Cognitive Services OpenAI User** भूमिका (Bicep टेम्प्लेटहरूले तपाईंका लागि यो सेट गर्छन्)
+- [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli), `az login` द्वारा साइन इन गरिएको
 - Java 21+ र Maven 3.9+
 
-> **कुनै API कुञ्जी आवश्यक छैन** — प्रमाणीकरण Microsoft Entra ID मार्फत keyless हुन्छ।
+> **कुनै API कुञ्जी आवश्यक छैन** — प्रमाणीकरण Microsoft Entra ID मार्फत keyless छ।
 
-## छिटो सुरुवात
+## चाँडो सुरु गर्ने तरिका
 
 ```bash
-# 1. परियोजनामा जानुहोस्
+# 1. प्रोजेक्टमा जानुहोस्
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 
-# 2. साइन इन गर्नुहोस् ताकि keyless auth ले टोकन प्राप्त गर्न सकोस्
+# 2. साइन इन गर्नुहोस् ताकि keyless प्रमाणीकरणले टोकन प्राप्त गर्न सकोस्
 az login
 
-# 3. एन्डपोइन्ट कन्फिगर गर्नुहोस्
-#    - यदि तपाईंले `azd up` चलाउनुभएको छ भने, .env तपाईंको लागि लेखिएको थियो (यो भाग छोड्नुहोस्)।
-#    - अन्यथा टेम्पलेट कपी गरेर AZURE_OPENAI_ENDPOINT सेट गर्नुहोस्:
+# 3. अन्त बिन्दु कन्फिगर गर्नुहोस्
+#    - यदि तपाईंले `azd up` चलाउनुभयो भने, तपाईंको लागि .env लेखिएको थियो (यो छोड्नुहोस्)।
+#    - अन्यथा ढाँचा प्रतिलिपि गर्नुहोस् र AZURE_OPENAI_ENDPOINT सेट गर्नुहोस्:
 cp .env.example .env
 
-# 4. अनुप्रयोग चलाउनुहोस्
+# 4. एप्लिकेशन चलाउनुहोस्
 mvn spring-boot:run
 ```
 
 ## प्रमाणीकरण कसरी काम गर्छ
 
-यस उदाहरणले **Microsoft Entra ID** सँग प्रमाणीकरण गर्छ — कुनै API कुञ्जी छैन।
+यो उदाहरण **Microsoft Entra ID** सँग प्रमाणीकरण गर्दछ — कुनै API कुञ्जी छैन।
 
-जब केवल `spring.ai.azure.openai.endpoint` सेट हुन्छ (र api-key हुँदैन), Spring AI ले Azure OpenAI क्लाइन्ट [`DefaultAzureCredential`](https://learn.microsoft.com/java/api/com.azure.identity.defaultazurecredential) सँग बनाउँछ। त्यो प्रमाणीकरणले तपाईंको स्थानीय `az login` सेसनबाट वा Azure मा चलाउँदा व्यवस्थापित पहिचानबाट टोकन पत्ता लगाउँछ — त्यसैले एउटै कोड दुवै ठाउँमा बिना परिवर्तन काम गर्छ।
+अनुप्रयोगले [BasicChatApplication.java](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/java/com/example/BasicChatApplication.java) मा स्पष्ट रूपमा प्रमाणीकरण कन्फिगर गर्छ:
 
-## अनुप्रयोग चलाउने तरिका
+1. `azureCredential()` ले `AuthenticationUtil.getBearerTokenSupplier` प्रयोग गरेर `DefaultAzureCredential` र `https://ai.azure.com/.default` स्कोपका साथ `BearerTokenCredential` सिर्जना गर्छ।
+2. `azureOpenAiClient()` ले `OpenAIOkHttpClient.builder()` प्रयोग गरी `OpenAIClient` बनाउँछ, स्रोत एन्डपोइन्टलाई `/openai/v1` मा समाधान गर्छ, र `.credential(...)` बाट bearer क्रेडेन्सियल दिन्छ।
+3. `azureChatModel()` ले त्यो क्लाइन्ट Spring AI को `OpenAiChatModel` लाई दिन्छ, जुन पाठको `ChatClient` को समर्थन गर्छ।
+
+यी स्पष्ट बीनहरूले ग्लोबल `OPENAI_API_KEY` लाई Azure प्रमाणीकरणबाट अधिलेखन हुनबाट रोक्छन्। YAML बाट केवल API कुञ्जी हटाउनु भनेको प्रमाणीकरण सेटअप होइन। `DefaultAzureCredential` ले तपाईको स्थानीय `az login` सत्र वा Azure मा म्यानेज्ड आइडेन्टिटी प्रयोग गर्न सक्छ; जस्तोसुकै आइडेन्टिटी चयन गरिएको छ त्यसले माथि सूचीबद्ध स्रोत भूमिका पाउनुपर्छ।
+
+## अनुप्रयोग चलाउने
 
 ### Maven प्रयोग गर्दै
 
@@ -65,17 +73,22 @@ mvn spring-boot:run
 
 ### VS Code प्रयोग गर्दै
 
-1. VS Code मा परियोजना खोल्नुहोस्
+1. परियोजना VS Code मा खोल्नुहोस्
 2. `F5` थिच्नुहोस् वा "Run and Debug" प्यानल प्रयोग गर्नुहोस्
 3. "Spring Boot-BasicChatApplication" कन्फिगरेसन चयन गर्नुहोस्
 
-> **सूचना**: VS Code कन्फिगरेसनले तपाईंको .env फाइल स्वतः लोड गर्दछ
+> **सूचना**: अनुप्रयोगले `.env` आफ्नो कार्य निर्देशिकाबाट लोड गर्छ, VS Code बाट सुरु गर्दा समेत।
 
-### अपेक्षित नतिजा
+### अपेक्षित आउटपुट
 
-```
+सफल चलाएको पछिको उदाहरणात्मक आउटपुट (सुरु हुने लगहरू समावेश गरिएको छैन; प्रतिक्रिया शब्दावली फरक पर्न सक्छ):
+
+```text
 Starting Basic Chat with Azure OpenAI...
-Environment variables loaded successfully
+Environment variables loaded from .env file
+Endpoint: https://your-resource.openai.azure.com/
+Deployment: gpt-5.6-luna
+Auth: keyless (Microsoft Entra ID via DefaultAzureCredential)
 Connecting to Azure OpenAI...
 Sending prompt: What is AI in a short sentence? Max 100 words.
 
@@ -91,82 +104,102 @@ Success! Azure OpenAI connection is working correctly.
 
 ### वातावरण चरहरू
 
-| चर | वर्णन | आवश्यक | उदाहरण |
+| चर | विवरण | आवश्यक | उदाहरण |
 |----------|-------------|----------|---------|
-| `AZURE_OPENAI_ENDPOINT` | Foundry (Azure OpenAI) अन्त बिन्दु URL | हो | `https://my-resource.openai.azure.com/` |
-| `AZURE_OPENAI_DEPLOYMENT` | च्याट मोडेल डिप्लोयमेन्ट नाम | होइन | `gpt-4o-mini` (पूर्वनिर्धारित) |
+| `AZURE_OPENAI_ENDPOINT` | Foundry (Azure OpenAI) एन्डपोइन्ट URL | हो | `https://my-resource.openai.azure.com/` |
+| `AZURE_OPENAI_DEPLOYMENT` | च्याट मोडेल तैनाथी नाम | होइन | `gpt-5.6-luna` (पूर्वनिर्धारित) |
 
-> **कुनै** API कुञ्जी चर छैन — प्रमाणीकरण keyless (Microsoft Entra ID मार्फत `az login`) हो।
+> कुनै API कुञ्जी चर छैन — प्रमाणीकरण keyless (Microsoft Entra ID द्वारा `az login`) हो।
 
 ### Spring कन्फिगरेसन
 
-`application.yml` फाइलले निम्न कन्फिगर गर्छ:
-- **अन्त बिन्दु**: `${AZURE_OPENAI_ENDPOINT}` - वातावरण चरबाट
-- **डिप्लोयमेन्ट**: `${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}` - वातावरण चरबाट र फallback सहित
-- **प्रमाणीकरण**: keyless — कुनै `api-key` सेट गरिएको छैन, त्यसैले Spring AI ले `DefaultAzureCredential` प्रयोग गर्छ
-- **टेम्परेचर**: `0.7` - सिर्जनात्मकता नियन्त्रित गर्छ (0.0 = निश्चित, 1.0 = सिर्जनात्मक)
-- **अधिकतम टोकन**: `500` - अधिकतम प्रतिक्रिया लम्बाइ
+[application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml) सेटिङहरूले `spring.ai.openai` पूर्वसर्ग र सपाट च्याट गुणहरू प्रयोग गर्छन् (कुनै `options` ब्लक छैन):
+
+```yaml
+spring:
+  ai:
+    openai:
+      base-url: ${AZURE_OPENAI_ENDPOINT}
+      microsoft-foundry: true
+      chat:
+        model: ${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
+        reasoning-effort: none
+        max-completion-tokens: 500
+```
+
+`model` भनेको **Azure तैनाथी नाम** हो। प्रमाणीकरण माथि वर्णन गरिएका स्पष्ट बीनहरूबाट आउँछ, `api-key` सेटिङबाट होइन। पाठले reasoning लाई अक्षम गरेको छ र ५०० मा completion tokens को सीमा लगाएको छ; यसले `temperature` र पुरानो `max-tokens` सेट नगरेको छ।
+
+Microsoft ले नयाँ अनुप्रयोगहरूका लागि [आधिकारिक OpenAI SDK संग Azure OpenAI v1 र Responses API](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java) सिफारिश गर्छ। Chat Completions यस पहिलेको सन्देश-आधारित पाठका लागि समर्थित छ। GPT-5.6 का लागि, टुलहरू समावेश गर्दै Chat Completions अनुरोधहरूले `reasoning_effort` लाई `none` मा सेट गर्नुपर्छ; reasoning र टुल संयोजन गर्दा Responses प्रयोग गर्नुहोस्। हेर्नुहोस् [reasoning मोडेलहरूसँग टुल कलिङ](https://learn.microsoft.com/azure/foundry/openai/how-to/reasoning#tool-calling-with-reasoning-models)।
 
 ## समस्या समाधान
 
-### सार्वजनिक समस्याहरू
+### सामान्य समस्याहरू
 
 <details>
 <summary><strong>त्रुटि: 401 / "PermissionDenied" / टोकन त्रुटिहरू</strong></summary>
 
-- `az login` चलाउनुहोस् — keyless प्रमाणीकरणले सक्रिय साइन-इन आवश्यक छ टोकन प्राप्त गर्न
-- तपाईंको खातामा स्रोतमा **Cognitive Services OpenAI User** भूमिका हो कि छैन जाँच गर्नुहोस्
-- यदि तपाईंले भर्खर भूमिका दिनुभयो भने केहि समय कुर्नुहोस् त्यसको प्रसारणको लागि
-- सुनिश्चित गर्नुहोस् कि तपाईं सहि टेनेन्ट/सब्सक्रिप्शनमा हुनुहुन्छ (`az account show`)
+- `az login` चलाउनुहोस् — keyless प्रमाणीकरणले सक्रिय साइन-इनले टोकन पाउन आवश्यक छ
+- खातामा स्रोतमा **Cognitive Services OpenAI User** भूमिका छ कि छैन जाँच्नुहोस्
+- यदि तपाईंले भर्खर भूमिका दिनुभएको छ भने, यसको फैलावटको लागि केही समय पर्खनुहोस्
+- तपाईं सही tenant/subscription मा हुनुहुन्छ कि छैन पुष्टि गर्नुहोस् (`az account show`)
 </details>
 
 <details>
-<summary><strong>त्रुटि: "अन्त बिन्दु वैध छैन" / जडान त्रुटिहरू</strong></summary>
+<summary><strong>त्रुटि: "एन्डपोइन्ट मान्य छैन" / जडान त्रुटिहरू</strong></summary>
 
-- सुनिश्चित गर्नुहोस् `AZURE_OPENAI_ENDPOINT` पूर्ण आधार URL हो (जस्तै, `https://your-resource.openai.azure.com/`)
-- समाप्ति स्ल्यासको स्थिरता जाँच गर्नुहोस्
-- अन्त बिन्दु तपाईंको प्रावधान गरिएको स्रोतसँग मेल खान्छ कि छैन जाँच गर्नुहोस् (`azd env get-values`)
+- `AZURE_OPENAI_ENDPOINT` पूर्ण आधार URL हो कि छैन सुनिश्चित गर्नुहोस् (जस्तै, `https://your-resource.openai.azure.com/`)
+- पछाडि स्ल्यासको स्थिरता जाँच गर्नुहोस्
+- एन्डपोइन्ट तपाईंले प्रावधान गरेको स्रोतसँग मेल खाँदो छ कि छैन जांच गर्नुहोस् (`azd env get-values`)
 </details>
 
 <details>
-<summary><strong>त्रुटि: "डिप्लोयमेन्ट फेला परेन"</strong></summary>
+<summary><strong>त्रुटि: "तैनाथी भेटिएन"</strong></summary>
 
-- सुनिश्चित गर्नुहोस् `AZURE_OPENAI_DEPLOYMENT` Azure मा कुनै डिप्लोयमेन्ट नामसँग मेल खान्छ
-- मोडेल सफलतापूर्वक डिप्लोय गरिएको र सक्रिय छ कि छैन जाँच गर्नुहोस्
-- पूर्वनिर्धारित डिप्लोयमेन्ट नाम `gpt-4o-mini` हो
+- `AZURE_OPENAI_DEPLOYMENT` Azure मा कुनै तैनाथी नामसंग मेल खान्छ कि छैन सुनिश्चित गर्नुहोस्
+- मोडेल सफलतापूर्वक तैनाथी गरिएको र सक्रिय छ कि छैन जाँच गर्नुहोस्
+- पूर्वनिर्धारित तैनाथी नाम `gpt-5.6-luna` हो
 </details>
 
 <details>
-<summary><strong>VS Code: वातावरण चरहरू लोड नहुने समस्या</strong></summary>
+<summary><strong>त्रुटि: 429 / दर सीमा उल्लंघन गरियो</strong></summary>
 
-- सुनिश्चित गर्नुहोस् `.env` फाइल परियोजनाको मुख्य निर्देशिकामा छ (pom.xml सँग एउटै तहमा)
+- पूर्वनिर्धारित GPT-5.6 Luna तैनाथीमा Global Standard क्षमता 10 छ: १० अनुरोध/मिनेट र १०,००० टोकन/मिनेट
+- उदाहरणहरू क्रमशः चलाउनुहोस् र पुनः प्रयास अघि सेवाको पुनः प्रयास अवधि कुर्नुहोस्
+- यो आधारभूत उदाहरणले स्वत: SDK पुनः प्रयासहरू अक्षम गरेको छ, त्यसैले असफल अनुरोध सिधै रिपोर्ट गरिन्छ
+</details>
+
+<details>
+<summary><strong>VS Code: वातावरण चरहरू लोड हुँदैनन्</strong></summary>
+
+- सुनिश्चित गर्नुहोस् कि तपाईंको `.env` फाइल परियोजना रुट निर्देशिकामा छ (`pom.xml` को स्तरसँग समान)
 - VS Code को एकीकृत टर्मिनलमा `mvn spring-boot:run` चलाएर प्रयास गर्नुहोस्
-- VS Code Java एक्सटेन्सन ठीकसँग इन्स्टल छ कि छैन जाँच गर्नुहोस्
+- VS Code Java एक्सटेन्सन ठीकसँग स्थापना भएको छ कि छैन जाँच्नुहोस्
 </details>
 
 ### डिबग मोड
 
-विस्तृत लगिङ्ग सक्षम गर्न, `application.yml` मा यी लाइनहरू अनकमेण्ट गर्नुहोस्:
+विस्तृत लगिंग सक्षम गर्न, [application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml) मा यी पङ्क्तिहरू अनकमेंट गर्नुहोस्:
 
 ```yaml
 logging:
   level:
-    org.springframework.ai: DEBUG
-    com.azure: DEBUG
+    "[org.springframework.ai]": DEBUG
+    "[com.azure]": DEBUG
 ```
 
-## अर्को चरणहरू
+## अगाडिका चरणहरू
 
-**सेटअप पूरा भयो!** तपाईंको सिकाइ यात्रालाई जारी राख्नुहोस्:
+**सेटअप पूरा भयो!** आफ्नो सिकाइ यात्रा जारी राख्नुहोस्:
 
-[अध्याय ३: मुख्य सृजनात्मक AI प्रविधिहरू](../../../03-CoreGenerativeAITechniques/README.md)
+[अध्याय ३: मुख्य जेनेरेटिभ AI प्रविधिहरू](../../../03-CoreGenerativeAITechniques/README.md)
 
 ## स्रोतहरू
 
-- [Spring AI Azure OpenAI डकुमेन्टेसन](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
+- [Spring AI 2 OpenAI Java SDK संक्रमण](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [आधिकारिक OpenAI Java SDK Azure OpenAI v1 संग](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
 - [Microsoft Entra ID सँग keyless प्रमाणीकरण](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
 - [Azure AI Foundry पोर्टल](https://ai.azure.com/)
-- [Azure AI Foundry डकुमेन्टेसन](https://learn.microsoft.com/azure/ai-foundry/)
+- [Azure AI Foundry कागजात](https://learn.microsoft.com/azure/ai-foundry/)
 
 ---
 

@@ -6,26 +6,26 @@
     "language_code": "he"
   },
   "02-SetupDevEnvironment/README.md": {
-    "original_hash": "c948683317d77fbe67aacacbeaa3c7c5",
-    "translation_date": "2026-07-02T10:52:13+00:00",
+    "original_hash": "ec57ae7c28de7253f2ee64d3401b597b",
+    "translation_date": "2026-09-15T04:04:50+00:00",
     "source_file": "02-SetupDevEnvironment/README.md",
     "language_code": "he"
   },
   "02-SetupDevEnvironment/examples/basic-chat-azure/README.md": {
-    "original_hash": "b2c91c126ca3e37fdde4ddf5086615ff",
-    "translation_date": "2026-07-02T10:54:59+00:00",
+    "original_hash": "57d611c712dc3613dba4ab6f3d7707e0",
+    "translation_date": "2026-09-15T04:14:39+00:00",
     "source_file": "02-SetupDevEnvironment/examples/basic-chat-azure/README.md",
     "language_code": "he"
   },
   "02-SetupDevEnvironment/getting-started-azure-openai.md": {
-    "original_hash": "8a6f570b99ec52316a14edbdb6c50a28",
-    "translation_date": "2026-07-02T10:52:47+00:00",
+    "original_hash": "9ce5ff64a182e4e8aacb4976004084d0",
+    "translation_date": "2026-09-15T04:05:41+00:00",
     "source_file": "02-SetupDevEnvironment/getting-started-azure-openai.md",
     "language_code": "he"
   },
   "03-CoreGenerativeAITechniques/README.md": {
-    "original_hash": "e81f71c0888bf41cace4bfc3ecc1891d",
-    "translation_date": "2026-07-02T10:51:29+00:00",
+    "original_hash": "86c0b2cd61ff21cf674bad5cec9562d5",
+    "translation_date": "2026-09-15T04:03:42+00:00",
     "source_file": "03-CoreGenerativeAITechniques/README.md",
     "language_code": "he"
   },
@@ -36,20 +36,20 @@
     "language_code": "he"
   },
   "04-PracticalSamples/calculator/README.md": {
-    "original_hash": "41559a4802d4162e6f61829f0791a041",
-    "translation_date": "2026-07-03T07:27:09+00:00",
+    "original_hash": "6274ca406d2dd6b12ef3b0149d189ddf",
+    "translation_date": "2026-09-15T04:13:47+00:00",
     "source_file": "04-PracticalSamples/calculator/README.md",
     "language_code": "he"
   },
   "04-PracticalSamples/foundrylocal/README.md": {
-    "original_hash": "62c4437338c8370900c3691a0ad79349",
-    "translation_date": "2026-04-15T06:34:47+00:00",
+    "original_hash": "bbb9b55aea0c1880c4c53d6f90cac497",
+    "translation_date": "2026-09-15T04:12:35+00:00",
     "source_file": "04-PracticalSamples/foundrylocal/README.md",
     "language_code": "he"
   },
   "04-PracticalSamples/petstory/README.md": {
-    "original_hash": "7e99b42d595a813b3ec86252a44e9058",
-    "translation_date": "2026-07-02T10:55:42+00:00",
+    "original_hash": "c18d91e6f64b4351e4d9cdbe12145901",
+    "translation_date": "2026-09-15T04:06:52+00:00",
     "source_file": "04-PracticalSamples/petstory/README.md",
     "language_code": "he"
   },
@@ -72,8 +72,8 @@
     "language_code": "he"
   },
   "README.md": {
-    "original_hash": "6ea50f657a0ce1d2f27180f61b25a2ba",
-    "translation_date": "2026-07-03T07:26:40+00:00",
+    "original_hash": "de37948d78681a36ad7799f53a85887e",
+    "translation_date": "2026-09-15T04:02:10+00:00",
     "source_file": "README.md",
     "language_code": "he"
   },

@@ -1,354 +1,230 @@
-# Foundry Local Spring Boot Mokymasis
+# Foundry Local Spring Boot vadovėlis
 
-## Turinys
+Paleiskite mažą kalbos modelį savo kompiuteryje ir kvieskite jo OpenAI suderinamą
+REST tašką iš Java konsolės programos. Nenaudojama Azure diegimas, Azure prisijungimas,
+debesies API raktas ar debesies inferencija. **GPT-5.6 Luna yra tik Azure; ne
+konfigūruokite jo kaip Foundry Local modelio.**
 
-- [Reikalavimai prieš pradedant](#reikalavimai-prieš-pradedant)
-- [Projekto apžvalga](#projekto-apžvalga)
-- [Kodo supratimas](#kodo-supratimas)
-  - [1. Programos konfigūracija (application.properties)](#1-programos-konfigūracija-applicationproperties)
-  - [2. Pagrindinė programos klasė (Application.java)](#2-pagrindinė-programos-klasė-applicationjava)
-  - [3. AI paslaugų sluoksnis (FoundryLocalService.java)](#3-ai-paslaugų-sluoksnis-foundrylocalservicejava)
-  - [4. Projekto priklausomybės (pom.xml)](#4-projekto-priklausomybės-pomxml)
-- [Kaip visa tai veikia kartu](#kaip-visa-tai-veikia-kartu)
-- [Foundry Local nustatymas](#foundry-local-nustatymas)
-- [Programos paleidimas](#programos-paleidimas)
-- [Tikėtinas rezultatas](#tikėtinas-rezultatas)
-- [Kiti veiksmai](#kiti-veiksmai)
-- [Trikčių šalinimas](#trikčių-šalinimas)
+## Versijos ir reikalavimai
 
+| Komponentas | Versija |
+| --- | --- |
+| Java | 21 arba naujesnė |
+| Maven | 3.6.3 arba naujesnė |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Foundry Local SDK (lokalus REST serveris) | 2.0.1 |
+| Node.js (lokalus REST serveris) | 20 arba naujesnė |
+| Foundry Local CLI (pasirinktinai, atskira versija) | 0.10.3 peržiūra |
 
-## Reikalavimai prieš pradedant
+Spring Boot valdo Spring Framework, Jackson, JUnit ir Maven įskiepių versijas.
+Šis pavyzdys naudoja tiesiogiai OpenAI Java SDK, o ne Spring AI. Senasis nenaudojamas
+Spring AI milestone atributas ir saugykla buvo pašalinti.
 
-Prieš pradėdami šį mokymą, įsitikinkite, kad turite:
+Rekomenduojamas pradinio modelio pasirinkimas yra **Qwen 2.5 0.5B**, CPU variantas
+`qwen2.5-0.5b-instruct-generic-cpu:4` (apie 822 MB kataloge).
+Jis nereikalauja GPU vykdymo teikėjų. Kiti palaikomi, talpykloje laikomi maži modeliai
+gali būti pasirinkti tiesiogiai. Modelio ir vykdymo aplinkos diegimas reikalauja tinklo prieigos;
+užklausos ir inferencija lieka vietinėse sąlygose. Foundry Local vis tiek gali pateikti minimalias vykdymo
+diagnostikas net jei nereikšminga telemetrija išjungta.
 
-- **Java 21 arba naujesnę** versiją savo sistemoje
-- **Maven 3.6+** projektų kūrimui
-- Įdiegtą ir veikiančią **Foundry Local**
+Vykdykite šias komandas iš šio pavyzdžio katalogo.
 
-### **Įdiekite Foundry Local:**
+## Surinkite ir išbandykite Java
 
-> **Pastaba:** Foundry Local CLI galima naudoti tik **Windows** ir **macOS** sistemose. Linux palaikomas naudojant [Foundry Local SDKs](https://github.com/microsoft/Foundry-Local) (Python, JavaScript, C#, Rust).
-
-```bash
-# Windows
-winget install Microsoft.FoundryLocal
-
-# macOS
-brew tap microsoft/foundrylocal
-brew install foundrylocal
+```powershell
+mvn clean verify
 ```
 
-Patikrinkite įdiegimą:
-```bash
+HTTP sutarties testai paleidžia trumpalaikį loopback serverį ir patikrina tikrą OpenAI Java SDK.
+Jie apima užklausų serializavimą, modelio paiešką, aiškų modelio
+pasirinkimą, dviprasmiškas ar netaisyklingas modelių sąrašas, HTTP klaidas, tuščius atsakymus,
+tik vietines URL, ir komandų eilutės klaidų perdavimą. Jie nereikalauja modelio ar
+tinklo prieigos, išskyrus Maven priklausomybių įdiegimą. Tiesioginis testas yra pasirenkamas.
+
+## Paleiskite vietinį modelį
+
+### Rekomenduojama: prisegtas SDK serveris
+
+Nėra natūralaus Foundry Local Java SDK. Mažas Node.js pagalbininkas talpina oficialaus SDK REST serverį;
+programa ir pokalbio užklausa išlieka Java.
+
+Įdiekite prisegtas vykdymo aplinkos priklausomybes:
+
+```powershell
+npm ci
+```
+
+Jei Windows x64 negali pasiekti NuGet SDK gimtojo įdiegimo metu, naudokite pateiktą
+atsarginę parinktį. Ji atsisiunčia atitinkamą oficialų GitHub vykdymo archyvą,
+patikrina leidimo SHA-256 kontrolinį sumą ir įdeda jo DLL šalia gauto papildo. Ji
+neišjungia TLS patikros, nereikalauja administratoriaus teisų ar nesikeičia SDK šaltinio kodo.
+
+```powershell
+npm ci --ignore-scripts
+pwsh -File ./scripts/install-foundry-runtime.ps1
+```
+
+Parodykite modelius, jau talpykloje esamus šioje mašinoje:
+
+```powershell
+npm run start:foundry -- --list
+```
+
+Pirmą kartą paleidus, aiškiai leiskite parsisiųsti mažą CPU modelį:
+
+```powershell
+npm run start:foundry -- --model qwen2.5-0.5b-instruct-generic-cpu:4 --download --port 5273
+```
+
+Vėlesnių paleidimų metu praleiskite `--download`, kad reikėtų turimą talpykloje modelį:
+
+```powershell
+npm run start:foundry -- --model qwen2.5-0.5b-instruct-generic-cpu:4 --port 5273
+```
+
+Pagalbininkas labiau pageidauja atitinkamą talpykloje esantį modelį, priima slapyvardį arba tikslią varianto ID,
+ir atsisako trūkstamo modelio, nebent pateikiamas `--download`. Jis registruoja tik
+pasirinkto modelio vykdymo teikėją, kai to reikia. Laikyti GPU variantai vis tiek gali
+reikėti suderinamų vykdymo teikėjo paketus ir tvarkykles.
+
+Jei prievadas 5273 užimtas, perduokite `--port 0` kitam laisvam prievadui. Pagalbinė programa atspausdina
+`FOUNDRY_LOCAL_BASE_URL`, tikslų `FOUNDRY_LOCAL_MODEL` ID ir jo PID, kai yra paruošta.
+Naudokite atspausdintą galinį tašką Java. Palikite šį terminalą atidarytą paleidžiant Java;
+**Ctrl+C** sustabdo REST serverį ir atlaisvina modelį.
+
+Numatytoji talpykla yra `~/.foundry/cache/models`. Nustatykite `FOUNDRY_LOCAL_CACHE_DIR` kitai
+egzistuojančiai talpyklai. Žurnalai ir pagalbinės būsenos rašomi šio pavyzdžio
+`target/foundry-local` kataloge. Sustabdykite pagalbinę programą prieš vykdant `mvn clean`.
+
+### Pasirinktinai: Foundry Local CLI
+
+CLI ir SDK turi nepriklausomus leidimus: CLI **0.10.3** įtraukia SDK **1.2.4**;
+aukščiau pateikta pagalbinė programa naudoja SDK **2.0.1**. Įdiegus naujausią CLI neįdiegiama
+naujausia kalbos SDK versija. Žr. [CLI leidimo pastabas](https://github.com/microsoft/Foundry-Local/releases/tag/cli-preview-0.10.3).
+
+„Windows“ naudokite vartotojui skirtą diegimo komandą, jei CLI nėra įdiegta:
+
+```powershell
+winget install --id Microsoft.FoundryLocal --exact --source winget --scope user --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
+```
+
+Arba atnaujinkite esamą diegimą:
+
+```powershell
+winget upgrade --id Microsoft.FoundryLocal --exact --source winget --scope user --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
 foundry --version
 ```
 
-## Projekto apžvalga
+CLI 0.10.x pakeičia senas `foundry service` komandas į `foundry server`:
 
-Šis projektas susideda iš keturių pagrindinių komponentų:
-
-1. **Application.java** - pagrindinis Spring Boot programos įėjimo taškas
-2. **FoundryLocalService.java** - paslaugų sluoksnis, kuris tvarko AI komunikaciją
-3. **application.properties** - Foundry Local ryšio konfigūracija
-4. **pom.xml** - Maven priklausomybės ir projekto konfigūracija
-
-## Kodo supratimas
-
-### 1. Programos konfigūracija (application.properties)
-
-**Failas:** `src/main/resources/application.properties`
-
-```properties
-foundry.local.base-url=http://localhost:5273/v1
-# foundry.local.model is auto-detected from Foundry Local. Set it here to override:
-# foundry.local.model=Phi-4-mini-instruct-cuda-gpu:5
+```powershell
+foundry server start --port 5273
+foundry cache list
+foundry model load qwen2.5-0.5b-instruct-generic-cpu:4
+foundry server status --output json
 ```
 
-**Ką tai daro:**
-- **base-url**: Nurodo, kur veikia Foundry Local, įskaitant `/v1` kelią dėl OpenAI API suderinamumo. Numatytoji prievado reikšmė yra `5273`. Jei prievadas kitoks, patikrinkite jį su `foundry service status`.
-- **model** (pasirinktinai): Nurodo AI modelį, naudojamą teksto generavimui. **Pagal numatytuosius nustatymus programa automatiškai aptinka modelį** užklausdama Foundry Local `/v1/models` pabaigos tašką paleidimo metu, todėl nereikia to nustatyti. Vis tiek galite jį nurodyti rankiniu būdu, jei norite pakeisti automatinį aptikimą.
+`model load` reikia jau atsisiųsto modelio. Peržiūrėkite `foundry model --help` dėl
+atsisiuntimo komandų. Naudokite būsenos išvesties tikrą galinį tašką; kitaip CLI
+naudoja automatiškai priskirtą prievadą. Nepradėkite CLI ir SDK pagalbinės programos
+tame pačiame prievade. Baigus:
 
-**Pagrindinė sąvoka:** Spring Boot automatiškai įkelia šiuos parametrus ir pateikia juos programai per `@Value` anotaciją.
-
-### 2. Pagrindinė programos klasė (Application.java)
-
-**Failas:** `src/main/java/com/example/Application.java`
-
-```java
-@SpringBootApplication
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(Application.class);
-        app.setWebApplicationType(WebApplicationType.NONE);  // Nereikia jokio interneto serverio
-        app.run(args);
-    }
+```powershell
+foundry server stop
 ```
 
-**Ką tai daro:**
-- `@SpringBootApplication` įjungia Spring Boot automatinį konfigūravimą
-- `WebApplicationType.NONE` nurodo Spring, kad tai komandų eilutės programa, o ne interneto serveris
-- Pagrindinė funkcija paleidžia Spring programą
+## Paleiskite Java programą
 
-**Demo vykdytojas:**
-```java
-@Bean
-public CommandLineRunner foundryLocalRunner(FoundryLocalService foundryLocalService) {
-    return args -> {
-        System.out.println("=== Foundry Local Demo ===");
-        System.out.println("Calling Foundry Local service...");
-        
-        String testMessage = "Hello! Can you tell me what you are and what model you're running?";
-        System.out.println("Sending message: " + testMessage);
-        
-        String response = foundryLocalService.chat(testMessage);
-        System.out.println("Response from Foundry Local:");
-        System.out.println(response);
-        System.out.println("=========================");
-    };
-}
-```
+Antrame terminale nustatykite galinį tašką ir tikslų modelio ID, atspausdintus jūsų serveryje:
 
-**Ką tai daro:**
-- `@Bean` sukuria komponentą, kuriuo valdo Spring
-- `CommandLineRunner` vykdo kodą po Spring Boot paleidimo
-- `foundryLocalService` automatiškai įjungiama Spring (priklausomybės injekcija)
-- Siunčia bandymo žinutę AI ir rodo atsakymą
-
-### 3. AI paslaugų sluoksnis (FoundryLocalService.java)
-
-**Failas:** `src/main/java/com/example/FoundryLocalService.java`
-
-#### Konfigūracijos įvedimas:
-```java
-@Service
-public class FoundryLocalService {
-    
-    @Value("${foundry.local.base-url:http://localhost:5273/v1}")
-    private String baseUrl;
-    
-    @Value("${foundry.local.model:}")
-    private String model;    // Automatiškai aptikta, jei tuščia
-```
-
-**Ką tai daro:**
-- `@Service` nurodo Spring, kad ši klasė teikia verslo logiką
-- `@Value` įveda konfigūracijos reikšmes iš application.properties
-- Modelis pagal numatytuosius nustatymus yra tuščias, todėl paleidimo metu vykdomas **automatinis Foundry Local modelio aptikimas**. Tai reiškia, kad programa veikia su bet kuriuo Foundry Local įkeltu modeliu be rankinės konfigūracijos.
-
-#### Kliento inicijavimas:
-```java
-@PostConstruct
-public void init() {
-    // Automatiškai aptikti modelį iš Foundry Local, jei jis nėra aiškiai sukonfigūruotas
-    if (model == null || model.isBlank()) {
-        model = detectModel();
-    }
-
-    this.openAIClient = OpenAIOkHttpClient.builder()
-            .baseUrl(baseUrl)                // Pagrindinis URL jau apima /v1 iš konfigūracijos
-            .apiKey("not-needed")            // Vietiniam serveriui nereikia tikro API rakto
-            .build();
-}
-```
-
-**Ką tai daro:**
-- `@PostConstruct` vykdo šį metodą po Spring paslaugos sukūrimo
-- Jei nėra sukonfigūruoto modelio, užklausia Foundry Local `/v1/models` pabaigos taško ir pasirenka pirmą pasiekiamą modelį
-- Sukuria OpenAI klientą, kuris jungiasi prie jūsų vietinės Foundry Local instancijos
-- Bazinis URL iš `application.properties` jau apima `/v1` dėl OpenAI API suderinamumo
-- API raktas nustatytas kaip "not-needed", nes vietiniame kūrime autentifikacija nereikalinga
-
-#### Pokalbio metodas:
-```java
-public String chat(String message) {
-    try {
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(model)                    // Kurį DI modelį naudoti
-                .addUserMessage(message)         // Jūsų klausimas/prašymas
-                .maxCompletionTokens(150)        // Apriboti atsakymo ilgį
-                .temperature(0.7)                // Kontroliuoti kūrybingumą (0.0-1.0)
-                .build();
-        
-        ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
-        
-        // Išgauti DI atsakymą iš API rezultato
-        if (chatCompletion.choices() != null && !chatCompletion.choices().isEmpty()) {
-            return chatCompletion.choices().get(0).message().content().orElse("No response found");
-        }
-        
-        return "No response content found";
-    } catch (Exception e) {
-        throw new RuntimeException("Error calling chat completion: " + e.getMessage(), e);
-    }
-}
-```
-
-**Ką tai daro:**
-- **ChatCompletionCreateParams**: Konfigūruoja AI užklausą
-  - `model`: Nurodo, kurį AI modelį naudoti (turi tiksliai atitikti ID, gaunamą iš `foundry model list`)
-  - `addUserMessage`: Prideda jūsų žinutę prie pokalbio
-  - `maxCompletionTokens`: Nustato maksimalų atsakymo ilgio apribojimą (taupo resursus)
-  - `temperature`: Valdo atsitiktinumą (0.0 = deterministinis, 1.0 = kūrybiškas)
-- **API užklausa**: Siunčia užklausą Foundry Local
-- **Atsakymo tvarkymas**: Saugo teksto atsakymą iš AI
-- **Klaidų tvarkymas**: Apgaubia išimtis naudingomis klaidų žinutėmis
-
-### 4. Projekto priklausomybės (pom.xml)
-
-**Pagrindinės priklausomybės:**
-
-```xml
-<!-- Spring Boot - Application framework -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter</artifactId>
-    <version>${spring-boot.version}</version>
-</dependency>
-
-<!-- OpenAI Java SDK - For AI API calls -->
-<dependency>
-    <groupId>com.openai</groupId>
-    <artifactId>openai-java</artifactId>
-    <version>2.12.0</version>
-</dependency>
-
-<!-- Jackson - JSON processing -->
-<dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-    <version>2.17.0</version>
-</dependency>
-```
-
-**Ką jos daro:**
-- **spring-boot-starter**: Pateikia pagrindinę Spring Boot funkcionalumą
-- **openai-java**: Oficialus OpenAI Java SDK API sąveikai
-- **jackson-databind**: Tvarko JSON serializavimą/atserializavimą API užklausoms
-
-## Kaip visa tai veikia kartu
-
-Štai pilnas procesas paleidus programą:
-
-1. **Paleidimas**: Spring Boot paleidžiamas ir skaito `application.properties`
-2. **Paslaugos sukūrimas**: Spring sukuria `FoundryLocalService` ir įveda konfigūracijos reikšmes
-3. **Modelio aptikimas**: Jei modelis nesukonfigūruotas, paslauga užklausia Foundry Local `/v1/models` ir automatiškai naudoja pirmą modelį
-4. **Kliento paruošimas**: `@PostConstruct` inicijuoja OpenAI klientą, kad jungtųsi prie Foundry Local
-5. **Demo vykdymas**: `CommandLineRunner` paleidžiamas po starto
-6. **AI užklausa**: Demo skambina `foundryLocalService.chat()` su testine žinute
-7. **API užklausa**: Paslauga sukuria ir siunčia OpenAI suderinamą užklausą Foundry Local
-8. **Atsakymo apdorojimas**: Paslauga gauna ir pateikia AI atsakymą
-9. **Ekrane**: Programa išveda atsakymą ir baigia darbą
-
-## Foundry Local nustatymas
-
-1. **Įdiekite Foundry Local** naudodamiesi instrukcijomis skyriuje [Reikalavimai prieš pradedant](#reikalavimai-prieš-pradedant).
-
-2. **Paleiskite paslaugą** (jei dar neveikia):
-   ```bash
-   foundry service start
-   ```
-
-3. **Patikrinkite paslaugos būseną**, kad įsitikintumėte, jog ji veikia, ir užfiksuokite prievadą:
-   ```bash
-   foundry service status
-   ```
-
-4. **Atsisiųskite ir paleiskite modelį** (pirmą kartą atsisiunčiama, vėliau talpinama):
-   ```bash
-   foundry model run phi-4-mini
-   ```
-   Tai atveria interaktyvią pokalbių sesiją. Išeiti galite paspaudę `Ctrl+C`. Modelis lieka pakrautas paslaugoje.
-
-   > **Patarimas:** Vykdykite `foundry model list`, kad matytumėte visus galimus modelius. Pakeiskite `phi-4-mini` į bet kurį katalogo alias’ą (pvz., `qwen2.5-0.5b` – mažesniam/greitesniam modeliui).
-
-5. **Patikrinkite, ar modelis įkeltas:**
-   ```bash
-   foundry service ps
-   ```
-
-6. **Atnaujinkite `application.properties`, jei reikia:**
-   - Numatytoji `base-url` (`http://localhost:5273/v1`) sutampa su numatytuoju CLI prievadu. Atnaujinkite tik jei `foundry service status` rodo kitą prievadą.
-   - Modelis **automatiškai aptinkamas** paleidžiant – konfigūracijos nurodyti nereikia.
-
-   ```properties
-   foundry.local.base-url=http://localhost:5273/v1
-   # Model is auto-detected. Uncomment below to override:
-   # foundry.local.model=Phi-4-mini-instruct-cuda-gpu:5
-   ```
-
-## Programos paleidimas
-
-### 1 veiksmas: Įsitikinkite, kad Foundry Local yra pakrautas modelis
-```bash
-foundry service ps
-```
-Jei modelių nėra, įkelkite vieną:
-```bash
-foundry model run phi-4-mini
-```
-
-### 2 veiksmas: Sukurkite ir paleiskite programą
-Atidarykite naują terminalą:
-```bash
-cd 04-PracticalSamples/foundrylocal
+```powershell
+$env:FOUNDRY_LOCAL_BASE_URL = "http://127.0.0.1:5273/v1"
+$env:FOUNDRY_LOCAL_MODEL = "qwen2.5-0.5b-instruct-generic-cpu:4"
 mvn spring-boot:run
 ```
 
-Arba sukompiliuokite ir paleiskite kaip JAR:
-```bash
-mvn clean package
+Arba paleiskite supakuotą programą:
+
+```powershell
 java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
 ```
 
-## Tikėtinas rezultatas
+Vienintelis Java įėjimo taškas yra `com.example.Application`. Jis atspausdina pasirinktą
+galinį tašką, tikslų modelio ID, komandą ir sugeneruotą atsakymą, tada uždaro savo Spring
+kontekstą ir HTTP klientą. Nepavykusi išvada arba trūkstamas atsakymo tekstas sukuria
+klaidos išeitį, o ne sėkmės formos vietos rezervavimo ženklą.
 
+### Konfigūracija
+
+| Aplinkos kintamasis | Numatytoji reikšmė | Paskirtis |
+| --- | --- | --- |
+| `FOUNDRY_LOCAL_BASE_URL` | `http://127.0.0.1:5273/v1` | Loopback HTTP galinis taškas, įskaitant `/v1` |
+| `FOUNDRY_LOCAL_MODEL` | Tuščias | Tikslus modelio ID; kitaip pasirinktas vienintelis reklamuojamas modelis |
+| `FOUNDRY_LOCAL_PROMPT` | Vienos sakinio klausimas apie vietinius modelius | Komanda, siunčiama per konsolės vykdyklę |
+
+Lygiavertės Spring argumentai yra `--foundry.local.base-url=...`,
+`--foundry.local.model=...` ir `--foundry.local.prompt=...`.
+Priimami tik loopback HTTP galiniai taškai. Nuotoliniai/debesų galiniai taškai, įterpti
+kredencialai, užklausų eilutės ir keliai be `/v1` nepriimami.
+
+Tuščias modelio nustatymas veikia tik tada, kai `/v1/models` reklamuoja tiksliai vieną modelį.
+Reklamuojamas modelis nebūtinai yra įkeltas. Jei reklamuojama keli modeliai,
+nurodykite tikslų įkeltą ID, o ne pasikliaukite katalogo tvarka.
+
+Užklausos naudoja `temperature=0`, 150 simbolių išvesties limitą, 120 sekundžių timeout ir
+neautomatinius pakartojimus. `max_tokens` užklausos laukas yra tyčinis: jis yra
+palaikoma Foundry vietinio REST kontrakto, nors OpenAI Java neberekomenduoja
+tas laukas naujesniems debesų modeliams. Modelio tapatybė gaunama iš konfigūracijos arba
+aptikimo, o ne iš modelio teiginių apie save.
+
+## Gyvas tikrinimas
+
+Paleidus vietinį serverį, vykdykite visus testus, įskaitant pasirenkamą gyvą testą.
+Pakeiskite galinio taško prievadą į jūsų serverio išvestą reikšmę. Citavimas taškinių
+Maven savybių PowerShell:
+
+```powershell
+mvn "-Dfoundry.local.live=true" "-Dfoundry.local.base-url=http://127.0.0.1:5273/v1" "-Dfoundry.local.model=qwen2.5-0.5b-instruct-generic-cpu:4" verify
 ```
-=== Foundry Local Demo ===
-Calling Foundry Local service...
-Sending message: Hello! Can you tell me what you are and what model you're running?
-Response from Foundry Local:
-Hello! I'm Phi, an AI developed by Microsoft. I can assist with a wide variety of 
-tasks including answering questions, helping with analysis, creative writing, coding, 
-and general conversation. How can I help you today?
-=========================
-```
 
-## Kiti veiksmai
+Gyvas testas iškviečia `Application.main`, pateikia faktą „Prancūzijos sostinė yra Paryžius“,
+prašo miestą ir tvirtina, kad faktiškai sugeneruotas tekstas yra `Paryžius`. Jis tikrina
+semantinį rezultatą, o ne tik sėkmingą HTTP būseną.
 
-Daugiau pavyzdžių rasite skyriuje [04 skyrius: Praktiniai pavyzdžiai](../README.md)
+Tai integracijos patikra, o ne tikslumo standartas. Patvirtinimo metu šis
+0.5B modelis į atskirą „2 + 2“ užklausą per Java ir tiesioginį
+REST atsakė `3`. Nesinaudokite juo aritmetikai ar faktiniam tikslumui be nepriklausomo
+patikrinimo; naudokite deterministinius įrankius skaičiavimams.
 
-## Trikčių šalinimas
+## Problemų sprendimas
 
-### Dažnos problemos
+| Simptomas | Patikrinkite |
+| --- | --- |
+| Prijungimas atmestas | Palaukite paruošimo pranešimo; naudokite spausdintą prievadą ir `/v1` kelią. |
+| Reklamuojama daugybė modelių | Nustatykite `FOUNDRY_LOCAL_MODEL` į įkelto modelio tikslią ID. |
+| Modelis nerastas | Naudokite `--list` arba aiškiai leiskite atsisiuntimą su `--download`. |
+| GPU teikėjas nepavyksta arba užstrigo | Naudokite mažą CPU modelį. Talpykloje esantis GPU modelis vis tiek reikalauja teikėjo. |
+| CLI lieka „inicializuojamas“ | Perskaitykite `foundry server logs --lines 80`; sustabdykite demoną ir naudokite SDK pagalbą. |
+| NuGet TLS/atsisiuntimo klaida | Sutvarkykite tinklo prieigą arba naudokite aukščiau patikrintą Windows x64 atsarginį variantą. Neduokite išjungti TLS. |
+| Prievadas užimtas | Naudokite `--port 0` ir konfigūruokite Java su išspausdintu galiniu tašku. |
+| Nėra pasirinkimų arba tuščias tekstas | Programa sąmoningai nesėkminga; patikrinkite modelio ir vykdymo žurnalus. |
 
-**„Connection refused“ arba „Service unavailable“**
-- Patikrinkite paslaugą: `foundry service status`
-- Jei reikia, paleiskite iš naujo: `foundry service restart`
-- Patikrinkite, ar prievadas `application.properties` atitinka `foundry service status`
-- Įsitikinkite, kad URL baigiasi `/v1`: `http://localhost:5273/v1`
+## Šaltiniai ir nuorodos
 
-**„No model found“ paleidžiant**
-- Programa automatiškai aptinka modelį. Įsitikinkite, kad bent vienas modelis įkeltas: `foundry service ps`
-- Jei modelių nėra: `foundry model run phi-4-mini`
-- Jei rankiniu būdu keitėte modelį `application.properties`, patikrinkite, kad jis atitinka `foundry model list`
-
-**„400 Bad Request“ klaidos**
-- Patikrinkite, ar bazinis URL apima `/v1`: `http://localhost:5273/v1`
-- Įsitikinkite, kad naudojate `maxCompletionTokens()` savo kode (nepasenusią `maxTokens()` versiją)
-
-**Maven kompiliacijos klaidos**
-- Patikrinkite, ar Java versija 21 ar naujesnė: `java -version`
-- Išvalykite ir sukompiliuokite: `mvn clean compile`
-- Patikrinkite interneto ryšį priklausomybėms atsisiųsti
-
-**Paslaugos ryšio problemos**
-- Jei matote `Request to local service failed`, paleiskite: `foundry service restart`
-- Patikrinkite įkeltus modelius: `foundry service ps`
-- Peržiūrėkite paslaugos žurnalus: `foundry service diag`
+- [Application.java](../../../../04-PracticalSamples/foundrylocal/src/main/java/com/example/Application.java): vienkartinis Spring Boot paleidėjas.
+- [FoundryLocalService.java](../../../../04-PracticalSamples/foundrylocal/src/main/java/com/example/FoundryLocalService.java): tipizuotas aptikimas ir vietinės pokalbių užbaigtys.
+- [FoundryLocalServiceTest.java](../../../../04-PracticalSamples/foundrylocal/src/test/java/com/example/FoundryLocalServiceTest.java): HTTP sutartis, paleidėjas ir gyvieji testai.
+- [start-foundry.mjs](../../../../04-PracticalSamples/foundrylocal/scripts/start-foundry.mjs): oficialus SDK REST serveris su talpyklos modelio pasirinkimu ir valymu.
+- [install-foundry-runtime.ps1](../../../../04-PracticalSamples/foundrylocal/scripts/install-foundry-runtime.ps1): patikrintas Windows x64 vietinis vykdymo laikotarpio atsarginis variantas.
+- [application.properties](../../../../04-PracticalSamples/foundrylocal/src/main/resources/application.properties), [pom.xml](../../../../04-PracticalSamples/foundrylocal/pom.xml) ir [package.json](../../../../04-PracticalSamples/foundrylocal/package.json): konfigūracija ir priklausomybės.
+- [Foundry Local REST integracija](https://learn.microsoft.com/azure/foundry-local/how-to/how-to-integrate-with-inference-sdks).
+- [Foundry Local 2.0.1 leidimo ir migracijos pastabos](https://github.com/microsoft/Foundry-Local/releases/tag/v2.0.1).
+- [4 skyrius: praktiniai pavyzdžiai](../README.md).
 
 ---
 
 <!-- CO-OP TRANSLATOR DISCLAIMER START -->
 **Atsakomybės apribojimas**:
-Šis dokumentas buvo išverstas naudojant dirbtinio intelekto vertimo paslaugą [Co-op Translator](https://github.com/Azure/co-op-translator). Nors stengiamės užtikrinti tikslumą, prašome atkreipti dėmesį, kad automatiniai vertimai gali turėti klaidų ar netikslumų. Pradinė dokumento versija gimtąja kalba turi būti laikoma autoritetingu šaltiniu. Kritinei informacijai rekomenduojamas profesionalus žmogaus vertimas. Mes neatsakome už bet kokius nesusipratimus ar neteisingus interpretavimus, kylantį dėl šio vertimo naudojimo.
+Šis dokumentas buvo išverstas naudojant dirbtinio intelekto vertimo paslaugą [Co-op Translator](https://github.com/Azure/co-op-translator). Nors siekiame tikslumo, prašome atkreipti dėmesį, kad automatiniai vertimai gali turėti klaidų ar netikslumų. Originalus dokumentas jo gimtąja kalba laikomas autoritetingu šaltiniu. Svarbiai informacijai rekomenduojama naudoti profesionalų žmogiškąjį vertimą. Mes neatsakome už jokius nesusipratimus ar neteisingą interpretaciją, kilusią naudojantis šiuo vertimu.
 <!-- CO-OP TRANSLATOR DISCLAIMER END -->

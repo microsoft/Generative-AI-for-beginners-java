@@ -1,38 +1,48 @@
-# មេរៀនបង្កើតរឿងសត្វចិញ្ចឹមសម្រាប់​អ្នក​ចាប់​ផ្តើម
+# មេរៀនបង្កើតរឿងសត្វចិញ្ចឹមសម្រាប់អ្នកចាប់ផ្ដើម
+
+ផ្ទុករូបភាពសត្វចិញ្ចឹមឡើងវិញ វិភាគវាជាមួយ GPT-5.6 Luna ហើយបង្កើតរឿងពីការពិពណ៌នាដែលបានទទួល។ ការស្នើសុំម៉ូដែលទាំងពីរប្រើ `reasoning_effort: none`។
+
+| ផ្នែក | កំណែ |
+| --- | --- |
+| Java | 21 ឬ ខ្ពស់ជាងនេះ |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
 
 ## តារាងមាតិកា
 
-- [លក្ខខណ្ឌ​ធម្មតា](#លក្ខខណ្ឌ​ធម្មតា)
-- [ការយល់ដឹងស្ដីពីរចនាសម្ព័ន្ធគំរោង](#ការយល់ដឹងស្ដីពីរចនាសម្ព័ន្ធគំរោង)
-- [ការពន្យល់ពីគ្រឿងចក្រស្នូល](#ការពន្យល់ពីគ្រឿងចក្រស្នូល)
+- [តម្រូវការមុន](#តម្រូវការមុន)
+- [ការយល់ដឹងអំពីរចនាសម្ព័ន្ធគម្រោង](#ការយល់ដឹងអំពីរចនាសម្ព័ន្ធគម្រោង)
+- [ការបង្ហាញផ្នែកស្នូល](#ការបង្ហាញផ្នែកស្នូល)
   - [1. កម្មវិធីសំខាន់](#1-កម្មវិធីសំខាន់)
-  - [2. ឧបករណ៍គ្រប់គ្រងវេបសាយ](#2-ឧបករណ៍គ្រប់គ្រងវេបសាយ)
-  - [3. សេវាកម្មរឿង](#3-សេវាកម្មរឿង)
-  - [4. ទំព័រគំរូវេបសាយ](#4-ទំព័រគំរូវេបសាយ)
-  - [5. ការកំណត់រចនាសម្ព័ន្ធ](#5-ការកំណត់រចនាសម្ព័ន្ធ)
-- [ការបើកដំណើរកម្មកម្មវិធី](#ការបើកដំណើរកម្មកម្មវិធី)
-- [វិធីសាស្រ្តដើម្បីឲ្យវាដំណើរការជាក្រុម](#វិធីសាស្រ្តដើម្បីឲ្យវាដំណើរការជាក្រុម)
+  - [2. គ្រប់គ្រងវែប](#2-គ្រប់គ្រងវែប)
+  - [3. សេវារឿង](#3-សេវារឿង)
+  - [4. គំរូវែប](#4-គំរូវែប)
+  - [5. ការកំណត់រចនា](#5-ការកំណត់រចនា)
+- [ការរត់កម្មវិធី](#ការរត់កម្មវិធី)
+- [ការធ្វើតេស្តអនឡាញនៅក្រៅបណ្តាញ](#ការធ្វើតេស្តអនឡាញនៅក្រៅបណ្តាញ)
+- [របៀបដែលវាធ្វើការរួមគ្នា](#របៀបដែលវាដំណើរការរួមគ្នាទាំងមូល)
 - [ការយល់ដឹងអំពីការបញ្ចូល AI](#ការយល់ដឹងអំពីការបញ្ចូល-ai)
 - [ជំហានបន្ទាប់](#ជំហានបន្ទាប់)
 
-## លក្ខខណ្ឌ​ធម្មតា
+## តម្រូវការមុន
 
-មុនចាប់ផ្តើម, សូមប្រាកដថាអ្នកមានៈ
-- Java 21 ឬកម្រិតខ្ពស់ជាងនេះបានដំឡើង
-- Maven សម្រាប់គ្រប់គ្រងផ្នត់ផ្គត់ផ្គង់
-- ការផ្តល់សេវា Azure AI Foundry សម្រាប់ម៉ូដែល (ជាមួយ `azd up` — មើល [ជំពូក 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md)), បានចុះឈ្មោះជាមួយ `az login` (គ្មានកូនសោ)
-- ការយល់ដឹងមូលដ្ឋានពី Java, Spring Boot និងការអភិវឌ្ឍន៍វេបសាយ
+មុនចាប់ផ្ដើម សូមប្រាកដថាអ្នកមាន:
+- Java 21 ឬ ខ្ពស់ជាងនេះបានដំឡើង
+- Maven សម្រាប់ការគ្រប់គ្រងភាពត្រូវការ
+- ការតំឡើង Azure AI Foundry មួយសម្រាប់ GPT-5.6 Luna ឈ្មោះ `gpt-5.6-luna` ឬ ការកំណត់បម្លែង `AZURE_OPENAI_DEPLOYMENT` ទៅកាន់ការតំឡើងនោះ។ មើល [ជំពូកទី 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md) សម្រាប់ការរៀបចំនិងចុះឈ្មោះជាមួយ `az login` សម្រាប់ការផ្ទៀងផ្ទាត់ឥតគន្លងក្តៅ។ ការតំឡើងត្រូវគាំទ្រការបញ្ចូលរូបភាព និង `reasoning_effort: none`។
+- មានការយល់ដឹងមូលដ្ធានអំពី Java, Spring Boot និងការអភិវឌ្ឍវែប
 
-## ការយល់ដឹងស្ដីពីរចនាសម្ព័ន្ធគំរោង
+## ការយល់ដឹងអំពីរចនាសម្ព័ន្ធគម្រោង
 
-គំរោងរឿងសត្វចិញ្ចឹមមានឯកសារសំខាន់ជាច្រើន៖
+គម្រោងរឿងសត្វមានឯកសារសំខាន់ជាច្រើន:
 
 ```
 petstory/
 ├── src/main/java/com/example/petstory/
 │   ├── PetStoryApplication.java       # Main Spring Boot application
 │   ├── PetController.java             # Web request handler
-│   ├── StoryService.java              # AI story generation service
+│   ├── StoryService.java              # AI image analysis and story generation
 │   └── SecurityConfig.java            # Security configuration
 ├── src/main/resources/
 │   ├── application.properties         # App configuration
@@ -42,13 +52,13 @@ petstory/
 └── pom.xml                           # Maven dependencies
 ```
 
-## ការពន្យល់ពីគ្រឿងចក្រស្នូល
+## ការបង្ហាញផ្នែកស្នូល
 
 ### 1. កម្មវិធីសំខាន់
 
-**ឯកសារ៖** `PetStoryApplication.java`
+**ឯកសារ:** `PetStoryApplication.java`
 
-នេះគឺជាច្រកចូលសម្រាប់កម្មវិធី Spring Boot របស់យើង៖
+នេះគឺជាចំណុចចូលសម្រាប់កម្មវិធី Spring Boot របស់យើង៖
 
 ```java
 @SpringBootApplication
@@ -60,209 +70,50 @@ public class PetStoryApplication {
 ```
 
 **អ្វីដែលវាធ្វើ:**
-- ស្លាក `@SpringBootApplication` ផ្តល់សមត្ថភាពកំណត់រចនាសម្ព័ន្ធដោយស្វ័យប្រវត្តិ និងស្កេនគ្រឿងចក្រជា​រ
-- ចាប់ផ្តើមម៉ាស៊ីនបម្រើវេបសាយបញ្ចូល (Tomcat) នៅច្រក 8080
-- បង្កើត Spring beans និងសេវាកម្មទាំងអស់ដោយស្វ័យប្រវត្តិ
+- រមួង `@SpringBootApplication` អនុញ្ញាតឲ្យបើកកំណត់រចនា�Automatic និងស្វែងរកផ្នែកផ្សេងៗ 
+- បើកម៉ាស៊ីនមេវែបចូលរួម (Tomcat) នៅលើច្រក 8080
+- បង្កើត Spring Beans និងសេវាកម្មទាំងអស់ដោយស្វ័យប្រវត្តិ
 
-### 2. ឧបករណ៍គ្រប់គ្រងវេបសាយ
+### 2. គ្រប់គ្រងវែប
 
-**ឯកសារ៖** `PetController.java`
+**ឯកសារ:** [PetController.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/PetController.java)
 
-នេះគឺជាឧបករណ៍ដែលគ្រប់គ្រងសំណើវេប និងអន្តរកម្មអ្នកប្រើ៖
+| ផ្លូវចូល | ពាក្យស្នើ | ពីលទ្ធផលជោគជ័យ |
+| --- | --- | --- |
+| `GET /` | គ្មានខ្លឹមសារ | បែបបទ HTML សម្រាប់ផ្ទុកឡើងជាមួយសញ្ញា CSRF |
+| `POST /analyze-image` | `multipart/form-data`, វាលឯកសារ `image` | JSON: `{"description":"សត្វលេងល្បិច..."}` |
+| `POST /generate-story` | `application/x-www-form-urlencoded`, វាល `description` | ទំព័រលទ្ធផល HTML ជាមួយការពិពណ៌នានិងរឿងដែលបានបង្កើត |
 
-```java
-@Controller
-public class PetController {
-    
-    private final StoryService storyService;
-    
-    public PetController(StoryService storyService) {
-        this.storyService = storyService;
-    }
-    
-    @GetMapping("/")
-    public String index() {
-        return "index";  // បញ្ជូនតំបន់ព្រឹត្តិប័ត្រ index.html
-    }
-    
-    @PostMapping("/generate-story")
-    public String generateStory(@RequestParam("description") String description, 
-                               Model model, 
-                               RedirectAttributes redirectAttributes) {
-        
-        // ត្រួតពិនិត្យការបញ្ចូល
-        if (description.trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Please provide a description.");
-            return "redirect:/";
-        }
-        
-        // លាងសម្អាតការបញ្ចូលសម្រាប់សុវត្ថិភាព
-        String sanitizedDescription = sanitizeInput(description);
-        
-        // បង្កើតរឿងជាមួយការដោះស្រាយកំហុស
-        try {
-            String story = storyService.generateStory(sanitizedDescription);
-            model.addAttribute("caption", sanitizedDescription);
-            model.addAttribute("story", story);
-            return "result";  // បញ្ជូនតំបន់ព្រឹត្តិប័ត្រ result.html
-            
-        } catch (Exception e) {
-            // ប្រើរឿងជំនួស ប្រសិនបើ AI ខ្វះខាត
-            String fallbackStory = generateFallbackStory(sanitizedDescription);
-            model.addAttribute("story", fallbackStory);
-            return "result";
-        }
-    }
-    
-    private String sanitizeInput(String input) {
-        return input.replaceAll("[<>\"'&]", "")  // Remove dangerous characters
-                   .trim()
-                   .substring(0, Math.min(input.length(), 500));  // កំណត់ប្រវែង
-    }
-}
-```
+ការចូល POST ទាំងពីរត្រូវការគូគ៊ីសម្រាប់សម័យនិងសញ្ញា CSRF ដែលបានទទួលពី `GET /`។ ស្គ្រីបផ្ទុកឡើងផ្ញើតម្លៃលាក់ `_csrf` នៅក្នុងក្បាល `X-CSRF-TOKEN`; ការដាក់ស្នើរឿងផ្ញើវាជាវាល `_csrf` របស់បែបបទ។ អតិថិជន API ត្រូវរក្សាគូគ៊ីរវាងសំណើ។ ទាំងនេះជាប៉ុមបែបបទ មិនមែនជាសំណើ JSON ទេ។
 
-**មុខងារសំខាន់ៗ៖**
+ការពិពណ៌នាត្រូវមិនទទេហើយមិនលើស 1000 តួអក្សរ។ គ្រប់គ្រងកាត់បន្ថយការពិពណ៌នានិងដក `<`, `>`, សញ្ញាពីរ, សញ្ញាអប៉ូស្ទ្រូភេ និង `&` មុនផ្ញើទៅសេវា។ គំរូលទ្ធផលក៏បំលែងលទ្ធផលម៉ូដែលជាអត្ថបទសម្រាប់ `th:text` ដែរ។
 
-1. **ការគ្រប់គ្រងផ្លូវការផ្សេងៗ**: `@GetMapping("/")` បង្ហាញបែបបទបញ្ជូនទិន្នន័យ, `@PostMapping("/generate-story")` ដំណើរការការដាក់ស្នើ
-2. **ការត្រួតពិនិត្យបញ្ចូល**: ពិនិត្យសម្រាប់ការពណ៌នាទទេ និងកំណត់ប្រវែងអត្ថបទ
-3. **សុវត្ថិភាព**: សម្រេចអក្សរបញ្ចូលដើម្បីការពារការវាយប្រហារបែប XSS
-4. **ការដោះស្រាយកំហុស**: ផ្តល់រឿងជំនួសនៅពេលសេវាកម្ម AI បរាជ័យ
-5. **ការចងភ្ជាប់ម៉ូដែល**: ផ្ញើទិន្នន័យទៅទំព័រ HTML តាមរយៈ Model របស់ Spring
+ការពិនិត្យរូបភាពដែលទទួលបរាជ័យត្រឡប់ HTTP 400 ជាមួយវាល `error`; ការបរាជ័យម៉ូដែលត្រឡប់ HTTP 502 ជាមួយវាល `error` ហើយគ្មាន `description`។ ការពិពណ៌នារឿងមិនត្រឹមត្រូវ ឬ បរាជ័យម៉ូដែល បញ្ជូនបញ្ជាក់ទៅ `/` ជាមួយកំហុសដែលអាចមើលឃើញបាន។ វាលដែលត្រូវការខកខានត្រឡប់ HTTP 400 ហើយសញ្ញា CSRF ខកខាន ឬ មិនត្រឹមត្រូវត្រឡប់ HTTP 403។ មិនមានការបង្ហាញការពិពណ៌នាដោយជំនួស ឬ រឿងជោគជ័យពី AI ឡើយ។
 
-**ប្រព័ន្ធជំនួស:**
-ឧបករណ៍គ្រប់គ្រងមានគំរូរឿងដែលបានចងក្រងរួចហើយ ដែលប្រើនៅពេលសេវា AI មិនអាចប្រើបាន៖
+### 3. សេវារឿង
 
-```java
-private String generateFallbackStory(String description) {
-    String[] storyTemplates = {
-        "Meet the most wonderful pet in the world – a furry ball of energy...",
-        "Once upon a time, there lived a remarkable pet whose heart was as big...",
-        "In a cozy home filled with love, there lived an extraordinary pet..."
-    };
-    
-    // ប្រើ hash ពិពណ៌នាសម្រាប់ចម្លើយមានភាពរឹងមាំ
-    int index = Math.abs(description.hashCode() % storyTemplates.length);
-    return storyTemplates[index];
-}
-```
+**ឯកសារ:** [StoryService.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/StoryService.java)
 
-### 3. សេវាកម្មរឿង
+OpenAI Java SDK ផ្លូវការកំណែ 4.63.1 ហៅ API Chat Completions ត្រូវនឹង OpenAI របស់ Azure AI Foundry។ Azure Identity 1.18.6 ផ្ដល់សញ្ញាប័ណ្ណ Microsoft Entra តាម `DefaultAzureCredential`; មិនចាំបាច់មានកូនសោ API ទេ។
 
-**ឯកសារ៖** `StoryService.java`
+| ប្រតិបត្ដិការ | បញ្ចូល | `max_completion_tokens` |
+| --- | --- | --- |
+| `analyzeImage` | បៃតទ្រង់ទ្រាយរូបភាព编码ជាទៅbase64 ជាមួយប្រភេទ MIME ដែលផ្ទុកឡើង | 300 |
+| `generateStory` | ការពិពណ៌នាសត្វនៅក្នុងសារអ្នកប្រើ | 800 |
 
-សេវាកម្មនេះទំនាក់ទំនងជាមួយ Azure AI Foundry ដើម្បីបង្កើតរឿងដោយប្រើ authentication គ្មាន key៖
+ការស្នើសុំទាំងពីរប្រើការតំឡើងដែលបានកំណត់លំនាំដើមជា `gpt-5.6-luna` ហើយដាក់សញ្ញា `ReasoningEffort.NONE` (`reasoning_effort: none`) បញ្ជាក់។ គ្មានស្នើសុំពី `temperature` ឬប៉ារ៉ាម៉ែត្រតែមួយ `max_tokens` នៃមួយម៉ូដែលចាស់។
 
-```java
-@Service
-public class StoryService {
-    
-    private final OpenAIClient openAIClient;
-    private final String modelName;
-    
-    public StoryService(@Value("${azure.openai.endpoint:}") String endpoint,
-                       @Value("${azure.openai.deployment:gpt-4o-mini}") String modelName) {
-        this.modelName = modelName;
-        if (endpoint == null || endpoint.isBlank()) {
-            endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        }
-        
-        // ចំណុចចេញផ្សាយដែលឆបគ្នានឹង OpenAI របស់ Foundry មាននៅក្រោម /openai/v1/
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1/";
-        
-        // ការផ្ទៀងផ្ទាត់គ្មានកូនសោជាមួយ Microsoft Entra ID (គ្មានចុះ API)
-        DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-        this.openAIClient = OpenAIOkHttpClient.builder()
-                .baseUrl(baseUrl)
-                .credential(BearerTokenCredential.create(
-                        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-                .build();
-    }
-    
-    public String generateStory(String description) {
-        String systemPrompt = "You are a creative storyteller who writes fun, " +
-                             "family-friendly short stories about pets. " +
-                             "Keep stories under 500 words and appropriate for all ages.";
-        
-        String userPrompt = "Write a fun short story about a pet described as: " + description;
-        
-        // កំណត់ការស្នើសុំ AI
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(modelName)
-                .addSystemMessage(systemPrompt)
-                .addUserMessage(userPrompt)
-                .maxCompletionTokens(500)  // កំណត់ដែនកំណត់ប្រវែងចម្លើយ
-                .temperature(0.8)          // គ្រប់គ្រងភាពច្នៃប្រឌិត (0.0-1.0)
-                .build();
-        
-        // ផ្ញើសំណើហើយទទួលចម្លើយ
-        ChatCompletion response = openAIClient.chat().completions().create(params);
-        
-        return response.choices().get(0).message().content().orElse("");
-    }
-}
-```
+ការវិភាគរូបភាពទទួលបាន JPEG, PNG, GIF និង WebP បដិសេធរូបភាពទទេ និងឯកសារលើស 10MB ហើយកំណត់ការពិពណ៌នារួចទទួល 1000 តួអក្សរ។ ការស្នើសុំរឿងសុំរឿងខ្លីសម្រួលមកអ្នកគ្រួសារ។ ការជ្រើសរើសទទេ ឬ មាតិកាម៉ូដែលទទេគឺជាកំហុស ហើយបរាជ័យរក្សាដើមកំណាលជាការសម្គាល់មើលក្នុងម៉ាស៊ីនមេ។ អតិថិជន SDK ត្រូវបានបិទនៅពេលកម្មវិធីបិទ។
 
-**គ្រឿងចក្រ​សំខាន់ៗ៖**
+### 4. គំរូវែប
 
-1. **OpenAI Client**: ប្រើ OpenAI Java SDK ផ្លូវការដែលបានកំណត់សម្រាប់ Azure AI Foundry (គ្មាន key)
-2. **ប្រអប់ប្រព័ន្ធ**: កំណត់ប្រតិកម្ម AI ដើម្បីសរសេររឿងសត្វចិញ្ចឹមសម្រាប់គ្រួសារជាការសម្របសម្រួល
-3. **ប្រអប់អ្នកប្រើ**: បញ្ជាក់អ្វីដែល AI ត្រូវសរសេរតាមការពណ៌នា
-4. **ប៉ារ៉ាម៉ែត្រ**: គ្រប់គ្រងប្រវែងរឿង និងកម្រិតភាពច្នៃប្រឌិត
-5. **ការដោះស្រាយកំហុស**: បោះបង់ករណីកំហុស ដែលឧបករណ៍គ្រប់គ្រងនឹងចាប់ និងដោះស្រាយ
+**ឯកសារ:** [index.html](../../../../04-PracticalSamples/petstory/src/main/resources/templates/index.html) (បែបបទផ្ទុកឡើង)
 
-### 4. ទំព័រគំរូវេបសាយ
+ទំព័រចាប់ផ្ដើមជាមួយកម្មវិធីជ្រើសរូបភាព មិនមែនតំបន់អត្ថបទពិពណ៌នា។ **វិភាគរូបភាព** បង្ហាញរូបដែលបានជ្រើសរើស និងបញ្ចូនវាទៅ `/analyze-image`។ លទ្ធផលជោគជ័យបង្ហាញការពិពណ៌នា បំពេញវាលពាក្យដាក់ខ្មោច `description` ហើយបង្ហាញប៊ូតុង **បង្កើតរឿង**។ ប៊ូតុងនោះបញ្ចូនបែបបទទៅ `/generate-story`។
 
-**ឯកសារ៖** `index.html` (បែបបទបញ្ជូន)
+គ្មានការទាញយកម៉ូដែលពីកម្មវិធីរុករក ឬការពឹងផ្អែកទៅលើ CDN។ ការវិភាគរូបភាពប្រតិបត្តិលើម៉ាស៊ីនមេតាមការតំឡើង Azure ដែលបានកំណត់។ ករណីបរាជ័យនៅតែបង្ហាញ ហើយមិនអនុញ្ញាតឲ្យបង្កើតរឿងជាមួយការពិពណ៌នាបង្កើតឡើង។ ជ្រើសឯកសារផ្សេងទៀតនឹងលុបការវិភាគមុន។
 
-ទំព័រដើមដែលអ្នកប្រើពណ៌នាស្តីពីសត្វចិញ្ចឹមរបស់ពួកគេ៖
-
-```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Pet Story Generator</title>
-    <!-- CSS styling -->
-</head>
-<body>
-    <div class="container">
-        <h1>Pet Story Generator</h1>
-        <p>Describe your pet and we'll create a fun story about them!</p>
-        
-        <!-- Error message display -->
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-        
-        <!-- Story generation form -->
-        <form action="/generate-story" method="post">
-            <div class="form-group">
-                <label for="description">Describe your pet:</label>
-                <textarea id="description" name="description" 
-                         placeholder="Tell us about your pet - what they look like, their personality, favorite activities..."
-                         maxlength="1000" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Generate Story</button>
-        </form>
-        
-        <!-- Image upload section with client-side processing -->
-        <div class="upload-section">
-            <h2>Or Upload a Photo</h2>
-            <input type="file" id="imageInput" accept="image/*" />
-            <button onclick="analyzeImage()" class="upload-btn">Analyze Image</button>
-        </div>
-        
-        <script>
-            // Client-side image analysis using Transformers.js
-            async function analyzeImage() {
-                // Image processing code here
-                // Generates description automatically from uploaded image
-            }
-        </script>
-    </div>
-</body>
-</html>
-```
-
-**ឯកសារ៖** `result.html` (បង្ហាញរឿង)
+**ឯកសារ:** `result.html` (បង្ហាញរឿង)
 
 បង្ហាញរឿងដែលបានបង្កើត៖
 
@@ -297,16 +148,16 @@ public class StoryService {
 </html>
 ```
 
-**លក្ខណៈគំរូ៖**
+**លក្ខណៈពិសេសនៃគំរូ៖**
 
-1. **ការបញ្ចូល Thymeleaf**: ប្រើលក្ខណៈ `th:` សម្រាប់មាតិកាដែលចល័ត
-2. **រចនាប្រកបដោយឆ្លើយតប**: ការតាំងស្ទាយ CSS សម្រាប់ទូរស័ព្ទចល័ត និងកុំព្យូទ័រដេសក្ទុប
-3. **ការដោះស្រាយកំហុស**: បង្ហាញកំហុសផ្ទៀងផ្ទាត់ទៅអ្នកប្រើ
-4. **ដំណើរការផ្នែកអ្នកដំណើរការ**: JavaScript សម្រាប់វិភាគរូបភាព (ប្រើ Transformers.js)
+1. **ការបញ្ចូល Thymeleaf**: ប្រើ `th:` attributes សម្រាប់មាតិកាដោយឌីណាមិច
+2. **រចនាបទឆ្លាតវៃ**: ស្ទីល CSS សម្រាប់ទូរស័ព្ទ និងកុំព្យូទ័រប្រភេទដេសក្តុប
+3. **ការគ្រប់គ្រងកំហុស**: បង្ហាញកំហុសផ្ទៀងផ្ទាត់ទៅអ្នកប្រើ
+4. **ការគ្រប់គ្រងការផ្ទុក**: JavaScript បង្ហាញរូបកាន់តែច្បាស់ ផ្ញើសំណើ multipart ដែលបានការពារដោយ CSRF ហើយបង្ហាញពាក្យពិពណ៌នាដែលបានបញ្ជូនវិញ
 
-### 5. ការកំណត់រចនាសម្ព័ន្ធ
+### 5. ការកំណត់រចនា
 
-**ឯកសារ៖** `application.properties`
+**ឯកសារ:** `application.properties`
 
 ការកំណត់សម្រាប់កម្មវិធី៖
 
@@ -322,21 +173,21 @@ logging.level.com.example.petstory=INFO
 
 # Azure AI Foundry (keyless) configuration
 azure.openai.endpoint=${AZURE_OPENAI_ENDPOINT:}
-azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
 ```
 
-**ការពន្យល់ការកំណត់៖**
+**ការបង្ហាញការកំណត់៖**
 
-1. **ការផ្ទុកឯកសារ**: អនុញ្ញាតរូបភាពមានទំហំឡើងដល់ 10MB
-2. **ការចុះកំណត់ហេតុ**: គ្រប់គ្រងពត៌មានដែលត្រូវចុះកំណត់ហេតុពេលដំណើរការ
-3. **Azure AI Foundry**: បញ្ជាក់ចំណុចចេញ និងការផ្តល់ម៉ូដែលតាម authentication គ្មាន key
-4. **សុវត្ថិភាព**: ការកំណត់សម្រាប់ដោះស្រាយកំហុស ដើម្បីជៀសវាងការបង្ហាញព័ត៌មានចាក់ទុក
+1. **ការផ្ទុកឡើងឯកសារ**: ទាំងឯកសារនិងសំណើ multipart ទាំងមូលមានកំណត់នៅ 10MB; សូមរក្សារូបថតខ្លះក្រោមដែនកំណត់ដើម្បីទុកកន្លែងសម្រាប់ក្បាល multipart
+2. **កំណត់ហេតុ**: គ្រប់គ្រងព័ត៌មានដែលបញ្ចូលក្នុងកំណត់ហេតុពេលដំណើរការ
+3. **Azure AI Foundry**: បញ្ជាក់ចំណុចចូលនិងការតំឡើងម៉ូដែលដែលត្រូវប្រើ (ការផ្ទៀងផ្ទាត់គ្មានកូនសោ)
+4. **សំណុំសុវត្ថិភាព**: ការការពារពី CSRF នៅតែបើក។ ការរីកចម្រើនម៉ូដែលត្រូវបានកំណត់ក្នុងម៉ាស៊ីនមេ ខណៈពេលគ្រប់គ្រងបង្ហាញសារបង្ហាញកំហុសម៉ូដែលទូទៅ។
 
-## ការបើកដំណើរកម្មកម្មវិធី
+## ការរត់កម្មវិធី
 
-### ជំហានទី ១៖ ចុះឈ្មោះ និងកំណត់ចំណុចចេញរបស់អ្នក
+### ជំហាន 1៖ ចូលប្រើ និងកំណត់ចំណុចចូលរបស់អ្នក
 
-ការផ្ទៀងផ្ទាត់គឺគ្មាន key (Microsoft Entra ID) ដូច្នេះមិនមានកូនសោ API ទេ។ ចុះឈ្មោះហើយកំណត់ចំណុចចេញ Foundry របស់អ្នក៖
+ការផ្ទៀងផ្ទាត់គ្មានកូនសោ (Microsoft Entra ID) ដូច្នេះគ្មានកូនសោ API។ ចូលប្រើហើយកំណត់ចំណុចចូល Foundry របស់អ្នក៖
 
 **Windows (Command Prompt):**
 ```cmd
@@ -356,93 +207,91 @@ az login
 export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 ```
 
-**ហេតុអ្វីវាត្រូវការ:**
-- Azure AI Foundry ប្រើ Microsoft Entra ID ក្នុងការផ្ទៀងផ្ទាត់សំណើ inference
-- ការផ្ទៀងផ្ទាត់គ្មាន key មានន័យថាគ្មានអ្វីលេចធ្លោនៅក្នុងកូដប្រភព ឬបរិស្ថានរបស់អ្នក
-- គណនីរបស់អ្នកត្រូវការរ៉ូល **Cognitive Services OpenAI User** លើធនធាន
+**ហេតុអ្វីបានជា ត្រូវការនេះ:**
+- Azure AI Foundry ប្រើ Microsoft Entra ID ដើម្បីផ្ទៀងផ្ទាត់សំណើ inference
+- ការផ្ទៀងផ្ទាត់គ្មានកូនសោ គឺគ្មានល្បឿនសំងាត់នៅក្នុងកូដចូល ឬបរិយាកាស
+- គណនីរបស់អ្នកត្រូវការតួនាទី **Cognitive Services OpenAI User** លើធនធាន
 
-### ជំហានទី ២៖ សាងសង់ និងដំណើរការ
+ឈ្មោះការតំឡើងលំនាំដើមគឺ `gpt-5.6-luna`។ ប្រសិនបើការតំឡើង GPT-5.6 Luna របស់អ្នកមានឈ្មោះផ្សេង សូមកំណត់ `AZURE_OPENAI_DEPLOYMENT` នៅក្នុងទំព័របញ្ជាលើសម្ងាត់មុនចាប់ផ្ដើមកម្មវិធី។ ការវិភាគរូបភាព និងការបង្កើតរឿងទាំងអស់ប្រើការកំណត់នេះ។
 
-ចូលទៅថតគំរោង៖
+### ជំហាន 2៖ បង្កើត និង រត់
+
+ទៅកាន់ថតគម្រោង៖
 ```bash
 cd 04-PracticalSamples/petstory
 ```
 
-សាងសង់កម្មវិធី៖
+បង្កើត JAR ប្រតិបត្ដិការផ្តាច់មុខ និងបញ្ចូលការធ្វើតេស្តអនឡាញទាំងអស់៖
 ```bash
-mvn clean compile
+mvn clean package
 ```
 
-ចាប់ផ្តើមម៉ាស៊ីនបម្រើ៖
+ចាប់ផ្ដើមម៉ាស៊ីនមេ៖
 ```bash
 mvn spring-boot:run
 ```
 
-កម្មវិធីនឹងចាប់ផ្តើមលើ `http://localhost:8080`។
+កម្មវិធីនឹងចាប់ផ្ដើមនៅ `http://localhost:8080`។
 
-### ជំហានទី ៣៖ សាកល្បងកម្មវិធី
+ជំនួសដូច្នេះ ចាប់ផ្ដើម JAR កញ្ចប់នៅលើច្រកចេញមួយដោយឥតគិតថ្លៃ ឧទាហរណ៍:
 
-1. **បើក** `http://localhost:8080` ក្នុងកម្មវិធីរកមើលវេបរបស់អ្នក
-2. **ពណ៌នា** សត្វចិញ្ចឹមរបស់អ្នកនៅក្នុងទីតាំងអក្សរចូល (ឧ. "សត្វសេះប្រភេទ golden retriever ដែលចូលចិត្តយកវត្ថុមក")
-3. **ចុច** "Generate Story" ដើម្បីទទួលរឿងដែល AI បង្កើត
-4. **ជាជម្រើសទៀត**, បញ្ចូលរូបភាពសត្វចិញ្ចឹមដើម្បីបង្កើតការពណ៌នាពីរូបភាពស្វ័យប្រវត្តិ
-5. **មើល** រឿងច្នៃប្រឌិតផ្អែកលើការពណ៌នារបស់សត្វចិញ្ចឹមរបស់អ្នក
+```bash
+java -jar target/pet-story-app-0.0.1-SNAPSHOT.jar --server.port=8083
+```
 
-## វិធីសាស្រ្តដើម្បីឲ្យវាដំណើរការជាក្រុម
+សម្រាប់ពាក្យបញ្ជានេះ បើក `http://localhost:8083/`។ ផ្លូវ `/analyze-image` និង `/generate-story` នៅតែអាចប្រើបាននៅលើច្រកដែលបានជ្រើសរើស។
 
-នេះជាប្រតិបត្តិការប្រុងប្រយ័ត្នពេញលេញពេលអ្នកបង្កើតរឿងពិភពចិញ្ចឹម៖
+### ជំហាន 3៖ សាកតេស្តកម្មវិធី
 
-1. **បញ្ចូលរបស់អ្នកប្រើ**: អ្នកពណ៌នាសត្វចិញ្ចឹមរបស់អ្នកលើបែបបទវេប
-2. **ការដាក់ស្នើបែបបទ**: កម្មវិធីរកមើលផ្ញើសំណើ POST ទៅ `/generate-story`
-3. **ដំណើរការឧបករណ៍គ្រប់គ្រង**: `PetController` ពិនិត្យត្រឹមត្រូវ និងសម្រេចអក្សរបញ្ចូល
-4. **សេវាកម្ម AI**: `StoryService` ផ្ញើសំណើទៅម៉ូដែល Azure AI Foundry
-5. **បង្កើតរឿង**: AI បង្កើតរឿងច្នៃប្រឌិតផ្អែកលើការពណ៌នា
-6. **ដោះស្រាយការឆ្លើយតប**: ឧបករណ៍គ្រប់គ្រងទទួលរឿងហើយបន្ថែមទៅម៉ូដែល
-7. **បង្ហាញលទ្ធផលទំព័រ**: Thymeleaf រៀបចំ `result.html` ជាមួយរឿង
-8. **បង្ហាញ**: អ្នកប្រើឃើញរឿងដែលបានបង្កើតនៅក្នុងកម្មវិធីរកមើលរបស់ពួកគេ
+1. **បើក** `http://localhost:8080` នៅក្នុងកម្មវិធីរុករករបស់អ្នក
+2. **ជ្រើសរើស** រូបភាពសត្វចំលែក JPEG, PNG, GIF, ឬ WebP ខាងក្រោម 10MB
+3. **ចុច** "Analyze Image" ហើយរង់ចាំការពិពណ៌នាសត្វ
+4. **ចុច** "Generate Story" បន្ទាប់ពីវិភាគជោគជ័យ
+5. **មើល** រឿង និងប្រើតំណភ្ជាប់នៅលើទំព័រលទ្ធផលដើម្បីត្រឡប់ទៅបែបបទផ្ទុកឡើង
 
-**ដំណើរការដោះស្រាយកំហុស:**
-ប្រសិនបើសេវាកម្ម AI បរាជ័យ:
-1. អ្នកគ្រប់គ្រងចាប់ករណីកំហុស
-2. បង្កើតរឿងជំនួសដោយប្រើគំរូរួចហើយ
-3. បង្ហាញរឿងជំនួសជាមួយកំណត់សម្គាល់អំពីមិនអាចប្រើ AI
-4. អ្នកប្រើនៅតែទទួលបានរឿង ដើម្បីធានាបទពិសោធន៍ល្អ
+ជម្រើសសុទ្ធរបស់រូបភាពទៅរឿងធ្វើការហៅម៉ូដែលពីរដងមួយសម្រាប់ប៊ូតុងមួយ។ ការប្រើប្រាស់ច្នៃប្រឌិតក្នុងពេលពិតបរិមាណលើ quota ការតំឡើងនិងអាចបង្ករឥណទាន។ សូមរត់ការធ្វើតេស្តម្ហូបពេលតែម្ដងនៅពេលចែករំលែកការតំឡើងមានកំណត់អត្រា។ ការផ្ទុកទំព័រដើមមិនហៅម៉ូដែលទេ។
+
+## ការធ្វើតេស្តអនឡាញនៅក្រៅបណ្តាញ
+
+ពីថតផ្ទាល់ខ្លួន សូមរត់៖
+
+```bash
+mvn test
+```
+
+[StoryServiceTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/StoryServiceTest.java) ចាប់យកសំណើ SDK OpenAI ពិតប្រាកដជាមួយកំណត់ HTTP loopback fixture។ វាត្រួតពិនិត្យទាំងពីរសំណើការតំឡើង, `reasoning_effort: none`, កំណត់សញ្ញាតួអក្សរ, បន្ទុករូបភាព, ការត្រួតពិនិត្យបញ្ចូល, ពីលទ្ធផលទទេ, និងកំហុស upstream។
+
+[PetControllerTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/PetControllerTest.java) ប្រើ MockMvc ជាមួយសេវារូបមន្តម៉ូដែលចម្លងសម្រាប់តេស្តទំព័រ Thymeleaf ដែលបានបង្ហាញ, កញ្ចប់ផ្ទុកឡើង, CSRF, ការត្រួតពិនិត្យ, ការការពារបញ្ចូល, និងករណីបរាជ័យដែលអាចមើលឃើញ។ ការធ្វើតេស្តទាំងនេះមិនចាំបាច់មានលិខិតបញ្ជាក់ Azure និងមិនហៅករណីសំរភារ Azure សម្រាប់ការប្រាក់។ Maven សរសេរបរិយាយ Surefire ក្រោម `target/surefire-reports`។
+
+## របៀបដែលវាដំណើរការរួមគ្នាទាំងមូល
+
+នេះជាដំណើរការពេញលេញនៅពេលអ្នកបង្កើតរឿងសត្វ៖
+
+1. **ជ្រើសរូបភាព**: អ្នកជ្រើសរើសរូបភាពសត្វនៅក្នុងបែបបទផ្ទុកឡើង
+2. **ផ្ទុកឡើងរូបភាព**: "Analyze Image" ផ្ញើសំណើ multipart POST ទៅ `/analyze-image` ជាមួយក្បាល CSRF
+3. **វិភាគរូបភាព**: `StoryService` ផ្ញើរូបភាពទៅ GPT-5.6 Luna ជាមួយការកំណត់ reasoning ទៅ `none`
+4. **បង្ហាញការពិពណ៌នា**: កម្មវិធីរុករកបង្ហាញការពិពណ៌នាដែលបានបញ្ជូនវិញនិងផ្ទុកវាទៅក្នុងបែបបទ
+5. **ដាក់ស្នើរឿង**: "Generate Story" ផ្ញើ `description` និង `_csrf` ទៅ `/generate-story`
+6. **បង្កើតរឿង**: គ្រប់គ្រងផ្ទៀងផ្ទាត់ការពិពណ៌នានិងហៅការតំឡើងដូចគ្នាជាមួយការកំណត់ reasoning ទៅ `none`
+7. **បង្ហាញគំរូ**: Thymeleaf ការពារ និងបង្ហាញការពិពណ៌នានិងរឿងនៅលើទំព័រលទ្ធផល
+
+**ដំណើរការគ្រប់គ្រងកំហុស:**
+ប្រសិនបើម៉ូដែលបរាជ័យ ម៉ាស៊ីនមេកំណត់ហេតុបញ្ហាដើម។ ការវិភាគរូបភាពត្រឡប់ HTTP 502 ហើយកម្មវិធីរុករកបង្ហាញកំហុសដោយគ្មានបង្ហាញ "Generate Story"។ ការបង្កើតរឿងបញ្ជូនបញ្ជាក់ទៅបែបបទជាមួយសារ​កំហុស។ មិនមានផ្លូវខាងណាម្នាក់ជំនួសលទ្ធផលដែលបានសរសេរមុនឡើយ។
 
 ## ការយល់ដឹងអំពីការបញ្ចូល AI
 
-### Azure AI Foundry (គ្មាន key)
-កម្មវិធីប្រើ Azure AI Foundry ជាមួយ authentication គ្មាន key (Microsoft Entra ID)៖
+### Azure AI Foundry (គ្មានកូនសោ)
+សេវាអនុញ្ញាត​ការកំណត់ SDK ជាមួយចំណុចចូល `/openai/v1/` របស់ធនធានរបស់អ្នក។ `DefaultAzureCredential` និង `AuthenticationUtil.getBearerTokenSupplier` ផ្ដល់សញ្ញាប័ណ្ណ Microsoft Entra សម្រាប់ `https://ai.azure.com/.default`។ ការអភិវឌ្ឍក្នុងតំបន់អាចប្រើការចូល CLI Azure របស់អ្នក។ កម្មវិធីនៅលើ Azure អាចប្រើសម្គាល់គ្រប់គ្រងជាមួយសិទ្ធិធនធានត្រូវការ។
 
-```java
-// ការផ្ទៀងផ្ទាត់គ្មានកន្លែងគន្លឹះ - គ្មានកូនសោ API
-DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-this.openAIClient = OpenAIOkHttpClient.builder()
-    .baseUrl(endpoint + "openai/v1/")
-    .credential(BearerTokenCredential.create(
-        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-    .build();
-```
+### ការបង្រៀនបញ្ចូល
+ការវិភាគរូបភាពសុំបង្ហាញលក្ខណៈសត្វដែលអាចមើលឃើញក្នុងបទបញ្ចោតខ្លី ហើយប្រាប់ម៉ូដែលឲ្យដំណើរការបង្ហាញអត្ថបទក្នុងរូបភាពជាទិន្នន័យ មិនមែនជាសេចក្តីណែនាំ។ ការបង្កើតរឿងប្រើការពិពណ៌នាដែលបានបញ្ជូនវិញក្នុងសំណើសរសេរដែលសមរម្យសម្រាប់គ្រួសារ។ ការហៅទាំងពីរមិនបានអនុញ្ញាត reasoning ឬកំណត់ temperature។
 
-### បច្ចេកទេសការបញ្ចូល Prompt
-សេវាកម្មប្រើ prompt បានរៀបចំយ៉ាងហ្មត់ចត់ដើម្បីទទួលបានលទ្ធផលល្អ៖
-
-```java
-String systemPrompt = "You are a creative storyteller who writes fun, " +
-                     "family-friendly short stories about pets. " +
-                     "Keep stories under 500 words and appropriate for all ages.";
-```
-
-### ដំណើរការឆ្លើយតប
-ចម្លើយ AI ត្រូវបានដកស្រង់និងផ្ទៀងផ្ទាត់៖
-
-```java
-ChatCompletion response = openAIClient.chat().completions().create(params);
-String story = response.choices().get(0).message().content().orElse("");
-```
+### ការបន្តគ្រប់គ្រងចម្លើយ
+អ្នកដំណើរការចម្លើយរួម មិនទទួលយកជម្រើសខ្វះ និងមាតិកាទទេ ឬមានតែទាំងហ្វ្រេសបWhite space ប៉ុណ្ណោះ។ កាត់បន្ថយមាតិកាត្រឹមត្រូវ និងរក្សាកំហុស upstream។ ការពិពណ៌នារូបភាពត្រូវបានកំណត់នៅ 1000 តួអក្សរ ដើម្បីឲ្យសមរម្យសម្រាប់បែបបទរឿងក្រោយ។ កំហុសម៉ូដែលដើមត្រូវរក្សាទុកសម្រាប់វាយតម្លៃ ប៉ុន្តែមិនត្រូវបង្ហាញអ្នកប្រើទេ។
 
 ## ជំហានបន្ទាប់
 
-សម្រាប់ឧទាហរណ៍បន្ថែម, សូមមើល [ជំពូក 04: ឧទាហរណ៍អនុវត្តន៍](../README.md)
+សម្រាប់ឧទាហរណ៍បន្ថែម សូមមើល [ជំពូក 04៖ ឧទាហរណ៍អនុវត្ត](../README.md)
 
 ---
 

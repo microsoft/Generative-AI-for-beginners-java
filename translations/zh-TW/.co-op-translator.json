@@ -6,26 +6,26 @@
     "language_code": "zh-TW"
   },
   "02-SetupDevEnvironment/README.md": {
-    "original_hash": "c948683317d77fbe67aacacbeaa3c7c5",
-    "translation_date": "2026-07-02T08:26:57+00:00",
+    "original_hash": "ec57ae7c28de7253f2ee64d3401b597b",
+    "translation_date": "2026-09-15T06:33:12+00:00",
     "source_file": "02-SetupDevEnvironment/README.md",
     "language_code": "zh-TW"
   },
   "02-SetupDevEnvironment/examples/basic-chat-azure/README.md": {
-    "original_hash": "b2c91c126ca3e37fdde4ddf5086615ff",
-    "translation_date": "2026-07-02T08:29:46+00:00",
+    "original_hash": "57d611c712dc3613dba4ab6f3d7707e0",
+    "translation_date": "2026-09-15T06:42:20+00:00",
     "source_file": "02-SetupDevEnvironment/examples/basic-chat-azure/README.md",
     "language_code": "zh-TW"
   },
   "02-SetupDevEnvironment/getting-started-azure-openai.md": {
-    "original_hash": "8a6f570b99ec52316a14edbdb6c50a28",
-    "translation_date": "2026-07-02T08:27:36+00:00",
+    "original_hash": "9ce5ff64a182e4e8aacb4976004084d0",
+    "translation_date": "2026-09-15T06:33:52+00:00",
     "source_file": "02-SetupDevEnvironment/getting-started-azure-openai.md",
     "language_code": "zh-TW"
   },
   "03-CoreGenerativeAITechniques/README.md": {
-    "original_hash": "e81f71c0888bf41cace4bfc3ecc1891d",
-    "translation_date": "2026-07-02T08:26:01+00:00",
+    "original_hash": "86c0b2cd61ff21cf674bad5cec9562d5",
+    "translation_date": "2026-09-15T06:32:22+00:00",
     "source_file": "03-CoreGenerativeAITechniques/README.md",
     "language_code": "zh-TW"
   },
@@ -36,8 +36,8 @@
     "language_code": "zh-TW"
   },
   "04-PracticalSamples/calculator/README.md": {
-    "original_hash": "41559a4802d4162e6f61829f0791a041",
-    "translation_date": "2026-07-03T08:11:40+00:00",
+    "original_hash": "6274ca406d2dd6b12ef3b0149d189ddf",
+    "translation_date": "2026-09-15T06:41:40+00:00",
     "source_file": "04-PracticalSamples/calculator/README.md",
     "language_code": "zh-TW"
   },
@@ -48,8 +48,8 @@
     "language_code": "zh-TW"
   },
   "04-PracticalSamples/petstory/README.md": {
-    "original_hash": "7e99b42d595a813b3ec86252a44e9058",
-    "translation_date": "2026-07-02T08:30:38+00:00",
+    "original_hash": "c18d91e6f64b4351e4d9cdbe12145901",
+    "translation_date": "2026-09-15T06:35:59+00:00",
     "source_file": "04-PracticalSamples/petstory/README.md",
     "language_code": "zh-TW"
   },
@@ -72,8 +72,8 @@
     "language_code": "zh-TW"
   },
   "README.md": {
-    "original_hash": "6ea50f657a0ce1d2f27180f61b25a2ba",
-    "translation_date": "2026-07-03T08:11:16+00:00",
+    "original_hash": "de37948d78681a36ad7799f53a85887e",
+    "translation_date": "2026-09-15T06:31:10+00:00",
     "source_file": "README.md",
     "language_code": "zh-TW"
   },
@@ -88,5 +88,18 @@
     "translation_date": "2025-07-21T15:59:30+00:00",
     "source_file": "SUPPORT.md",
     "language_code": "zh-TW"
+  },
+  "__translation_failures__": {
+    "04-PracticalSamples/foundrylocal/README.md": {
+      "original_hash": "bbb9b55aea0c1880c4c53d6f90cac497",
+      "source_file": "04-PracticalSamples/foundrylocal/README.md",
+      "language_code": "zh-TW",
+      "failure_date": "2026-09-15T06:39:21+00:00",
+      "status": "failed",
+      "error_type": "TranslationIncompleteError",
+      "error_message": "Markdown translation remained incomplete for chunk 1.1.1 of 'README.md', and the chunk could not be split further.",
+      "translator_version": "0.20.1",
+      "failure_policy_version": 1
+    }
   }
 }

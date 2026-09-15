@@ -1,115 +1,115 @@
-# Configurarea mediului de dezvoltare pentru Generative AI pentru Java
+# Configurarea Mediului de Dezvoltare pentru Generative AI pentru Java
 
-> **Pornire rapidă:** Provisionați modelele AI pe **Azure AI Foundry** ca și cod cu Bicep + `azd` în câteva minute — consultați [Ghidul de configurare Azure AI Foundry](getting-started-azure-openai.md). Autentificarea este **fără cheie** (Microsoft Entra ID), deci nu trebuie să gestionați chei API.
+> **Pornire rapidă:** Provizionați modelele dvs. AI pe **Azure AI Foundry** ca cod cu Bicep + `azd` în câteva minute — vedeți [Ghidul de configurare Azure AI Foundry](getting-started-azure-openai.md). Autentificarea este **fără chei** (Microsoft Entra ID), deci nu trebuie să gestionați chei API.
 
-## Ce veți învăța
+## Ce Veți Învăța
 
-- Configurarea unui mediu de dezvoltare Java pentru aplicații AI
-- Alegerea și configurarea mediului de dezvoltare preferat (cloud-first cu Codespaces, container de dezvoltare local sau configurare locală completă)
-- Testarea configurației prin conectarea la un model Azure AI Foundry
+- Configurați un mediu de dezvoltare Java pentru aplicații AI
+- Alegeți și configurați mediul de dezvoltare preferat (cloud-first cu Codespaces, container local de dezvoltare sau configurare locală completă)
+- Testați configurația conectându-vă la un model Azure AI Foundry
 
 ## Cuprins
 
-- [Ce veți învăța](#ce-veți-învăța)
+- [Ce Veți Învăța](#ce-veți-învăța)
 - [Introducere](#introducere)
-- [Pasul 1: Configurați mediul de dezvoltare](#pasul-1-configurați-mediul-de-dezvoltare)
+- [Pasul 1: Configurați Mediul de Dezvoltare](#pasul-1-configurați-mediul-de-dezvoltare)
   - [Opțiunea A: GitHub Codespaces (Recomandat)](#opțiunea-a-github-codespaces-recomandat)
-  - [Opțiunea B: Container de dezvoltare local](#opțiunea-b-container-de-dezvoltare-local)
-  - [Opțiunea C: Folosiți instalarea locală existentă](#opțiunea-c-folosiți-instalarea-locală-existentă)
-- [Pasul 2: Provisionați Azure AI Foundry](#pasul-2-provisionați-azure-ai-foundry)
-- [Pasul 3: Testați configurația](#pasul-3-testați-configurația)
+  - [Opțiunea B: Container Local de Dezvoltare](#opțiunea-b-container-local-de-dezvoltare)
+  - [Opțiunea C: Folosiți Instalarea Locală Existenta](#opțiunea-c-folosiți-instalarea-locală-existenta)
+- [Pasul 2: Provizionați Azure AI Foundry](#pasul-2-provizionați-azure-ai-foundry)
+- [Pasul 3: Testați Configurația](#pasul-3-testați-configurația)
 - [Depanare](#depanare)
-- [Sumar](#sumar)
-- [Următorii pași](#următorii-pași)
+- [Rezumat](#rezumat)
+- [Pașii Următori](#pașii-următori)
 
 ## Introducere
 
-Acest capitol vă va ghida în configurarea unui mediu de dezvoltare. Vom folosi **Azure AI Foundry** pentru modelele pe toată durata acestui curs. Provisionați modelele ca și cod cu Bicep și Azure Developer CLI (`azd`), apoi conectați-vă cu **autentificare fără cheie** (Microsoft Entra ID) — fără chei API de copiat sau scurs.
+Acest capitol vă va ghida prin configurarea unui mediu de dezvoltare. Vom folosi **Azure AI Foundry** pentru modelele pe tot parcursul acestui curs. Provisonați modelele ca și cod cu Bicep și Azure Developer CLI (`azd`), apoi vă conectați cu **autentificare fără chei** (Microsoft Entra ID) — fără chei API de copiat sau de care să scape.
 
-**Nu este necesară configurarea locală!** Puteți utiliza GitHub Codespaces, care oferă un mediu de dezvoltare complet în browser și provisioning pentru Foundry direct de acolo.
+**Nu este necesară nicio configurare locală!** Puteți folosi GitHub Codespaces, care oferă un mediu complet de dezvoltare direct în browserul dvs. și provisions Foundry de acolo.
 
-Folosim **Azure AI Foundry** pentru acest curs deoarece:
-- **Provisionat ca și cod** — un singur `azd up` deployează contul și modelele
-- **Fără cheie** — autentificare cu Azure sign-in sau o identitate gestionată
+Folosim **Azure AI Foundry** pentru acest curs deoarece este:
+- **Provisonat ca și cod** — un singur `azd up` desfășoară contul și implementările modelului
+- **Fără chei** — autentificați-vă cu semnătura dvs. Azure sau cu o identitate gestionată
 - **Pregătit pentru producție** — același cod rulează local și în Azure
-- **Flexibil** — schimbați modelele prin modificarea numelui deployment-ului, nu a codului
+- **Flexibil** — schimbați modelele schimbând numele implementării, nu codul dvs.
 
-> **Notă**: Deployment-urile Azure AI Foundry sunt taxate per token (pay-as-you-go). Consultați [Ghidul de configurare Azure AI Foundry](getting-started-azure-openai.md) pentru detalii despre provisioning, regiuni și costuri.
+> **Notă**: Implementările Azure AI Foundry sunt taxate per token (plată la consum). Consultați [Ghidul de configurare Azure AI Foundry](getting-started-azure-openai.md) pentru detalii despre provizionare, regiune și costuri.
 
 
-## Pasul 1: Configurați mediul de dezvoltare
+## Pasul 1: Configurați Mediul de Dezvoltare
 
 <a name="quick-start-cloud"></a>
 
-Am creat un container de dezvoltare preconfigurat pentru a minimiza timpul de configurare și pentru a vă asigura că aveți toate instrumentele necesare pentru acest curs Generative AI pentru Java. Alegeți-vă abordarea preferată:
+Am creat un container de dezvoltare preconfigurat pentru a minimiza timpul de configurare și pentru a vă asigura că aveți toate uneltele necesare pentru acest curs Generative AI pentru Java. Alegeți abordarea de dezvoltare preferată:
 
-### Opțiuni pentru configurarea mediului:
+### Opțiuni de Configurare a Mediului:
 
 #### Opțiunea A: GitHub Codespaces (Recomandat)
 
-**Începeți să programați în 2 minute - fără configurare locală!**
+**Începeți să scrieți cod în 2 minute - fără necesitate de configurare locală!**
 
-1. Faceți fork la acest repository pe contul dvs. GitHub
-   > **Notă**: Dacă doriți să modificați configurația de bază, consultați [Configurarea containerului de dezvoltare](../../../.devcontainer/devcontainer.json)
-2. Click pe **Code** → fila **Codespaces** → **...** → **New with options...**
-3. Folosiți setările implicite – se va selecta **Dev container configuration**: **Generative AI Java Development Environment**, containerul dev special creat pentru acest curs
-4. Click pe **Create codespace**
-5. Așteptați ~2 minute până când mediul devine gata
-6. Continuați la [Pasul 2: Provisionați Azure AI Foundry](#pasul-2-provisionați-azure-ai-foundry)
+1. Faceți un fork al acestui depozit în contul dvs. GitHub
+   > **Notă**: Dacă doriți să editați configurația de bază, vă rugăm să consultați [Configurația Containerului de Dezvoltare](../../../.devcontainer/devcontainer.json)
+2. Faceți clic pe **Code** → fila **Codespaces** → **...** → **New with options...**
+3. Folosiți valorile implicite – aceasta va selecta **Configurația containerului de dezvoltare**: **Mediul de Dezvoltare Generative AI Java** creat special pentru acest curs
+4. Faceți clic pe **Create codespace**
+5. Așteptați ~2 minute pentru ca mediul să fie gata
+6. Continuați la [Pasul 2: Provizionați Azure AI Foundry](#pasul-2-provizionați-azure-ai-foundry)
 
-<img src="../../../translated_images/ro/codespaces.9945ded8ceb431a5.webp" alt="Screenshot: Codespaces submenu" width="50%">
+<img src="../../../translated_images/ro/codespaces.9945ded8ceb431a5.webp" alt="Captură de ecran: Submeniul Codespaces" width="50%">
 
-<img src="../../../translated_images/ro/image.833552b62eee7766.webp" alt="Screenshot: New with options" width="50%">
+<img src="../../../translated_images/ro/image.833552b62eee7766.webp" alt="Captură de ecran: New with options" width="50%">
 
-<img src="../../../translated_images/ro/codespaces-create.b44a36f728660ab7.webp" alt="Screenshot: Create codespace options" width="50%">
+<img src="../../../translated_images/ro/codespaces-create.b44a36f728660ab7.webp" alt="Captură de ecran: Opțiunile Create codespace" width="50%">
 
 
-> **Avantajele Codespaces**:
-> - Nu este necesară nicio instalare locală
+> **Beneficiile Codespaces**:
+> - Nu necesită instalare locală
 > - Funcționează pe orice dispozitiv cu browser
 > - Preconfigurat cu toate uneltele și dependențele
-> - Gratuit 60 de ore pe lună pentru conturi personale
-> - Mediu consistent pentru toți cursanții
+> - 60 de ore gratuite pe lună pentru conturile personale
+> - Mediu consecvent pentru toți cursanții
 
-#### Opțiunea B: Container de dezvoltare local
+#### Opțiunea B: Container Local de Dezvoltare
 
-**Pentru dezvoltatorii care preferă dezvoltarea locală cu Docker**
+**Pentru dezvoltatori care preferă dezvoltarea locală cu Docker**
 
-1. Faceți fork și clonați acest repository pe mașina dvs. locală
-   > **Notă**: Dacă doriți să modificați configurația de bază, consultați [Configurarea containerului de dezvoltare](../../../.devcontainer/devcontainer.json)
+1. Faceți fork și clonați acest depozit pe mașina dvs. locală
+   > **Notă**: Dacă doriți să editați configurația de bază, vă rugăm să consultați [Configurația Containerului de Dezvoltare](../../../.devcontainer/devcontainer.json)
 2. Instalați [Docker Desktop](https://www.docker.com/products/docker-desktop/) și [VS Code](https://code.visualstudio.com/)
-3. Instalați extensia [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) în VS Code
-4. Deschideți folderul repository-ului în VS Code
-5. La prompt, faceți click pe **Reopen in Container** (sau folosiți `Ctrl+Shift+P` → "Dev Containers: Reopen in Container")
+3. Instalați [extensia Containere de Dezvoltare](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) în VS Code
+4. Deschideți folderul depozitului în VS Code
+5. La prompt, faceți clic pe **Reopen in Container** (sau folosiți `Ctrl+Shift+P` → "Dev Containers: Reopen in Container")
 6. Așteptați să se construiască și să pornească containerul
-7. Continuați la [Pasul 2: Provisionați Azure AI Foundry](#pasul-2-provisionați-azure-ai-foundry)
+7. Continuați la [Pasul 2: Provizionați Azure AI Foundry](#pasul-2-provizionați-azure-ai-foundry)
 
-<img src="../../../translated_images/ro/devcontainer.21126c9d6de64494.webp" alt="Screenshot: Dev container setup" width="50%">
+<img src="../../../translated_images/ro/devcontainer.21126c9d6de64494.webp" alt="Captură de ecran: Configurare container de dezvoltare" width="50%">
 
-<img src="../../../translated_images/ro/image-3.bf93d533bbc84268.webp" alt="Screenshot: Dev container build complete" width="50%">
+<img src="../../../translated_images/ro/image-3.bf93d533bbc84268.webp" alt="Captură de ecran: Containerul de dezvoltare construit complet" width="50%">
 
-#### Opțiunea C: Folosiți instalarea locală existentă
+#### Opțiunea C: Folosiți Instalarea Locală Existenta
 
-**Pentru dezvoltatorii cu medii Java deja configurate**
+**Pentru dezvoltatori cu medii Java existente**
 
-Precondiții:
-- [Java 21+](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
+Prerechizite:
+- [Java 21+](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html) 
 - [Maven 3.9+](https://maven.apache.org/download.cgi)
 - [VS Code](https://code.visualstudio.com) sau IDE-ul preferat
 
 Pași:
-1. Clonați acest repository pe mașina dvs. locală
+1. Clonați acest depozit pe mașina dvs. locală
 2. Deschideți proiectul în IDE-ul dvs.
-3. Continuați la [Pasul 2: Provisionați Azure AI Foundry](#pasul-2-provisionați-azure-ai-foundry)
+3. Continuați la [Pasul 2: Provizionați Azure AI Foundry](#pasul-2-provizionați-azure-ai-foundry)
 
-> **Sfat util**: Dacă aveți o mașină cu specificații mici, dar doriți să folosiți VS Code local, folosiți GitHub Codespaces! Puteți conecta VS Code local la un Codespace găzduit în cloud pentru a beneficia de ambele avantaje.
+> **Sfat profesional**: Dacă aveți o mașină cu specificații reduse, dar doriți VS Code local, folosiți GitHub Codespaces! Vă puteți conecta VS Code local la un Codespace găzduit în cloud pentru cele mai bune avantaje.
 
-<img src="../../../translated_images/ro/image-2.fc0da29a6e4d2aff.webp" alt="Screenshot: created local devcontainer instance" width="50%">
+<img src="../../../translated_images/ro/image-2.fc0da29a6e4d2aff.webp" alt="Captură de ecran: instanță locală devcontainer creată" width="50%">
 
 
-## Pasul 2: Provisionați Azure AI Foundry
+## Pasul 2: Provizionați Azure AI Foundry
 
-Deployați modelele AI din curs pe Azure AI Foundry ca și cod. Din rădăcina repository-ului:
+Implementați modelele AI ale cursului pe Azure AI Foundry ca și cod. Din rădăcina depozitului:
 
 ```bash
 cd 02-SetupDevEnvironment
@@ -118,103 +118,118 @@ az login
 azd up
 ```
 
-`azd` vă va cere un nume pentru mediu și o regiune, va provisiona un cont Azure AI Foundry cu deployment-uri pentru `gpt-4o-mini` și `text-embedding-3-small`, și va scrie endpoint-ul în exemplul `.env` — toate acestea folosind autentificare **fără cheie** (fără chei API).
+`azd` solicită un nume de mediu, abonament și regiune, provisionează un cont Azure AI Foundry cu implementările `gpt-5.6-luna` și `text-embedding-3-small`, și scrie endpoint-ul în `.env` al exemplului - totul cu autentificare **fără chei** (fără chei API).
 
-> **Parcurgere completă:** Consultați [Ghidul de configurare Azure AI Foundry](getting-started-azure-openai.md) pentru precondiții, alternative manuale (portal), îndrumări privind regiunea și note despre costuri/curățare.
+> **Parcurgere completă:** Consultați [Ghidul de configurare Azure AI Foundry](getting-started-azure-openai.md) pentru prerechizite, alternativă manuală (portal), îndrumări pentru regiune și note privind costurile/curățarea.
 
-## Pasul 3: Testați configurația
+## Pasul 3: Testați Configurația
 
-După ce modelele Foundry sunt provisionate, testați conexiunea cu aplicația exemplu din [`02-SetupDevEnvironment/examples/basic-chat-azure`](../../../02-SetupDevEnvironment/examples/basic-chat-azure).
+Odată ce modelele Foundry sunt provizionate, testați conectarea cu aplicația exemplu în [`02-SetupDevEnvironment/examples/basic-chat-azure`](../../../02-SetupDevEnvironment/examples/basic-chat-azure).
 
 1. Deschideți terminalul în mediul de dezvoltare.
 2. Navigați la exemplu:
    ```bash
    cd 02-SetupDevEnvironment/examples/basic-chat-azure
    ```
-3. Asigurați-vă că sunteți autentificat (autentificarea fără cheie necesită token):
+3. Asigurați-vă că sunteți autentificat (autentificare fără chei necesită token):
    ```bash
    az login
    ```
-   > Dacă ați rulat `azd up`, fișierul `.env` cu endpoint-ul a fost deja creat pentru dvs.
+   > Dacă ați rulat `azd up`, fișierul `.env` cu endpoint-ul a fost deja scris pentru dvs.
 4. Rulați aplicația:
    ```bash
    mvn clean spring-boot:run
    ```
 
-Ar trebui să vedeți un răspuns de la modelul `gpt-4o-mini`.
+Ar trebui să vedeți un răspuns de la modelul `gpt-5.6-luna`.
 
-### Înțelegerea codului exemplu
+### Înțelegerea Codului Exemplu
 
-Exemplul de la `examples/basic-chat-azure` este o aplicație Spring Boot care folosește **Spring AI** pentru a se conecta la Azure AI Foundry cu autentificare fără cheie.
+Exemplul [basic-chat](./examples/basic-chat-azure/README.md) folosește **Spring Boot 4.1.1** și **Spring AI 2.0.1**. `ChatClient` din Spring AI este susținut de SDK-ul oficial OpenAI Java, conectându-se la endpoint-ul Azure OpenAI **v1** cu autentificare fără chei.
 
 **Ce face acest cod:**
-- **Se conectează** la Azure AI Foundry folosind sign-in-ul Azure (Microsoft Entra ID) — fără cheie API
-- **Trimite** o întrebare către modelul `gpt-4o-mini`
+- **Se conectează** la Azure AI Foundry folosind semnătura dvs. Azure (Microsoft Entra ID) — fără cheie API
+- **Trimite** un prompt modelului `gpt-5.6-luna`
 - **Primește** și afișează răspunsul AI-ului
-- **Validează** că setup-ul dvs. funcționează corect
+- **Validează** că configurația dvs. funcționează corect
 
-**Dependența cheie** (în `pom.xml`):
+**Dependențe cheie** (extras din [pom.xml](../../../02-SetupDevEnvironment/examples/basic-chat-azure/pom.xml)):
 ```xml
 <dependency>
     <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-starter-model-azure-openai</artifactId>
+    <artifactId>spring-ai-starter-model-openai</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.openai</groupId>
+    <artifactId>openai-java</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.azure</groupId>
+    <artifactId>azure-identity</artifactId>
+    <version>${azure-identity.version}</version>
 </dependency>
 ```
 
-**Configurare** (`application.yml`):
+POM gestionează OpenAI Java **4.63.1** și setează explicit Azure Identity **1.18.6**. Spring AI 2 a eliminat starterul specific Azure; Azure Identity este încă necesar pentru bean-ul de credențiale.
+
+**Configurație** ([application.yml](../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml)):
 ```yaml
 spring:
   ai:
-    azure:
-      openai:
-        # Endpoint only - no api-key. Spring AI uses DefaultAzureCredential (keyless).
-        endpoint: ${AZURE_OPENAI_ENDPOINT}
-        chat:
-          options:
-            deployment-name: ${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+    openai:
+      base-url: ${AZURE_OPENAI_ENDPOINT}
+      microsoft-foundry: true
+      chat:
+        model: ${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
+        reasoning-effort: none
+        max-completion-tokens: 500
 ```
 
-## Sumar
+Autentificarea fără chei este configurată explicit în [BasicChatApplication.java](../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/java/com/example/BasicChatApplication.java), nu dedusă din lipsa cheii API. Credințialul bearer folosește `DefaultAzureCredential` cu scopul `https://ai.azure.com/.default`, iar `OpenAIClient` țintește `/openai/v1`. Aplicația oferă acest client modelului de chat din Spring AI, astfel încât o cheie globală `OPENAI_API_KEY` nu poate suprascrie autentificarea Azure.
 
-Perfect! Acum aveți totul configurat:
+Setările chat sunt direct sub `spring.ai.openai.chat`, fără un bloc `options`. Lecția păstrează Chat Completions cu `reasoning-effort: none` și o limită de 500 tokeni pentru completare; nu setează `temperature` sau `max-tokens`. Consultați [referința de configurare a exemplului](./examples/basic-chat-azure/README.md#spring-configuration) pentru alegerea API și îndrumări privind apelarea uneltelor.
 
-- Modele Azure AI Foundry provisionate ca și cod cu Bicep + `azd`
-- Mediul de dezvoltare Java funcțional (fie Codespaces, containere de dezvoltare, sau local)
-- Conexiune la Azure AI Foundry cu autentificare fără cheie (Microsoft Entra ID) — fără chei API
-- Testat că totul funcționează cu un exemplu simplu care comunică cu modelul
+## Rezumat
 
-## Următorii pași
+După ce ați finalizat pașii de mai sus, veți avea:
 
-[Capitolul 3: Tehnici de bază Generative AI](../03-CoreGenerativeAITechniques/README.md)
+- Modelele Azure AI Foundry provizionate ca și cod cu Bicep + `azd`
+- Mediul dvs. de dezvoltare Java funcțional (fie că este Codespaces, containere de dezvoltare sau local)
+- Conectare la Azure AI Foundry cu autentificare fără chei (Microsoft Entra ID) — fără chei API
+- Testat funcționarea cu un exemplu simplu care vorbește cu modelul dvs.
+
+## Pașii Următori
+
+[Capitolul 3: Tehnici de bază pentru Generative AI](../03-CoreGenerativeAITechniques/README.md)
 
 ## Depanare
 
 Aveți probleme? Iată probleme comune și soluții:
 
-- **Autentificare eșuată (401/403)?** 
-  - Rulați `az login` — autentificarea este fără cheie, trebuie să fiți autentificat
-  - Verificați că aveți rolul **Cognitive Services OpenAI User** pe resursă
-  - Dacă tocmai ați provisionat, așteptați un minut pentru propagarea rolului
+- **Autentificarea eșuează (401/403)?**
+  - Rulați `az login` — autentificarea este fără chei, deci trebuie să fiți autentificat
+  - Verificați că contul dvs. are rolul **Cognitive Services OpenAI User** pe resursa respectivă
+  - Dacă tocmai ați provizionat, așteptați un minut pentru propagarea asignării rolului
 
-- **Maven nu e găsit?** 
-  - Dacă folosiți containere de dezvoltare/Codespaces, Maven trebuie să fie preinstalat
-  - Pentru setup local, asigurați-vă că Java 21+ și Maven 3.9+ sunt instalate
+- **Maven nu este găsit?**
+  - Dacă folosiți containere de dezvoltare/Codespaces, Maven ar trebui să fie preinstalat
+  - Pentru configurare locală, asigurați-vă că Java 21+ și Maven 3.9+ sunt instalate
   - Încercați `mvn --version` pentru a verifica instalarea
 
-- **`azd` nu este găsit sau provisioning-ul eșuează?** 
+- **`azd` nu este găsit sau provizionarea eșuează?**
   - Instalați [Azure Developer CLI](https://aka.ms/azure-dev/install) și rulați `azd auth login`
-  - Alegeți o regiune unde este disponibil `gpt-4o-mini` (ex. `eastus2`)
-  - Consultați [Ghidul de configurare Azure AI Foundry](getting-started-azure-openai.md) pentru detalii
+  - Alegeți o regiune unde sunt disponibile `gpt-5.6-luna` și `text-embedding-3-small` (de exemplu, `eastus2`), cu cotă suficientă în abonamentul selectat
+  - Consultați [ghidul de configurare Azure AI Foundry](getting-started-azure-openai.md) pentru detalii
 
-- **Containerul de dezvoltare nu pornește?** 
-  - Asigurați-vă că Docker Desktop este pornit (pentru dezvoltare locală)
-  - Încercați să reconstruiți containerul: `Ctrl+Shift+P` → "Dev Containers: Rebuild Container"
+- **Containerul de dezvoltare nu pornește?**
+  - Asigurați-vă că Docker Desktop rulează (pentru dezvoltare locală)
+  - Încercați reconstrucția containerului: `Ctrl+Shift+P` → "Dev Containers: Rebuild Container"
 
-- **Erori la compilarea aplicației?**
-  - Verificați că sunteți în directorul corect: `02-SetupDevEnvironment/examples/basic-chat-azure`
-  - Încercați să curățați și să reconstruiți: `mvn clean compile`
+- **Erori de compilare a aplicației?**
+  - Asigurați-vă că sunteți în directorul corect: `02-SetupDevEnvironment/examples/basic-chat-azure`
+  - Încercați curățarea și recompilarea: `mvn clean compile`
 
-> **Aveți nevoie de ajutor?**: Dacă mai aveți probleme, deschideți un issue în repository și vă vom ajuta.
+> **Aveți nevoie de ajutor?**: Aveți probleme în continuare? Deschideți o problemă în depozit și vă vom ajuta.
 
 ---
 

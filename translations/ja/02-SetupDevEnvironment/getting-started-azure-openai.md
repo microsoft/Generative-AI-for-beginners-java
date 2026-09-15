@@ -1,110 +1,112 @@
-# Azure AI Foundry の開発環境の設定
+# Azure AI Foundry の開発環境セットアップ
 
-> このガイドでは、本コースの Java AI アプリ用に **Azure AI Foundry** モデルを、<strong>キー管理不要</strong> (Microsoft Entra ID) の認証でセットアップします。ツールに不慣れな場合は、[開発環境ガイド](./README.md)から始めてください。
+> このガイドでは、本コースの Java AI アプリ向けに **Azure AI Foundry** モデルを <strong>キー不要</strong> 認証 (Microsoft Entra ID) を使ってセットアップします — 管理する API キーはありません。ツールに不慣れな方は、[開発環境ガイド](./README.md)から始めてください。
 
-このガイドでは、本コースの Java AI アプリのために **Azure AI Foundry** モデルをセットアップします。方法は二つあります:
+このガイドは、本コースの Java AI アプリ用に **Azure AI Foundry** モデルをセットアップします。選択肢は2つあります:
 
-- **オプション A — `azd` + Bicep でプロビジョニング（推奨）:** ワンコマンドで Foundry アカウントとモデルをコードとしてデプロイ。ポータルでの操作不要。
-- **オプション B — Azure AI Foundry ポータルで手動でリソース作成。**
+- **オプションA — `azd` + Bicep でプロビジョニング (推奨)：** 1つのコマンドで Foundry アカウントとモデルをコードとしてデプロイ。ポータルでクリック不要。
+- **オプションB — Azure AI Foundry ポータルでリソースを手動作成**。
 
-どちらの方法も <strong>キー管理不要の認証</strong>（Microsoft Entra ID）を使用するため、API キーをコピーしたり漏えいの心配はありません。
+両パスとも <strong>キー不要認証</strong> (Microsoft Entra ID) を使用します — コピーや漏洩する API キーはありません。
 
 ## 目次
 
 - [作成されるもの](#作成されるもの)
 - [前提条件](#前提条件)
-- [オプション A：azd + Bicep でプロビジョニング（推奨）](#option-a-provision-with-azd--bicep-recommended)
-- [オプション B：手動でリソース作成](#オプション-b：手動でリソース作成)
-- [環境の構成](#環境の構成)
+- [オプションA：azd + Bicep でプロビジョニング (推奨)](#option-a-provision-with-azd--bicep-recommended)
+- [オプションB：リソースを手動作成](#オプションb：リソースを手動作成)
+- [環境設定](#環境設定)
 - [セットアップのテスト](#セットアップのテスト)
-- [次は？](#次は？)
+- [次にやること](#次にやること)
 - [リソース](#リソース)
 - [追加リソース](#追加リソース)
 
 ## 作成されるもの
 
-[`infra/`](../../../02-SetupDevEnvironment/infra) の Bicep テンプレートで以下をプロビジョニングします:
+[`infra/`](../../../02-SetupDevEnvironment/infra) の Bicep テンプレートでは以下をプロビジョニングします:
 
-- **Azure AI Foundry** アカウント (`Microsoft.CognitiveServices/accounts`、種別は `AIServices`) とプロジェクト
-- <strong>チャット</strong> 展開 — `gpt-4o-mini`
-- <strong>埋め込み</strong> 展開 — `text-embedding-3-small`（後の章で使用）
-- <strong>キー管理不要のロール割り当て</strong>（`Cognitive Services OpenAI User`）、`az login` でサインイン可能に
+- プロジェクト付きの **Azure AI Foundry** アカウント（`Microsoft.CognitiveServices/accounts`, 種別 `AIServices`）
+- チャット用デプロイメント - GPT-5.6 Luna (`gpt-5.6-luna`)、バージョン `2026-07-09`、`GlobalStandard` キャパシティ `10`（このモデルの10リクエスト/分、10,000トークン/分）
+- 埋め込み用デプロイメント - `text-embedding-3-small`、バージョン `1`（後半章で使用）
+- キー不要のロール割り当て (`Cognitive Services OpenAI User`) で `az login` でサインインでき、キー管理不要
 
 ## 前提条件
 
 - [Azure サブスクリプション](https://azure.microsoft.com/free/)
 - [Azure Developer CLI (`azd`)](https://aka.ms/azure-dev/install)
 - [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli)
-- [Java 21+](https://learn.microsoft.com/java/openjdk/download) と [Maven 3.9+](https://maven.apache.org/download.cgi)
+- [Java 21+](https://learn.microsoft.com/java/openjdk/download) および [Maven 3.9+](https://maven.apache.org/download.cgi)
 
-## オプション A：azd + Bicep でプロビジョニング（推奨）
+## オプションA：azd + Bicep でプロビジョニング (推奨)
 
 `02-SetupDevEnvironment` フォルダーから:
 
 ```bash
 cd 02-SetupDevEnvironment
 
-# サインイン（両方のツール）
+# サインイン（両ツール）
 azd auth login
 az login
 
 # Foundryアカウントとモデルデプロイのプロビジョニング
 azd up
 ```
-  
-`azd` は <strong>環境名</strong>（例: `genai-java`）と <strong>リージョン</strong>を入力するよう求めます。`gpt-4o-mini` と `text-embedding-3-small` が利用可能なリージョンを選択してください（例: `eastus2` または `swedencentral`）。
 
-プロビジョニング終了後、azd は次の処理を行います:
+`azd` は <strong>環境名</strong>（例: `genai-java`）、<strong>サブスクリプション</strong>、<strong>リージョン</strong> を尋ねます。`gpt-5.6-luna` と `text-embedding-3-small` が利用可能なリージョン (例: `eastus2`) と、ご自身のサブスクリプションを選択してください。サブスクリプションにそのリージョンでモデルとデプロイメントタイプに十分なクォータがあることを確認してください。利用可能性とクォータはサブスクリプションによって異なります。
+
+プロビジョニング完了後、azd は:
 
 1. [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep) に定義されたすべてをデプロイします。
-2. エンドポイントと展開名を含む [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) を生成する postprovision フックを実行します（シークレットは含まれません）。
+2. ポストプロビジョンフックを実行し、エンドポイントとデプロイメント名を含む [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) を書き込みます（秘密情報なし）。
 
-> **ヒント:** 変更を反映したい場合はいつでも `azd up` を再実行。すべて削除して料金発生を止めたい場合は `azd down` を使います。
+> **ヒント:** `azd up` は何度でも実行して変更を適用してください。`azd down` を実行するとすべて削除され、費用が発生しなくなります。
 
-生成された設定を確認するには:
+生成された設定を見るには:
 
 ```bash
 azd env get-values
 ```
-  
-次に、[セットアップのテスト](#セットアップのテスト)に進んでください。
 
-## オプション B：手動でリソース作成
+次に [セットアップのテスト](#セットアップのテスト) に進んでください。
 
-ポータル操作を好む場合は、以下の手順でリソースを作成してください:
+## オプションB：リソースを手動作成
 
-1. [Azure AI Foundry ポータル](https://ai.azure.com/)にアクセスし、サインイン。
-2. <strong>プロジェクトを作成</strong>（同時に AI Foundry リソースも作成されます）。名前は例として `GenAIJava` にしてください。
-3. プロジェクト内の **Models + endpoints** → **Deploy model** → **Deploy base model** を開く。
-4. <strong>gpt-4o-mini</strong>をデプロイ（展開名は `gpt-4o-mini`）。埋め込み例を使いたい場合は **text-embedding-3-small** も同様にデプロイ。
-5. **Overview** から <strong>エンドポイント</strong>をコピー（例: `https://<resource>.openai.azure.com/`）。
-6. キー管理不要アクセスを付与: リソース左メニューの **Access control (IAM)** → **Add role assignment** → 自分のアカウントに **Cognitive Services OpenAI User** を割り当て。
+ポータルを使いたいですか？手動でリソースを作成してください:
 
-> **まだ問題がありますか？** [Azure AI Foundry ドキュメント](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects)を参照してください。
+1. [Azure AI Foundry ポータル](https://ai.azure.com/)にアクセスし、サインインします。
+2. <strong>プロジェクトを作成</strong>（これで AI Foundry リソースも作成されます）。`GenAIJava` のような名前を付けます。
+3. プロジェクト内で **Models + endpoints** → **Deploy model** → **Deploy base model** を開きます。
+4. **GPT-5.6 Luna**（モデルおよびデプロイ名 `gpt-5.6-luna`、バージョン `2026-07-09`）を **Global Standard** キャパシティ `10` でデプロイ。埋め込み例が必要な場合は、**text-embedding-3-small** バージョン `1` も同様にデプロイしてください。
+5. <strong>概要</strong>から <strong>エンドポイント</strong> をコピーします（例: `https://<resource>.openai.azure.com/`）。
+6. キー不要アクセスを許可します: リソースで **アクセス制御 (IAM)** → <strong>ロール割り当ての追加</strong> → **Cognitive Services OpenAI User** を自分のアカウントに割り当てます。
 
-## 環境の構成
+> **まだ問題がありますか？** [Azure AI Foundry ドキュメント](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects)をご覧ください。
 
-**オプション A (`azd up`) を使った場合**、設定ファイルは自動で作成済みなので、構成は不要です。[セットアップのテスト](#セットアップのテスト)へ進んでください。
+## 環境設定
 
-**オプション B（手動）の場合**、サンプルの `.env` ファイルを自分で作成してください:
+**オプションA (`azd up`) を利用した場合**、設定ファイルはすでに書き込まれているため、設定は不要です。[セットアップのテスト](#セットアップのテスト)へ進んでください。
+
+**オプションB (手動) を利用した場合**、サンプルの `.env` ファイルを自分で作成してください:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 cp .env.example .env
 ```
-  
-`.env` を編集し、エンドポイントを指定します（キーは不要、認証はキー管理不要）:
+
+`.env` をエンドポイントに合わせて編集してください（キー不要 — 認証はキー不要です）:
 
 ```bash
 AZURE_OPENAI_ENDPOINT=https://<your-resource>.openai.azure.com/
-AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
+AZURE_OPENAI_DEPLOYMENT=gpt-5.6-luna
 ```
-  
-> **セキュリティ注意:** API キーは保存しません。認証は `az login`（ローカル）または Azure のマネージド ID で Microsoft Entra ID を使います。`.env` ファイルはシークレットを含まない設定のみで、すでに `.gitignore` 管理下にあります。
+
+プロジェクト URL ではなく、リソースの Azure OpenAI エンドポイントを使用してください。basic-chat アプリではそれを `/openai/v1` に解決し、明示的なベアラートークンクライアントを設定します。API キーは不要です。
+
+> **セキュリティ注意:** 保管すべき API キーはありません。`az login` (ローカル) またはマネージド ID (Azure内) を介して Microsoft Entra ID で認証します。`.env` には秘密でない設定のみを保持し、`.gitignore` で保護されています。
 
 ## セットアップのテスト
 
-キー管理不要認証用のトークン取得のためにサインインしたことを確認し、例を実行してください:
+キー不要認証用のトークンを取得できるようにサインインしてから、例を実行します:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
@@ -112,37 +114,36 @@ cd 02-SetupDevEnvironment/examples/basic-chat-azure
 az login          # まだサインインしていない場合
 mvn clean spring-boot:run
 ```
-  
-`gpt-4o-mini` モデルからの応答が表示されるはずです！
 
-> **VS Code ユーザー:** `F5` キーで実行可能。アプリが `.env` を自動読み込みします。
+`gpt-5.6-luna` モデルからの応答が見えるはずです。例を連続で実行して小さいデフォルトクォータ内に収めてください。HTTP 429 エラーが出たら、リトライ間隔を待ってから再試行してください。
 
-> **完全な例:** 詳細やトラブルシューティングは [Azure AI Foundry を使った Basic Chat 例](./examples/basic-chat-azure/README.md)をご覧ください。
+> **VS Code ユーザー:** `F5` キーで実行します。アプリが `.env` を自動で読み込みます。
 
-## 次は？
+> **完全な例:** 詳細とトラブルシューティングは [Basic Chat with Azure AI Foundry example](./examples/basic-chat-azure/README.md) をご覧ください。
 
-**セットアップ完了！**  
-以下の環境が整いました:
-- `gpt-4o-mini` と `text-embedding-3-small` をデプロイした Azure AI Foundry
-- キー管理不要認証（Microsoft Entra ID）
-- エンドポイントと展開名を含むローカル `.env`
-- Java 開発環境の準備完了
+## 次にやること
 
-<strong>続けて</strong> [第3章: コア生成AI技術](../03-CoreGenerativeAITechniques/README.md) にて AI アプリ構築を始めましょう！
+プロビジョニングと例の成功実行後には以下が整っています:
+- `gpt-5.6-luna` と `text-embedding-3-small` がデプロイされた Azure AI Foundry
+- キー不要認証 (Microsoft Entra ID) — 管理すべきキーなし
+- エンドポイントとデプロイ名を含むローカルの `.env`
+- すぐに使える Java 開発環境
+
+<strong>続けて</strong> [第3章：コアの生成AI技術](../03-CoreGenerativeAITechniques/README.md) で AI アプリの構築を始めましょう！
 
 ## リソース
 
 - [Azure Developer CLI (azd)](https://aka.ms/azure-dev/install)
-- [Microsoft Entra ID を使ったキー管理不要認証](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
+- [Microsoft Entra ID でのキー不要認証](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
 - [Azure AI Foundry ドキュメント](https://learn.microsoft.com/azure/ai-foundry/)
-- [Spring AI Azure OpenAI ドキュメント](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
-- [Azure OpenAI Java SDK](https://learn.microsoft.com/java/api/overview/azure/ai-openai-readme)
+- [Spring AI 2 OpenAI Java SDK への移行](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [Azure OpenAI v1 対応の公式 OpenAI Java SDK](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
 
 ## 追加リソース
 
-- [VS Code をダウンロード](https://code.visualstudio.com/Download)
-- [Docker Desktop を入手](https://www.docker.com/products/docker-desktop)
-- [Dev Container 構成](../../../.devcontainer/devcontainer.json)
+- [VS Code ダウンロード](https://code.visualstudio.com/Download)
+- [Docker Desktop 入手](https://www.docker.com/products/docker-desktop)
+- [開発コンテナ設定](../../../.devcontainer/devcontainer.json)
 
 ---
 

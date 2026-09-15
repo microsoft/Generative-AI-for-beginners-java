@@ -1,67 +1,67 @@
 # Azure AI Foundry এর জন্য ডেভেলপমেন্ট পরিবেশ সেট আপ করা
 
-> এই গাইডটি এই কোর্সের জাভা AI অ্যাপগুলির জন্য **Azure AI Foundry** মডেলগুলি সেট আপ করে, **keyless** প্রমাণীকরণ (Microsoft Entra ID) ব্যবহার করে — কোনও API কী পরিচালনা করার প্রয়োজন নেই। টুলিংয়ে নতুন? শুরু করুন [ডেভেলপমেন্ট পরিবেশ গাইড](./README.md) থেকে।
+> এই নির্দেশিকাটি এই কোর্সের জাভা AI অ্যাপগুলির জন্য **Azure AI Foundry** মডেলগুলি **keyless** প্রমাণীকরণ (Microsoft Entra ID) ব্যবহার করে সেট আপ করে — কোনো API কী ম্যানেজ করতে হবে না। টুলিং-এ নতুন? শুরু করুন [ডেভেলপমেন্ট পরিবেশ গাইড](./README.md) থেকে।
 
-এই গাইডটি এই কোর্সের জাভা AI অ্যাপগুলির জন্য **Azure AI Foundry** মডেলগুলি সেট আপ করে। আপনার দুইটি পথ রয়েছে:
+এই গাইডটি এই কোর্সের জাভা AI অ্যাপগুলির জন্য **Azure AI Foundry** মডেলগুলি সেট আপ করে। আপনার দুটি পথ আছে:
 
-- **পছন্দ A — `azd` + Bicep এর মাধ্যমে Provision (প্রস্তাবিত):** এক কমান্ডে Foundry অ্যাকাউন্ট এবং মডেলগুলি কোড হিসাবে ডিপ্লয় হয়। কোনও পোর্টাল ক্লিক করতে হবে না।
-- **পছন্দ B — Azure AI Foundry পোর্টালে ম্যানুয়ালি রিসোর্স তৈরি করুন।**
+- **অপশন A — `azd` + Bicep দিয়ে প্রোভিশন করুন (প্রশংসিত):** একটি কমান্ড দিয়ে Foundry অ্যাকাউন্ট এবং মডেলগুলি কোড হিসেবে ডিপ্লয় করে। কোনো পোর্টাল ক্লিক করতে হবে না।
+- **অপশন B — Azure AI Foundry পোর্টালে ম্যানুয়ালি রিসোর্স তৈরি করুন।**
 
-দুই পথেই **keyless authentication** (Microsoft Entra ID) ব্যবহার করা হয় — কোনও API কী কপি বা ফাঁস করার প্রয়োজন নেই।
+উভয় পথেই ব্যবহার করা হয় **keyless authentication** (Microsoft Entra ID) — কোনো API কী কপি বা লিক করার প্রয়োজন নেই।
 
-## বিষয় সমূহের সূচি
+## বিষয়বস্তু
 
-- [কি তৈরি হয়](#কি-তৈরি-হয়)
-- [প্রয়োজনীয়তা](#প্রয়োজনীয়তা)
-- [পছন্দ A: azd + Bicep দিয়ে Provision (প্রস্তাবিত)](#option-a-provision-with-azd--bicep-recommended)
-- [পছন্দ B: ম্যানুয়ালি রিসোর্স তৈরি করা](#পছন্দ-b-ম্যানুয়ালি-রিসোর্স-তৈরি-করা)
+- [কি তৈরি হয়](#কি-তৈরি-হয়)
+- [প্রয়োজনীয়তা](#প্রয়োজনীয়তা)
+- [অপশন A: azd + Bicep দিয়ে প্রোভিশন করা (প্রশংসিত)](#option-a-provision-with-azd--bicep-recommended)
+- [অপশন B: ম্যানুয়ালি রিসোর্স তৈরি করুন](#অপশন-b-ম্যানুয়ালি-রিসোর্স-তৈরি-করুন)
 - [আপনার পরিবেশ কনফিগার করুন](#আপনার-পরিবেশ-কনফিগার-করুন)
 - [আপনার সেটআপ পরীক্ষা করুন](#আপনার-সেটআপ-পরীক্ষা-করুন)
-- [পরবর্তী কি?](#পরবর্তী-কি)
+- [পরবর্তী ধাপ কি?](#পরবর্তী-ধাপ-কি)
 - [রিসোর্স](#রিসোর্স)
 - [অতিরিক্ত রিসোর্স](#অতিরিক্ত-রিসোর্স)
 
-## কি তৈরি হয়
+## কি তৈরি হয়
 
-[`infra/`](../../../02-SetupDevEnvironment/infra) এর Bicep টেমপ্লেটগুলি provision করে:
+[`infra/`](../../../02-SetupDevEnvironment/infra) এর Bicep টেমপ্লেটগুলি প্রোভিশন করে:
 
-- একটি **Azure AI Foundry** অ্যাকাউন্ট (`Microsoft.CognitiveServices/accounts`, ধরন `AIServices`) একটি প্রকল্পসহ
-- একটি **chat** ডিপ্লয়মেন্ট — `gpt-4o-mini`
-- একটি **embedding** ডিপ্লয়মেন্ট — `text-embedding-3-small` (পরে অধ্যায়ে ব্যবহৃত)
-- একটি **keyless role assignment** (`Cognitive Services OpenAI User`) যাতে আপনি কী ম্যানেজ না করে `az login` দিয়ে সাইন ইন করতে পারেন
+- একটি **Azure AI Foundry** অ্যাকাউন্ট (`Microsoft.CognitiveServices/accounts`, ধরণ `AIServices`) একটি প্রজেক্টসহ
+- একটি **চার্ট** ডিপ্লয়মেন্ট - GPT-5.6 Luna (`gpt-5.6-luna`), সংস্করণ `2026-07-09`, `GlobalStandard` ক্ষমতা `10` (এই মডেলের জন্য ১০টি অনুরোধ/মিনিট এবং ১০,০০০ টোকেন/মিনিট)
+- একটি **এম্বেডিং** ডিপ্লয়মেন্ট - `text-embedding-3-small`, সংস্করণ `1` (পরবর্তীতে অধ্যায়ে ব্যবহৃত)
+- একটি **keyless রোল অ্যাসাইনমেন্ট** (`Cognitive Services OpenAI User`) যাতে আপনি কী ব্যবস্থাপনা না করে `az login` দিয়ে সাইন ইন করতে পারেন
 
-## প্রয়োজনীয়তা
+## প্রয়োজনীয়তা
 
 - একটি [Azure সাবস্ক্রিপশন](https://azure.microsoft.com/free/)
 - [Azure Developer CLI (`azd`)](https://aka.ms/azure-dev/install)
 - [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli)
-- [Java 21+](https://learn.microsoft.com/java/openjdk/download) এবং [Maven 3.9+](https://maven.apache.org/download.cgi)
+- [Java ২১+](https://learn.microsoft.com/java/openjdk/download) এবং [Maven ৩.৯+](https://maven.apache.org/download.cgi)
 
-## পছন্দ A: azd + Bicep দিয়ে Provision (প্রস্তাবিত)
+## অপশন A: azd + Bicep দিয়ে প্রোভিশন করুন (প্রশংসিত)
 
 `02-SetupDevEnvironment` ফোল্ডার থেকে:
 
 ```bash
 cd 02-SetupDevEnvironment
 
-# সাইন ইন (উভয় টুল)
+# সাইন ইন করুন (উভয় সরঞ্জাম)
 azd auth login
 az login
 
-# ফাউন্ড্রি অ্যাকাউন্ট + মডেল ডিপ্লয়মেন্ট প্রদান করুন
+# Foundry অ্যাকাউন্ট + মডেল ডিপ্লয়মেন্ট প্রদান করুন
 azd up
 ```
 
-`azd` আপনাকে একটি **পরিবেশ নাম** (উদাহরণস্বরূপ `genai-java`) এবং একটি **রিজিওন** এর জন্য প্রম্পট দেয়। এমন একটি রিজিওন বেছে নিন যেখানে `gpt-4o-mini` এবং `text-embedding-3-small` উপলব্ধ — যেমন `eastus2` বা `swedencentral`।
+`azd` একটি **পরিবেশের নাম** (উদাহরণস্বরূপ `genai-java`), **সাবস্ক্রিপশন**, এবং **অঞ্চল** এর জন্য প্রম্পট দেয়। আপনার নিজের সাবস্ক্রিপশন এবং এমন একটি অঞ্চল নির্বাচন করুন যেখানে `gpt-5.6-luna` এবং `text-embedding-3-small` উপলব্ধ, যেমন `eastus2`। নিশ্চিত করুন যে সেই এলাকায় মডেল এবং ডিপ্লয়মেন্ট ধরনের জন্য সাবস্ক্রিপশনে পর্যাপ্ত কোটা আছে; উপলব্ধতা এবং কোটা সাবস্ক্রিপশন অনুসারে পরিবর্তিত হতে পারে।
 
-Provisioning শেষ হলে, azd:
+প্রোভিশনিং শেষ হলে, azd:
 
-1. [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep)-এ সংজ্ঞায়িত সবকিছু ডিপ্লয় করে।
-2. একটি postprovision হুক চালায় যা আপনার endpoint এবং deployment নামসমূহ সহ [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) ফাইল লেখে (কোনো সিক্রেট নয়)।
+1. [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep) এ সংজ্ঞায়িত সবকিছু ডিপ্লয় করে।
+2. একটি পোস্টপ্রোভিশন হুক চালায় যা আপনার এন্ডপয়েন্ট এবং ডিপ্লয়মেন্ট নাম সহ [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) ফাইল লিখে (কোনো গোপনীয় তথ্য নয়)।
 
-> **টিপ:** কোনও সময় পরিবর্তন প্রয়োগ করতে আবার `azd up` রান করুন। সবকিছু মুছে দিতে এবং খরচ বন্ধ করতে `azd down` রান করুন।
+> **পরামর্শ:** পরিবর্তন প্রয়োগ করতে যেকোন সময় `azd up` পুনরায় চালান। সবকিছু মুছে ফেলতে এবং খরচ বন্ধ করতে `azd down` চালান।
 
-উত্পন্ন সেটিংস দেখতে:
+তৈরি সেটিংস দেখতে:
 
 ```bash
 azd env get-values
@@ -69,42 +69,44 @@ azd env get-values
 
 এখন [আপনার সেটআপ পরীক্ষা করুন](#আপনার-সেটআপ-পরীক্ষা-করুন) এ যান।
 
-## পছন্দ B: ম্যানুয়ালি রিসোর্স তৈরি করা
+## অপশন B: ম্যানুয়ালি রিসোর্স তৈরি করুন
 
-পোর্টাল ব্যবহার করতে চান? নিজে নিজে রিসোর্স তৈরি করুন:
+পোর্টাল পছন্দ করেন? হাতে হাতে রিসোর্স তৈরি করুন:
 
 1. [Azure AI Foundry পোর্টালে](https://ai.azure.com/) যান এবং সাইন ইন করুন।
-2. **একটি প্রকল্প তৈরি করুন** (এটি একটি AI Foundry রিসোর্সও তৈরি করে)। একটি নাম দিন যেমন `GenAIJava`।
-3. আপনার প্রকল্পে, **Models + endpoints** → **Deploy model** → **Deploy base model** খুলুন।
-4. **gpt-4o-mini** (ডিপ্লয়মেন্ট নাম `gpt-4o-mini`) ডিপ্লয় করুন। ইচ্ছা করলে embedding উদাহরণের জন্য **text-embedding-3-small** এর জন্যও পুনরাবৃত্তি করুন।
-5. **Overview** থেকে **endpoint** কপি করুন (উদাহরণস্বরূপ `https://<resource>.openai.azure.com/`)।
-6. নিজেকে keyless access দিন: রিসোর্সে, **Access control (IAM)** → **Add role assignment** → আপনার অ্যাকাউন্টে **Cognitive Services OpenAI User** অ্যাসাইন করুন।
+2. **একটি প্রজেক্ট তৈরি করুন** (এটি একটি AI Foundry রিসোর্সও তৈরি করে)। একটি নাম দিন যেমন `GenAIJava`।
+3. আপনার প্রজেক্টের মধ্যে, **Models + endpoints** → **Deploy model** → **Deploy base model** খুলুন।
+4. **GPT-5.6 Luna** ডিপ্লয় করুন (মডেল এবং ডিপ্লয়মেন্ট নাম `gpt-5.6-luna`, সংস্করণ `2026-07-09`) **Global Standard** ক্ষমতা `10` সহ। এম্বেডিং উদাহরণ চাইলে **text-embedding-3-small**, সংস্করণ `1` এর জন্যও পুনরাবৃত্তি করুন।
+5. **Overview** থেকে **এন্ডপয়েন্ট** কপি করুন (উদাহরণস্বরূপ `https://<resource>.openai.azure.com/`)।
+6. নিজেকে keyless অ্যাক্সেস প্রদান করুন: রিসোর্সে গিয়ে **Access control (IAM)** → **Add role assignment** → আপনার অ্যাকাউন্টে **Cognitive Services OpenAI User** রোল অ্যাসাইন করুন।
 
-> **এখনও সমস্যা হচ্ছে?** দেখুন [Azure AI Foundry ডকুমেন্টেশন](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects)।
+> **কোনো সমস্যা হচ্ছে?** দেখুন [Azure AI Foundry ডকুমেন্টেশন](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects)।
 
 ## আপনার পরিবেশ কনফিগার করুন
 
-**যদি আপনি পছন্দ A (`azd up`) ব্যবহার করে থাকেন**, আপনার সেটিংস ফাইল ইতিমধ্যেই লেখা হয়েছে — কনফিগার করার কিছু নেই। [আপনার সেটআপ পরীক্ষা করুন](#আপনার-সেটআপ-পরীক্ষা-করুন) এ যান।
+**অপশন A (`azd up`) ব্যবহার করলে**, আপনার সেটিংস ফাইল ইতিমধ্যেই লেখা আছে — কোনো কনফিগারেশন প্রয়োজন নেই। [আপনার সেটআপ পরীক্ষা করুন](#আপনার-সেটআপ-পরীক্ষা-করুন) এ যান।
 
-**যদি আপনি পছন্দ B (ম্যানুয়াল) ব্যবহার করে থাকেন**, উদাহরণের `.env` ফাইল নিজে তৈরি করুন:
+**অপশন B (ম্যানুয়ালি) ব্যবহার করলে**, উদাহরণের `.env` ফাইলটি নিজে তৈরি করুন:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 cp .env.example .env
 ```
 
-`.env` এ এডিট করুন আপনার endpoint সহ (কোনো কী নয় — অথেন্টিকেশন keyless):
+`.env` ফাইল এডিট করুন আপনার এন্ডপয়েন্ট দিয়ে (কোনো কী নয় — প্রমাণীকরণ keyless):
 
 ```bash
 AZURE_OPENAI_ENDPOINT=https://<your-resource>.openai.azure.com/
-AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
+AZURE_OPENAI_DEPLOYMENT=gpt-5.6-luna
 ```
 
-> **সিকিউরিটি নোট:** সংরক্ষণ করার জন্য কোনও API কী নেই। আপনি Microsoft Entra ID দিয়ে `az login` (লোকালি) বা একটি managed identity (Azure এ) দিয়ে প্রমাণীকরণ করেন। `.env` ফাইলে শুধুমাত্র নন-সিক্রেট সেটিংস থাকে এবং এটি ইতিমধ্যেই `.gitignore` দ্বারা কভার করা হয়।
+রিসোর্সের Azure OpenAI এন্ডপয়েন্ট ব্যবহার করুন, প্রজেক্ট URL নয়। basic-chat অ্যাপ এটি `/openai/v1` হিসেবে রেজলভ করে এবং একটি স্পেসিফিক বেয়ারার-টোকেন ক্লায়েন্ট কনফিগার করে; API কী প্রয়োজন নেই।
+
+> **সুরক্ষা নোট:** সংরক্ষণ করার জন্য কোনো API কী নেই। আপনি Microsoft Entra ID ব্যবহার করে `az login` (লোকালি) অথবা ম্যানেজড আইডেন্টিটি (Azure এ) এর মাধ্যমে প্রমাণীকৃত হন। `.env` ফাইল শুধুমাত্র নন-সিক্রেট সেটিংস ধারণ করে এবং `.gitignore` দ্বারা ইতিমধ্যে কাভার করা হয়েছে।
 
 ## আপনার সেটআপ পরীক্ষা করুন
 
-নিশ্চিত করুন আপনি সাইন ইন করেছেন যাতে keyless auth টোকেন পেতে পারে, তারপর উদাহরণ রান করুন:
+নিশ্চিত করুন আপনি সাইন ইন করেছেন যাতে keyless auth টোকেন পেতে পারে, তারপর উদাহরণ চালান:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
@@ -113,35 +115,35 @@ az login          # যদি আপনি ইতিমধ্যেই সাই
 mvn clean spring-boot:run
 ```
 
-আপনি `gpt-4o-mini` মডেল থেকে একটি প্রতিক্রিয়া দেখতে পাবেন!
+আপনি `gpt-5.6-luna` মডেল থেকে একটি উত্তর দেখতে পাবেন। ডিফল্ট ছোট কোটা মধ্যে থাকার জন্য উদাহরণগুলো ধারাবাহিকভাবে চালান; যদি HTTP 429 পান, আবার চেষ্টা করার আগে পুনরায় চেষ্টা করার জন্য অপেক্ষা করুন।
 
-> **VS Code ব্যবহারকারী:** রান করতে `F5` চাপুন। অ্যাপটি আপনার `.env` স্বয়ংক্রিয়ভাবে লোড করে।
+> **VS কোড ব্যবহারকারীগণ:** চালানোর জন্য `F5` চাপুন। অ্যাপ স্বয়ংক্রিয়ভাবে আপনার `.env` লোড করে।
 
-> **সম্পূর্ণ উদাহরণ:** বিস্তারিত এবং সমস্যা সমাধানের জন্য দেখুন [Azure AI Foundry এর সাথে Basic Chat উদাহরণ](./examples/basic-chat-azure/README.md)।
+> **পূর্ণ উদাহরণ:** বিস্তারিত এবং সমস্যা সমাধানের জন্য [Azure AI Foundry এর সাথে Basic Chat উদাহরণ](./examples/basic-chat-azure/README.md) দেখুন।
 
-## পরবর্তী কি?
+## পরবর্তী ধাপ কি?
 
-**সেটআপ সম্পন্ন!** আপনার এখন আছে:
-- `gpt-4o-mini` এবং `text-embedding-3-small` সহ Azure AI Foundry ডিপ্লয় করা
-- Keyless authentication (Microsoft Entra ID) — কী ম্যানেজ করার প্রয়োজন নেই
-- একটি লোকাল `.env` আপনার endpoint এবং deployment নামসহ
-- জাভা ডেভেলপমেন্ট পরিবেশ প্রস্তুত
+প্রোভিশনিং এবং উদাহরণ সফলভাবে চালানোর পরে, আপনার কাছে থাকবে:
+- Azure AI Foundry তে `gpt-5.6-luna` এবং `text-embedding-3-small` ডিপ্লয় হয়েছে
+- Keyless প্রমাণীকরণ (Microsoft Entra ID) — কোনো কী ব্যবস্থাপনা নেই
+- একটি লোকাল `.env` আপনার এন্ডপয়েন্ট এবং ডিপ্লয়মেন্ট নামের সঙ্গে
+- একটি জাভা ডেভেলপমেন্ট পরিবেশ প্রস্তুত
 
-**শুরু করুন** [অধ্যায় ৩: Core Generative AI Techniques](../03-CoreGenerativeAITechniques/README.md) থেকে AI অ্যাপ্লিকেশন তৈরি করতে!
+**চালিয়ে যান** [অধ্যায় ৩: কোর জেনেরেটিভ AI কৌশলসমূহ](../03-CoreGenerativeAITechniques/README.md) এ, AI অ্যাপ্লিকেশন তৈরি শুরু করতে!
 
 ## রিসোর্স
 
 - [Azure Developer CLI (azd)](https://aka.ms/azure-dev/install)
-- [Microsoft Entra ID সহ Keyless authentication](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
+- [Microsoft Entra ID এর সাথে Keyless প্রমাণীকরণ](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
 - [Azure AI Foundry ডকুমেন্টেশন](https://learn.microsoft.com/azure/ai-foundry/)
-- [Spring AI Azure OpenAI ডকুমেন্টেশন](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
-- [Azure OpenAI Java SDK](https://learn.microsoft.com/java/api/overview/azure/ai-openai-readme)
+- [Spring AI 2 OpenAI Java SDK রূপান্তর](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [Azure OpenAI v1 সহ অফিসিয়াল OpenAI Java SDK](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
 
 ## অতিরিক্ত রিসোর্স
 
-- [VS Code ডাউনলোড করুন](https://code.visualstudio.com/Download)
-- [Docker Desktop পান](https://www.docker.com/products/docker-desktop)
-- [Dev Container কনফিগারেশন](../../../.devcontainer/devcontainer.json)
+- [VS কোড ডাউনলোড করুন](https://code.visualstudio.com/Download)
+- [ডকার ডেস্কটপ পান](https://www.docker.com/products/docker-desktop)
+- [ডেভ কন্টেনার কনফিগারেশন](../../../.devcontainer/devcontainer.json)
 
 ---
 

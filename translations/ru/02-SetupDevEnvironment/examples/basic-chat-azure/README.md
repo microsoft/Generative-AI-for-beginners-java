@@ -1,6 +1,8 @@
-# Базовый чат с Azure AI Foundry — пример от начала до конца
+# Основной чат с Azure AI Foundry — пример сквозного выполнения
 
-Этот пример — простое приложение Spring Boot, которое подключается к модели **Azure AI Foundry** с помощью **аутентификации без ключа** (Microsoft Entra ID) и тестирует вашу настройку. Используется `ChatClient` из Spring AI.
+Этот пример — простое приложение Spring Boot, которое подключается к модели **Azure AI Foundry** с использованием **аутентификации без ключа** (Microsoft Entra ID) и проверяет вашу настройку. Оно использует `ChatClient` из Spring AI, основанный на **официальном OpenAI Java SDK** и конечной точке **Azure OpenAI v1**.
+
+Версии в [pom.xml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/pom.xml): Spring Boot **4.1.1**, Spring AI **2.0.1**, OpenAI Java **4.63.1**, Azure Identity **1.18.6** и dotenv-java **3.2.0**. Пример использует `spring-ai-starter-model-openai` и явно объявляет `openai-java` и `azure-identity`; в Spring AI 2 удалён старый стартер Azure OpenAI.
 
 ## Содержание
 
@@ -10,38 +12,38 @@
 - [Запуск приложения](#запуск-приложения)
   - [Использование Maven](#использование-maven)
   - [Использование VS Code](#использование-vs-code)
-  - [Ожидаемый вывод](#ожидаемый-вывод)
-- [Справочник по настройке](#справочник-по-настройке)
+  - [Ожидаемый результат](#ожидаемый-результат)
+- [Справочная информация по конфигурации](#справочная-информация-по-конфигурации)
   - [Переменные окружения](#переменные-окружения)
   - [Конфигурация Spring](#конфигурация-spring)
 - [Устранение неполадок](#устранение-неполадок)
   - [Распространённые проблемы](#распространённые-проблемы)
   - [Режим отладки](#режим-отладки)
-- [Следующие шаги](#следующие-шаги)
+- [Дальнейшие шаги](#дальнейшие-шаги)
 - [Ресурсы](#ресурсы)
 
 ## Требования
 
 Перед запуском этого примера убедитесь, что у вас есть:
 
-- Ресурс Azure AI Foundry с развертыванием `gpt-4o-mini` — создайте его с помощью `azd up` или вручную через [руководство по настройке Azure AI Foundry](../../getting-started-azure-openai.md)
+- Ресурс Azure AI Foundry с развертыванием `gpt-5.6-luna` — создайте его с помощью `azd up` или вручную по [руководству Azure AI Foundry](../../getting-started-azure-openai.md)
 - Роль **Cognitive Services OpenAI User** для этого ресурса (шаблоны Bicep назначают её автоматически)
-- Установленная [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli) и выполнен вход через `az login`
+- Установленная и авторизованная [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli) с выполненным входом через `az login`
 - Java 21+ и Maven 3.9+
 
-> **Ключ API не требуется** — аутентификация осуществляется без ключа через Microsoft Entra ID.
+> **API ключ не требуется** — аутентификация без ключа через Microsoft Entra ID.
 
 ## Быстрый старт
 
 ```bash
-# 1. Перейдите к проекту
+# 1. Перейдите в проект
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 
-# 2. Войдите в систему, чтобы аутентификация без ключа могла получить токен
+# 2. Войдите в систему, чтобы keyless auth мог получить токен
 az login
 
 # 3. Настройте конечную точку
-#    - Если вы запускали `azd up`, файл .env был создан для вас (пропустите этот шаг).
+#    - Если вы запускали `azd up`, .env был создан для вас (пропустите этот шаг).
 #    - В противном случае скопируйте шаблон и установите AZURE_OPENAI_ENDPOINT:
 cp .env.example .env
 
@@ -51,9 +53,15 @@ mvn spring-boot:run
 
 ## Как работает аутентификация
 
-В этом примере используется аутентификация через **Microsoft Entra ID** — ключ API не используется.
+В этом примере используется аутентификация через **Microsoft Entra ID** — API ключ не применяется.
 
-Если задан только `spring.ai.azure.openai.endpoint` (и нет api-key), Spring AI создаёт клиент Azure OpenAI с помощью [`DefaultAzureCredential`](https://learn.microsoft.com/java/api/com.azure.identity.defaultazurecredential). Этот метод автоматически получает токен из вашей локальной сессии `az login` или через управляемую учётную запись при запуске в Azure — поэтому один и тот же код работает в обеих средах без изменений.
+Приложение настраивает аутентификацию явно в [BasicChatApplication.java](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/java/com/example/BasicChatApplication.java):
+
+1. Метод `azureCredential()` создаёт `BearerTokenCredential`, используя `AuthenticationUtil.getBearerTokenSupplier` с `DefaultAzureCredential` и областью `https://ai.azure.com/.default`.
+2. Метод `azureOpenAiClient()` создаёт `OpenAIClient` через `OpenAIOkHttpClient.builder()`, формирует конечную точку ресурса `/openai/v1` и передаёт токен с `.credential(...)`.
+3. Метод `azureChatModel()` передаёт этого клиента в `OpenAiChatModel` Spring AI, который поддерживает `ChatClient` из урока.
+
+Такие явные бины предотвращают переопределение аутентификации Azure глобальным `OPENAI_API_KEY`. Исключение ключа API из YAML само по себе не задаёт аутентификацию. `DefaultAzureCredential` использует либо сессию `az login` локально, либо управляемую идентичность в Azure; выбранная учётная запись должна иметь указанную выше роль на ресурсе.
 
 ## Запуск приложения
 
@@ -66,16 +74,21 @@ mvn spring-boot:run
 ### Использование VS Code
 
 1. Откройте проект в VS Code
-2. Нажмите `F5` или используйте панель "Run and Debug"
+2. Нажмите `F5` или используйте панель «Run and Debug»
 3. Выберите конфигурацию "Spring Boot-BasicChatApplication"
 
-> **Примечание**: Конфигурация VS Code автоматически загружает ваш файл .env
+> **Примечание**: приложение загружает `.env` из рабочей директории, в том числе при запуске из VS Code.
 
-### Ожидаемый вывод
+### Ожидаемый результат
 
-```
+Примерный вывод после успешного запуска (журналы запуска опущены; формулировка ответа может отличаться):
+
+```text
 Starting Basic Chat with Azure OpenAI...
-Environment variables loaded successfully
+Environment variables loaded from .env file
+Endpoint: https://your-resource.openai.azure.com/
+Deployment: gpt-5.6-luna
+Auth: keyless (Microsoft Entra ID via DefaultAzureCredential)
 Connecting to Azure OpenAI...
 Sending prompt: What is AI in a short sentence? Max 100 words.
 
@@ -87,25 +100,36 @@ AI, or Artificial Intelligence, is the simulation of human intelligence in machi
 Success! Azure OpenAI connection is working correctly.
 ```
 
-## Справочник по настройке
+## Справочная информация по конфигурации
 
 ### Переменные окружения
 
 | Переменная | Описание | Обязательно | Пример |
-|------------|----------|-------------|--------|
+|----------|-------------|----------|---------|
 | `AZURE_OPENAI_ENDPOINT` | URL конечной точки Foundry (Azure OpenAI) | Да | `https://my-resource.openai.azure.com/` |
-| `AZURE_OPENAI_DEPLOYMENT` | Имя развертывания модели чата | Нет | `gpt-4o-mini` (по умолчанию) |
+| `AZURE_OPENAI_DEPLOYMENT` | Имя развертывания чат-модели | Нет | `gpt-5.6-luna` (по умолчанию) |
 
-> **Нет** переменной для ключа API — аутентификация осуществляется без ключа (Microsoft Entra ID через `az login`).
+> Переменной для API ключа **нет** — аутентификация ключом не используется (Microsoft Entra ID через `az login`).
 
 ### Конфигурация Spring
 
-В файле `application.yml` настроено:
-- **Endpoint**: `${AZURE_OPENAI_ENDPOINT}` — берётся из переменной окружения
-- **Deployment**: `${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}` — из переменной окружения с запасным значением
-- **Auth**: без ключа — `api-key` не установлен, поэтому Spring AI использует `DefaultAzureCredential`
-- **Temperature**: `0.7` — регулирует креативность (0.0 = детерминированно, 1.0 = креативно)
-- **Max Tokens**: `500` — максимальная длина ответа
+Настройки в [application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml) используют префикс `spring.ai.openai` и разглаженные свойства чата (без блока `options`):
+
+```yaml
+spring:
+  ai:
+    openai:
+      base-url: ${AZURE_OPENAI_ENDPOINT}
+      microsoft-foundry: true
+      chat:
+        model: ${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
+        reasoning-effort: none
+        max-completion-tokens: 500
+```
+
+`model` — это **имя развертывания Azure**. Аутентификация обеспечивается явными бинами выше, а не через параметр `api-key`. В уроке отключено рассуждение и ограничено количество токенов для ответа до 500; параметры `temperature` и устаревший `max-tokens` не заданы.
+
+Microsoft рекомендует [официальный OpenAI SDK с Azure OpenAI v1 и Responses API для новых приложений](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java). Chat Completions остаётся поддерживаемым для этого существующего урока с сообщениями. Для GPT-5.6 запросы с инструментами на Chat Completions должны устанавливать `reasoning_effort` в `none`; при сочетании рассуждений с инструментами используйте Responses. Подробнее см. [вызов инструментов с моделями рассуждений](https://learn.microsoft.com/azure/foundry/openai/how-to/reasoning#tool-calling-with-reasoning-models).
 
 ## Устранение неполадок
 
@@ -114,48 +138,56 @@ Success! Azure OpenAI connection is working correctly.
 <details>
 <summary><strong>Ошибка: 401 / "PermissionDenied" / ошибки токена</strong></summary>
 
-- Выполните `az login` — для аутентификации без ключа необходима активная авторизация для получения токена
-- Убедитесь, что ваша учётная запись имеет роль **Cognitive Services OpenAI User** для ресурса
-- Если роль была назначена только что, подождите минуту для её распространения
-- Проверьте правильность выбранного тенанта/подписки (`az account show`)
+- Выполните `az login` — аутентификация без ключа требует активной авторизации для получения токена
+- Проверьте, что у вашей учётной записи есть роль **Cognitive Services OpenAI User** для ресурса
+- Если роль назначена недавно, подождите минуту для распространения изменений
+- Убедитесь, что вы находитесь в нужном тенанте/подписке (`az account show`)
 </details>
 
 <details>
-<summary><strong>Ошибка: "The endpoint is not valid" / ошибки соединения</strong></summary>
+<summary><strong>Ошибка: "The endpoint is not valid" / ошибки подключения</strong></summary>
 
-- Убедитесь, что `AZURE_OPENAI_ENDPOINT` — это полный базовый URL (например, `https://your-resource.openai.azure.com/`)
+- Убедитесь, что `AZURE_OPENAI_ENDPOINT` — полный базовый URL (например, `https://your-resource.openai.azure.com/`)
 - Проверьте согласованность завершающего слеша
-- Подтвердите, что конечная точка соответствует вашему развернутому ресурсу (`azd env get-values`)
+- Уточните, что конечная точка совпадает с вашим созданным ресурсом (`azd env get-values`)
 </details>
 
 <details>
 <summary><strong>Ошибка: "The deployment was not found"</strong></summary>
 
-- Проверьте, что `AZURE_OPENAI_DEPLOYMENT` совпадает с именем развертывания в Azure
-- Удостоверьтесь, что модель успешно развернута и активна
-- Имя развертывания по умолчанию — `gpt-4o-mini`
+- Убедитесь, что `AZURE_OPENAI_DEPLOYMENT` совпадает с именем развертывания в Azure
+- Проверьте, что модель успешно развернута и активна
+- Значение по умолчанию для имени развертывания — `gpt-5.6-luna`
 </details>
 
 <details>
-<summary><strong>VS Code: Переменные окружения не загружаются</strong></summary>
+<summary><strong>Ошибка: 429 / превышен лимит запросов</strong></summary>
 
-- Убедитесь, что файл `.env` находится в корневой папке проекта (на том же уровне, что и `pom.xml`)
-- Попробуйте запустить `mvn spring-boot:run` в встроенном терминале VS Code
-- Проверьте, что расширение Java для VS Code установлено корректно
+- Развертывание GPT-5.6 Luna по умолчанию имеет Global Standard capacity 10: 10 запросов в минуту и 10 000 токенов в минуту
+- Выполняйте примеры последовательно и ожидайте интервал повторной попытки сервиса перед повторным запросом
+- В этом базовом примере отключены автоматические повторные попытки SDK, поэтому ошибка запроса выводится сразу
+</details>
+
+<details>
+<summary><strong>VS Code: переменные окружения не загружаются</strong></summary>
+
+- Убедитесь, что файл `.env` находится в корневой директории проекта (на том же уровне, что и `pom.xml`)
+- Попробуйте запустить `mvn spring-boot:run` в интегрированном терминале VS Code
+- Проверьте корректность установки расширения Java для VS Code
 </details>
 
 ### Режим отладки
 
-Чтобы включить подробное логирование, раскомментируйте эти строки в `application.yml`:
+Для включения подробного логирования раскомментируйте эти строки в [application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml):
 
 ```yaml
 logging:
   level:
-    org.springframework.ai: DEBUG
-    com.azure: DEBUG
+    "[org.springframework.ai]": DEBUG
+    "[com.azure]": DEBUG
 ```
 
-## Следующие шаги
+## Дальнейшие шаги
 
 **Настройка завершена!** Продолжайте обучение:
 
@@ -163,7 +195,8 @@ logging:
 
 ## Ресурсы
 
-- [Документация Spring AI Azure OpenAI](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
+- [Переход Spring AI 2 на OpenAI Java SDK](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [Официальный OpenAI Java SDK с Azure OpenAI v1](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
 - [Аутентификация без ключа с Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
 - [Портал Azure AI Foundry](https://ai.azure.com/)
 - [Документация Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/)

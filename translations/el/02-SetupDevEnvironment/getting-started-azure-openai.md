@@ -1,92 +1,92 @@
-# Ρύθμιση του Περιβάλλοντος Ανάπτυξης για το Azure AI Foundry
+# Διαμόρφωση του Περιβάλλοντος Ανάπτυξης για το Azure AI Foundry
 
-> Αυτός ο οδηγός ρυθμίζει τα μοντέλα **Azure AI Foundry** για τις εφαρμογές Java AI αυτού του μαθήματος, χρησιμοποιώντας **αυθεντικοποίηση χωρίς κλειδί** (Microsoft Entra ID) — χωρίς να χρειάζεται να διαχειρίζεστε κλειδιά API. Καινούργιος στα εργαλεία; Ξεκινήστε με τον [οδηγό περιβάλλοντος ανάπτυξης](./README.md).
+> Αυτός ο οδηγός διαμορφώνει τα μοντέλα **Azure AI Foundry** για τις εφαρμογές Java AI σε αυτό το μάθημα, χρησιμοποιώντας **authentication χωρίς κλειδιά** (Microsoft Entra ID) — χωρίς διαχείριση κλειδιών API. Νέα στα εργαλεία; Ξεκινήστε με τον [οδηγό περιβάλλοντος ανάπτυξης](./README.md).
 
-Αυτός ο οδηγός ρυθμίζει τα μοντέλα **Azure AI Foundry** για τις εφαρμογές Java AI αυτού του μαθήματος. Έχετε δύο επιλογές:
+Αυτός ο οδηγός διαμορφώνει τα μοντέλα **Azure AI Foundry** για τις εφαρμογές Java AI σε αυτό το μάθημα. Έχετε δύο επιλογές:
 
-- **Επιλογή Α — Παροχή με `azd` + Bicep (συνιστάται):** μία εντολή αναπτύσσει τον λογαριασμό Foundry και τα μοντέλα ως κώδικα. Χωρίς κλικ στο portal.
-- **Επιλογή Β — Δημιουργία πόρων χειροκίνητα** στο portal του Azure AI Foundry.
+- **Επιλογή Α — Provision με `azd` + Bicep (συνιστώμενο):** μια εντολή αναπτύσσει τον λογαριασμό Foundry και τα μοντέλα ως κώδικα. Χωρίς κλικ σε portal.
+- **Επιλογή Β — Δημιουργία πόρων με το χέρι** στο portal Azure AI Foundry.
 
-Και οι δύο τρόποι χρησιμοποιούν **αυθεντικοποίηση χωρίς κλειδί** (Microsoft Entra ID) — δεν υπάρχουν κλειδιά API για αντιγραφή ή διαρροή.
+Και οι δύο δρόμοι χρησιμοποιούν **authentication χωρίς κλειδιά** (Microsoft Entra ID) — δεν υπάρχουν κλειδιά API για αντιγραφή ή διαρροή.
 
 ## Πίνακας Περιεχομένων
 
 - [Τι Δημιουργείται](#τι-δημιουργείται)
-- [Προαπαιτούμενα](#προαπαιτούμενα)
-- [Επιλογή Α: Παροχή με azd + Bicep (Συνιστάται)](#επιλογή-α-παροχή-με-azd--bicep-συνιστάται)
-- [Επιλογή Β: Δημιουργία Πόρων Χειροκίνητα](#επιλογή-β-δημιουργία-πόρων-χειροκίνητα)
-- [Ρύθμιση του Περιβάλλοντός σας](#ρύθμιση-του-περιβάλλοντός-σας)
-- [Δοκιμή της Ρύθμισής σας](#δοκιμή-της-ρύθμισής-σας)
+- [Απαιτήσεις](#απαιτήσεις)
+- [Επιλογή Α: Provision με azd + Bicep (Συνιστώμενο)](#option-a-provision-with-azd--bicep-recommended)
+- [Επιλογή Β: Δημιουργία Πόρων με το Χέρι](#επιλογή-β-δημιουργία-πόρων-με-το-χέρι)
+- [Διαμόρφωση του Περιβάλλοντος σας](#διαμόρφωση-του-περιβάλλοντος-σας)
+- [Δοκιμάστε τη Διαμόρφωση σας](#δοκιμάστε-τη-διαμόρφωση-σας)
 - [Τι Ακολουθεί;](#τι-ακολουθεί)
 - [Πόροι](#πόροι)
-- [Πρόσθετοι Πόροι](#πρόσθετοι-πόροι)
+- [Επιπλέον Πόροι](#επιπλέον-πόροι)
 
 ## Τι Δημιουργείται
 
-Τα πρότυπα Bicep στον φάκελο [`infra/`](../../../02-SetupDevEnvironment/infra) παρέχουν:
+Τα πρότυπα Bicep στον φάκελο [`infra/`](../../../02-SetupDevEnvironment/infra) κάνουν provisioning:
 
-- Λογαριασμό **Azure AI Foundry** (`Microsoft.CognitiveServices/accounts`, τύπος `AIServices`) με ένα έργο
-- Μια ανάπτυξη **chat** — `gpt-4o-mini`
-- Μια ανάπτυξη **embedding** — `text-embedding-3-small` (χρησιμοποιείται σε επόμενα κεφάλαια)
-- Μια **ανάθεση ρόλου χωρίς κλειδί** (`Cognitive Services OpenAI User`) ώστε να συνδεθείτε με `az login` αντί να διαχειρίζεστε κλειδιά
+- Έναν λογαριασμό **Azure AI Foundry** (`Microsoft.CognitiveServices/accounts`, είδος `AIServices`) με ένα έργο
+- Μία ανάπτυξη **chat** - GPT-5.6 Luna (`gpt-5.6-luna`), έκδοση `2026-07-09`, με ικανότητα `GlobalStandard` `10` (10 αιτήματα/λεπτό και 10.000 tokens/λεπτό για αυτό το μοντέλο)
+- Μία ανάπτυξη **embedding** - `text-embedding-3-small`, έκδοση `1` (χρησιμοποιείται σε επόμενα κεφάλαια)
+- Μία **ανάθεση ρόλου χωρίς κλειδί** (`Cognitive Services OpenAI User`) ώστε να κάνετε σύνδεση με `az login` αντί για διαχείριση κλειδιών
 
-## Προαπαιτούμενα
+## Απαιτήσεις
 
-- Ένα [Azure συνδρομή](https://azure.microsoft.com/free/)
+- Έναν [Azure subscription](https://azure.microsoft.com/free/)
 - [Azure Developer CLI (`azd`)](https://aka.ms/azure-dev/install)
 - [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli)
 - [Java 21+](https://learn.microsoft.com/java/openjdk/download) και [Maven 3.9+](https://maven.apache.org/download.cgi)
 
-## Επιλογή Α: Παροχή με azd + Bicep (Συνιστάται)
+## Επιλογή Α: Provision με azd + Bicep (Συνιστώμενο)
 
 Από τον φάκελο `02-SetupDevEnvironment`:
 
 ```bash
 cd 02-SetupDevEnvironment
 
-# Συνδεθείτε (και τα δύο εργαλεία)
+# Σύνδεση (και τα δύο εργαλεία)
 azd auth login
 az login
 
-# Παρέχετε τον λογαριασμό Foundry + αναπτύξεις μοντέλων
+# Προετοιμασία του λογαριασμού Foundry + αναπτύξεις μοντέλων
 azd up
 ```
 
-Η εντολή `azd` ζητά ένα **όνομα περιβάλλοντος** (π.χ. `genai-java`) και μια **περιοχή**. Επιλέξτε μια περιοχή όπου είναι διαθέσιμα τα `gpt-4o-mini` και `text-embedding-3-small` — για παράδειγμα `eastus2` ή `swedencentral`.
+Το `azd` ζητά ένα **όνομα περιβάλλοντος** (π.χ. `genai-java`), **subscription** και **περιοχή**. Επιλέξτε το δικό σας subscription και μια περιοχή όπου είναι διαθέσιμα τα `gpt-5.6-luna` και `text-embedding-3-small`, π.χ. `eastus2`. Επιβεβαιώστε ότι το subscription διαθέτει επαρκές quota για το μοντέλο και τον τύπο ανάπτυξης σε εκείνη την περιοχή· η διαθεσιμότητα και το quota διαφέρουν ανά subscription.
 
-Όταν ολοκληρωθεί η παροχή, το azd:
+Όταν ολοκληρωθεί το provisioning, το azd:
 
 1. Αναπτύσσει όλα όσα ορίζονται στο [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep).
-2. Εκτελεί ένα postprovision hook που γράφει το [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) με το endpoint και τα ονόματα ανάπτυξης (χωρίς μυστικά).
+2. Εκτελεί ένα postprovision hook που γράφει το αρχείο [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) με το endpoint και τα ονόματα ανάπτυξης (χωρίς μυστικά).
 
-> **Συμβουλή:** Εκτελέστε ξανά `azd up` οποτεδήποτε για να εφαρμόσετε αλλαγές. Τρέξτε `azd down` για να διαγράψετε τα πάντα και να σταματήσετε να επιβαρύνεστε οικονομικά.
+> **Συμβουλή:** Εκτελέστε ξανά `azd up` οποτεδήποτε για να εφαρμόσετε αλλαγές. Εκτελέστε `azd down` για να διαγράψετε τα πάντα και να σταματήσουν τα κόστη.
 
-Για να δείτε τις ρυθμίσεις που δημιουργήθηκαν:
+Για να δείτε τις δημιουργημένες ρυθμίσεις:
 
 ```bash
 azd env get-values
 ```
 
-Τώρα πηγαίνετε στο [Δοκιμή της Ρύθμισής σας](#δοκιμή-της-ρύθμισής-σας).
+Τώρα πηγαίνετε στο [Δοκιμάστε τη Διαμόρφωση σας](#δοκιμάστε-τη-διαμόρφωση-σας).
 
-## Επιλογή Β: Δημιουργία Πόρων Χειροκίνητα
+## Επιλογή Β: Δημιουργία Πόρων με το Χέρι
 
 Προτιμάτε το portal; Δημιουργήστε τους πόρους χειροκίνητα:
 
-1. Μεταβείτε στο [portal Azure AI Foundry](https://ai.azure.com/) και συνδεθείτε.
-2. **Δημιουργήστε ένα έργο** (αυτό δημιουργεί επίσης έναν πόρο AI Foundry). Δώστε του ένα όνομα όπως `GenAIJava`.
+1. Μεταβείτε στο [portal Azure AI Foundry](https://ai.azure.com/) και κάντε σύνδεση.
+2. **Δημιουργήστε ένα έργο** (αυτό δημιουργεί και πόρο AI Foundry). Δώστε του ένα όνομα όπως `GenAIJava`.
 3. Στο έργο σας, ανοίξτε **Models + endpoints** → **Deploy model** → **Deploy base model**.
-4. Αναπτύξτε το **gpt-4o-mini** (όνομα ανάπτυξης `gpt-4o-mini`). Επαναλάβετε για το **text-embedding-3-small** αν θέλετε τα παραδείγματα embedding.
-5. Από την **Επισκόπηση**, αντιγράψτε το **endpoint** (π.χ. `https://<resource>.openai.azure.com/`).
-6. Δώστε στον εαυτό σας πρόσβαση χωρίς κλειδί: στον πόρο, ανοίξτε **Έλεγχος πρόσβασης (IAM)** → **Προσθήκη ανάθεσης ρόλου** → αναθέστε **Cognitive Services OpenAI User** στον λογαριασμό σας.
+4. Αναπτύξτε το **GPT-5.6 Luna** (όνομα μοντέλου και ανάπτυξης `gpt-5.6-luna`, έκδοση `2026-07-09`) με ικανότητα **Global Standard** `10`. Επαναλάβετε για το **text-embedding-3-small**, έκδοση `1`, αν θέλετε παραδείγματα embeddings.
+5. Από το **Overview**, αντιγράψτε το **endpoint** (π.χ. `https://<resource>.openai.azure.com/`).
+6. Χορηγήστε πρόσβαση χωρίς κλειδί: στον πόρο, ανοίξτε **Access control (IAM)** → **Add role assignment** → αναθέστε τον ρόλο **Cognitive Services OpenAI User** στο λογαριασμό σας.
 
-> **Ακόμη έχετε πρόβλημα;** Δείτε την [τεκμηρίωση Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects).
+> **Ακόμα δυσκολεύεστε;** Δείτε την [τεκμηρίωση Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects).
 
-## Ρύθμιση του Περιβάλλοντός σας
+## Διαμόρφωση του Περιβάλλοντος σας
 
-**Αν χρησιμοποιήσατε την Επιλογή Α (`azd up`)**, το αρχείο ρυθμίσεών σας έχει ήδη γραφτεί — δεν χρειάζεται καμία περαιτέρω ρύθμιση. Παραλείψτε και πηγαίνετε στο [Δοκιμή της Ρύθμισής σας](#δοκιμή-της-ρύθμισής-σας).
+**Αν χρησιμοποιήσατε την Επιλογή Α (`azd up`)**, το αρχείο ρυθμίσεών σας έχει ήδη γραφτεί — δεν χρειάζεται καμία διαμόρφωση. Πηγαίνετε απευθείας στο [Δοκιμάστε τη Διαμόρφωση σας](#δοκιμάστε-τη-διαμόρφωση-σας).
 
-**Αν χρησιμοποιήσατε την Επιλογή Β (χειροκίνητα)**, δημιουργήστε μόνοι σας το αρχείο `.env` του παραδείγματος:
+**Αν χρησιμοποιήσατε την Επιλογή Β (χειροκίνητα)**, δημιουργήστε μόνοι σας το `.env` του παραδείγματος:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
@@ -97,14 +97,16 @@ cp .env.example .env
 
 ```bash
 AZURE_OPENAI_ENDPOINT=https://<your-resource>.openai.azure.com/
-AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
+AZURE_OPENAI_DEPLOYMENT=gpt-5.6-luna
 ```
 
-> **Σημείωση ασφάλειας:** Δεν υπάρχει κλειδί API να αποθηκεύσετε. Αυθεντικοποιείστε μέσω Microsoft Entra ID με `az login` (τοπικά) ή με managed identity (στο Azure). Το αρχείο `.env` περιέχει μόνο μη μυστικές ρυθμίσεις και καλύπτεται ήδη από `.gitignore`.
+Χρησιμοποιήστε το Azure OpenAI endpoint του πόρου, όχι το URL του έργου. Η βασική εφαρμογή chat το μεταφράζει σε `/openai/v1` και διαμορφώνει ρητά έναν πελάτη με bearer-token· δεν απαιτείται κλειδί API.
 
-## Δοκιμή της Ρύθμισής σας
+> **Σημείωση ασφαλείας:** Δεν υπάρχει κλειδί API για αποθήκευση. Αυθεντικοποιείστε με Microsoft Entra ID μέσω `az login` (τοπικά) ή managed identity (στο Azure). Το αρχείο `.env` περιέχει μόνο μη μυστικές ρυθμίσεις και έχει ήδη προστεθεί στο `.gitignore`.
 
-Βεβαιωθείτε ότι είστε συνδεδεμένοι ώστε η αυθεντικοποίηση χωρίς κλειδί να λάβει ένα token, και στη συνέχεια τρέξτε το παράδειγμα:
+## Δοκιμάστε τη Διαμόρφωση σας
+
+Βεβαιωθείτε ότι έχετε συνδεθεί για να πάρει η αυθεντικοποίηση χωρίς κλειδί ένα token, μετά εκτελέστε το παράδειγμα:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
@@ -113,35 +115,35 @@ az login          # αν δεν έχετε ήδη συνδεθεί
 mvn clean spring-boot:run
 ```
 
-Θα πρέπει να δείτε μια απόκριση από το μοντέλο `gpt-4o-mini`!
+Θα πρέπει να δείτε μια απάντηση από το μοντέλο `gpt-5.6-luna`. Εκτελέστε τα παραδείγματα διαδοχικά για να παραμείνετε εντός του μικρού προεπιλεγμένου quota· αν λάβετε HTTP 429, περιμένετε το διάστημα επανάληψης πριν ξαναδοκιμάσετε.
 
-> **Χρήστες VS Code:** Πατήστε `F5` για εκτέλεση. Η εφαρμογή φορτώνει αυτόματα το `.env` σας.
+> **Χρήστες VS Code:** Πατήστε `F5` για εκτέλεση. Η εφαρμογή φορτώνει το `.env` σας αυτόματα.
 
-> **Πλήρες παράδειγμα:** Δείτε το [Βασικό Chat με Azure AI Foundry](./examples/basic-chat-azure/README.md) για λεπτομέρειες και αντιμετώπιση προβλημάτων.
+> **Πλήρες παράδειγμα:** Δείτε το [Παράδειγμα Basic Chat με Azure AI Foundry](./examples/basic-chat-azure/README.md) για λεπτομέρειες και αντιμετώπιση προβλημάτων.
 
 ## Τι Ακολουθεί;
 
-**Η ρύθμιση ολοκληρώθηκε!** Τώρα διαθέτετε:
-- Το Azure AI Foundry με τα `gpt-4o-mini` και `text-embedding-3-small` αναπτυγμένα
-- Αυθεντικοποίηση χωρίς κλειδί (Microsoft Entra ID) — χωρίς κλειδιά για διαχείριση
-- Ένα τοπικό `.env` με το endpoint και τα ονόματα ανάπτυξης
+Μετά το provisioning και την επιτυχή εκτέλεση του παραδείγματος, θα έχετε:
+- Azure AI Foundry με `gpt-5.6-luna` και `text-embedding-3-small` αναπτυγμένα
+- Εξουσιοδότηση χωρίς κλειδί (Microsoft Entra ID) — χωρίς διαχείριση κλειδιών
+- Τοπικό `.env` με το endpoint και τα ονόματα ανάπτυξης σας
 - Ένα περιβάλλον ανάπτυξης Java έτοιμο για χρήση
 
-**Συνεχίστε στο** [Κεφάλαιο 3: Βασικές Τεχνικές Γεννητικής Τεχνητής Νοημοσύνης](../03-CoreGenerativeAITechniques/README.md) για να ξεκινήσετε την κατασκευή εφαρμογών AI!
+**Συνεχίστε στο** [Κεφάλαιο 3: Βασικές Τεχνικές Γενετικής Τεχνητής Νοημοσύνης](../03-CoreGenerativeAITechniques/README.md) για να ξεκινήσετε την ανάπτυξη εφαρμογών AI!
 
 ## Πόροι
 
 - [Azure Developer CLI (azd)](https://aka.ms/azure-dev/install)
-- [Αυθεντικοποίηση χωρίς κλειδί με Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
+- [Authentication χωρίς κλειδί με Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
 - [Τεκμηρίωση Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/)
-- [Spring AI Azure OpenAI Documentation](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
-- [Azure OpenAI Java SDK](https://learn.microsoft.com/java/api/overview/azure/ai-openai-readme)
+- [Μετάβαση Spring AI 2 στο OpenAI Java SDK](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [Επίσημο OpenAI Java SDK με Azure OpenAI v1](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
 
-## Πρόσθετοι Πόροι
+## Επιπλέον Πόροι
 
-- [Κατέβασμα VS Code](https://code.visualstudio.com/Download)
-- [Κατέβασμα Docker Desktop](https://www.docker.com/products/docker-desktop)
-- [Διαμόρφωση Dev Container](../../../.devcontainer/devcontainer.json)
+- [Κατεβάστε το VS Code](https://code.visualstudio.com/Download)
+- [Λάβετε το Docker Desktop](https://www.docker.com/products/docker-desktop)
+- [Ρύθμιση Περιβάλλοντος Ανάπτυξης (Dev Container)](../../../.devcontainer/devcontainer.json)
 
 ---
 

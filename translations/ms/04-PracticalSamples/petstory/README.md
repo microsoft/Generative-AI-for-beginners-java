@@ -1,26 +1,36 @@
 # Tutorial Penjana Cerita Haiwan Peliharaan untuk Pemula
 
+Muat naik foto haiwan peliharaan, analisa menggunakan GPT-5.6 Luna, dan jana cerita berdasarkan penerangan yang diperoleh. Kedua-dua permintaan model menggunakan `reasoning_effort: none`.
+
+| Komponen | Versi |
+| --- | --- |
+| Java | 21 atau lebih tinggi |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
+
 ## Jadual Kandungan
 
 - [Prasyarat](#prasyarat)
 - [Memahami Struktur Projek](#memahami-struktur-projek)
-- [Komponen Teras Diterangkan](#komponen-teras-diterangkan)
+- [Penerangan Komponen Teras](#penerangan-komponen-teras)
   - [1. Aplikasi Utama](#1-aplikasi-utama)
   - [2. Pengawal Web](#2-pengawal-web)
   - [3. Perkhidmatan Cerita](#3-perkhidmatan-cerita)
   - [4. Templat Web](#4-templat-web)
   - [5. Konfigurasi](#5-konfigurasi)
 - [Menjalankan Aplikasi](#menjalankan-aplikasi)
-- [Bagaimana Kesemuanya Berfungsi Bersama](#bagaimana-kesemuanya-berfungsi-bersama)
+- [Ujian Offline](#ujian-offline)
+- [Bagaimana Ia Berfungsi Bersama](#bagaimana-ia-berfungsi-bersama)
 - [Memahami Integrasi AI](#memahami-integrasi-ai)
 - [Langkah Seterusnya](#langkah-seterusnya)
 
 ## Prasyarat
 
-Sebelum bermula, pastikan anda mempunyai:
+Sebelum memulakan, pastikan anda mempunyai:
 - Java 21 atau lebih tinggi dipasang
 - Maven untuk pengurusan pergantungan
-- Penempatan model Azure AI Foundry (sediakan dengan `azd up` — lihat [Bab 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md)), log masuk dengan `az login` (pengesahan tanpa kunci)
+- Penempatan Azure AI Foundry GPT-5.6 Luna bernama `gpt-5.6-luna`, atau override `AZURE_OPENAI_DEPLOYMENT` yang menunjuk ke penempatan tersebut. Lihat [Bab 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md) untuk penyediaan dan daftar masuk dengan `az login` untuk pengesahan tanpa kunci. Penempatan mestilah menyokong input imej dan `reasoning_effort: none`.
 - Pemahaman asas tentang Java, Spring Boot, dan pembangunan web
 
 ## Memahami Struktur Projek
@@ -32,7 +42,7 @@ petstory/
 ├── src/main/java/com/example/petstory/
 │   ├── PetStoryApplication.java       # Main Spring Boot application
 │   ├── PetController.java             # Web request handler
-│   ├── StoryService.java              # AI story generation service
+│   ├── StoryService.java              # AI image analysis and story generation
 │   └── SecurityConfig.java            # Security configuration
 ├── src/main/resources/
 │   ├── application.properties         # App configuration
@@ -42,7 +52,7 @@ petstory/
 └── pom.xml                           # Maven dependencies
 ```
 
-## Komponen Teras Diterangkan
+## Penerangan Komponen Teras
 
 ### 1. Aplikasi Utama
 
@@ -59,212 +69,53 @@ public class PetStoryApplication {
 }
 ```
 
-**Apa yang dilakukan ini:**
-- Anotasi `@SpringBootApplication` mengaktifkan konfigurasi automatik dan pengimbasan komponen
-- Memulakan pelayan web terbina dalam (Tomcat) di port 8080
+**Apa yang dilakukan:**
+- Anotasi `@SpringBootApplication` mengaktifkan pengkonfigurasian automatik dan pengimbasan komponen
+- Memulakan pelayan web terbenam (Tomcat) pada port 8080
 - Membuat semua bean dan perkhidmatan Spring yang diperlukan secara automatik
 
 ### 2. Pengawal Web
 
-**Fail:** `PetController.java`
+**Fail:** [PetController.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/PetController.java)
 
-Ini mengendalikan semua permintaan web dan interaksi pengguna:
+| Titik Akhir | Permintaan | Respons Berjaya |
+| --- | --- | --- |
+| `GET /` | Tiada badan | Borang muat naik HTML dengan token CSRF |
+| `POST /analyze-image` | `multipart/form-data`, medan fail `image` | JSON: `{"description":"Haiwan peliharaan yang ceria..."}` |
+| `POST /generate-story` | `application/x-www-form-urlencoded`, medan `description` | Halaman hasil HTML dengan penerangan dan cerita yang dijana |
 
-```java
-@Controller
-public class PetController {
-    
-    private final StoryService storyService;
-    
-    public PetController(StoryService storyService) {
-        this.storyService = storyService;
-    }
-    
-    @GetMapping("/")
-    public String index() {
-        return "index";  // Memulangkan templat index.html
-    }
-    
-    @PostMapping("/generate-story")
-    public String generateStory(@RequestParam("description") String description, 
-                               Model model, 
-                               RedirectAttributes redirectAttributes) {
-        
-        // Pengesahan input
-        if (description.trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Please provide a description.");
-            return "redirect:/";
-        }
-        
-        // Membersihkan input untuk keselamatan
-        String sanitizedDescription = sanitizeInput(description);
-        
-        // Jana cerita dengan pengendalian ralat
-        try {
-            String story = storyService.generateStory(sanitizedDescription);
-            model.addAttribute("caption", sanitizedDescription);
-            model.addAttribute("story", story);
-            return "result";  // Memulangkan templat result.html
-            
-        } catch (Exception e) {
-            // Gunakan cerita gantian jika AI gagal
-            String fallbackStory = generateFallbackStory(sanitizedDescription);
-            model.addAttribute("story", fallbackStory);
-            return "result";
-        }
-    }
-    
-    private String sanitizeInput(String input) {
-        return input.replaceAll("[<>\"'&]", "")  // Remove dangerous characters
-                   .trim()
-                   .substring(0, Math.min(input.length(), 500));  // Hadkan panjang
-    }
-}
-```
+Kedua-dua titik akhir POST memerlukan kuki sesi dan token CSRF yang diperoleh dari `GET /`. Skrip muat naik menghantar nilai tersembunyi `_csrf` dalam pengepala `X-CSRF-TOKEN`; penghantaran cerita menghantarnya sebagai medan borang `_csrf`. Klien API mesti mengekalkan kuki antara permintaan. Ini adalah titik akhir borang, bukan permintaan JSON.
 
-**Ciri utama:**
+Penerangan mestilah tidak kosong dan tidak lebih panjang daripada 1000 aksara. Pengawal memotong penerangan dan membuang `<`, `>`, petikan berganda, apostrof, dan `&` sebelum menghantarnya ke perkhidmatan. Templat hasil juga mengelakkan output model dengan `th:text`.
 
-1. **Pengurusan Laluan**: `@GetMapping("/")` memaparkan borang muat naik, `@PostMapping("/generate-story")` memproses penghantaran
-2. **Pengesahan Input**: Memeriksa keterangan kosong dan had panjang
-3. **Keselamatan**: Membersihkan input pengguna untuk mengelakkan serangan XSS
-4. **Pengendalian Ralat**: Menyediakan cerita gantian apabila perkhidmatan AI gagal
-5. **Pengesahan Model**: Memindahkan data ke templat HTML menggunakan Spring `Model`
-
-**Sistem Gantian:**
-Pengawal termasuk templat cerita siap guna yang digunakan apabila perkhidmatan AI tidak tersedia:
-
-```java
-private String generateFallbackStory(String description) {
-    String[] storyTemplates = {
-        "Meet the most wonderful pet in the world – a furry ball of energy...",
-        "Once upon a time, there lived a remarkable pet whose heart was as big...",
-        "In a cozy home filled with love, there lived an extraordinary pet..."
-    };
-    
-    // Gunakan hash keterangan untuk respons yang konsisten
-    int index = Math.abs(description.hashCode() % storyTemplates.length);
-    return storyTemplates[index];
-}
-```
+Kegagalan pengesahan imej memulangkan HTTP 400 dengan medan `error`; kegagalan model memulangkan HTTP 502 dengan medan `error` tanpa `description`. Penerangan cerita tidak sah atau kegagalan model mengalihkan ke `/` dengan ralat yang kelihatan. Medan diperlukan yang hilang memulangkan HTTP 400, dan token CSRF yang hilang atau tidak sah memulangkan HTTP 403. Tiada penerangan gantian atau cerita dipersembahkan sebagai hasil AI berjaya.
 
 ### 3. Perkhidmatan Cerita
 
-**Fail:** `StoryService.java`
+**Fail:** [StoryService.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/StoryService.java)
 
-Perkhidmatan ini berkomunikasi dengan Azure AI Foundry untuk menjana cerita menggunakan pengesahan tanpa kunci:
+SDK OpenAI Java rasmi 4.63.1 memanggil API Chat Completions yang serasi dengan OpenAI di Azure AI Foundry. Azure Identity 1.18.6 menyediakan token pembawa Microsoft Entra melalui `DefaultAzureCredential`; tiada kunci API diperlukan.
 
-```java
-@Service
-public class StoryService {
-    
-    private final OpenAIClient openAIClient;
-    private final String modelName;
-    
-    public StoryService(@Value("${azure.openai.endpoint:}") String endpoint,
-                       @Value("${azure.openai.deployment:gpt-4o-mini}") String modelName) {
-        this.modelName = modelName;
-        if (endpoint == null || endpoint.isBlank()) {
-            endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        }
-        
-        // Titik akhir OpenAI yang serasi dengan Foundry terletak di bawah /openai/v1/
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1/";
-        
-        // Pengesahan tanpa kunci dengan Microsoft Entra ID (tiada kunci API)
-        DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-        this.openAIClient = OpenAIOkHttpClient.builder()
-                .baseUrl(baseUrl)
-                .credential(BearerTokenCredential.create(
-                        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-                .build();
-    }
-    
-    public String generateStory(String description) {
-        String systemPrompt = "You are a creative storyteller who writes fun, " +
-                             "family-friendly short stories about pets. " +
-                             "Keep stories under 500 words and appropriate for all ages.";
-        
-        String userPrompt = "Write a fun short story about a pet described as: " + description;
-        
-        // Konfigurasikan permintaan AI
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(modelName)
-                .addSystemMessage(systemPrompt)
-                .addUserMessage(userPrompt)
-                .maxCompletionTokens(500)  // Hadkan panjang respons
-                .temperature(0.8)          // Kawal kreativiti (0.0-1.0)
-                .build();
-        
-        // Hantar permintaan dan dapatkan respons
-        ChatCompletion response = openAIClient.chat().completions().create(params);
-        
-        return response.choices().get(0).message().content().orElse("");
-    }
-}
-```
+| Operasi | Input | `max_completion_tokens` |
+| --- | --- | --- |
+| `analyzeImage` | Byte imej yang disandi sebagai URL data base64 dengan jenis MIME yang dimuat naik | 300 |
+| `generateStory` | Penerangan haiwan peliharaan dalam pesanan pengguna | 800 |
 
-**Komponen utama:**
+Kedua-dua permintaan menggunakan penempatan yang dikonfigurasikan, secara lalai `gpt-5.6-luna`, dan secara eksplisit menetapkan `ReasoningEffort.NONE` (`reasoning_effort: none`). Tiada permintaan yang menghantar `temperature` atau parameter `max_tokens` warisan.
 
-1. **Klien OpenAI**: Menggunakan SDK rasmi OpenAI Java yang dikonfigurasikan untuk Azure AI Foundry (tanpa kunci)
-2. **Prompt Sistem**: Menetapkan tingkah laku AI untuk menulis cerita haiwan peliharaan mesra keluarga
-3. **Prompt Pengguna**: Memberitahu AI tepat apa cerita yang hendak ditulis berdasarkan keterangan
-4. **Parameter**: Mengawal panjang cerita dan tahap kreativiti
-5. **Pengendalian Ralat**: Melempar pengecualian yang ditangkap dan diurus oleh pengawal
+Analisis imej menerima JPEG, PNG, GIF, dan WebP, menolak imej kosong dan fail lebih 10MB, dan mengehadkan penerangan hasil kepada 1000 aksara. Prompt cerita meminta cerita pendek mesra keluarga. Pilihan kosong atau kandungan model kosong adalah ralat, dan kegagalan mengekalkan sebab asal untuk diagnostik sisi pelayan. Klien SDK ditutup apabila aplikasi dimatikan.
 
 ### 4. Templat Web
 
-**Fail:** `index.html` (Borang Muat Naik)
+**Fail:** [index.html](../../../../04-PracticalSamples/petstory/src/main/resources/templates/index.html) (Borang Muat Naik)
 
-Halaman utama di mana pengguna menerangkan haiwan peliharaan mereka:
+Halaman bermula dengan pemilih foto, bukan kawasan teks penerangan. **Analyze Image** menyemak pratonton foto yang dipilih dan menghantarnya ke `/analyze-image`. Respons berjaya memaparkan penerangan, mengisi medan `description` tersembunyi, dan mendedahkan **Generate Story**. Butang itu menghantar borang sedia ada ke `/generate-story`.
 
-```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Pet Story Generator</title>
-    <!-- CSS styling -->
-</head>
-<body>
-    <div class="container">
-        <h1>Pet Story Generator</h1>
-        <p>Describe your pet and we'll create a fun story about them!</p>
-        
-        <!-- Error message display -->
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-        
-        <!-- Story generation form -->
-        <form action="/generate-story" method="post">
-            <div class="form-group">
-                <label for="description">Describe your pet:</label>
-                <textarea id="description" name="description" 
-                         placeholder="Tell us about your pet - what they look like, their personality, favorite activities..."
-                         maxlength="1000" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Generate Story</button>
-        </form>
-        
-        <!-- Image upload section with client-side processing -->
-        <div class="upload-section">
-            <h2>Or Upload a Photo</h2>
-            <input type="file" id="imageInput" accept="image/*" />
-            <button onclick="analyzeImage()" class="upload-btn">Analyze Image</button>
-        </div>
-        
-        <script>
-            // Client-side image analysis using Transformers.js
-            async function analyzeImage() {
-                // Image processing code here
-                // Generates description automatically from uploaded image
-            }
-        </script>
-    </div>
-</body>
-</html>
-```
+Tiada muat turun model penyemak imbas atau kebergantungan CDN. Analisis imej dijalankan di pelayan melalui penempatan Azure yang dikonfigurasikan. Kegagalan kekal kelihatan dan tidak membenarkan penjanaan cerita dengan penerangan yang direka. Memilih fail berlainan mengosongkan analisis sebelum ini.
 
 **Fail:** `result.html` (Paparan Cerita)
 
-Memaparkan cerita yang dihasilkan:
+Memaparkan cerita yang dijana:
 
 ```html
 <!DOCTYPE html>
@@ -297,12 +148,12 @@ Memaparkan cerita yang dihasilkan:
 </html>
 ```
 
-**Ciri templat:**
+**Ciri-ciri Templat:**
 
 1. **Integrasi Thymeleaf**: Menggunakan atribut `th:` untuk kandungan dinamik
 2. **Reka Bentuk Responsif**: Gaya CSS untuk mudah alih dan desktop
 3. **Pengendalian Ralat**: Memaparkan ralat pengesahan kepada pengguna
-4. **Pemprosesan Pihak Klien**: JavaScript untuk analisis imej (menggunakan Transformers.js)
+4. **Pengendalian Muat Naik**: JavaScript menyemak pratonton foto, menghantar permintaan multipart dilindungi CSRF, dan memaparkan penerangan yang diterima
 
 ### 5. Konfigurasi
 
@@ -322,21 +173,21 @@ logging.level.com.example.petstory=INFO
 
 # Azure AI Foundry (keyless) configuration
 azure.openai.endpoint=${AZURE_OPENAI_ENDPOINT:}
-azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
 ```
 
-**Konfigurasi diterangkan:**
+**Penerangan konfigurasi:**
 
-1. **Muat Naik Fail**: Membenarkan imej sehingga 10MB
-2. **Pencatatan**: Mengawal maklumat yang dicatat semasa pelaksanaan
-3. **Azure AI Foundry**: Menentukan titik hujung dan penempatan model yang digunakan (pengesahan tanpa kunci)
-4. **Keselamatan**: Konfigurasi pengendalian ralat untuk mengelakkan pendedahan maklumat sensitif
+1. **Muat Naik Fail**: Fail dan keseluruhan permintaan multipart dihadkan kepada 10MB; pastikan foto di bawah had itu untuk memberi ruang bagi pengepala multipart
+2. **Log**: Mengawal maklumat apa yang direkod semasa pelaksanaan
+3. **Azure AI Foundry**: Menentukan titik akhir dan penempatan model yang digunakan (pengesahan tanpa kunci)
+4. **Keselamatan**: Perlindungan CSRF sentiasa diaktifkan; diagnostik model direkod di pelayan, manakala pengawal memaparkan mesej kegagalan model yang umum
 
 ## Menjalankan Aplikasi
 
-### Langkah 1: Log Masuk dan Tetapkan Titik Hujung Anda
+### Langkah 1: Log Masuk dan Tetapkan Titik Akhir Anda
 
-Pengesahan adalah tanpa kunci (Microsoft Entra ID), jadi tiada kunci API. Log masuk dan tetapkan titik hujung Foundry anda:
+Pengesahan tanpa kunci (Microsoft Entra ID), jadi tiada kunci API. Log masuk dan tetapkan titik akhir Foundry anda:
 
 **Windows (Command Prompt):**
 ```cmd
@@ -358,8 +209,10 @@ export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 
 **Mengapa ini diperlukan:**
 - Azure AI Foundry menggunakan Microsoft Entra ID untuk mengesahkan permintaan inferens
-- Pengesahan tanpa kunci bermaksud tiada rahsia dalam kod sumber atau persekitaran anda
-- Akaun anda perlu mempunyai peranan **Cognitive Services OpenAI User** pada sumber tersebut
+- Pengesahan tanpa kunci bermakna tiada rahsia dalam kod sumber atau persekitaran anda
+- Akaun anda memerlukan peranan **Cognitive Services OpenAI User** pada sumber
+
+Nama penempatan lalai ialah `gpt-5.6-luna`. Jika penempatan GPT-5.6 Luna anda mempunyai nama lain, tetapkan `AZURE_OPENAI_DEPLOYMENT` dalam terminal yang sama sebelum memulakan aplikasi. Kedua-dua analisis imej dan penjanaan cerita menggunakan tetapan ini.
 
 ### Langkah 2: Bina dan Jalankan
 
@@ -368,9 +221,9 @@ Navigasi ke direktori projek:
 cd 04-PracticalSamples/petstory
 ```
 
-Bina aplikasi:
+Bina fail JAR boleh laku berdiri sendiri dan jalankan semua ujian offline:
 ```bash
-mvn clean compile
+mvn clean package
 ```
 
 Mulakan pelayan:
@@ -380,69 +233,65 @@ mvn spring-boot:run
 
 Aplikasi akan bermula di `http://localhost:8080`.
 
+Sebagai alternatif, mulakan JAR yang dipakej pada port bebas, contohnya:
+
+```bash
+java -jar target/pet-story-app-0.0.1-SNAPSHOT.jar --server.port=8083
+```
+
+Untuk arahan itu, buka `http://localhost:8083/`. Laluan yang sama `/analyze-image` dan `/generate-story` tersedia pada port yang dipilih.
+
 ### Langkah 3: Uji Aplikasi
 
-1. **Buka** `http://localhost:8080` dalam pelayar anda
-2. **Terangkan** haiwan peliharaan anda dalam ruang teks (contoh, "Seekor golden retriever yang suka bermain dan ambil barang")
-3. **Klik** "Generate Story" untuk mendapatkan cerita yang dijana AI
-4. **Atau**, muat naik imej haiwan peliharaan untuk menjana keterangan secara automatik
-5. **Lihat** cerita kreatif berdasarkan keterangan haiwan peliharaan anda
+1. **Buka** `http://localhost:8080` dalam penyemak imbas anda
+2. **Pilih** foto haiwan peliharaan yang jelas dalam format JPEG, PNG, GIF, atau WebP, di bawah 10MB
+3. **Klik** "Analyze Image" dan tunggu penerangan haiwan peliharaan
+4. **Klik** "Generate Story" selepas analisis berjaya
+5. **Lihat** cerita dan gunakan pautan halaman hasil untuk kembali ke borang muat naik
 
-## Bagaimana Kesemuanya Berfungsi Bersama
+Aliran foto-ke-cerita yang berjaya membuat dua panggilan model, satu per butang. Inferens langsung menggunakan kuota penempatan anda dan mungkin mengenakan caj; laksanakan ujian asap secara bersiri apabila berkongsi penempatan yang terhad kadar. Memuatkan halaman utama tidak memanggil model.
 
-Berikut adalah aliran lengkap apabila anda menjana cerita haiwan peliharaan:
+## Ujian Offline
 
-1. **Input Pengguna**: Anda menerangkan haiwan peliharaan pada borang web
-2. **Penghantaran Borang**: Pelayar menghantar permintaan POST ke `/generate-story`
-3. **Pemprosesan Pengawal**: `PetController` mengesahkan dan membersihkan input
-4. **Panggilan Perkhidmatan AI**: `StoryService` menghantar permintaan ke model Azure AI Foundry
-5. **Penjanaan Cerita**: AI menjana cerita kreatif berdasarkan keterangan
-6. **Pengendalian Respons**: Pengawal menerima cerita dan menambahkannya ke model
-7. **Penjanaan Templat**: Thymeleaf memaparkan `result.html` dengan cerita tersebut
-8. **Paparan**: Pengguna melihat cerita yang dijana dalam pelayar mereka
+Dari direktori contoh, jalankan:
+
+```bash
+mvn test
+```
+
+[StoryServiceTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/StoryServiceTest.java) merakam permintaan SDK OpenAI sebenar dengan kawalan HTTP loopback. Ia memeriksa penempatan kedua-dua permintaan, `reasoning_effort: none`, had token, beban imej, pengesahan input, respons kosong, dan ralat huluan.
+
+[PetControllerTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/PetControllerTest.java) menggunakan MockMvc dengan perkhidmatan model yang dimok untuk menguji halaman Thymeleaf yang dipaparkan, kontrak muat naik, CSRF, pengesahan, pengelakan output, dan kegagalan yang kelihatan. Ujian ini tidak memerlukan kelayakan Azure dan tidak pernah memanggil inferens berbayar Azure. Maven menulis laporan Surefire di bawah `target/surefire-reports`.
+
+## Bagaimana Ia Berfungsi Bersama
+
+Ini adalah aliran lengkap apabila anda menjana cerita haiwan peliharaan:
+
+1. **Pemilihan Foto**: Anda memilih imej haiwan peliharaan dalam borang muat naik
+2. **Muat Naik Imej**: "Analyze Image" menghantar POST multipart ke `/analyze-image` dengan pengepala CSRF
+3. **Analisis Imej**: `StoryService` menghantar imej ke GPT-5.6 Luna dengan penalaran ditetapkan kepada `none`
+4. **Paparan Penerangan**: Penyemak imbas memaparkan penerangan yang diterima dan menyimpannya dalam borang
+5. **Penghantaran Cerita**: "Generate Story" menghantar `description` dan `_csrf` ke `/generate-story`
+6. **Penjanaan Cerita**: Pengawal mengesahkan penerangan dan memanggil penempatan yang sama dengan penalaran ditetapkan kepada `none`
+7. **Penampilan Templat**: Thymeleaf mengelakkan dan memaparkan penerangan serta cerita dalam halaman hasil
 
 **Aliran Pengendalian Ralat:**
-Jika perkhidmatan AI gagal:
-1. Pengawal menangkap pengecualian
-2. Menjana cerita gantian menggunakan templat siap
-3. Memaparkan cerita gantian dengan nota tentang ketidaktersediaan AI
-4. Pengguna masih mendapat cerita, memastikan pengalaman pengguna yang baik
+Jika model gagal, pelayan merekod sebabnya. Analisis imej memulangkan HTTP 502 dan penyemak imbas memaparkan ralat tanpa menunjukkan "Generate Story". Penjanaan cerita mengalihkan ke borang dengan mesej ralat. Tiada laluan yang menyamar secara senyap dengan hasil pra-tulis.
 
 ## Memahami Integrasi AI
 
 ### Azure AI Foundry (tanpa kunci)
-Aplikasi menggunakan Azure AI Foundry dengan pengesahan tanpa kunci (Microsoft Entra ID):
-
-```java
-// Pengesahan tanpa kunci - tiada kunci API
-DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-this.openAIClient = OpenAIOkHttpClient.builder()
-    .baseUrl(endpoint + "openai/v1/")
-    .credential(BearerTokenCredential.create(
-        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-    .build();
-```
+Perkhidmatan mengkonfigurasikan SDK dengan titik akhir `/openai/v1/` sumber anda. `DefaultAzureCredential` dan `AuthenticationUtil.getBearerTokenSupplier` membekalkan token Microsoft Entra untuk `https://ai.azure.com/.default`. Pembangunan tempatan boleh menggunakan daftar masuk Azure CLI anda; aplikasi yang dihoskan Azure boleh menggunakan identiti terurus dengan kebenaran sumber yang diperlukan.
 
 ### Kejuruteraan Prompt
-Perkhidmatan menggunakan prompt yang direka dengan teliti untuk mendapatkan hasil yang baik:
-
-```java
-String systemPrompt = "You are a creative storyteller who writes fun, " +
-                     "family-friendly short stories about pets. " +
-                     "Keep stories under 500 words and appropriate for all ages.";
-```
+Analisis imej meminta ciri haiwan peliharaan yang boleh diperhatikan dalam perenggan pendek dan memberitahu model untuk menganggap teks dalam imej sebagai data, bukan arahan. Penjanaan cerita menggunakan penerangan yang diterima dalam permintaan penulisan mesra keluarga yang berasingan. Tiada panggilan yang membolehkan penalaran atau menetapkan penggantian suhu.
 
 ### Pemprosesan Respons
-Respons AI diekstrak dan disahkan:
-
-```java
-ChatCompletion response = openAIClient.chat().completions().create(params);
-String story = response.choices().get(0).message().content().orElse("");
-```
+Pengendali respons bersama menolak pilihan yang hilang dan kandungan kosong atau hanya ruang putih, memotong kandungan sah, dan mengekalkan kegagalan huluan. Penerangan imej dihadkan kepada 1000 aksara untuk sesuai dengan borang cerita seterusnya. Kegagalan model asal disimpan untuk diagnostik tetapi tidak dipaparkan kepada pengguna.
 
 ## Langkah Seterusnya
 
-Untuk lebih banyak contoh, lihat [Bab 04: Contoh praktikal](../README.md)
+Untuk lebih banyak contoh, lihat [Bab 04: Contoh Praktikal](../README.md)
 
 ---
 

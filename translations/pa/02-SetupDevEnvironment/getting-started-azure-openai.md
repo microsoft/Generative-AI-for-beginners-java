@@ -1,147 +1,149 @@
-# Azure AI Foundry ਲਈ ਵਿਕਾਸ ਪਰਿਵੇਸ਼ ਸੈੱਟ ਕਰਨਾ
+# ਐਜ਼ੂਰ ਏਆਈ ਫਾਉਂਡਰੀ ਲਈ ਵਿਕਾਸ ਮਾਹੌਲ ਸੈੱਟ ਕਰਨਾ
 
-> ਇਹ ਗਾਈਡ ਇਸ ਕੋਰਸ ਵਿੱਚ ਜਾਵਾ ਏਆਈ ਐਪਸ ਲਈ **Azure AI Foundry** ਮਾਡਲਸ ਨੂੰ **keyless** ਪ੍ਰਮਾਣੀਕਰਣ (Microsoft Entra ID) ਦੀ ਵਰਤੋਂ ਨਾਲ ਸੈੱਟ ਕਰਦਾ ਹੈ — ਕੋਈ API ਕੁੰਜੀਆਂ ਸੰਭਾਲਣ ਦੀ ਜਰੂਰਤ ਨਹੀਂ। ਟੂਲਿੰਗ ਵਿੱਚ ਨਵਾਂ ਹੋ? [ਵਿਕਾਸ ਪਰਿਵੇਸ਼ ਗਾਈਡ](./README.md) ਨਾਲ ਸ਼ੁਰੂ ਕਰੋ।
+> ਇਹ ਦਿਸ਼ਾ-ਨਿਰਦੇਸ਼ ਇਸ ਕੋਰਸ ਵਿਚ ਜਾਵਾ ਏਆਈ ਐਪਸ ਲਈ **ਐਜ਼ੂਰ ਏਆਈ ਫਾਉਂਡਰੀ** ਮਾਡਲ ਸੈੱਟ ਕਰਦਾ ਹੈ, **ਕੀ-ਰਹਿਤ** ਪ੍ਰਮਾਣੀਕਰਨ (Microsoft Entra ID) ਦੀ ਵਰਤੋਂ ਕਰਕੇ — ਕੋਈ API ਕੁੰਜੀਆਂ ਪ੍ਰਬੰਧਿਤ ਕਰਨ ਦੀ ਲੋੜ ਨਹੀਂ। ਟੂਲਿੰਗ ਵਿੱਚ ਨਵਾਂ? ਸ਼ੁਰੂ ਕਰੋ [ਵਿਕਾਸ ਮਾਹੌਲ ਦਿਸ਼ਾ-ਨਿਰਦੇਸ਼](./README.md) ਨਾਲ।
 
-ਇਹ ਗਾਈਡ ਇਸ ਕੋਰਸ ਵਿੱਚ ਜਾਵਾ ਏਆਈ ਐਪਸ ਲਈ **Azure AI Foundry** ਮਾਡਲਸ ਸੈੱਟ ਕਰਦਾ ਹੈ। ਤੁਹਾਡੇ ਕੋਲ ਦੋ ਰਸਤੇ ਹਨ:
+ਇਹ ਦਿਸ਼ਾ-ਨਿਰਦੇਸ਼ ਇਸ ਕੋਰਸ ਵਿੱਚ ਜਾਵਾ ਏਆਈ ਐਪਸ ਲਈ **ਐਜ਼ੂਰ ਏਆਈ ਫਾਉਂਡਰੀ** ਮਾਡਲ ਸੈੱਟ ਕਰਦਾ ਹੈ। ਤੁਹਾਡੇ ਕੋਲ ਦੋ ਰਸਤੇ ਹਨ:
 
-- **ਚੋਣ A — `azd` + Bicep ਨਾਲ ਪ੍ਰੌਵੀਜ਼ਨ ਕਰੋ (ਸਿਫਾਰਸ਼ੀ):** ਇੱਕ ਕਮਾਂਡ ਨਾਲ Foundry ਅਕਾਊਂਟ ਅਤੇ ਮਾਡਲਸ ਕੋਡ ਦੇ ਤੌਰ 'ਤੇ ਤਫਤੀਸ਼ ਕਰਦਾ ਹੈ। ਕੋਈ ਪੋਰਟਲ 'ਤੇ ਕਲਿੱਕ ਕਰਨ ਦੀ ਲੋੜ ਨਹੀਂ।
-- **ਚੋਣ B — Resources ਹੱਥੋਂ ਬਣਾੳੋ** Azure AI Foundry ਪੋਰਟਲ ਵਿੱਚ।
+- **ਵਿਕਲਪ A — `azd` + ਬਾਈਸਪ ਨਾਲ ਪ੍ਰੋਵਿਜ਼ਨ ਕਰੋ (ਸਿਫਾਰਸ਼ੀ):** ਇੱਕ ਕਮਾਂਡ ਨਾਲ ਫਾਉਂਡਰੀ ਖਾਤਾ ਅਤੇ ਮਾਡਲਾਂ ਕੋਡ ਵਜੋਂ ਤਾਇਨਾਤ ਕੀਤੇ ਜਾਂਦੇ ਹਨ। ਕੋਈ ਪੋਰਟਲ 'ਤੇ ਕਲਿੱਕਿੰਗ ਨਹੀਂ।
+- **ਵਿਕਲਪ B — ਹੱਥੋਂ ਹੱਥ ਸਰੋਤ ਬਣਾਓ** ਐਜ਼ੂਰ ਏਆਈ ਫਾਉਂਡਰੀ ਪੋਰਟਲ ਵਿਚ।
 
-ਦੋਵਾਂ ਰਸਤੇ **keyless authentication** (Microsoft Entra ID) ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ — ਕੋਈ API ਕੁੰਜੀਆਂ ਕਾਪੀ ਜਾਂ ਲੀਕ ਕਰਨ ਦੀ ਜਰੂਰਤ ਨਹੀਂ।
+ਦੋਹਾਂ ਰਸਤੇ **ਕੀ-ਰਹਿਤ ਪ੍ਰਮਾਣੀਕਰਨ** (Microsoft Entra ID) ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ — ਕੋਈ API ਕੁੰਜੀਆਂ ਨਕਲ ਕਰਨ ਜਾਂ ਲੀਕ ਕਰਨ ਲਈ ਨਹੀਂ ਹੁੰਦੀਆਂ।
 
-## ਸੂਚੀ
+## ਸਮੱਗਰੀ ਦੀ ਸੂਚੀ
 
 - [ਕੀ ਬਣਾਇਆ ਜਾਂਦਾ ਹੈ](#ਕੀ-ਬਣਾਇਆ-ਜਾਂਦਾ-ਹੈ)
-- [ਪੂਰਵ-ਆਵਸ਼ਯਕਤਾਵਾਂ](#ਪੂਰਵ-ਆਵਸ਼ਯਕਤਾ)
-- [ਚੋਣ A: azd + Bicep ਨਾਲ ਪ੍ਰੌਵੀਜ਼ਨ (ਸਿਫਾਰਸ਼ੀ)](#option-a-provision-with-azd--bicep-recommended)
-- [ਚੋਣ B: Resources ਹੱਥੋਂ ਬਣਾਓ](#ਚੋਣ-b-resources-ਹੱਥੋਂ-ਬਣਾਓ)
-- [ਆਪਣਾ ਪਰਿਵੇਸ਼ ਸੰਰਚਿਤ ਕਰੋ](#ਆਪਣਾ-ਪਰਿਵੇਸ਼-ਸੰਰਚਿਤ-ਕਰੋ)
-- [ਆਪਣੇ ਸੈੱਟਅੱਪ ਦੀ ਜਾਂਚ ਕਰੋ](#ਆਪਣੇ-ਸੈੱਟਅੱਪ-ਦੀ-ਜਾਂਚ-ਕਰੋ)
-- [ਅਗਲੇ ਕਦਮ ਕੀ ਹਨ?](#ਅਗਲੇ-ਕਦਮ-ਕੀ-ਹਨ)
-- [ਸਾਧਨ](#ਸਾਧਨ)
-- [ਅਤਿਰੀਕਤ ਸਾਧਨ](#ਅਤਿਰੀਕਤ-ਸਾਧਨ)
+- [ਪੂਰਵ-ਸ਼ਰਤਾਂ](#ਪੂਰਵ-ਸ਼ਰਤਾਂ)
+- [ਵਿਕਲਪ A: azd + ਬਾਈਸਪ ਨਾਲ ਪ੍ਰੋਵਿਜ਼ਨ (ਸਿਫਾਰਸ਼ੀ)](#option-a-provision-with-azd--bicep-recommended)
+- [ਵਿਕਲਪ B: ਹੱਥੋਂ ਸਰੋਤ ਬਣਾਓ](#ਵਿਕਲਪ-b-ਹੱਥੋਂ-ਸਰੋਤ-ਬਣਾਓ)
+- [ਆਪਣਾ ਮਾਹੌਲ ਸੰਰਚਿਤ ਕਰੋ](#ਆਪਣਾ-ਮਾਹੌਲ-ਸੰਰਚਿਤ-ਕਰੋ)
+- [ਆਪਣੀ ਸੈਟਅਪ ਦੀ ਜਾਂਚ ਕਰੋ](#ਆਪਣੀ-ਸੈਟਅਪ-ਦੀ-ਜਾਂਚ-ਕਰੋ)
+- [ਅੱਗੇ ਕੀ?](#ਅੱਗੇ-ਕੀ)
+- [ਸਰੋਤ](#ਸਰੋਤ)
+- [ਵਾਧੂ ਸਰੋਤ](#ਵਾਧੂ-ਸਰੋਤ)
 
 ## ਕੀ ਬਣਾਇਆ ਜਾਂਦਾ ਹੈ
 
-[`infra/`](../../../02-SetupDevEnvironment/infra) ਵਿੱਚ Bicep ਟੈਮਪਲੇਟ ਇਹ ਬਣਾਉਂਦੇ ਹਨ:
+[`infra/`](../../../02-SetupDevEnvironment/infra) ਵਿੱਚ ਬਾਈਸਪ ਟੈਂਪਲੇਟ ਪ੍ਰੋਵਾਇਜ ਕਰਦੇ ਹਨ:
 
-- ਇੱਕ **Azure AI Foundry** ਖਾਤਾ (`Microsoft.CognitiveServices/accounts`, ਕਿਸਮ `AIServices`) ਅਤੇ ਇੱਕ ਪ੍ਰੋਜੈਕਟ
-- ਇੱਕ **chat** ਡਿਪਲੋਇਮੈਂਟ — `gpt-4o-mini`
-- ਇੱਕ **embedding** ਡਿਪਲੋਇਮੈਂਟ — `text-embedding-3-small` (ਬਾਅਦਲੇ ਅਧਿਆਇਆਂ ਵਿੱਚ ਵਰਤਿਆ)
-- ਇੱਕ **keyless Role Assignment** (`Cognitive Services OpenAI User`) ਤਾਂ ਜੋ ਤੁਹਾਡੇ ਕੋਲ `az login` ਨਾਲ ਸਾਈਨ ਇਨ ਹੋਵਣ ਦਾ ਢੰਗ ਹੋਵੇ, ਕੁੰਜੀਆਂ ਸੰਭਾਲਣ ਦੀ ਜਰੂਰਤ ਨਹੀਂ
+- ਇੱਕ **ਐਜ਼ੂਰ ਏਆਈ ਫਾਉਂਡਰੀ** ਖਾਤਾ (`Microsoft.CognitiveServices/accounts`, ਕਿਸਮ `AIServices`) ਇੱਕ ਪ੍ਰੋਜੈਕਟ ਨਾਲ
+- ਇੱਕ **ਚੈਟ** ਡਿਪਲੌਏਮੈਂਟ - GPT-5.6 Luna (`gpt-5.6-luna`), ਵਰਜਨ `2026-07-09`, `GlobalStandard` ਸਮਰੱਥਾ `10` (ਇਸ ਮਾਡਲ ਲਈ 10 ਬੇਨਤੀ/ਮਿੰਟ ਅਤੇ 10,000 ਟੋਕਨ/ਮਿੰਟ)
+- ਇੱਕ **ਐਮਬੈੱਡਿੰਗ** ਡਿਪਲੌਏਮੈਂਟ - `text-embedding-3-small`, ਵਰਜਨ `1` (ਆਗਲੇ ਅਧਿਆਇਆਂ ਵਿੱਚ ਵਰਤਿਆ ਗਿਆ)
+- ਇੱਕ **ਕੀ-ਰਹਿਤ ਭੂਮਿਕਾ ਅਸਾਈਨਮੈਂਟ** (`Cognitive Services OpenAI User`) ਤਾਂ ਜੋ ਤੁਸੀਂ `az login` ਨਾਲ ਸਾਈਨ ਇਨ ਕਰੋ ਨਾ ਕਿ ਕੁੰਜੀਆਂ ਸੰਭਾਲੋ
 
-## ਪੂਰਵ-ਆਵਸ਼ਯਕਤਾ
+## ਪੂਰਵ-ਸ਼ਰਤਾਂ
 
-- ਇੱਕ [Azure ਸਬਸਕ੍ਰਿਪਸ਼ਨ](https://azure.microsoft.com/free/)
-- [Azure Developer CLI (`azd`)](https://aka.ms/azure-dev/install)
-- [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli)
-- [Java 21+](https://learn.microsoft.com/java/openjdk/download) ਅਤੇ [Maven 3.9+](https://maven.apache.org/download.cgi)
+- ਇੱਕ [ਐਜ਼ੂਰ ਸਬਸਕ੍ਰਿਪਸ਼ਨ](https://azure.microsoft.com/free/)
+- [ਐਜ਼ੂਰ ਡਿਵੈਲਪਰ CLI (`azd`)](https://aka.ms/azure-dev/install)
+- [ਐਜ਼ੂਰ CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli)
+- [ਜਾਵਾ 21+](https://learn.microsoft.com/java/openjdk/download) ਅਤੇ [ਮੇਵਨ 3.9+](https://maven.apache.org/download.cgi)
 
-## ਚੋਣ A: azd + Bicep ਨਾਲ ਪ੍ਰੌਵੀਜ਼ਨ (ਸਿਫਾਰਸ਼ੀ)
+## ਵਿਕਲਪ A: azd + ਬਾਈਸਪ ਨਾਲ ਪ੍ਰੋਵਿਜ਼ਨ (ਸਿਫਾਰਸ਼ੀ)
 
 `02-SetupDevEnvironment` ਫੋਲਡਰ ਤੋਂ:
 
 ```bash
 cd 02-SetupDevEnvironment
 
-# ਸਾਈਨ ਇਨ ਕਰੋ (ਦੋਹਾਂ ਟੂਲਾਂ ਲਈ)
+# ਸਾਈਨ ਇਨ (ਦੋਹਾਂ ਟੂਲਾਂ ਲਈ)
 azd auth login
 az login
 
-# ਫਾਊਂਡਰੀ ਖਾਤਾ + ਮਾਡਲ ਡਿਪਲੌਇਮੈਂਟ ਪ੍ਰੋਵਿਜਨ ਕਰੋ
+# Foundry ਖਾਤਾ ਅਤੇ ਮਾਡਲ ਡਿਪਲੋਇਮੈਂਟ ਪ੍ਰਦਾਨ ਕਰੋ
 azd up
 ```
 
-`azd` ਤੁਹਾਡੇ ਤੋਂ ਇੱਕ **environment name** (ਉਦਾਹਰਨ ਲਈ `genai-java`) ਅਤੇ ਇੱਕ **region** ਪੁੱਛਦਾ ਹੈ। ਇੱਕ ਇਲਾਕਾ ਚੁਣੋ ਜਿੱਥੇ `gpt-4o-mini` ਅਤੇ `text-embedding-3-small` ਉਪਲਬਧ ਹਨ — ਉਦਾਹਰਨ ਲਈ `eastus2` ਜਾਂ `swedencentral`।
+`azd` ਤੁਹਾਨੂੰ ਇੱਕ **ਮਾਹੌਲ ਦਾ ਨਾਮ** (ਜਿਵੇਂ `genai-java`), **ਸਬਸਕ੍ਰਿਪਸ਼ਨ**, ਅਤੇ **ਖੇਤਰ** ਲਈ ਪੁੱਛਦਾ ਹੈ। ਆਪਣਾ ਸਬਸਕ੍ਰਿਪਸ਼ਨ ਅਤੇ ਇੱਕ ਖੇਤਰ ਚੁਣੋ ਜਿੱਥੇ `gpt-5.6-luna` ਅਤੇ `text-embedding-3-small` ਉਪਲਬਧ ਹਨ, ਉਦਾਹਰਨ ਵਜੋਂ `eastus2`। ਪੁਸ਼ਟੀ ਕਰੋ ਕਿ ਉਸ ਖੇਤਰ ਵਿੱਚ ਮਾਡਲ ਅਤੇ ਡਿਪਲੌਏਮੈਂਟ ਕਿਸਮ ਲਈ ਸਬਸਕ੍ਰਿਪਸ਼ਨ ਦੇ ਕੋਟਾ ਕਾਫ਼ੀ ਹਨ; ਉਪਲਬਧਤਾ ਅਤੇ ਕੋਟਾ ਸਬਸਕ੍ਰਿਪਸ਼ਨ ਵੱਲੋਂ ਵੱਖਰੇ ਹੋ ਸਕਦੇ ਹਨ।
 
-ਜਦੋਂ ਪ੍ਰੌਵੀਜ਼ਨਿੰਗ ਮੁੱਕ ਜਾਂਦੀ ਹੈ, ਤਦ azd:
+ਜਦ ਪ੍ਰੋਵਿਜ਼ਨਿੰਗ ਮੁਕੰਮਲ ਹੋ ਜਾਂਦੀ ਹੈ, ਤਦ azd:
 
-1. ਸਾਰਾ ਕੁਝ ਜੋ [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep) ਵਿੱਚ ਦਰਸਾਇਆ ਗਿਆ ਹੈ ਤਫਤੀਸ਼ ਕਰਦਾ ਹੈ।
-2. ਇੱਕ post-provision ਹੂਕ ਚਲਾਉਂਦਾ ਹੈ ਜੋ ਤੁਹਾਡੇ ਐਂਡਪੁਆਇੰਟ ਅਤੇ ਡਿਪਲੋਇਮੈਂਟ ਦੇ ਨਾਮਾਂ ਦੇ ਨਾਲ [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) ਲਿਖਦਾ ਹੈ (ਕੋਈ ਸੁਰੰਗ ਨਹੀਂ)।
+1. [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep) ਵਿੱਚ ਪਰਿਭਾਸ਼ਿਤ ਸਾਰਾ ਕੁਝ ਤਾਇਨਾਤ ਕਰਦਾ ਹੈ।
+2. ਇੱਕ ਪੋਸਟ-ਪ੍ਰੋਵਿਜ਼ਨ ਹੂਕ ਚਲਾਉਂਦਾ ਹੈ ਜੋ ਤੁਹਾਡੇ ਐਂਡਪੋਇੰਟ ਅਤੇ ਡਿਪਲੌਏਮੈਂਟ ਨਾਮਾਂ ਨਾਲ [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) ਲਿਖਦਾ ਹੈ (ਕੋਈ ਰਾਜ਼ ਨਹੀਂ)।
 
-> **ਸੁਝਾਅ:** ਕੋਈ ਵੀ ਸਮੇਂ `azd up` ਚਲਾਓ ਤਾ ਕਿ ਬਦਲਾਅ ਲਾਗੂ ਹੋ ਜਾਵੇ। ਸਾਰਾ ਕੁਝ ਹਟਾਉਣ ਲਈ `azd down` ਚਲਾਓ।
+> **ਸਰਣੀ:** ਕਿਸੇ ਵੀ ਸਮੇਂ `azd up` ਦੁਬਾਰਾ ਚਲਾਓ ਤांकि ਤਬਦੀਲੀਆਂ ਲਾਗੂ ਹੋ ਜਾਣ। ਸਾਰਾ ਕੁਝ ਮਿਟਾਉਣ ਅਤੇ ਖ਼ਰਚ ਰੋਕਣ ਲਈ `azd down` ਚਲਾਓ।
 
-ਤਿਆਰ ਹੋਏ ਸੈਟਿੰਗ ਵੇਖਣ ਲਈ:
+ਦੇਖਣ ਲਈ ਬਣਾਏ ਗਏ ਸੈਟਿੰਗਜ਼:
 
 ```bash
 azd env get-values
 ```
 
-ਹੁਣ [ਆਪਣੇ ਸੈੱਟਅੱਪ ਦੀ ਜਾਂਚ ਕਰੋ](#ਆਪਣੇ-ਸੈੱਟਅੱਪ-ਦੀ-ਜਾਂਚ-ਕਰੋ) 'ਤੇ ਜਾਓ।
+ਹੁਣ [ਆਪਣੀ ਸੈਟਅਪ ਦੀ ਜਾਂਚ ਕਰੋ](#ਆਪਣੀ-ਸੈਟਅਪ-ਦੀ-ਜਾਂਚ-ਕਰੋ) ਤੇ ਜਾਓ।
 
-## ਚੋਣ B: Resources ਹੱਥੋਂ ਬਣਾਓ
+## ਵਿਕਲਪ B: ਹੱਥੋਂ ਸਰੋਤ ਬਣਾਓ
 
-ਪੋਰਟਲ ਵਰਤਣਾ ਪਸੰਦ ਹੈ? ਹੱਥੋਂ Resources ਬਣਾਓ:
+ਪੋਰਟਲ ਪਸੰਦ ਹੈ? ਹੱਥੋਂ ਸਰੋਤ ਬਣਾਓ:
 
-1. [Azure AI Foundry ਪੋਰਟਲ](https://ai.azure.com/) 'ਤੇ ਜਾਓ ਅਤੇ ਸਾਈਨ ਇਨ ਕਰੋ।
-2. **ਇੱਕ ਪ੍ਰੋਜੈਕਟ ਬਣਾਓ** (ਜੋ ਕਿ ਇੱਕ AI Foundry ਰਿਸੋਰਸ ਵੀ ਬਣਾਉਂਦਾ ਹੈ)। ਇਸਨੂੰ `GenAIJava` ਵਰਗਾ ਨਾਮ ਦਿਓ।
+1. [ਐਜ਼ੂਰ ਏਆਈ ਫਾਉਂਡਰੀ ਪੋਰਟਲ](https://ai.azure.com/) 'ਤੇ ਜਾਓ ਅਤੇ ਸਾਈਨ ਇਨ ਕਰੋ।
+2. **ਇੱਕ ਪ੍ਰੋਜੈਕਟ ਬਣਾਓ** (ਇਹ ਇੱਕ ਏਆਈ ਫਾਉਂਡਰੀ ਸਰੋਤ ਵੀ ਬਣਾਉਂਦਾ ਹੈ)। ਇਸ ਨੂੰ `GenAIJava` ਵਰਗਾ ਨਾਮ ਦਿਓ।
 3. ਆਪਣੇ ਪ੍ਰੋਜੈਕਟ ਵਿੱਚ, **Models + endpoints** → **Deploy model** → **Deploy base model** ਖੋਲ੍ਹੋ।
-4. **gpt-4o-mini** ਡਿਪਲੋਇ ਕਰੋ (ਡਿਪਲੋਇਮੈਂਟ ਨਾਮ `gpt-4o-mini`)। ਜੇ ਐਂਬੈੱਡਿੰਗ ਉਦਾਹਰਣਾਂ ਚਾਹੀਦੀਆਂ ਹਨ ਤਾਂ **text-embedding-3-small** ਵੀ ਡਿਪਲੋਇ ਕਰੋ।
-5. **Overview** ਤੋਂ, **endpoint** ਕਾਪੀ ਕਰੋ (ਉਦਾਹਰਨ ਲਈ `https://<resource>.openai.azure.com/`)।
-6. ਆਪਣੇ ਆਪ ਨੂੰ keyless ਪਹਿਲੀ ਅਗਵਾਈ ਦਿਓ: resource 'ਤੇ ਜਾ ਕੇ **Access control (IAM)** → **Add role assignment** → ਆਪਣੀ ਅਕਾਊਂਟ ਲਈ **Cognitive Services OpenAI User** ਅਸਾਈਨ ਕਰੋ।
+4. **GPT-5.6 Luna** ਡਿਪਲੌਏ ਕਰੋ (ਮਾਡਲ ਅਤੇ ਡਿਪਲੌਏਮੈਂਟ ਦਾ ਨਾਮ `gpt-5.6-luna`, ਵਰਜ਼ਨ `2026-07-09`) ਨਾਲ **Global Standard** ਸਮਰੱਥਾ `10`। ਜੇ ਤੁਸੀਂ ਐਮਬੈੱਡਿੰਗ ਉਦਾਹਰਣ ਚਾਹੁੰਦੇ ਹੋ ਤਾਂ **text-embedding-3-small**, ਵਰਜ਼ਨ `1` ਲਈ ਵੀ ਇਹ ਕੰਮ ਦੋਹਰਾਓ।
+5. **Overview** ਤੋਂ, **ਐਂਡਪੋਇੰਟ** ਕਾਪੀ ਕਰੋ (ਉਦਾਹਰਨ ਵਜੋਂ `https://<resource>.openai.azure.com/`)।
+6. ਆਪਣੇ ਆਪ ਨੂੰ ਕੀ-ਰਹਿਤ ਐਕਸੇਸ ਦਿਓ: ਸਰੋਤ 'ਤੇ, **Access control (IAM)** → **Add role assignment** → ਆਪਣੀ ਖਾਤੇ ਨੂੰ **Cognitive Services OpenAI User** ਦਰਜ ਕਰੋ।
 
-> **ਅਜੇ ਵੀ ਮੁਸ਼ਕਿਲਾਂ ਆ ਰਹੀਆਂ ਹਨ?** [Azure AI Foundry ਡਾਕਯੂਮੈਂਟੇਸ਼ਨ](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects) ਵੇਖੋ।
+> **ਹੁਣ ਵੀ ਮੁਸ਼ਕਲ ਆ ਰਿਹਾ ਹੈ?** ਵੇਖੋ [ਐਜ਼ੂਰ ਏਆਈ ਫਾਉਂਡਰੀ ਦਸਤਾਵੇਜ਼](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects)।
 
-## ਆਪਣਾ ਪਰਿਵੇਸ਼ ਸੰਰਚਿਤ ਕਰੋ
+## ਆਪਣਾ ਮਾਹੌਲ ਸੰਰਚਿਤ ਕਰੋ
 
-**ਜੇ ਤੁਸੀਂ ਚੋਣ A (`azd up`) ਵਰਤੀ**, ਤੁਹਾਡੀ ਸੈਟਿੰਗ ਫਾਈਲ ਪਹਿਲਾਂ ਹੀ ਲਿਖੀ ਗਈ ਹੈ — ਕੋਈ ਵਧੀਆ ਸੰਰਚਨਾ ਕਰਨ ਦੀ ਲੋੜ ਨਹੀਂ। [ਆਪਣੇ ਸੈੱਟਅੱਪ ਦੀ ਜਾਂਚ ਕਰੋ](#ਆਪਣੇ-ਸੈੱਟਅੱਪ-ਦੀ-ਜਾਂਚ-ਕਰੋ) 'ਤੇ ਜਾਓ।
+**ਜੇ ਤੁਸੀਂ ਵਿਕਲਪ A (`azd up`) ਵਰਤੀ ਹੈ**, ਤਾਂ ਤੁਹਾਡਾ ਸੈਟਿੰਗਜ਼ ਫਾਇਲ ਪਹਿਲਾਂ ਹੀ ਲਿਖਿਆ ਹੋਇਆ ਹੈ — ਕੁਝ ਬਣਾਉਣ ਦੀ ਲੋੜ ਨਹੀਂ। [ਆਪਣੀ ਸੈਟਅਪ ਦੀ ਜਾਂਚ ਕਰੋ](#ਆਪਣੀ-ਸੈਟਅਪ-ਦੀ-ਜਾਂਚ-ਕਰੋ) ਤੇ ਜਾਓ।
 
-**ਜੇ ਤੁਸੀਂ ਚੋਣ B (ਮੈਨੁਅਲ) ਵਰਤੀ**, ਤਾਂ ਉਦਾਹਰਣ ਵਾਲੀ `.env` ਫਾਈਲ ਖੁਦ ਬਣਾਉ:
+**ਜੇ ਤੁਸੀਂ ਵਿਕਲਪ B (ਮੈਨੂਅਲ) ਵਰਤੇ ਹੋ, ਤਾਂ ਉਦਾਹਰਣ ਦੀ `.env` ਫਾਇਲ ਖੁਦ ਬਣਾਓ:**
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 cp .env.example .env
 ```
 
-ਆਪਣੇ ਐਂਡਪੁਆਇੰਟ ਨਾਲ `.env` ਸੰਪਾਦਿਤ ਕਰੋ (ਕੋਈ ਕੁੰਜੀ ਨਹੀਂ — auth keyless ਹੈ):
+ਆਪਣਾ ਐਂਡਪੋਇੰਟ ਸੰਪਾਦਿਤ ਕਰੋ (ਕੋਈ ਕੁੰਜੀ ਨਹੀਂ — ਪ੍ਰਮਾਣੀਕਰਨ ਕੀ-ਰਹਿਤ ਹੈ):
 
 ```bash
 AZURE_OPENAI_ENDPOINT=https://<your-resource>.openai.azure.com/
-AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
+AZURE_OPENAI_DEPLOYMENT=gpt-5.6-luna
 ```
 
-> **ਸੁਰੱਖਿਆ ਨੋਟ:** ਕੋਈ API ਕੁੰਜੀ ਸੰਗ੍ਰਹਿਤ ਕਰਨ ਦੀ ਲੋੜ ਨਹੀਂ। ਤੁਸੀਂ Microsoft Entra ID ਰਾਹੀਂ `az login` (ਸਥਾਨਕ ਤੌਰ 'ਤੇ) ਜਾਂ ਮੈਨੇਜਡ ਇਡੈਂਟਿਟੀ (Azure ਵਿੱਚ) ਨਾਲ ਪ੍ਰਮਾਣਿਕ ਹੁੰਦੇ ਹੋ। `.env` ਫਾਈਲ ਵਿੱਚ ਸਿਰਫ਼ ਗੈਰ-ਸਿਕਰਟ ਸੈਟਿੰਗਾਂ ਹਨ ਅਤੇ ਇਹ `.gitignore` ਨਾਲ ਪਹਿਲਾਂ ਹੀ ਕਵਰ ਕੀਤੀ ਗਈ ਹੈ।
+ਸਰੋਤ ਦਾ Azure OpenAI ਐਂਡਪੋਇੰਟ ਵਰਤੋ, ਪ੍ਰੋਜੈਕਟ URL ਨਹੀਂ। ਬੇਸਿਕ-ਚੈਟ ਐਪ ਇਸਨੂੰ `/openai/v1` ਤੇ ਮਾਪਦਾ ਹੈ ਅਤੇ ਇੱਕ ਸਪਸ਼ਟ ਬੀਅਰਰ ਟੋਕਨ ਕਲਾਇਟ ਨੂੰ ਸੰਰਚਿਤ ਕਰਦਾ ਹੈ; API ਕੁੰਜੀ ਦੀ ਲੋੜ ਨਹੀਂ।
 
-## ਆਪਣੇ ਸੈੱਟਅੱਪ ਦੀ ਜਾਂਚ ਕਰੋ
+> **ਸੁਰੱਖਿਆ ਨੋਟ:** ਕੋਈ API ਕੁੰਜੀ ਸਟੋਰ ਕਰਨ ਲਈ ਨਹੀਂ। ਤੁਸੀਂ Microsoft Entra ID ਦੇ ਰਾਹੀਂ `az login` (ਲੋਕਲ) ਜਾਂ Azure ਵਿੱਚ ਇੱਕ ਪ੍ਰਬੰਧਿਤ ਪਹਿਚਾਣੀ ਨਾਲ ਪ੍ਰਮਾਣੀਕਰਨ ਕਰਦੇ ਹੋ। `.env` ਫਾਇਲ ਵਿੱਚ ਸਿਰਫ ਗੈਰ-ਰਾਜ਼ੀ ਸੈਟਿੰਗਜ਼ ਹਨ ਅਤੇ ਇਹ ਪਹਿਲਾਂ ਹੀ `.gitignore` ਨਾਲ ਕਵਰੀ ਕੀਤੀ ਗਈ ਹੈ।
 
-ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸਾਈਨ ਇਨ ਹੋ ਚੁੱਕੇ ਹੋ ਤਾਂ ਜੋ keyless auth ਟੋਕਨ ਪ੍ਰਾਪਤ ਕਰ ਸਕੇ, ਫਿਰ ਉਦਾਹਰਣ ਚਲਾੳੋ:
+## ਆਪਣੀ ਸੈਟਅਪ ਦੀ ਜਾਂਚ ਕਰੋ
+
+ਯਕੀਨੀ ਬਣਾਓ ਕਿ ਤੁਸੀਂ ਸਾਈਨ ਇਨ ਹੋ ਚੁੱਕੇ ਹੋ ਤਾਂ ਜੋ ਕੀ-ਰਹਿਤ ਪ੍ਰਮਾਣੀਕਰਨ ਟੋਕਨ ਪ੍ਰਾਪਤ ਕਰ ਸਕੇ, ਫਿਰ ਉਦਾਹਰਣ ਚਲਾਓ:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 
-az login          # ਜੇ ਤੁਸੀਂ ਪਹਿਲਾਂ ਹੀ ਸਾਈਨ ਇਨ ਨਹੀਂ ਹੋਏ ਹੋ
+az login          # ਜੇ ਤੁਸੀਂ ਪਹਿਲਾਂ ਹੀ ਸਾਈਨ ਇਨ ਨਹੀਂ ਹਨ
 mvn clean spring-boot:run
 ```
 
-ਤੁਹਾਨੂੰ `gpt-4o-mini` ਮਾਡਲ ਤੋਂ ਜਵਾਬ ਮਿਲੇਗਾ!
+ਤੁਹਾਨੂੰ `gpt-5.6-luna` ਮਾਡਲ ਵੱਲੋਂ ਜਵਾਬ ਮਿਲਣਾ ਚਾਹੀਦਾ ਹੈ। ਛੋਟੇ ਡਿਫੌਲਟ ਕੋਟਾ ਵਿੱਚ ਰਹਿਣ ਲਈ ਉਦਾਹਰਣਾਂ ਲਗਾਤਾਰ ਚਲਾਓ; ਜੇ ਤੁਹਾਨੂੰ HTTP 429 ਮਿਲੇ, ਤਾਂ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਰੀਟ੍ਰਾਈ ਅੰਤਰਾਲ ਦੀ ਉਡੀਕ ਕਰੋ।
 
-> **VS ਕੋਡ ਵਰਤੋਂਕਾਰ:** `F5` ਦਬਾਓ ਚਲਾਉਣ ਲਈ। ਐਪ ਆਪਣੇ `.env` ਨੂੰ ਆਟੋਮੈਟਿਕ ਲੋਡ ਕਰਦਾ ਹੈ।
+> **VS ਕੋਡ ਵਰਤੋਂਕਾਰ:** ਚਲਾਉਣ ਲਈ `F5` ਦਬਾਓ। ਐਪ ਆਪਣੀ `.env` ਨੂੰ ਆਪਣੇ ਆਪ ਲੋਡ ਕਰ ਲੈਂਦਾ ਹੈ।
 
-> **ਪੂਰਾ ਉਦਾਹਰਣ:** [Basic Chat with Azure AI Foundry example](./examples/basic-chat-azure/README.md) ਵੇਖੋ ਵੇਰਵਿਆਂ ਅਤੇ ਸਮੱਸਿਆ-ਨਿਵਾਰੇ ਲਈ।
+> **ਪੂਰਾ ਉਦਾਹਰਣ:** ਵੇਖੋ [ਐਜ਼ੂਰ ਏਆਈ ਫਾਉਂਡਰੀ ਨਾਲ ਬੇਸਿਕ ਚੈਟ ਉਦਾਹਰਣ](./examples/basic-chat-azure/README.md) ਵਿਸਥਾਰ ਅਤੇ ਸਮੱਸਿਆ ਨਿਵਾਰਣ ਲਈ।
 
-## ਅਗਲੇ ਕਦਮ ਕੀ ਹਨ?
+## ਅੱਗੇ ਕੀ?
 
-**ਸੈੱਟਅੱਪ ਮੁਕੰਮਲ!** ਤੁਹਾਡੇ ਕੋਲ ਹੁਣ ਹਨ:
-- Azure AI Foundry ਜਿਸ ਵਿੱਚ `gpt-4o-mini` ਅਤੇ `text-embedding-3-small` ਤਫਤੀਸ਼ ਕੀਤੇ ਗਏ ਹਨ
-- Keyless authentication (Microsoft Entra ID) — ਕੋਈ ਕੁੰਜੀਆਂ ਨਹੀਂ ਸੰਭਾਲਣ ਲਈ
-- ਇੱਕ ਸਥਾਨਕ `.env` ਜਿਸ ਵਿੱਚ ਤੁਹਾਡਾ ਐਂਡਪੁਆਇੰਟ ਅਤੇ ਡਿਪਲੋਇਮੈਂਟ ਦੇ ਨਾਮ ਹਨ
-- ਜਾਵਾ ਵਿਕਾਸ ਪਰਿਵੇਸ਼ ਤਿਆਰ
+ਪ੍ਰੋਵਿਜ਼ਨਿੰਗ ਅਤੇ ਉਦਾਹਰਣ ਨੂੰ ਸਫਲਤਾਪੂਰਵਕ ਚਲਾਉਣ ਤੋਂ ਬਾਅਦ, ਤੁਹਾਡੇ ਕੋਲ ਹੋਵੇਗਾ:
+- ਐਜ਼ੂਰ ਏਆਈ ਫਾਉਂਡਰੀ ਨਾਲ `gpt-5.6-luna` ਅਤੇ `text-embedding-3-small` ਤਾਇਨਾਤ ਹੋਏ
+- ਕੀ-ਰਹਿਤ ਪ੍ਰਮਾਣੀਕਰਨ (Microsoft Entra ID) — ਕੋਈ ਕੁੰਜੀਆਂ ਪ੍ਰਬੰਧਿਤ ਕਰਨ ਲਈ ਨਹੀਂ
+- ਆਪਣਾ ਐਂਡਪੋਇੰਟ ਅਤੇ ਡਿਪਲੌਏਮੈਂਟ ਨਾਮਾਂ ਨਾਲ ਲੋਕਲ `.env`
+- ਇੱਕ ਤਿਆਰ ਜਾਵਾ ਵਿਕਾਸ ਮਾਹੌਲ
 
-**ਆਗੇ ਵਧੋ** [ਅਧਿਆਇ 3: ਕੋਰ ਜਨਰੇਟਿਵ ਏਆਈ ਤਕਨੀਕਾਂ](../03-CoreGenerativeAITechniques/README.md) 'ਤੇ ਤਾ ਕਿ ਏਆਈ ਐਪਲੀਕੇਸ਼ਨਾਂ ਦਾ ਨਿਰਮਾਣ ਸ਼ੁਰੂ ਕਰ ਸਕੋ!
+**ਜਾਰੀ ਰੱਖੋ** [ਅਧਿਆਇ 3: ਕੋਰ ਜਨਰੇਟਿਵ ਏਆਈ ਤਕਨੀਕਾਂ](../03-CoreGenerativeAITechniques/README.md) ਲਈ ਐਆਈ ਐਪਸ ਬਣਾਉਣਾ ਸ਼ੁਰੂ ਕਰਨ ਲਈ!
 
-## ਸਾਧਨ
+## ਸਰੋਤ
 
-- [Azure Developer CLI (azd)](https://aka.ms/azure-dev/install)
-- [Microsoft Entra ID ਨਾਲ keyless authentication](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
-- [Azure AI Foundry ਡਾਕਯੂਮੈਂਟੇਸ਼ਨ](https://learn.microsoft.com/azure/ai-foundry/)
-- [Spring AI Azure OpenAI ਡਾਕ्यूਮੈਂਟੇਸ਼ਨ](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
-- [Azure OpenAI ਜਾਵਾ SDK](https://learn.microsoft.com/java/api/overview/azure/ai-openai-readme)
+- [ਐਜ਼ੂਰ ਡਿਵੈਲਪਰ CLI (azd)](https://aka.ms/azure-dev/install)
+- [Microsoft Entra ID ਨਾਲ ਕੀ-ਰਹਿਤ ਪ੍ਰਮਾਣੀਕਰਨ](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
+- [ਐਜ਼ੂਰ ਏਆਈ ਫਾਉਂਡਰੀ ਦਸਤਾਵੇਜ਼](https://learn.microsoft.com/azure/ai-foundry/)
+- [Spring AI 2 OpenAI ਜਾਵਾ SDK ਪ੍ਰਵਾਸ](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [Azure OpenAI v1 ਨਾਲ ਅਧਿਕਾਰਕ OpenAI ਜਾਵਾ SDK](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
 
-## ਅਤਿਰੀਕਤ ਸਾਧਨ
+## ਵਾਧੂ ਸਰੋਤ
 
 - [VS ਕੋਡ ਡਾਊਨਲੋਡ ਕਰੋ](https://code.visualstudio.com/Download)
-- [ਡੋਕਰ ਡੈਸਕਟਾਪ ਪ੍ਰਾਪਤ ਕਰੋ](https://www.docker.com/products/docker-desktop)
-- [Dev Container ਸੰਰਚਨਾ](../../../.devcontainer/devcontainer.json)
+- [Docker ਡੈਸਕਟਾਪ ਪ੍ਰਾਪਤ ਕਰੋ](https://www.docker.com/products/docker-desktop)
+- [ਡਿਵ ਕంటੇਨਰ ਸੰਰਚਨਾ](../../../.devcontainer/devcontainer.json)
 
 ---
 

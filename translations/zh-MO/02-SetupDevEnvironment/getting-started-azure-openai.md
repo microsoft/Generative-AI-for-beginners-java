@@ -1,65 +1,65 @@
-# 設定 Azure AI Foundry 的開發環境
+# 為 Azure AI Foundry 設置開發環境
 
-> 本指南使用 **keyless** 認證（Microsoft Entra ID）為本課程中的 Java AI 應用程式設置 **Azure AI Foundry** 模型 — 無需管理 API 金鑰。對此工具不熟悉？請從[開發環境指南](./README.md)開始。
+> 本指南為本課程中的 Java AI 應用程式設定 **Azure AI Foundry** 模型，使用 <strong>無金鑰</strong> 認證（Microsoft Entra ID）— 無需管理 API 金鑰。工具使用新手？請先參閱[開發環境指南](./README.md)。
 
-本指南為本課程中的 Java AI 應用程式設置 **Azure AI Foundry** 模型。你有兩條途徑：
+本指南為本課程中的 Java AI 應用程式設定 **Azure AI Foundry** 模型。您有兩種方式：
 
-- **方案 A — 使用 `azd` + Bicep 進行佈建（推薦）：** 一條命令以程式碼形式部署 Foundry 帳戶和模型。無需點擊入口網站。
-- **方案 B — 在 Azure AI Foundry 入口網站手動建立資源**。
+- **選項 A — 使用 `azd` + Bicep 一鍵部署（推薦）：** 使用一條指令以程式碼方式部署 Foundry 帳戶和模型，無需在入口網站中點擊。
+- **選項 B — 在 Azure AI Foundry 入口網站中手動創建資源。**
 
-兩條途徑都使用 **keyless 認證**（Microsoft Entra ID）— 無需複製或洩漏 API 金鑰。
+兩種方式都使用 <strong>無金鑰認證</strong>（Microsoft Entra ID）— 無需複製或洩漏 API 金鑰。
 
 ## 目錄
 
-- [建立了哪些資源](#建立了哪些資源)
+- [建立了什麼](#建立了什麼)
 - [先決條件](#先決條件)
-- [方案 A：使用 azd + Bicep 佈建（推薦）](#option-a-provision-with-azd--bicep-recommended)
-- [方案 B：手動建立資源](#方案-b：手動建立資源)
-- [配置你的環境](#配置你的環境)
-- [測試你的設置](#測試你的設置)
+- [選項 A：使用 azd + Bicep 部署（推薦）](#option-a-provision-with-azd--bicep-recommended)
+- [選項 B：手動建立資源](#選項-b：手動建立資源)
+- [配置您的環境](#配置您的環境)
+- [測試您的設定](#測試您的設定)
 - [接下來呢？](#接下來呢？)
 - [資源](#資源)
-- [更多資源](#更多資源)
+- [附加資源](#附加資源)
 
-## 建立了哪些資源
+## 建立了什麼
 
-[`infra/`](../../../02-SetupDevEnvironment/infra) 中的 Bicep 範本會佈建：
+[`infra/`](../../../02-SetupDevEnvironment/infra) 中的 Bicep 模板會建立：
 
-- 一個 **Azure AI Foundry** 帳戶（`Microsoft.CognitiveServices/accounts`，種類為 `AIServices`）及一個專案
-- 一個 <strong>聊天</strong> 部署 — `gpt-4o-mini`
-- 一個 <strong>嵌入</strong> 部署 — `text-embedding-3-small`（後續章節會用到）
-- 一個 **keyless 角色指派**（`Cognitive Services OpenAI User`），讓你用 `az login` 登入，而非管理金鑰
+- 一個 **Azure AI Foundry** 帳戶（`Microsoft.CognitiveServices/accounts`，類型 `AIServices`）及其專案
+- 一個 <strong>聊天</strong> 部署 — GPT-5.6 Luna (`gpt-5.6-luna`)，版本 `2026-07-09`，`GlobalStandard` 容量 10（此模型每分鐘 10 次請求和 10,000 個令牌）
+- 一個 <strong>嵌入</strong> 部署 — `text-embedding-3-small` 版本 `1`（稍後章節中使用）
+- 一個 <strong>無金鑰角色分配</strong>（`Cognitive Services OpenAI User`），讓您可以使用 `az login` 登入，而無需管理金鑰
 
 ## 先決條件
 
 - 一個 [Azure 訂閱](https://azure.microsoft.com/free/)
-- [Azure Developer CLI (`azd`)](https://aka.ms/azure-dev/install)
+- [Azure 開發者 CLI (`azd`)](https://aka.ms/azure-dev/install)
 - [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli)
-- [Java 21+](https://learn.microsoft.com/java/openjdk/download) 與 [Maven 3.9+](https://maven.apache.org/download.cgi)
+- [Java 21+](https://learn.microsoft.com/java/openjdk/download) 和 [Maven 3.9+](https://maven.apache.org/download.cgi)
 
-## 方案 A：使用 azd + Bicep 佈建（推薦）
+## 選項 A：使用 azd + Bicep 部署（推薦）
 
 在 `02-SetupDevEnvironment` 資料夾中：
 
 ```bash
 cd 02-SetupDevEnvironment
 
-# 登入（兩種工具）
+# 登入（兩個工具）
 azd auth login
 az login
 
-# 設置 Foundry 帳戶及模型部署
+# 配置 Foundry 帳戶及模型部署
 azd up
 ```
 
-`azd` 會提示輸入 <strong>環境名稱</strong>（例如 `genai-java`）和 <strong>區域</strong>。請選擇支援 `gpt-4o-mini` 與 `text-embedding-3-small` 的區域，例如 `eastus2` 或 `swedencentral`。
+`azd` 會提示輸入 <strong>環境名稱</strong>（例如 `genai-java`）、<strong>訂閱</strong> 以及 <strong>地區</strong>。請選擇您自己的訂閱和一個支援 `gpt-5.6-luna` 及 `text-embedding-3-small` 的地區，例如 `eastus2`。確認該訂閱在該地區有足夠的配額來使用模型和部署類型；配額和可用性依訂閱而異。
 
-完成佈建後，azd：
+部署完成後，azd 將會：
 
-1. 部署 [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep) 中定義的所有資源。
-2. 執行後置佈建掛鉤，將你的端點和部署名稱寫入 [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure)（無秘密資訊）。
+1. 部署 [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep) 中定義的所有內容。
+2. 執行一個部署後掛鉤，將帶有您的端點和部署名稱（無秘密資訊）的 [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) 寫入。
 
-> **提示：** 任何時候可重新執行 `azd up` 以應用變更。執行 `azd down` 刪除所有並停用計費。
+> **提示：** 您可以隨時重新執行 `azd up` 以套用更改。執行 `azd down` 來刪除所有資源並停止產生費用。
 
 查看產生的設定：
 
@@ -67,44 +67,46 @@ azd up
 azd env get-values
 ```
 
-現在跳至[測試你的設置](#測試你的設置)。
+現在請跳轉至[測試您的設定](#測試您的設定)。
 
-## 方案 B：手動建立資源
+## 選項 B：手動建立資源
 
-偏好使用入口網站？請手動建立資源：
+喜歡使用入口網站？請手動建立資源：
 
 1. 前往 [Azure AI Foundry 入口網站](https://ai.azure.com/) 並登入。
-2. <strong>建立專案</strong>（同時會建立 AI Foundry 資源）。為專案命名，例如 `GenAIJava`。
-3. 在專案中，打開 **Models + endpoints** → **Deploy model** → **Deploy base model**。
-4. 部署 **gpt-4o-mini**（部署名稱為 `gpt-4o-mini`）。如需嵌入範例，請重複部署 **text-embedding-3-small**。
-5. 在 **Overview** 中複製 **endpoint**（例如 `https://<resource>.openai.azure.com/`）。
-6. 授予自己 keyless 存取權：在資源上打開 **Access control (IAM)** → **Add role assignment** → 指派 **Cognitive Services OpenAI User** 權限給你的帳戶。
+2. <strong>建立專案</strong>（這也會創建 AI Foundry 資源）。命名為 `GenAIJava` 或其他名稱。
+3. 在專案中，開啟 **Models + endpoints** → **Deploy model** → **Deploy base model**。
+4. 部署 **GPT-5.6 Luna**（模型和部署名稱為 `gpt-5.6-luna`，版本 `2026-07-09`），採用 **Global Standard** 容量 10。若需要嵌入示例，請重複部署 **text-embedding-3-small**，版本 `1`。
+5. 從 **Overview** 複製 **endpoint**（例如 `https://<resource>.openai.azure.com/`）。
+6. 授予自已無金鑰存取權：在資源上，開啟 **存取控制 (IAM)** → <strong>新增角色分配</strong> → 指派 **Cognitive Services OpenAI User** 角色給您的帳號。
 
 > **仍有問題？** 請參考 [Azure AI Foundry 文件](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects)。
 
-## 配置你的環境
+## 配置您的環境
 
-**如果你使用方案 A（`azd up`）**，你的設定檔已自動完成，無需額外設定。請直接跳到[測試你的設置](#測試你的設置)。
+**如果您使用選項 A (`azd up`)**，您的設定檔已自動建立 — 無需手動配置。直接跳轉至[測試您的設定](#測試您的設定)。
 
-**如果你使用方案 B（手動）**，請自行建立範例的 `.env` 檔案：
+**如果您使用選項 B（手動）**，請自行建立示例的 `.env` 檔案：
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 cp .env.example .env
 ```
 
-以你的端點編輯 `.env`（無需金鑰，因為認證是 keyless）：
+使用您的端點編輯 `.env`（無需金鑰 — 授權採用無金鑰方式）：
 
 ```bash
 AZURE_OPENAI_ENDPOINT=https://<your-resource>.openai.azure.com/
-AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
+AZURE_OPENAI_DEPLOYMENT=gpt-5.6-luna
 ```
 
-> **安全提示：** 無 API 金鑰需儲存。你透過 `az login`（本機）或 Azure 中的管理身分驗證進行 Microsoft Entra ID 認證。`.env` 檔案僅包含非祕密設定，且已在 `.gitignore` 中保護。
+使用資源的 Azure OpenAI 端點，不是專案網址。basic-chat 應用程式會將其解析至 `/openai/v1`，並設定明確的 bearer-token 客戶端；不需要 API 金鑰。
 
-## 測試你的設置
+> **安全提示：** 無需儲存 API 金鑰。您透過 `az login`（本地）或管理身份（Azure 中）使用 Microsoft Entra ID 認證。`.env` 檔只包含非秘密設定，且已被 `.gitignore` 保護。
 
-請確保已登入，讓 keyless 認證能取得 token，然後執行範例：
+## 測試您的設定
+
+確保您已登入使無金鑰認證獲取令牌，然後執行示例：
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
@@ -113,35 +115,35 @@ az login          # 如果你尚未登入
 mvn clean spring-boot:run
 ```
 
-你應該會看到來自 `gpt-4o-mini` 模型的回應！
+您應能收到 `gpt-5.6-luna` 模型的回應。請依序運行示例以維持在預設的小配額內；若收到 HTTP 429，請等待重試間隔後再試。
 
-> **VS Code 使用者：** 按 `F5` 運行。應用程式會自動載入你的 `.env`。
+> **VS Code 使用者：** 按下 `F5` 即可執行。應用程式會自動載入您的 `.env`。
 
-> **完整範例：** 詳情及疑難排解請參閱 [與 Azure AI Foundry 的 Basic Chat 範例](./examples/basic-chat-azure/README.md)。
+> **完整範例：** 請參考 [使用 Azure AI Foundry 的基本聊天示例](./examples/basic-chat-azure/README.md) 了解詳情和疑難排解。
 
 ## 接下來呢？
 
-**設置完成！** 你現在擁有：
-- 部署好的 Azure AI Foundry，包含 `gpt-4o-mini` 與 `text-embedding-3-small`
-- Keyless 認證（Microsoft Entra ID）— 無需管理金鑰
-- 包含你的端點及部署名稱的本地 `.env`
-- 準備好的 Java 開發環境
+部署及成功執行示例後，您將擁有：
+- 部署好的 Azure AI Foundry，包含 `gpt-5.6-luna` 和 `text-embedding-3-small`
+- 無金鑰認證（Microsoft Entra ID）— 無需管理金鑰
+- 包含端點和部署名稱的本地 `.env`
+- 已準備好的 Java 開發環境
 
-<strong>繼續前往</strong> [第3章：核心生成式 AI 技術](../03-CoreGenerativeAITechniques/README.md) 開始建立 AI 應用程式！
+<strong>繼續閱讀</strong> [第 3 章：核心生成式 AI 技術](../03-CoreGenerativeAITechniques/README.md)，開始打造 AI 應用程式！
 
 ## 資源
 
-- [Azure Developer CLI (azd)](https://aka.ms/azure-dev/install)
-- [使用 Microsoft Entra ID 的 keyless 認證](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
+- [Azure 開發者 CLI (azd)](https://aka.ms/azure-dev/install)
+- [使用 Microsoft Entra ID 的無金鑰認證](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
 - [Azure AI Foundry 文件](https://learn.microsoft.com/azure/ai-foundry/)
-- [Spring AI Azure OpenAI 文件](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
-- [Azure OpenAI Java SDK](https://learn.microsoft.com/java/api/overview/azure/ai-openai-readme)
+- [Spring AI 2 OpenAI Java SDK 過渡](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [官方 OpenAI Java SDK 支援 Azure OpenAI v1](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
 
-## 更多資源
+## 附加資源
 
 - [下載 VS Code](https://code.visualstudio.com/Download)
 - [下載 Docker Desktop](https://www.docker.com/products/docker-desktop)
-- [開發容器設定](../../../.devcontainer/devcontainer.json)
+- [開發容器配置](../../../.devcontainer/devcontainer.json)
 
 ---
 

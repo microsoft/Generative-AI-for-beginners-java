@@ -1,38 +1,48 @@
-# Pet Story Generator oktatóanyag kezdőknek
+# Kisállat Történet Generátor Bemutató Kezdőknek
+
+Tölts fel egy kisállat fotót, elemeztesd a GPT-5.6 Lunával, és generálj történetet a kapott leírás alapján. Mindkét modell kérésnél `reasoning_effort: none` értéket használunk.
+
+| Komponens | Verzió |
+| --- | --- |
+| Java | 21 vagy újabb |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
 
 ## Tartalomjegyzék
 
 - [Előfeltételek](#előfeltételek)
 - [A projekt struktúrájának megértése](#a-projekt-struktúrájának-megértése)
-- [A fő komponensek magyarázata](#a-fő-komponensek-magyarázata)
-  - [1. Főalkalmazás](#1-főalkalmazás)
+- [Az alapvető komponensek magyarázata](#az-alapvető-komponensek-magyarázata)
+  - [1. Fő alkalmazás](#1-fő-alkalmazás)
   - [2. Web vezérlő](#2-web-vezérlő)
   - [3. Történet szolgáltatás](#3-történet-szolgáltatás)
   - [4. Web sablonok](#4-web-sablonok)
   - [5. Konfiguráció](#5-konfiguráció)
 - [Az alkalmazás futtatása](#az-alkalmazás-futtatása)
-- [Hogyan működik minden együtt](#hogyan-működik-minden-együtt)
+- [Offline tesztek](#offline-tesztek)
+- [Hogyan működik együtt](#hogyan-működik-együtt-az-egész)
 - [Az AI integráció megértése](#az-ai-integráció-megértése)
 - [Következő lépések](#következő-lépések)
 
 ## Előfeltételek
 
-A kezdés előtt győződjön meg arról, hogy rendelkezik:
-- Telepített Java 21 vagy újabb verzióval
+A kezdés előtt győződj meg arról, hogy rendelkezel:
+- Java 21 vagy újabb telepítve
 - Maven a függőségkezeléshez
-- Azure AI Foundry modell üzembe helyezéssel (províziós `azd up` parancsal — lásd [2. fejezet](../../02-SetupDevEnvironment/getting-started-azure-openai.md)), bejelentkezve `az login`-nal (kulcs nélküli hitelesítés)
-- Alapvető Java, Spring Boot és webfejlesztési ismeretekkel
+- Egy Azure AI Foundry GPT-5.6 Luna telepítés, `gpt-5.6-luna` néven, vagy egy `AZURE_OPENAI_DEPLOYMENT` felülírás, amely erre mutat. Lásd a [2. fejezetet](../../02-SetupDevEnvironment/getting-started-azure-openai.md) a telepítéshez, és jelentkezz be `az login` parancssal kulcs nélküli hitelesítéshez. A telepítésnek támogatnia kell a kép bemenetet és `reasoning_effort: none` beállítást.
+- Az alapvető Java, Spring Boot és webfejlesztési ismeretek
 
 ## A projekt struktúrájának megértése
 
-A pet story projekt több fontos fájlt tartalmaz:
+A kisállat történet projekthez tartozik néhány fontos fájl:
 
 ```
 petstory/
 ├── src/main/java/com/example/petstory/
 │   ├── PetStoryApplication.java       # Main Spring Boot application
 │   ├── PetController.java             # Web request handler
-│   ├── StoryService.java              # AI story generation service
+│   ├── StoryService.java              # AI image analysis and story generation
 │   └── SecurityConfig.java            # Security configuration
 ├── src/main/resources/
 │   ├── application.properties         # App configuration
@@ -42,13 +52,13 @@ petstory/
 └── pom.xml                           # Maven dependencies
 ```
 
-## A fő komponensek magyarázata
+## Az alapvető komponensek magyarázata
 
-### 1. Főalkalmazás
+### 1. Fő alkalmazás
 
 **Fájl:** `PetStoryApplication.java`
 
-Ez a belépési pont a Spring Boot alkalmazásunkhoz:
+Ez a Spring Boot alkalmazásunk belépési pontja:
 
 ```java
 @SpringBootApplication
@@ -60,209 +70,50 @@ public class PetStoryApplication {
 ```
 
 **Mit csinál ez:**
-- Az `@SpringBootApplication` annotáció engedélyezi az automatikus konfigurációt és a komponens-keresést
-- Elindít egy beágyazott webszervert (Tomcat) a 8080-as porton
+- Az `@SpringBootApplication` annotáció engedélyezi az automatikus konfigurációt és komponensfelismerést
+- Beindít egy beágyazott web szervert (Tomcat) a 8080-as porton
 - Automatikusan létrehozza az összes szükséges Spring bean-t és szolgáltatást
 
 ### 2. Web vezérlő
 
-**Fájl:** `PetController.java`
+**Fájl:** [PetController.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/PetController.java)
 
-Ez kezeli az összes webes kérést és felhasználói interakciót:
+| Végpont | Kérés | Sikeres válasz |
+| --- | --- | --- |
+| `GET /` | Nincs tartalom | HTML feltöltő űrlap CSRF tokennel |
+| `POST /analyze-image` | `multipart/form-data`, fájl mező `image` | JSON: `{"description":"Egy játékos kisállat..."}` |
+| `POST /generate-story` | `application/x-www-form-urlencoded`, mező `description` | HTML eredmény oldal a leírással és az elkészült történettel |
 
-```java
-@Controller
-public class PetController {
-    
-    private final StoryService storyService;
-    
-    public PetController(StoryService storyService) {
-        this.storyService = storyService;
-    }
-    
-    @GetMapping("/")
-    public String index() {
-        return "index";  // Visszaadja az index.html sablont
-    }
-    
-    @PostMapping("/generate-story")
-    public String generateStory(@RequestParam("description") String description, 
-                               Model model, 
-                               RedirectAttributes redirectAttributes) {
-        
-        // Bemeneti érvényesítés
-        if (description.trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Please provide a description.");
-            return "redirect:/";
-        }
-        
-        // Bemenet megtisztítása a biztonság érdekében
-        String sanitizedDescription = sanitizeInput(description);
-        
-        // Történet generálása hibakezeléssel
-        try {
-            String story = storyService.generateStory(sanitizedDescription);
-            model.addAttribute("caption", sanitizedDescription);
-            model.addAttribute("story", story);
-            return "result";  // Visszaadja a result.html sablont
-            
-        } catch (Exception e) {
-            // Visszaesési történet használata, ha az AI meghibásodik
-            String fallbackStory = generateFallbackStory(sanitizedDescription);
-            model.addAttribute("story", fallbackStory);
-            return "result";
-        }
-    }
-    
-    private String sanitizeInput(String input) {
-        return input.replaceAll("[<>\"'&]", "")  // Remove dangerous characters
-                   .trim()
-                   .substring(0, Math.min(input.length(), 500));  // Hossz korlátozása
-    }
-}
-```
+Mindkét POST végpont igényli a `GET /` által megszerzett session sütit és CSRF tokent. A feltöltő szkript az elrejtett `_csrf` értéket az `X-CSRF-TOKEN` fejlécben küldi; a történet beküldése a `_csrf` űrlapmezőként. Az API klienseknek meg kell őrizniük a sütit a kérések között. Ezek űrlap végpontok, nem JSON kérés végpontok.
 
-**Fő jellemzők:**
+A leírások nem lehetnek üresek és legfeljebb 1000 karakter hosszúak. A vezérlő levágja a leírást és eltávolítja a `<`, `>`, dupla idézőjeleket, aposztrófokat és `&` jeleket, mielőtt átadná a szolgáltatásnak. Az eredmény sablon a modell kimenetet szintén escape-eli `th:text` segítségével.
 
-1. **Útvonal kezelés**: A `@GetMapping("/")` megjeleníti a feltöltési űrlapot, a `@PostMapping("/generate-story")` feldolgozza a beküldéseket
-2. **Bemenet érvényesítés**: Ellenőrzi az üres leírásokat és a hosszkorlátokat
-3. **Biztonság**: Kitisztítja a felhasználói bemenetet XSS támadások ellen
-4. **Hiba kezelés**: Tartalék történeteket biztosít, ha az AI szolgáltatás nem működik
-5. **Modellek kötése**: Adatokat továbbít a HTML sablonok számára Spring `Model` segítségével
-
-**Tartalék rendszer:**
-A vezérlő előre megírt történet sablonokat tartalmaz, amelyeket akkor használ, amikor az AI szolgáltatás nem elérhető:
-
-```java
-private String generateFallbackStory(String description) {
-    String[] storyTemplates = {
-        "Meet the most wonderful pet in the world – a furry ball of energy...",
-        "Once upon a time, there lived a remarkable pet whose heart was as big...",
-        "In a cozy home filled with love, there lived an extraordinary pet..."
-    };
-    
-    // Használja a leírás hash-t az egységes válaszokhoz
-    int index = Math.abs(description.hashCode() % storyTemplates.length);
-    return storyTemplates[index];
-}
-```
+Képvalidáció sikertelensége HTTP 400 hibát és `error` mezőt ad vissza; modell hibák HTTP 502-t `error` mezővel, de `description` nélkül. Érvénytelen történet leírások vagy modell hibák átirányítanak a `/` oldalra látható hibával. Hiányzó kötelező mezők HTTP 400-t, hiányzó vagy érvénytelen CSRF tokenek HTTP 403-at eredményeznek. Nem jelennek meg helyettesítő leírások vagy történetek sikeres AI eredményként.
 
 ### 3. Történet szolgáltatás
 
-**Fájl:** `StoryService.java`
+**Fájl:** [StoryService.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/StoryService.java)
 
-Ez a szolgáltatás kommunikál az Azure AI Foundry-val, hogy kulcs nélküli hitelesítéssel generáljon történeteket:
+Az OpenAI Java SDK 4.63.1 hivatalosan az Azure AI Foundry OpenAI-kompatibilis Chat Completions API-ját hívja meg. Az Azure Identity 1.18.6 a Microsoft Entra bearer tokent adja `DefaultAzureCredential` segítségével; API kulcs nem szükséges.
 
-```java
-@Service
-public class StoryService {
-    
-    private final OpenAIClient openAIClient;
-    private final String modelName;
-    
-    public StoryService(@Value("${azure.openai.endpoint:}") String endpoint,
-                       @Value("${azure.openai.deployment:gpt-4o-mini}") String modelName) {
-        this.modelName = modelName;
-        if (endpoint == null || endpoint.isBlank()) {
-            endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        }
-        
-        // A Foundry OpenAI-kompatibilis végpontja az /openai/v1/ útvonalon található
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1/";
-        
-        // Kulcs nélküli hitelesítés Microsoft Entra ID-vel (API kulcs nélkül)
-        DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-        this.openAIClient = OpenAIOkHttpClient.builder()
-                .baseUrl(baseUrl)
-                .credential(BearerTokenCredential.create(
-                        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-                .build();
-    }
-    
-    public String generateStory(String description) {
-        String systemPrompt = "You are a creative storyteller who writes fun, " +
-                             "family-friendly short stories about pets. " +
-                             "Keep stories under 500 words and appropriate for all ages.";
-        
-        String userPrompt = "Write a fun short story about a pet described as: " + description;
-        
-        // Az AI kérés konfigurálása
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(modelName)
-                .addSystemMessage(systemPrompt)
-                .addUserMessage(userPrompt)
-                .maxCompletionTokens(500)  // Válasz hosszának korlátozása
-                .temperature(0.8)          // Kreativitás szabályozása (0.0-1.0)
-                .build();
-        
-        // Kérés elküldése és válasz fogadása
-        ChatCompletion response = openAIClient.chat().completions().create(params);
-        
-        return response.choices().get(0).message().content().orElse("");
-    }
-}
-```
+| Művelet | Bemenet | `max_completion_tokens` |
+| --- | --- | --- |
+| `analyzeImage` | Képpé bájtok base64 adat URL formátumban a feltöltött MIME típussal | 300 |
+| `generateStory` | Egy kisállat leírása egy felhasználói üzenetben | 800 |
 
-**Fő összetevők:**
+Mindkét kérés a konfigurált telepítést használja, alapértelmezett `gpt-5.6-luna`, és explicit módon beállítja `ReasoningEffort.NONE` (`reasoning_effort: none`). Egyik kérés sem küld `temperature` vagy a régi `max_tokens` paramétert.
 
-1. **OpenAI kliens**: Használja az hivatalos OpenAI Java SDK-t, Azure AI Foundry konfigurációval (kulcs nélküli)
-2. **Rendszer prompt**: Beállítja az AI viselkedését családbarát kisállat történetek írására
-3. **Felhasználói prompt**: Pontosan megmondja az AI-nak, milyen történetet írjon a leírás alapján
-4. **Paraméterek**: Szabályozza a történet hosszát és kreativitási szintjét
-5. **Hiba kezelés**: Kivételt dob, amelyet a vezérlő elkap és kezel
+A kép elemzés JPEG, PNG, GIF és WebP formátumot fogad el, elutasítja az üres képeket és 10MB-nál nagyobb fájlokat, és a kapott leírást 1000 karakterre korlátozza. A történet prompt családbarát rövid történetet kér. Üres opciók vagy üres modell tartalom hibák, és a hibák megőrzik az eredeti okot a szerver oldali diagnosztikához. Az SDK kliens bezárul az alkalmazás leállásakor.
 
 ### 4. Web sablonok
 
-**Fájl:** `index.html` (feltöltési űrlap)
+**Fájl:** [index.html](../../../../04-PracticalSamples/petstory/src/main/resources/templates/index.html) (Feltöltő űrlap)
 
-A fő oldal, ahol a felhasználók leírják a kisállataikat:
+Az oldal egy fotóválasztóval indul, nem egy leírás szöveg mezővel. Az **Analyze Image** megjeleníti a kiválasztott képet és elküldi a `/analyze-image` végpont felé. Egy sikeres válasz megmutatja a leírást, kitölti az elrejtett `description` mezőt, és megjeleníti a **Generate Story** gombot. Ez az űrlapot elküldi a `/generate-story`-ra.
 
-```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Pet Story Generator</title>
-    <!-- CSS styling -->
-</head>
-<body>
-    <div class="container">
-        <h1>Pet Story Generator</h1>
-        <p>Describe your pet and we'll create a fun story about them!</p>
-        
-        <!-- Error message display -->
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-        
-        <!-- Story generation form -->
-        <form action="/generate-story" method="post">
-            <div class="form-group">
-                <label for="description">Describe your pet:</label>
-                <textarea id="description" name="description" 
-                         placeholder="Tell us about your pet - what they look like, their personality, favorite activities..."
-                         maxlength="1000" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Generate Story</button>
-        </form>
-        
-        <!-- Image upload section with client-side processing -->
-        <div class="upload-section">
-            <h2>Or Upload a Photo</h2>
-            <input type="file" id="imageInput" accept="image/*" />
-            <button onclick="analyzeImage()" class="upload-btn">Analyze Image</button>
-        </div>
-        
-        <script>
-            // Client-side image analysis using Transformers.js
-            async function analyzeImage() {
-                // Image processing code here
-                // Generates description automatically from uploaded image
-            }
-        </script>
-    </div>
-</body>
-</html>
-```
+Nincs böngészőbeli modell letöltés vagy CDN függőség. A kép elemzés a konfigurált Azure telepítésen a szerveren fut. Hibák láthatók maradnak, és nem engedik, hogy a történet generálás hamisított leírással történjen. Egy másik fájl kiválasztása törli az előző elemzést.
 
-**Fájl:** `result.html` (történet megjelenítése)
+**Fájl:** `result.html` (Történet megjelenítés)
 
 Megjeleníti a generált történetet:
 
@@ -297,18 +148,18 @@ Megjeleníti a generált történetet:
 </html>
 ```
 
-**Sablon funkciók:**
+**A sablon jellemzői:**
 
-1. **Thymeleaf integráció**: `th:` attribútumokat használ dinamukus tartalomhoz
-2. **Reszponzív design**: CSS stílusok mobilra és asztali gépre
-3. **Hiba kezelés**: Megjeleníti az érvényesítési hibákat a felhasználóknak
-4. **Kliens oldali feldolgozás**: JavaScript kép elemzéshez (Transformers.js használatával)
+1. **Thymeleaf integráció**: `th:` attribútumokat használ a dinamikus tartalomhoz
+2. **Reszponzív dizájn**: CSS stílus mobilra és asztalira
+3. **Hibakezelés**: A felhasználók számára megjeleníti az érvényesítési hibákat
+4. **Feltöltés kezelése**: JavaScript előnézetet készít a fényképről, CSRF-védett multipart kérést küld, és megjeleníti a visszakapott leírást
 
 ### 5. Konfiguráció
 
 **Fájl:** `application.properties`
 
-Az alkalmazás beállításai:
+Az alkalmazás konfigurációs beállításai:
 
 ```properties
 spring.application.name=pet-story-app
@@ -322,21 +173,21 @@ logging.level.com.example.petstory=INFO
 
 # Azure AI Foundry (keyless) configuration
 azure.openai.endpoint=${AZURE_OPENAI_ENDPOINT:}
-azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
 ```
 
-**A konfiguráció magyarázata:**
+**Konfiguráció magyarázata:**
 
-1. **Fájl feltöltés**: Engedélyezi a maximum 10MB méretű képfeltöltést
-2. **Naplózás**: Szabályozza a futás közbeni információk naplózását
-3. **Azure AI Foundry**: Megadja a végpontot és a modell bevetést (kulcs nélküli hitelesítés)
-4. **Biztonság**: Hiba kezelés konfiguráció, hogy elkerülje az érzékeny adatok nyilvánosságra kerülését
+1. **Fájl feltöltés**: Minden fájl és a teljes multipart kérés max 10MB; a képeket tartsd ezen a méreten belül a multipart fejlécek helyének megtartására
+2. **Naplózás**: Szabályozza, mi kerül naplózásra futás közben
+3. **Azure AI Foundry**: Meghatározza a használni kívánt végpontot és modell telepítést (kulcs nélküli hitelesítés)
+4. **Biztonság**: A CSRF védelem engedélyezett marad; a modell diagnosztikák a szerveren naplózódnak, míg a vezérlő általános modell-hiba üzeneteket mutat
 
 ## Az alkalmazás futtatása
 
-### 1. lépés: Jelentkezzen be és állítsa be a végpontját
+### 1. lépés: Bejelentkezés és a végpont beállítása
 
-A hitelesítés kulcs nélküli (Microsoft Entra ID), így nincs API kulcs. Jelentkezzen be és állítsa be a Foundry végpontját:
+A hitelesítés kulcs nélküli (Microsoft Entra ID), azaz nincs API kulcs. Jelentkezz be és állítsd be a Foundry végpontodat:
 
 **Windows (Parancssor):**
 ```cmd
@@ -356,93 +207,91 @@ az login
 export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 ```
 
-**Miért van erre szükség:**
-- Az Azure AI Foundry Microsoft Entra ID-t használ a kérések hitelesítéséhez
-- Kulcs nélküli hitelesítés azt jelenti, hogy nincs titok a forráskódban vagy a környezetben
-- Fiókjának rendelkeznie kell a **Cognitive Services OpenAI User** szerepkörrel az erőforráson
+**Miért szükséges ez:**
+- Az Azure AI Foundry Microsoft Entra ID-vel azonosítja a lekérdezéseket
+- Kulcs nélküli hitelesítés azt jelenti, hogy nincs titok forráskódban vagy környezetben
+- A fiókodnak rendelkeznie kell a **Cognitive Services OpenAI User** szerepkörrel az erőforráson
 
-### 2. lépés: Build és futtatás
+Az alapértelmezett telepítés neve `gpt-5.6-luna`. Ha a GPT-5.6 Luna telepítésed más néven fut, állítsd be az `AZURE_OPENAI_DEPLOYMENT` környezeti változót ugyanabban a terminálban az alkalmazás indítása előtt. Mindkét funkció az Image elemzés és a történet generálás ezt a beállítást használja.
 
-Lépjen a projekt mappába:
+### 2. lépés: Fordítás és futtatás
+
+Navigálj a projekt könyvtárába:
 ```bash
 cd 04-PracticalSamples/petstory
 ```
 
-Építse meg az alkalmazást:
+Fordítsd le a futtatható JAR-t és futtasd le az összes offline tesztet:
 ```bash
-mvn clean compile
+mvn clean package
 ```
 
-Indítsa el a szervert:
+Indítsd el a szervert:
 ```bash
 mvn spring-boot:run
 ```
 
 Az alkalmazás a `http://localhost:8080` címen indul el.
 
-### 3. lépés: Tesztelje az alkalmazást
+Vagy indítsd el a csomagolt JAR-t egy szabad porton, például:
 
-1. **Nyissa meg** a `http://localhost:8080` címet a böngészőjében
-2. **Írja le** a kisállatát a szövegdobozba (pl. "Egy játékos golden retriever, aki imád apportírozni")
-3. **Kattintson** a "Generate Story" gombra, hogy AI által generált történetet kapjon
-4. **Vagy** töltsön fel egy kisállat képet, hogy automatikusan generálódjon leírás
-5. **Nézze meg** a kreatív történetet a kisállat leírása alapján
+```bash
+java -jar target/pet-story-app-0.0.1-SNAPSHOT.jar --server.port=8083
+```
 
-## Hogyan működik minden együtt
+Ehhez a parancshoz nyisd meg a `http://localhost:8083/` címet. Ugyanazok a `/analyze-image` és `/generate-story` útvonalak elérhetők a kiválasztott porton.
 
-Íme a teljes folyamat, amikor kisállat történetet generál:
+### 3. lépés: Teszteld az alkalmazást
 
-1. **Felhasználói bemenet**: Ön leírja a kisállatát a webes űrlapon
-2. **Űrlap beküldése**: A böngésző POST kérést küld a `/generate-story` címre
-3. **Vezérlő feldolgozás**: A `PetController` érvényesíti és kitisztítja a bemenetet
-4. **AI szolgáltatás hívás**: A `StoryService` kérést küld az Azure AI Foundry modellnek
-5. **Történet generálás**: Az AI kreatív történetet generál a leírás alapján
-6. **Válasz feldolgozás**: A vezérlő megkapja a történetet és hozzáadja a modellhez
-7. **Sablon feldolgozás**: A Thymeleaf kirajzolja a `result.html`-t a történettel
-8. **Megjelenítés**: A felhasználó látja a generált történetet a böngészőjében
+1. **Nyisd meg** a `http://localhost:8080` címet a böngésződben
+2. **Válassz** egy tiszta kisállat fotót JPEG, PNG, GIF vagy WebP formátumban, 10MB alatt
+3. **Kattints** az "Analyze Image" gombra és várd meg a kisállat leírását
+4. **Kattints** a "Generate Story" gombra a sikeres elemzés után
+5. **Nézd meg** a történetet, és használd az eredmény oldalán a linket a feltöltő űrlaphoz való visszatéréshez
 
-**Hiba kezelési folyamat:**
-Ha az AI szolgáltatás hibát jelez:
-1. A vezérlő elkapja a kivételt
-2. Tartalék történetet generál előre megírt sablonokból
-3. Megjeleníti a tartalék történetet egy megjegyzéssel az AI elérhetetlenségéről
-4. A felhasználó így is kap történetet, ami jó felhasználói élményt biztosít
+A sikeres képtől történetig folyamat két modell hívást tesz meg, egyet gombonként. Az élő lekérdezések használják a telepítésed kvótáját és díjkötelesek lehetnek; ossz meg rate-limited telepítéseket sorosan történő smoke tesztekhez. A kezdő oldal betöltése nem hívja a modellt.
+
+## Offline tesztek
+
+A sample könyvtárból futtasd:
+
+```bash
+mvn test
+```
+
+A [StoryServiceTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/StoryServiceTest.java) valós OpenAI SDK kéréseket fog el egy loopback HTTP fixture-rel. Ellenőrzi mindkét kérés telepítését, `reasoning_effort: none`-t, token limiteket, kép payloadot, bemeneti validációt, üres válaszokat és upstream hibákat.
+
+A [PetControllerTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/PetControllerTest.java) MockMvc-t használ egy mockolt modell szolgáltatással, hogy tesztelje a Thymeleaf oldalak renderelését, feltöltési szerződést, CSRF-t, validációt, output escape-elést és látható hibákat. Ezek a tesztek nem igényelnek Azure hitelesítést és soha nem hívnak fizetős Azure inferenciát. A Maven Surefire riportokat ír a `target/surefire-reports` alá.
+
+## Hogyan működik együtt az egész
+
+Íme a teljes folyamat, amikor kisállat történetet generálsz:
+
+1. **Fotó kiválasztása**: Kiválasztasz egy kisállat képet a feltöltő űrlapon
+2. **Kép feltöltése**: Az "Analyze Image" multipart POST-ot küld a `/analyze-image` végpontnak a CSRF fejlécet tartalmazva
+3. **Kép elemzése**: A `StoryService` elküldi a képet a GPT-5.6 Lunának, a reasoning értéke `none`
+4. **Leírás megjelenítése**: A böngésző megjeleníti a visszakapott leírást és eltárolja azt az űrlapban
+5. **Történet beküldése**: A "Generate Story" elküldi a `description` és `_csrf` mezőket a `/generate-story` végpontnak
+6. **Történet generálás**: A vezérlő ellenőrzi a leírást és ugyanahhoz a telepítéshez hívja a modellt reasoning értékkel `none`
+7. **Sablon renderelése**: A Thymeleaf escape-eli és megjeleníti a leírást és a történetet az eredmény oldalon
+
+**Hibakezelési folyamat:**
+Ha a modell hibázik, a szerver naplózza az okot. A kép elemzés HTTP 502-t ad vissza, és a böngésző megjeleníti a hibát anélkül, hogy megjelenítené a "Generate Story" gombot. A történet generálás átirányít az űrlapra hibával. Egyik út sem helyettesít csendben előre megírt eredményt.
 
 ## Az AI integráció megértése
 
 ### Azure AI Foundry (kulcs nélküli)
-Az alkalmazás Azure AI Foundry-t használ kulcs nélküli hitelesítéssel (Microsoft Entra ID):
+A szolgáltatás az SDK-t az erőforrásod `/openai/v1/` végpontjával állítja be. A `DefaultAzureCredential` és az `AuthenticationUtil.getBearerTokenSupplier` Microsoft Entra tokeneket szolgáltat a `https://ai.azure.com/.default` számára. Helyi fejlesztésnél használhatod az Azure CLI bejelentkezésed; Azure-hostolt alkalmazásnál menedzselt identitás használható a szükséges erőforrás engedélyekkel.
 
-```java
-// Kulcs nélküli hitelesítés - nincs API-kulcs
-DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-this.openAIClient = OpenAIOkHttpClient.builder()
-    .baseUrl(endpoint + "openai/v1/")
-    .credential(BearerTokenCredential.create(
-        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-    .build();
-```
-
-### Prompt készítés
-A szolgáltatás gondosan megírt promptokat használ a jó eredmények érdekében:
-
-```java
-String systemPrompt = "You are a creative storyteller who writes fun, " +
-                     "family-friendly short stories about pets. " +
-                     "Keep stories under 500 words and appropriate for all ages.";
-```
+### Prompt tervezés
+A kép elemzési kérés rövid bekezdésben kéri a megfigyelhető kisállat jegyeket, és megmondja a modellnek, hogy a képen lévő szöveget adatként kezelje, ne utasításként. A történet generálás a visszakapott leírást külön, családbarát íráskérésben használja. Egyik hívás sem engedélyezi a reasoning-et vagy állít be hőmérséklet felülírást.
 
 ### Válasz feldolgozás
-Az AI választ kinyeri és ellenőrzi:
-
-```java
-ChatCompletion response = openAIClient.chat().completions().create(params);
-String story = response.choices().get(0).message().content().orElse("");
-```
+A közös válaszkezelő elutasítja a hiányzó választásokat és az üres vagy csak szóközöket tartalmazó tartalmat, levágja az érvényes tartalmat, és megőrzi az upstream hibákat. A kép leírásokat 1000 karakterre korlátozza, hogy a következő történet űrlapba beleférjen. Az eredeti modell hiba megmarad diagnosztikára, de nem jelenik meg a felhasználónak.
 
 ## Következő lépések
 
-További példákért lásd [4. fejezet: Gyakorlati példák](../README.md)
+További példákért lásd a [4. fejezet: Gyakorlati példák](../README.md)
 
 ---
 

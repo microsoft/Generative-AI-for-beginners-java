@@ -1,115 +1,115 @@
-# 為 Java 的生成式 AI 建立開發環境
+# 為 Java 生成式 AI 設置開發環境
 
-> **快速入門：** 使用 Bicep + `azd` 以程式碼方式在 **Azure AI Foundry** 上佈建您的 AI 模型，幾分鐘內完成 — 請參閱 [Azure AI Foundry 安裝指南](getting-started-azure-openai.md)。驗證是<strong>無需金鑰</strong>（Microsoft Entra ID），所以無需管理 API 金鑰。
+> **快速開始：** 使用 Bicep + `azd` 在幾分鐘內於 **Azure AI Foundry** 上以程式碼方式佈建您的 AI 模型 — 請參閱 [Azure AI Foundry 設置指南](getting-started-azure-openai.md)。認證為 <strong>無金鑰</strong>（Microsoft Entra ID），因此不需要管理任何 API 金鑰。
 
 ## 您將學到什麼
 
-- 設置 AI 應用程式的 Java 開發環境
-- 選擇並配置您喜好的開發環境（以雲端為主的 Codespaces、本地開發容器或完整本地設置）
-- 透過連接 Azure AI Foundry 模型測試您的設置
+- 設置 Java AI 應用程式開發環境
+- 選擇並設定您偏好的開發環境（以雲端為先的 Codespaces、本地開發容器或完整本地設置）
+- 通過連接到 Azure AI Foundry 模型測試您的設置
 
 ## 目錄
 
 - [您將學到什麼](#您將學到什麼)
 - [介紹](#介紹)
-- [步驟 1：設定開發環境](#步驟-1設定開發環境)
-  - [選項 A：GitHub Codespaces（推薦）](#選項-agithub-codespaces推薦)
-  - [選項 B：本地開發容器](#選項-b本地開發容器)
-  - [選項 C：使用您現有的本地安裝](#選項-c使用您現有的本地安裝)
-- [步驟 2：佈建 Azure AI Foundry](#步驟-2佈建-azure-ai-foundry)
-- [步驟 3：測試您的設置](#步驟-3測試您的設置)
+- [步驟 1：設置您的開發環境](#步驟-1：設置您的開發環境)
+  - [選項 A：GitHub Codespaces（推薦）](#選項-a：github-codespaces（推薦）)
+  - [選項 B：本地開發容器](#選項-b：本地開發容器)
+  - [選項 C：使用您現有的本地安裝環境](#選項-c：使用您現有的本地安裝環境)
+- [步驟 2：佈建 Azure AI Foundry](#步驟-2：佈建-azure-ai-foundry)
+- [步驟 3：測試您的設置](#步驟-3：測試您的設置)
 - [故障排除](#故障排除)
-- [摘要](#摘要)
+- [總結](#總結)
 - [下一步](#下一步)
 
 ## 介紹
 
-本章將引導您完成開發環境的設置。我們整個課程都將使用 **Azure AI Foundry** 提供的模型。您可利用 Bicep 與 Azure Developer CLI (`azd`) 以程式碼方式佈建模型，再透過 <strong>無需金鑰的身份驗證</strong>（Microsoft Entra ID）連接 — 無需複製或外洩 API 金鑰。
+本章將指導您完成開發環境的設置。我們會在整個課程中使用 **Azure AI Foundry** 作為模型。您可使用 Bicep 和 Azure Developer CLI (`azd`) 以程式碼方式佈建模型，並使用 <strong>無金鑰認證</strong>（Microsoft Entra ID）連接 — 不需複製或洩漏 API 金鑰。
 
-**不需要本地設置！** 您可以使用 GitHub Codespaces，該服務在瀏覽器中提供完整的開發環境，並可從那裡直接佈建 Foundry。
+**不需要本地設置！** 您可以使用 GitHub Codespaces，這會在您的瀏覽器中提供完整的開發環境，並可從那裡佈建 Foundry。
 
-本課程選用 **Azure AI Foundry** 的原因是：
-- <strong>以程式碼佈建</strong> — 一個 `azd up` 指令可部署帳戶和模型部署
-- <strong>無需金鑰</strong> — 使用您的 Azure 登入或托管身份認證
-- <strong>生產級</strong> — 相同程式碼可在本地與 Azure 執行
-- <strong>靈活</strong> — 只需更改部署名稱即可切換模型，不必更動程式碼
+我們使用 **Azure AI Foundry** 是因為它：
+- <strong>以程式碼佈建</strong> — 一個 `azd up` 可部署帳戶和模型佈建
+- <strong>無金鑰</strong> — 使用您的 Azure 登入或受管理身份驗證
+- <strong>適合生產</strong> — 同樣的程式碼可在本地與 Azure 運行
+- <strong>彈性靈活</strong> — 只需更改部署名稱即可替換模型，而非修改程式碼
 
-> <strong>注意</strong>：Azure AI Foundry 部署依照令牌計費（隨用隨付）。請參閱 [Azure AI Foundry 安裝指南](getting-started-azure-openai.md) 了解佈建、區域及費用明細。
+> <strong>注意</strong>：Azure AI Foundry 部署按代幣計費（隨用隨付）。有關佈建、地區及費用詳情，請參閱 [Azure AI Foundry 設置指南](getting-started-azure-openai.md)。
 
 
-## 步驟 1：設定開發環境
+## 步驟 1：設置您的開發環境
 
 <a name="quick-start-cloud"></a>
 
-我們已建立預先配置的開發容器，減少設定時間並確保您擁有本生成式 Java AI 課程所需的所有工具。請選擇您偏好的開發方式：
+我們已創建預配置開發容器以縮短設置時間，並確保您擁有本 Java 生成式 AI 課程所需的所有工具。請選擇您偏好的開發方式：
 
 ### 環境設置選項：
 
 #### 選項 A：GitHub Codespaces（推薦）
 
-**2 分鐘內開始編碼 — 無需本地安裝！**
+**兩分鐘開始編碼 - 無需本地設置！**
 
-1. 將此儲存庫轉存（Fork）到您的 GitHub 帳戶
-   > <strong>注意</strong>：如果您想編輯基本設定，請參考 [Dev Container 配置](../../../.devcontainer/devcontainer.json)
-2. 點選 **Code** → **Codespaces** 分頁 → **...** → **New with options...**
-3. 使用預設值 — 這會選擇本課程專用的 **Generative AI Java Development Environment** 開發容器配置
-4. 點選 **Create codespace**
-5. 等待大約 2 分鐘，環境即建立完成
-6. 繼續前往 [步驟 2：佈建 Azure AI Foundry](#步驟-2佈建-azure-ai-foundry)
+1. 將此存儲庫分支（Fork）到您的 GitHub 帳號
+   > <strong>注意</strong>：如果想編輯基本配置，請參閱 [開發容器配置](../../../.devcontainer/devcontainer.json)
+2. 點擊 **Code** → **Codespaces** 標籤 → **...** → **New with options...**
+3. 使用預設配置 — 這將選擇課程專屬的 **生成式 AI Java 開發環境** 自訂 devcontainer 配置
+4. 點擊 **Create codespace**
+5. 等待約 2 分鐘完成環境準備
+6. 繼續執行 [步驟 2：佈建 Azure AI Foundry](#步驟-2：佈建-azure-ai-foundry)
 
-<img src="../../../translated_images/zh-TW/codespaces.9945ded8ceb431a5.webp" alt="截圖: Codespaces 子選單" width="50%">
+<img src="../../../translated_images/zh-TW/codespaces.9945ded8ceb431a5.webp" alt="截圖：Codespaces 子選單" width="50%">
 
-<img src="../../../translated_images/zh-TW/image.833552b62eee7766.webp" alt="截圖: New with options" width="50%">
+<img src="../../../translated_images/zh-TW/image.833552b62eee7766.webp" alt="截圖：New with options" width="50%">
 
-<img src="../../../translated_images/zh-TW/codespaces-create.b44a36f728660ab7.webp" alt="截圖: 建立 codespace 選項" width="50%">
+<img src="../../../translated_images/zh-TW/codespaces-create.b44a36f728660ab7.webp" alt="截圖：建立 codespace 選項" width="50%">
 
 
-> **Codespaces 優勢：**
-> - 無需本地安裝
-> - 適用於任何有瀏覽器的裝置
-> - 預配置所有工具與相依性
+> **Codespaces 優勢**：
+> - 不需本地安裝
+> - 支援任何有瀏覽器的裝置
+> - 預先配置所有工具及相依性
 > - 個人帳戶每月免費 60 小時
-> - 提供所有學員一致的環境
+> - 為所有學員提供一致環境
 
 #### 選項 B：本地開發容器
 
-**適合喜歡使用 Docker 進行本地開發的開發人員**
+**適合偏好使用 Docker 的本地開發者**
 
-1. 將此儲存庫 Fork 並克隆到您的本地機器
-   > <strong>注意</strong>：如果您想編輯基本設定，請參考 [Dev Container 配置](../../../.devcontainer/devcontainer.json)
+1. 分支（Fork）並克隆此存儲庫至本地機器
+   > <strong>注意</strong>：如果想編輯基本配置，請參閱 [開發容器配置](../../../.devcontainer/devcontainer.json)
 2. 安裝 [Docker Desktop](https://www.docker.com/products/docker-desktop/) 與 [VS Code](https://code.visualstudio.com/)
-3. 在 VS Code 中安裝 [Dev Containers 擴充套件](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-4. 在 VS Code 中打開儲存庫資料夾
-5. 當收到提示時，點擊 **Reopen in Container**（或使用 `Ctrl+Shift+P` → "Dev Containers: Reopen in Container"）
-6. 等待容器建置並啟動完成
-7. 繼續前往 [步驟 2：佈建 Azure AI Foundry](#步驟-2佈建-azure-ai-foundry)
+3. 在 VS Code 中安裝 [開發容器擴展](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+4. 在 VS Code 中打開存儲庫資料夾
+5. 出現提示時，點擊 **Reopen in Container**（或使用 `Ctrl+Shift+P` → 輸入 "Dev Containers: Reopen in Container"）
+6. 等待容器建置及啟動完成
+7. 繼續執行 [步驟 2：佈建 Azure AI Foundry](#步驟-2：佈建-azure-ai-foundry)
 
-<img src="../../../translated_images/zh-TW/devcontainer.21126c9d6de64494.webp" alt="截圖: 開發容器設置" width="50%">
+<img src="../../../translated_images/zh-TW/devcontainer.21126c9d6de64494.webp" alt="截圖：開發容器設置" width="50%">
 
-<img src="../../../translated_images/zh-TW/image-3.bf93d533bbc84268.webp" alt="截圖: 開發容器建置完成" width="50%">
+<img src="../../../translated_images/zh-TW/image-3.bf93d533bbc84268.webp" alt="截圖：開發容器建置完成" width="50%">
 
-#### 選項 C：使用您現有的本地安裝
+#### 選項 C：使用您現有的本地安裝環境
 
-**適用於已有 Java 環境的開發人員**
+**適合已有 Java 開發環境的開發者**
 
-先決條件：
+前置需求：
 - [Java 21+](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html) 
 - [Maven 3.9+](https://maven.apache.org/download.cgi)
 - [VS Code](https://code.visualstudio.com) 或您偏好的 IDE
 
 步驟：
-1. 將此儲存庫克隆到您的本地機器
-2. 在您的 IDE 中開啟專案
-3. 繼續前往 [步驟 2：佈建 Azure AI Foundry](#步驟-2佈建-azure-ai-foundry)
+1. 將此存儲庫克隆至本地機器
+2. 在您的 IDE 中打開專案
+3. 繼續執行 [步驟 2：佈建 Azure AI Foundry](#步驟-2：佈建-azure-ai-foundry)
 
-> <strong>小秘訣</strong>：如果您的機器規格不高但想用本地 VS Code，請使用 GitHub Codespaces！您可以將本地 VS Code 連接到雲端託管的 Codespace，享受兩者優勢。
+> <strong>專業提示</strong>：如果您的機器效能較低，但想在本地使用 VS Code，請使用 GitHub Codespaces！您可以將本地 VS Code 連接到雲端代管的 Codespace，達成兩者兼具的最佳使用體驗。
 
-<img src="../../../translated_images/zh-TW/image-2.fc0da29a6e4d2aff.webp" alt="截圖: 建立的本地開發容器實例" width="50%">
+<img src="../../../translated_images/zh-TW/image-2.fc0da29a6e4d2aff.webp" alt="截圖：已建立本地開發容器實例" width="50%">
 
 
 ## 步驟 2：佈建 Azure AI Foundry
 
-以程式碼方式將本課程的 AI 模型部署到 Azure AI Foundry。於儲存庫根目錄執行：
+將本課程的 AI 模型以程式碼方式佈建到 Azure AI Foundry。於存儲庫根目錄：
 
 ```bash
 cd 02-SetupDevEnvironment
@@ -118,104 +118,118 @@ az login
 azd up
 ```
 
-`azd` 將提示輸入環境名稱與區域，佈建包含 `gpt-4o-mini` 和 `text-embedding-3-small` 部署的 Azure AI Foundry 帳戶，並將端點寫入範例的 `.env` 檔案 — 全程採用 <strong>無需金鑰</strong> 驗證（無 API 金鑰）。
+`azd` 會提示輸入環境名稱、訂閱與地區，然後以 <strong>無金鑰</strong> 認證（不需 API 金鑰）佈建含 `gpt-5.6-luna` 和 `text-embedding-3-small` 部署的 Azure AI Foundry 帳戶，並將端點寫入範例的 `.env` 檔中。
 
-> **完整教學：** 請參閱 [Azure AI Foundry 安裝指南](getting-started-azure-openai.md)，了解先決條件、手動（入口網站）佈建替代方案、區域建議，以及費用與清理注意事項。
+> **完整操作說明：** 請參閱 [Azure AI Foundry 設置指南](getting-started-azure-openai.md) 以了解前置條件、手動（入口網站）佈建替代方案、地區建議及費用／清理說明。
 
 ## 步驟 3：測試您的設置
 
-一旦您佈建好 Foundry 模型，使用 [`02-SetupDevEnvironment/examples/basic-chat-azure`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) 中的示例應用程式來測試連線。
+佈建好 Foundry 模型後，使用 [`02-SetupDevEnvironment/examples/basic-chat-azure`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) 的範例應用程式測試連接。
 
-1. 在您的開發環境中開啟終端機。
-2. 切換到該範例目錄：
+1. 在您的開發環境打開終端機。
+2. 移動至範例資料夾：
    ```bash
    cd 02-SetupDevEnvironment/examples/basic-chat-azure
    ```
-
-3. 確認您已登入（無需金鑰的驗證需要令牌）：
+3. 確認已登入（無金鑰認證需要令牌）：
    ```bash
    az login
    ```
-   > 如果您執行過 `azd up`，則 `.env` 檔案已自動寫入端點資訊。
+   > 若您已執行 `azd up`，包含端點的 `.env` 文件已自動為您寫入。
 4. 執行應用程式：
    ```bash
    mvn clean spring-boot:run
    ```
 
-您應能看到來自 `gpt-4o-mini` 模型的回應。
+您應該會看到來自 `gpt-5.6-luna` 模型的回應。
 
-### 理解示例程式碼
+### 理解範例程式碼
 
-`examples/basic-chat-azure` 下面的示例是一個使用 **Spring AI** 並以無需金鑰認證連接 Azure AI Foundry 的 Spring Boot 應用程式。
+[basic-chat 範例](./examples/basic-chat-azure/README.md) 使用 **Spring Boot 4.1.1** 和 **Spring AI 2.0.1**。Spring AI 的 `ChatClient` 基於官方 OpenAI Java SDK，透過無金鑰認證連接 Azure OpenAI **v1** 端點。
 
-**此程式碼功能：**
-- <strong>連接</strong>到 Azure AI Foundry，使用您的 Azure 登入（Microsoft Entra ID）— 無需 API 金鑰
-- <strong>傳送</strong>提示到 `gpt-4o-mini` 模型
+**此程式碼做了什麼：**
+- 使用您的 Azure 登入（Microsoft Entra ID）<strong>連接</strong>到 Azure AI Foundry — 無需 API 金鑰
+- 向 `gpt-5.6-luna` 模型<strong>傳送</strong>提示
 - <strong>接收</strong>並顯示 AI 回應
-- <strong>驗證</strong>您的設置是否正確
+- <strong>驗證</strong>您的設置運作正常
 
-<strong>關鍵相依套件</strong>（`pom.xml`）：
+<strong>主要相依性</strong>（摘自 [pom.xml](../../../02-SetupDevEnvironment/examples/basic-chat-azure/pom.xml)）：
 ```xml
 <dependency>
     <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-starter-model-azure-openai</artifactId>
+    <artifactId>spring-ai-starter-model-openai</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.openai</groupId>
+    <artifactId>openai-java</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.azure</groupId>
+    <artifactId>azure-identity</artifactId>
+    <version>${azure-identity.version}</version>
 </dependency>
 ```
 
-<strong>設定</strong>（`application.yml`）：
+POM 管理 OpenAI Java **4.63.1**，並明確設定 Azure Identity **1.18.6**。Spring AI 2 移除了 Azure 專屬 starter，Azure Identity 仍用于認證 bean。
+
+<strong>設定</strong>（[application.yml](../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml)）：
 ```yaml
 spring:
   ai:
-    azure:
-      openai:
-        # Endpoint only - no api-key. Spring AI uses DefaultAzureCredential (keyless).
-        endpoint: ${AZURE_OPENAI_ENDPOINT}
-        chat:
-          options:
-            deployment-name: ${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+    openai:
+      base-url: ${AZURE_OPENAI_ENDPOINT}
+      microsoft-foundry: true
+      chat:
+        model: ${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
+        reasoning-effort: none
+        max-completion-tokens: 500
 ```
 
-## 摘要
+無金鑰認證在 [BasicChatApplication.java](../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/java/com/example/BasicChatApplication.java) 中明確配置，不是因為缺少 API 金鑰而推斷。其承載憑證採用 `DefaultAzureCredential`，範圍為 `https://ai.azure.com/.default`，`OpenAIClient` 目標 `/openai/v1`。應用程式將該客戶端提供給 Spring AI 的聊天模型，因此全局 `OPENAI_API_KEY` 不會覆蓋 Azure 認證。
 
-太棒了！您已完成所有設置：
+聊天設定直接位於 `spring.ai.openai.chat` 下，沒有 `options` 塊。本課保留了帶有 `reasoning-effort: none` 和 500 代幣上限的 Chat Completions，沒有設定 `temperature` 或 `max-tokens`。請參閱 [範例設定參考](./examples/basic-chat-azure/README.md#spring-configuration) 以了解 API 選擇和工具調用指導。
 
-- 使用 Bicep + `azd` 以程式碼佈建 Azure AI Foundry 模型
-- 不論是 Codespaces、開發容器或本地環境，都已建置好您的 Java 開發環境
-- 使用無需金鑰的驗證（Microsoft Entra ID）連接 Azure AI Foundry — 無需 API 金鑰
-- 透過與模型對話的簡易範例測試一切運作正常
+## 總結
+
+完成上述步驟後，您將擁有：
+
+- 使用 Bicep + `azd` 以程式碼方式佈建 Azure AI Foundry 模型
+- 啟動您的 Java 開發環境（不論是 Codespaces、開發容器還是本地）
+- 使用無金鑰認證（Microsoft Entra ID）連接 Azure AI Foundry — 不需 API 金鑰
+- 透過簡單範例測試並成功連接模型
 
 ## 下一步
 
-[第 3 章：核心生成式 AI 技術](../03-CoreGenerativeAITechniques/README.md)
+[第三章：核心生成式 AI 技術](../03-CoreGenerativeAITechniques/README.md)
 
 ## 故障排除
 
-遇到問題嗎？以下是常見問題與解決方案：
+遇到問題？這裡提供常見問題及解決方案：
 
-- **驗證失敗（401/403）？**
-  - 執行 `az login` — 驗證是無需金鑰的，您必須先登入
-  - 確認您的帳戶具有資源上的 **Cognitive Services OpenAI User** 角色
-  - 若剛佈建，請稍待片刻，讓角色指派生效
+- **認證失敗（401/403）？** 
+  - 執行 `az login` — 認證為無金鑰，您必須登入
+  - 確認您的帳號對相關資源具備 **智能服務 OpenAI 使用者** 角色
+  - 若剛佈建，請稍候一分鐘等待角色指派生效
 
-- **找不到 Maven？**
-  - 使用開發容器或 Codespaces 時，Maven 應已預裝
-  - 本地環境請確認安裝 Java 21+ 與 Maven 3.9+
-  - 可執行 `mvn --version` 以驗證安裝狀況
+- **找不到 Maven？** 
+  - 若使用開發容器或 Codespaces，Maven 應已預裝
+  - 本地設置需確保已安裝 Java 21+ 和 Maven 3.9+
+  - 嘗試執行 `mvn --version` 檢查安裝狀態
 
-- **找不到 `azd` 或佈建失敗？**
+- **找不到 `azd` 或佈建失敗？** 
   - 安裝 [Azure Developer CLI](https://aka.ms/azure-dev/install) 並執行 `azd auth login`
-  - 選擇支援 `gpt-4o-mini` 的區域（如 `eastus2`）
-  - 詳情請參閱 [Azure AI Foundry 安裝指南](getting-started-azure-openai.md)
+  - 選擇有 `gpt-5.6-luna` 和 `text-embedding-3-small` 可用之區域（如 `eastus2`），且您選擇的訂閱有足夠配額
+  - 詳情請參閱 [Azure AI Foundry 設置指南](getting-started-azure-openai.md)
 
-- **開發容器無法啟動？**
-  - 確認本機執行 Docker Desktop（用於本地開發）
-  - 嘗試重建容器：`Ctrl+Shift+P` → "Dev Containers: Rebuild Container"
+- **開發容器無法啟動？** 
+  - 確定 Docker Desktop 正在運行（本地開發）
+  - 嘗試重新建置容器：`Ctrl+Shift+P` → 輸入 "Dev Containers: Rebuild Container"
 
 - **應用程式編譯錯誤？**
-  - 確認当前目录为：`02-SetupDevEnvironment/examples/basic-chat-azure`
-  - 嘗試清理並重新編譯：`mvn clean compile`
+  - 確認您在正確目錄：`02-SetupDevEnvironment/examples/basic-chat-azure`
+  - 嘗試清理與編譯：`mvn clean compile`
 
-> **需要幫助？**：仍有問題嗎？請在儲存庫開啟 issue，我們將協助您解決。
+> **需要協助？**：若仍有問題，請於存儲庫開啟議題，我們將協助您。
 
 ---
 
