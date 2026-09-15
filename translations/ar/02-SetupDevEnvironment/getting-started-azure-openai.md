@@ -1,43 +1,43 @@
 # إعداد بيئة التطوير لـ Azure AI Foundry
 
-> يشرح هذا الدليل إعداد نماذج **Azure AI Foundry** لتطبيقات Java AI في هذا المقرر، باستخدام المصادقة **بدون مفتاح** (Microsoft Entra ID) — لا مفاتيح API لإدارتها. جديد على الأدوات؟ ابدأ بـ [دليل بيئة التطوير](./README.md).
+> يوضح هذا الدليل كيفية إعداد نماذج **Azure AI Foundry** لتطبيقات Java AI في هذه الدورة التدريبية، باستخدام المصادقة **بدون مفاتيح** (Microsoft Entra ID) — بدون الحاجة لإدارة مفاتيح API. جديد في الأدوات؟ ابدأ بـ [دليل بيئة التطوير](./README.md).
 
-يشرح هذا الدليل إعداد نماذج **Azure AI Foundry** لتطبيقات Java AI في هذا المقرر. لديك مساران:
+يوضح هذا الدليل كيفية إعداد نماذج **Azure AI Foundry** لتطبيقات Java AI في هذه الدورة. لديك مساران:
 
-- **الخيار أ — التهيئة باستخدام `azd` + Bicep (موصى به):** أمر واحد ينشر حساب Foundry والنماذج ككود. لا حاجة للنقر في البوابة.
+- **الخيار أ — الإعداد باستخدام `azd` + Bicep (مُوصى به):** أمر واحد ينشر حساب Foundry والنماذج كرمز. لا حاجة للنقر في البوابة.
 - **الخيار ب — إنشاء الموارد يدويًا** في بوابة Azure AI Foundry.
 
-يستخدم كلا المسارين **المصادقة بدون مفتاح** (Microsoft Entra ID) — لا توجد مفاتيح API لنسخها أو تسريبها.
+كلا المسارين يستخدمان **المصادقة بدون مفاتيح** (Microsoft Entra ID) — لا يوجد مفاتيح API للنسخ أو التسريب.
 
 ## جدول المحتويات
 
-- [ما يتم إنشاؤه](#ما-يتم-إنشاؤه)
-- [المتطلبات السابقة](#المتطلبات-السابقة)
-- [الخيار أ: التهيئة باستخدام azd + Bicep (موصى به)](#الخيار-أ-التهيئة-باستخدام-azd--bicep-موصى-به)
+- [ما الذي يتم إنشاؤه](#ما-الذي-يتم-إنشاؤه)
+- [المتطلبات المسبقة](#المتطلبات-المسبقة)
+- [الخيار أ: الإعداد باستخدام azd + Bicep (مُوصى به)](#option-a-provision-with-azd--bicep-recommended)
 - [الخيار ب: إنشاء الموارد يدويًا](#الخيار-ب-إنشاء-الموارد-يدويًا)
-- [تهيئة بيئتك](#تهيئة-بيئتك)
-- [اختبار إعدادك](#اختبار-إعدادك)
-- [ما التالي؟](#ما-التالي)
-- [الموارد](#الموارد)
-- [الموارد الإضافية](#الموارد-الإضافية)
+- [تكوين بيئتك](#تكوين-بيئتك)
+- [اختبر إعدادك](#اختبار-إعدادك)
+- [ما الخطوة التالية؟](#ما-الخطوة-التالية؟)
+- [المصادر](#المصادر)
+- [الموارد الإضافية](#موارد-إضافية)
 
-## ما يتم إنشاؤه
+## ما الذي يتم إنشاؤه
 
-تقوم قوالب Bicep في [`infra/`](../../../02-SetupDevEnvironment/infra) بتهيئة:
+تقوم قوالب Bicep في [`infra/`](../../../02-SetupDevEnvironment/infra) بإعداد:
 
-- حساب **Azure AI Foundry** (`Microsoft.CognitiveServices/accounts`، النوع `AIServices`) مع مشروع
-- نشر **الدردشة** — `gpt-4o-mini`
-- نشر **التضمين** — `text-embedding-3-small` (يُستخدم في الفصول اللاحقة)
-- تعيين دور **بدون مفتاح** (`Cognitive Services OpenAI User`) بحيث تقوم بتسجيل الدخول باستخدام `az login` بدلاً من إدارة المفاتيح
+- حساب **Azure AI Foundry** (`Microsoft.CognitiveServices/accounts`, النوع `AIServices`) مع مشروع
+- نشر **الدردشة** - GPT-5.6 Luna (`gpt-5.6-luna`)، الإصدار `2026-07-09`، بسعة `GlobalStandard` تبلغ `10` (10 طلبات/دقيقة و10,000 توكن/دقيقة لهذا النموذج)
+- نشر **التضمين** - `text-embedding-3-small`، الإصدار `1` (يستخدم في الفصول اللاحقة)
+- تعيين دور **بدون مفاتيح** (`Cognitive Services OpenAI User`) لكي تسجل الدخول باستخدام `az login` بدلاً من إدارة المفاتيح
 
-## المتطلبات السابقة
+## المتطلبات المسبقة
 
 - [اشتراك Azure](https://azure.microsoft.com/free/)
-- [Azure Developer CLI (`azd`)](https://aka.ms/azure-dev/install)
+- [CLI مطور Azure (`azd`)](https://aka.ms/azure-dev/install)
 - [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli)
 - [Java 21+](https://learn.microsoft.com/java/openjdk/download) و [Maven 3.9+](https://maven.apache.org/download.cgi)
 
-## الخيار أ: التهيئة باستخدام azd + Bicep (موصى به)
+## الخيار أ: الإعداد باستخدام azd + Bicep (مُوصى به)
 
 من مجلد `02-SetupDevEnvironment`:
 
@@ -51,40 +51,40 @@ az login
 # توفير حساب Foundry + نشر النماذج
 azd up
 ```
-  
-يطلب `azd` اسم **البيئة** (على سبيل المثال `genai-java`) و **المنطقة**. اختر منطقة يتوفر فيها `gpt-4o-mini` و `text-embedding-3-small` — على سبيل المثال `eastus2` أو `swedencentral`.
 
-عند الانتهاء من التهيئة، يقوم azd بـ:
+تطلب `azd` **اسم البيئة** (مثلاً `genai-java`)، و**الاشتراك**، و**المنطقة**. اختر الاشتراك الخاص بك ومنطقة حيث تتوفر نماذج `gpt-5.6-luna` و`text-embedding-3-small`، مثلاً `eastus2`. تأكد من أن الاشتراك لديه الحصة الكافية للنموذج ونوع النشر في تلك المنطقة؛ تختلف التوفر والحصة حسب الاشتراك.
 
-1. نشر كل شيء معرف في [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep).
-2. تشغيل برنامج نصي بعد التهيئة الذي يكتب [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) مع نقطة النهاية وأسماء النشر الخاصة بك (دون أسرار).
+عند الانتهاء من الإعداد، يقوم azd بـ:
 
-> **نصيحة:** أعد تشغيل `azd up` في أي وقت لتطبيق التغييرات. شغل `azd down` لحذف كل شيء وإيقاف التكاليف.
+1. نشر كل ما هو معرف في [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep).
+2. تشغيل برنامج نصي بعد الإعداد يكتب [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) مع أسماء نقطة النهاية والنشر الخاصة بك (بدون أسرار).
 
-لعرض الإعدادات التي تم إنشاؤها:
+> **نصيحة:** أعد تشغيل `azd up` في أي وقت لتطبيق التغييرات. شغّل `azd down` لحذف كل شيء وإيقاف التكلفة.
+
+لرؤية الإعدادات التي تم إنشاؤها:
 
 ```bash
 azd env get-values
 ```
-  
-تخطى الآن إلى [اختبار إعدادك](#اختبار-إعدادك).
+
+الآن انتقل إلى [اختبر إعدادك](#اختبار-إعدادك).
 
 ## الخيار ب: إنشاء الموارد يدويًا
 
-تفضل البوابة؟ أنشئ الموارد بنفسك:
+تفضل استخدام البوابة؟ أنشئ الموارد يدويًا:
 
 1. انتقل إلى [بوابة Azure AI Foundry](https://ai.azure.com/) وسجّل الدخول.
-2. **أنشئ مشروعًا** (يؤدي هذا أيضًا إلى إنشاء مورد AI Foundry). أعطه اسمًا مثل `GenAIJava`.
-3. في مشروعك، افتح **النماذج + النقاط النهائية** → **نشر نموذج** → **نشر نموذج أساسي**.
-4. انشر **gpt-4o-mini** (اسم النشر `gpt-4o-mini`). كرر لـ **text-embedding-3-small** إذا أردت أمثلة التضمين.
-5. من **نظرة عامة**، انسخ **نقطة النهاية** (على سبيل المثال `https://<resource>.openai.azure.com/`).
-6. امنح نفسك وصولًا بدون مفتاح: على المورد، افتح **التحكم في الوصول (IAM)** → **إضافة تعيين دور** → عيّن **Cognitive Services OpenAI User** على حسابك.
+2. **أنشئ مشروعًا** (وهذا ينشئ أيضًا مورد AI Foundry). أطلق عليه اسمًا مثل `GenAIJava`.
+3. في مشروعك، افتح **النماذج + نقاط النهاية** → **نشر نموذج** → **نشر نموذج أساسي**.
+4. انشر **GPT-5.6 Luna** (اسم النموذج والنشر `gpt-5.6-luna`، الإصدار `2026-07-09`) بسعة **Global Standard** بمقدار `10`. كرر مع **text-embedding-3-small**، الإصدار `1`، إذا أردت أمثلة التضمين.
+5. من **نظرة عامة**، انسخ **نقطة النهاية** (مثلاً `https://<resource>.openai.azure.com/`).
+6. امنح نفسك وصولًا بدون مفاتيح: على المورد، افتح **التحكم في الوصول (IAM)** → **إضافة تعيين دور** → عيّن دور **Cognitive Services OpenAI User** لحسابك.
 
-> **لا تزال تواجه مشكلة؟** راجع [وثائق Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects).
+> **ما زلت تواجه مشكلة؟** راجع [توثيق Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects).
 
-## تهيئة بيئتك
+## تكوين بيئتك
 
-**إذا استخدمت الخيار أ (`azd up`)**، تم كتابة ملف الإعدادات الخاص بك بالفعل — لا حاجة لأي تكوين. انتقل إلى [اختبار إعدادك](#اختبار-إعدادك).
+**إذا استخدمت الخيار أ (`azd up`)**، فملف الإعدادات مكتوب بالفعل — لا حاجة لتكوين. انتقل إلى [اختبر إعدادك](#اختبار-إعدادك).
 
 **إذا استخدمت الخيار ب (يدويًا)**، أنشئ ملف `.env` الخاص بالمثال بنفسك:
 
@@ -92,19 +92,21 @@ azd env get-values
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 cp .env.example .env
 ```
-  
-حرر `.env` لنقطة النهاية الخاصة بك (بدون مفتاح — المصادقة بدون مفتاح):
+
+عدّل `.env` مع نقطة النهاية الخاصة بك (بدون مفتاح — المصادقة بدون مفاتيح):
 
 ```bash
 AZURE_OPENAI_ENDPOINT=https://<your-resource>.openai.azure.com/
-AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
+AZURE_OPENAI_DEPLOYMENT=gpt-5.6-luna
 ```
-  
-> **ملاحظة أمان:** لا يوجد مفتاح API يجب تخزينه. تقوم بالمصادقة عبر Microsoft Entra ID بواسطة `az login` (محليًا) أو هوية مُدارة (في Azure). يحتوي ملف `.env` فقط على إعدادات غير سرية وهو مغطى بالفعل في `.gitignore`.
+
+استخدم نقطة النهاية Azure OpenAI الخاصة بالمورد، وليس عنوان URL الخاص بالمشروع. تطبيق basic-chat يحلها إلى `/openai/v1` ويهيئ عميل رمز حامل صريح؛ لا يتطلب مفتاح API.
+
+> **ملاحظة أمان:** لا يوجد مفتاح API للتخزين. تقوم بالمصادقة باستخدام Microsoft Entra ID عبر `az login` (محليًا) أو هوية مُدارة (في Azure). ملف `.env` يحتوي فقط على إعدادات غير سرية وهو مغطى بالفعل بواسطة `.gitignore`.
 
 ## اختبار إعدادك
 
-تأكد من تسجيل الدخول حتى تتمكن المصادقة بدون مفتاح من الحصول على رمز، ثم شغل المثال:
+تأكد من تسجيل الدخول حتى تتمكن المصادقة بدون مفاتيح من الحصول على رمز، ثم شغّل المثال:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
@@ -112,32 +114,32 @@ cd 02-SetupDevEnvironment/examples/basic-chat-azure
 az login          # إذا لم تكن قد سجلت الدخول بالفعل
 mvn clean spring-boot:run
 ```
-  
-يجب أن ترى استجابة من نموذج `gpt-4o-mini`!
 
-> **مستخدمو VS Code:** اضغط `F5` للتشغيل. يقوم التطبيق بتحميل ملف `.env` تلقائيًا.
+يجب أن ترى استجابة من نموذج `gpt-5.6-luna`. شغّل الأمثلة بالتسلسل للبقاء ضمن الحصة الصغيرة الافتراضية؛ إذا استلمت HTTP 429، انتظر فترة إعادة المحاولة قبل المحاولة مرة أخرى.
 
-> **المثال الكامل:** راجع [مثال الدردشة الأساسية مع Azure AI Foundry](./examples/basic-chat-azure/README.md) للتفاصيل وحل المشاكل.
+> **لمستخدمي VS Code:** اضغط `F5` للتشغيل. التطبيق يحمل `.env` تلقائيًا.
 
-## ما التالي؟
+> **مثال كامل:** راجع [مثال الدردشة الأساسية مع Azure AI Foundry](./examples/basic-chat-azure/README.md) للتفاصيل واستكشاف الأخطاء.
 
-**الإعداد مكتمل!** لديك الآن:  
-- Azure AI Foundry مع `gpt-4o-mini` و `text-embedding-3-small` منشوران  
-- المصادقة بدون مفتاح (Microsoft Entra ID) — لا مفاتيح لإدارتها  
-- ملف `.env` محلي مع نقطة النهاية وأسماء النشر  
-- بيئة تطوير Java جاهزة للعمل
+## ما الخطوة التالية؟
 
-**تابع إلى** [الفصل 3: تقنيات الذكاء الاصطناعي التوليدي الأساسية](../03-CoreGenerativeAITechniques/README.md) للبدء في بناء تطبيقات الذكاء الاصطناعي!
+بعد الإعداد وتشغيل المثال بنجاح، سيكون لديك:
+- Azure AI Foundry مع نماذج `gpt-5.6-luna` و`text-embedding-3-small` منشورة
+- مصادقة بدون مفاتيح (Microsoft Entra ID) — لا مفاتيح للإدارة
+- ملف `.env` محلي يحتوي على نقطة النهاية وأسماء النشر الخاصة بك
+- بيئة تطوير Java جاهزة للانطلاق
 
-## الموارد
+**تابع إلى** [الفصل 3: تقنيات الذكاء الاصطناعي التوليدي الأساسية](../03-CoreGenerativeAITechniques/README.md) لبدء بناء تطبيقات الذكاء الاصطناعي!
 
-- [Azure Developer CLI (azd)](https://aka.ms/azure-dev/install)
-- [المصادقة بدون مفتاح مع Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
-- [وثائق Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/)
-- [توثيق Spring AI Azure OpenAI](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
-- [Azure OpenAI Java SDK](https://learn.microsoft.com/java/api/overview/azure/ai-openai-readme)
+## المصادر
 
-## الموارد الإضافية
+- [CLI مطور Azure (azd)](https://aka.ms/azure-dev/install)
+- [المصادقة بدون مفاتيح مع Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
+- [توثيق Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/)
+- [الانتقال إلى Spring AI 2 OpenAI Java SDK](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [OpenAI Java SDK الرسمي مع Azure OpenAI v1](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
+
+## موارد إضافية
 
 - [تحميل VS Code](https://code.visualstudio.com/Download)
 - [الحصول على Docker Desktop](https://www.docker.com/products/docker-desktop)
