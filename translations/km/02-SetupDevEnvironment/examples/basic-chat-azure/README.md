@@ -1,81 +1,94 @@
-# ការឆាត់ជាមួយ Azure AI Foundry ដំបូង - ឧទាហរណ៍ពីចូលដល់ចេញ
+# ភ្លុកជជែកមូលដ្ឋានជាមួយ Azure AI Foundry - ឧទាហរណ៍ចុងបញ្ចប់ទៅចុងបញ្ចប់
 
-ឧទាហរណ៍នេះគឺជាកម្មវិធី Spring Boot ងាយៗមួយដែលភ្ជាប់ទៅនឹងម៉ូឌែល **Azure AI Foundry** ដោយប្រើ **ការផ្ទៀងផ្ទាត់ដោយគ្មាន key** (Microsoft Entra ID) ហើយសាកល្បងការតំឡើងរបស់អ្នក។ វាប្រើ `ChatClient` របស់ Spring AI។
+ឧទាហរណ៍នេះគឺជាកម្មវិធី Spring Boot សាមញ្ញមួយដែលភ្ជាប់ទៅនឹងម៉ូដែល **Azure AI Foundry** ដោយប្រើ **ការផ្ទៀងផ្ទាត់អត្តសញ្ញាណគ្មានកូនសោ** (Microsoft Entra ID) ហើយសាកល្បងការតំឡើងរបស់អ្នក។ វារក្សាទុក Spring AI's `ChatClient` ដែលគាំទ្រដោយ **official OpenAI Java SDK** និងចុងបញ្ចប់ **Azure OpenAI v1**។
 
-## អត្ថបទខ្លីៗ
+កំណែដែលមាននៅក្នុង [pom.xml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/pom.xml) គឺ Spring Boot **4.1.1**, Spring AI **2.0.1**, OpenAI Java **4.63.1**, Azure Identity **1.18.6**, និង dotenv-java **3.2.0**។ ឧទាហរណ៍នេះប្រើ `spring-ai-starter-model-openai` និងប្រកាសដាច់ខាត `openai-java` និង `azure-identity`; Spring AI 2 បានដកចេញ starter ថ្មី Azure OpenAI ដូចពីមុន។
 
-- [លក្ខខណ្ឌមុន](#លក្ខខណ្ឌមុន)
+## តារាងមាតិកា
+
+- [លក្ខខ័ណ្ឌមុនប្រើប្រាស់](#លក្ខខ័ណ្ឌមុនប្រើប្រាស់)
 - [ចាប់ផ្តើមយ៉ាងរហ័ស](#ចាប់ផ្តើមយ៉ាងរហ័ស)
-- [របៀបផ្ទៀងផ្ទាត់ដំណើរការ](#របៀបផ្ទៀងផ្ទាត់ដំណើរការ)
-- [ការរត់កម្មវិធី](#ការរត់កម្មវិធី)
-  - [ការប្រើ Maven](#ការប្រើ-maven)
-  - [ការប្រើ VS Code](#ការប្រើ-vs-code)
+- [ការធ្វើការផ្ទៀងផ្ទាត់អត្តសញ្ញាណ](#របៀបការផ្ទៀងផ្ទាត់អត្តសញ្ញាណ)
+- [ការរត់កម្មវិធី](#រត់កម្មវិធី)
+  - [ប្រើ Maven](#ប្រើ-maven)
+  - [ប្រើ VS Code](#ប្រើ-vs-code)
   - [លទ្ធផលដែលរំពឹងទុក](#លទ្ធផលដែលរំពឹងទុក)
-- [យោងការកំណត់](#យោងការកំណត់)
-  - [អថេរ​បរិស្ថាន](#អថេរ​បរិស្ថាន)
-  - [ការកំណត់ Spring](#ការកំណត់-spring)
-- [ការដោះស្រាយបញ្ហា](#ការដោះស្រាយបញ្ហា)
-  - [បញ្ហាសកម្មជាច្រើន](#បញ្ហាសកម្មជាច្រើន)
-  - [ម៉ូដធ្វើបញ្ហាដោះស្រាយ](#ម៉ូដធ្វើបញ្ហាដោះស្រាយ)
+- [យោងការកំណត់រចនា](#យោងការកំណត់រចនា)
+  - [អថេរបរិយាកាស](#អថេរបរិយាកាស)
+  - [កំណត់រចនាសម្ព័ន្ធ Spring](#កំណត់រចនាសម្ព័ន្ធ-spring)
+- [ដោះស្រាយបញ្ហា](#ដោះស្រាយបញ្ហា)
+  - [បញ្ហាមួយទូទៅ](#បញ្ហាមានទូទៅ)
+  - [ម៉ូដដ្បិតកំហុស](#ម៉ូដដ្បិតកំហុស)
 - [ជំហានបន្ទាប់](#ជំហានបន្ទាប់)
 - [ធនធាន](#ធនធាន)
 
-## លក្ខខណ្ឌមុន
+## លក្ខខ័ណ្ឌមុនប្រើប្រាស់
 
-មុនពេលដំណើរការឧទាហរណ៍នេះ សូមប្រាកដថាអ្នកមាន៖
+មុនពេលរត់ឧទាហរណ៍នេះ សូមធានាថាអ្នកមាន៖
 
-- វត្ថុធាតុ Azure AI Foundry ជាមួយ `gpt-4o-mini` ដែលបានបញ្ចូល — បង្កើតវាជាមួយ `azd up` ឬដោយដៃតាម [មគ្គុទេសក៍ការតំឡើង Azure AI Foundry](../../getting-started-azure-openai.md)
-- តួនាទី **Cognitive Services OpenAI User** លើវត្ថុធាតុនោះ (ទំព័រផ្ទុក Bicep បានផ្ដល់តួនាទីនេះសម្រាប់អ្នក)
-- [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli) ដែលបានចុះឈ្មោះចូលជាមួយ `az login`
+- ប្រភព Azure AI Foundry មួយមាន `gpt-5.6-luna` deployment - បង្កើតវាដោយ `azd up` ឬដៃគូតាម [Azure AI Foundry setup guide](../../getting-started-azure-openai.md)
+- តួនាទី **Cognitive Services OpenAI User** លើធនធាននោះ (Bicep templates បានចាត់តួនាទីនេះសម្រាប់អ្នក)
+- [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli), បានចុះឈ្មោះដោយ `az login`
 - Java 21+ និង Maven 3.9+
 
-> **មិនត្រូវការផ្ទៀងផ្ទាត់កូនសោ API** — ការផ្ទៀងផ្ទាត់គឺគ្មាន key ដោយ Microsoft Entra ID។
+> **មិន​ត្រូវ​ការ​កូន​សោ API** — ការផ្ទៀងផ្ទាត់គ្មានកូនសោតាម Microsoft Entra ID។
 
 ## ចាប់ផ្តើមយ៉ាងរហ័ស
 
 ```bash
-# 1. នាវីហ្គែត​ទៅគម្រោង
+# 1. នាវិហ្គេតទៅគម្រោង
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 
-# 2. ចូលគណនី ដើម្បីអោយការផ្ទៀងផ្ទាត់ឥតគ្រាប់អាចទទួលបានសញ្ញា Token
+# 2. ចូលប្រើ ដូច្នេះការផ្តល់សិទ្ធិគ្មានកូនសោអាចទទួលបានសញ្ញាសម្គាល់
 az login
 
-# 3. កំណត់រចនាសម្ព័ន្ធចុងបញ្ចប់
-#    - បើអ្នកបានរត់ `azd up` .env ត្រូវបានសរសេរដល់អ្នក (រំលងនេះ)
-#    - បើមិនដូច្នោះទេ ចម្លងគំរូ និងកំណត់ AZURE_OPENAI_ENDPOINT:
+# 3. កំណត់ពាណិជ្ជកម្ម
+#    - ប្រសិនបើអ្នកបានបញ្ជា `azd up`, .env ត្រូវបានសរសេរដោយស្វ័យប្រវត្តិសម្រាប់អ្នក (រំលងនេះ)។
+#    - ប្រសិនបើមិនដូចនេះ សូមចម្លងទំព័រគំរូ ហើយកំណត់ AZURE_OPENAI_ENDPOINT:
 cp .env.example .env
 
-# 4. រត់កម្មវិធី
+# 4. ដំណើរការកម្មវិធី
 mvn spring-boot:run
 ```
 
-## របៀបផ្ទៀងផ្ទាត់ដំណើរការ
+## របៀបការផ្ទៀងផ្ទាត់អត្តសញ្ញាណ
 
 ឧទាហរណ៍នេះផ្ទៀងផ្ទាត់ជាមួយ **Microsoft Entra ID** — មិនមានកូនសោ API ទេ។
 
-ពេលមានតែ `spring.ai.azure.openai.endpoint` តែប៉ុណ្ណោះ (ហើយគ្មាន api-key) Spring AI នឹងបង្កើតកាឡាយអាជីព Azure OpenAI ជាមួយ [`DefaultAzureCredential`](https://learn.microsoft.com/java/api/com.azure.identity.defaultazurecredential)។ វាប្រើនៅចំណុចនោះដោយស្វ័យប្រវត្តិបាន token ពីសម័យ `az login` របស់អ្នកនៅក្នុងតំបន់របស់អ្នក ឬពី managed identity នៅពេលរត់ក្នុង Azure — ដូច្នេះកូដដូចគ្នានេះដំណើរការបានទាំងពីរប្រភេទដោយគ្មានការផ្លាស់ប្ដូរ។
+កម្មវិធីកំណត់ការផ្ទៀងផ្ទាត់ទ្រង់ទ្រាយច្បាស់លាស់នៅក្នុង [BasicChatApplication.java](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/java/com/example/BasicChatApplication.java):
 
-## ការរត់កម្មវិធី
+1. `azureCredential()` បង្កើត `BearerTokenCredential` ដោយប្រើ `AuthenticationUtil.getBearerTokenSupplier` ជាមួយ `DefaultAzureCredential` និងវិសាលភាព `https://ai.azure.com/.default`។
+2. `azureOpenAiClient()` បង្កើត `OpenAIClient` ជាមួយ `OpenAIOkHttpClient.builder()`, ដំណោះស្រាយចុងបញ្ចប់ធនធានទៅ `/openai/v1`, ហើយផ្គត់ផ្គង់កុនប៊ែរ​ដោយ `.credential(...)`។
+3. `azureChatModel()` ផ្គត់ផ្គង់ client នោះទៅ Spring AI's `OpenAiChatModel` ដែលគាំទ្រកម្មវិធី `ChatClient` នៅក្នុងមេរៀននេះ។
 
-### ការប្រើ Maven
+ធាតុនេះគឺរក្សាទុកឲ្យ `OPENAI_API_KEY` របស់លោកអ្នកមិនប៉ះពាល់ការផ្ទៀងផ្ទាត់ Azure បានទេ។ ការខកខានជាមួយសោ API ពី YAML តែមួយគឺមិនមែនការតំឡើងការផ្ទៀងផ្ទាត់ទេ។ `DefaultAzureCredential` អាចប្រើសម័យ `az login` របស់អ្នកនៅក្នុងមshinកុំព្យូទ័រផ្ទាល់ ឬ managed identity នៅក្នុង Azure; អត្តសញ្ញាណដែលជ្រើសរើសត្រូវតែនៅមានតួនាទីធនធានដូចបានរាយការណ៍ខាងលើ។
+
+## រត់កម្មវិធី
+
+### ប្រើ Maven
 
 ```bash
 mvn spring-boot:run
 ```
 
-### ការប្រើ VS Code
+### ប្រើ VS Code
 
-1. បើកគំរូនៅក្នុង VS Code
+1. បើកគម្រោងនៅ VS Code
 2. ចុច `F5` ឬប្រើផ្ទាំង "Run and Debug"
 3. ជ្រើសរើសការកំណត់ "Spring Boot-BasicChatApplication"
 
-> **ចំណាំ**: ការកំណត់ VS Code នេះបញ្ចូលឯកសារ .env របស់អ្នកដោយស្វ័យប្រវត្តិ។
+> **សម្គាល់**: កម្មវិធីរុករក `.env` ពីថតការងាររបស់វា រួមទាំងពេលចាប់ផ្តើមពី VS Code។
 
 ### លទ្ធផលដែលរំពឹងទុក
 
-```
+លទ្ធផលបង្ហាញបន្ទាប់ពីរត់បានជោគជ័យ (ឯកសារប្រសាសន៍ចាប់ផ្តើមមិនបង្ហាញ; ពាក្យឆ្លើយនឹងខុសគ្នា):
+
+```text
 Starting Basic Chat with Azure OpenAI...
-Environment variables loaded successfully
+Environment variables loaded from .env file
+Endpoint: https://your-resource.openai.azure.com/
+Deployment: gpt-5.6-luna
+Auth: keyless (Microsoft Entra ID via DefaultAzureCredential)
 Connecting to Azure OpenAI...
 Sending prompt: What is AI in a short sentence? Max 100 words.
 
@@ -87,86 +100,106 @@ AI, or Artificial Intelligence, is the simulation of human intelligence in machi
 Success! Azure OpenAI connection is working correctly.
 ```
 
-## យោងការកំណត់
+## យោងការកំណត់រចនា
 
-### អថេរ​បរិស្ថាន
+### អថេរបរិយាកាស
 
-| អថេរ | ការពិពណ៌នា | ត្រូវការ | ឧទាហរណ៍ |
+| អថេរ | ការពិពណ៌នា | តម្រូវការ | ឧទាហរណ៍ |
 |----------|-------------|----------|---------|
-| `AZURE_OPENAI_ENDPOINT` | ស្ថានីយ៍ endpoint របស់ Foundry (Azure OpenAI) | ត្រូវការ | `https://my-resource.openai.azure.com/` |
-| `AZURE_OPENAI_DEPLOYMENT` | ឈ្មោះការចេញផ្សាយម៉ូឌែលជជែក | មិនត្រូវការ | `gpt-4o-mini` (លំនាំដើម) |
+| `AZURE_OPENAI_ENDPOINT` | URL ចុងបញ្ចប់ Foundry (Azure OpenAI) | បាទ/ចាស | `https://my-resource.openai.azure.com/` |
+| `AZURE_OPENAI_DEPLOYMENT` | ឈ្មោះការចេញផ្សាយម៉ូដែលជជែក | ទេ | `gpt-5.6-luna` (លំនាំដើម) |
 
-> មិនមានអថេរកូនសោ API នោះទេ — ការផ្ទៀងផ្ទាត់គឺគ្មាន key (Microsoft Entra ID តាមរយៈ `az login`)។
+> គ្មានអថេរ API key — ការផ្ទៀងផ្ទាត់គឺគ្មានកូនសោ (Microsoft Entra ID តាម `az login`)។
 
-### ការកំណត់ Spring
+### កំណត់រចនាសម្ព័ន្ធ Spring
 
-ឯកសារ `application.yml` កំណត់៖
-- **Endpoint**: `${AZURE_OPENAI_ENDPOINT}` - ពីអថេរបរិស្ថាន
-- **Deployment**: `${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}` - ពីអថេរបរិស្ថានជាមួយ fallback
-- **Auth**: គ្មាន key — មិនមាន `api-key` ដាក់ទេ ដូច្នេះ Spring AI ប្រើ `DefaultAzureCredential`
-- **សីតុណ្ហភាព**: `0.7` - គ្រប់គ្រងភាពច្នៃប្រឌិត (0.0 = ពាក់ព័ន្ធត្រឹមត្រូវ, 1.0 = មានច្នៃប្រឌិត)
-- **Max Tokens**: `500` - ប្រវែងឆ្លើយតបអតិបរមា
+ការកំណត់នៅក្នុង [application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml) ប្រើ prefix `spring.ai.openai` និងលំនាំឡើងជាតម្លៃស្រួល (flat chat properties) ដោយគ្មានប្លុក `options`៖
 
-## ការដោះស្រាយបញ្ហា
+```yaml
+spring:
+  ai:
+    openai:
+      base-url: ${AZURE_OPENAI_ENDPOINT}
+      microsoft-foundry: true
+      chat:
+        model: ${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
+        reasoning-effort: none
+        max-completion-tokens: 500
+```
 
-### បញ្ហាសកម្មជាច្រើន
+`model` គឺជាឈ្មោះ **deployment Azure**។ ការផ្ទៀងផ្ទាត់មានពីធាតុច្បាស់លាស់ខាងលើ មិនមែនពីការ​កំណត់ `api-key` ។ មេរៀនបិទការគិតលទ្ធផល (reasoning) ហើយកំណត់កាប់មុខToken completion ទៅ ៥០០; វាបោះបង់ការកំណត់ `temperature` និង `max-tokens` បែបចាស់។
+
+Microsoft ផ្តល់អនុសាសន៍ឲ្យប្រើ [official OpenAI SDK ជាមួយ Azure OpenAI v1 និង API Responses សម្រាប់កម្មវិធីថ្មីៗ](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)។ Chat Completions នៅតែគាំទ្រសម្រាប់មេរៀនផ្អែកលើសារ។ សម្រាប់ GPT-5.6, ទំព័រដែលមានឧបករណ៍នៅលើ Chat Completions ត្រូវកំណត់ `reasoning_effort` ទៅ `none`; ប្រើ Responses ពេលបញ្ចូលការគិតលទ្ធផលជាមួយឧបករណ៍។ មើល [ការហៅឧបករណ៍ជាមួយម៉ូដែល reasoning](https://learn.microsoft.com/azure/foundry/openai/how-to/reasoning#tool-calling-with-reasoning-models)។
+
+## ដោះស្រាយបញ្ហា
+
+### បញ្ហាមានទូទៅ
 
 <details>
 <summary><strong>កំហុស: 401 / "PermissionDenied" / កំហុស token</strong></summary>
 
-- រត់ `az login` — ការផ្ទៀងផ្ទាត់គ្មាន key ត្រូវការចុះឈ្មោះចូលសកម្មដើម្បីទទួលបាន token
-- ផ្ទៀងផ្ទាត់ថាអក្សរារបស់អ្នកមានតួនាទី **Cognitive Services OpenAI User** លើវត្ថុធាតុ
-- ប្រសិនបើអ្នកទើបតែផ្ដល់តួនាទី សូមរង់ចាំមួយនាទីដើម្បីឲ្យវាបន្តផ្សាយ
+- រត់ `az login` — auth គ្មានកូនសោត្រូវការចូលប្រើដែលទាន់សម័យដើម្បីទទួលបាន token
+- ពិនិត្យមើលថាអ្នកមានតួនាទី **Cognitive Services OpenAI User** លើធនធាន
+- ប្រសិនបើយោងតំណែងថ្មីទើបតែងត្រូវរង់ចាំមួយនាទីដើម្បីឲ្យវាលាតត្រដាង
 - បញ្ជាក់ថាអ្នកនៅក្នុង tenant/subscription ត្រឹមត្រូវ (`az account show`)
 </details>
 
 <details>
-<summary><strong>កំហុស: "The endpoint is not valid" / កំហុសភ្ជាប់</strong></summary>
+<summary><strong>កំហុស: "The endpoint is not valid" / កំហុសផ្ដោតភ្ជាប់</strong></summary>
 
-- បញ្ជាក់ថា `AZURE_OPENAI_ENDPOINT` គឺ URL ពិស្តារពេញលេញ (ឧ. `https://your-resource.openai.azure.com/`)
-- ពិនិត្យសញ្ញាផ្តល់ដាច់បញ្ចប់សុទ្ធតែត្រូវគ្នា
-- ផ្ទៀងផ្ទាត់ endpoint ត្រូវតាមវត្ថុធាតុដែលបានបង្កើត (`azd env get-values`)
+- ប្រាកដថា `AZURE_OPENAI_ENDPOINT` ជា URL មូលដ្ឋានពេញលេញ (ឧ. `https://your-resource.openai.azure.com/`)
+- ពិនិត្យសញ្ញាចុងបញ្ចប់ជាមួយសញ្ញា `/` ត្រូវគ្នា
+- ប្រាកដថាចុងបញ្ចប់ត្រូវនឹងធនធានដែលបានបង្កើត (`azd env get-values`)
 </details>
 
 <details>
 <summary><strong>កំហុស: "The deployment was not found"</strong></summary>
 
-- ផ្ទៀងផ្ទាត់ថា `AZURE_OPENAI_DEPLOYMENT` ត្រូវនឹងឈ្មោះការចេញផ្សាយក្នុង Azure
-- ពិនិត្យមើលថាម៉ូឌែលបានចេញផ្សាយដោយជោគជ័យនិងសកម្មទេ
-- ឈ្មោះការចេញផ្សាយលំនាំដើមគឺ `gpt-4o-mini`
+- ពិនិត្យមើលថា `AZURE_OPENAI_DEPLOYMENT` ត្រូវនឹងឈ្មោះ deployment នៅក្នុង Azure
+- ពិនិត្យមើលមូឌែលបានចេញផ្សាយ ហើយវាមានសកម្មភាព
+- ឈ្មោះ deployment លំនាំដើមគឺ `gpt-5.6-luna`
 </details>
 
 <details>
-<summary><strong>VS Code: អថេរបរិស្ថានមិនបានផ្ទុក</strong></summary>
+<summary><strong>កំហុស: 429 / លើសកំណត់អត្រា</strong></summary>
 
-- បញ្ជាក់ឲ្យឯកសារ `.env` របស់អ្នកនៅក្នុងថត root របស់គំរូ (នៅកម្រិតដូចគ្នាជាមួយ `pom.xml`)
-- ព្យាយាមរត់ `mvn spring-boot:run` ក្នុង Terminal រួមបញ្ចូលរបស់ VS Code
-- ពិនិត្យមើលថា Extension Java របស់ VS Code បានដំឡើងត្រឹមត្រូវ
+- ការចេញផ្សាយ GPT-5.6 Luna លំនាំដើមមានសមត្ថភាពនេះ Global Standard capacity 10: 10 សំណើ/នាទី និង 10,000 token/នាទី
+- រត់ឧទាហរណ៍តាមជួរ និងរង់ចាំរយៈពេល retry របស់សេវាកម្មមុនព្យាយាមម្តងទៀត
+- ឧទាហរណ៍មូលដ្ឋាននេះបានបិទ retry SDK ដោយស្វ័យប្រវត្តិ ដូច្នេះសំណើដែលបរាជ័យនឹងត្រូវរាយការណ៍ផ្ទាល់
 </details>
 
-### ម៉ូដធ្វើបញ្ហាដោះស្រាយ
+<details>
+<summary><strong>VS Code៖ អថេរបរិយាកាសមិនបានផលិតឡើង</strong></summary>
 
-ដើម្បីបើកការចុះបញ្ជីលម្អិត សូមយកការអធិប្បាយខាងក្រោមក្នុង `application.yml`៖
+- ប្រាកដថាឯកសារ `.env` របស់អ្នកនៅក្នុងថតឫសគម្រោង (មានកម្រិតដូចជា `pom.xml`)
+- ព្យាយាមរត់ `mvn spring-boot:run` នៅក្នុង terminal រួមបញ្ចូលVS Code
+- ពិនិត្យមើលថា ផ្នែកបន្ថែម Java នៅក្នុង VS Code ត្រូវបានដំឡើងត្រឹមត្រូវ
+</details>
+
+### ម៉ូដដ្បិតកំហុស
+
+ដើម្បីបើក logging ពីរបៀបលម្អិត សូមដក comment បន្ទាត់ខាងក្រោមនៅក្នុង [application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml):
 
 ```yaml
 logging:
   level:
-    org.springframework.ai: DEBUG
-    com.azure: DEBUG
+    "[org.springframework.ai]": DEBUG
+    "[com.azure]": DEBUG
 ```
 
 ## ជំហានបន្ទាប់
 
-**ការតំឡើងរួចរាល់!** សូមបន្តការសិក្សារបស់អ្នក៖
+**ការតំឡើងបានបញ្ចប់ហើយ!** សូមបន្តការសិក្សារបស់អ្នក៖
 
-[ជំពូក 3: បច្ចេកទេស Core Generative AI](../../../03-CoreGenerativeAITechniques/README.md)
+[ជំពូក 3៖ បច្ចេកទេស AI សំខាន់ៗ](../../../03-CoreGenerativeAITechniques/README.md)
 
 ## ធនធាន
 
-- [ឯកសារ Spring AI Azure OpenAI](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
-- [ការផ្ទៀងផ្ទាត់គ្មាន key ជាមួយ Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
-- [ផតฟ័รม Azure AI Foundry](https://ai.azure.com/)
-- [ឯកសារ Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/)
+- [ការប្តូរពី Spring AI 2 ទៅ OpenAI Java SDK](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [Official OpenAI Java SDK ជាមួយ Azure OpenAI v1](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
+- [ការផ្ទៀងផ្ទាត់អត្តសញ្ញាណគ្មានកូនសោ Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
+- [Azure AI Foundry Portal](https://ai.azure.com/)
+- [ឯកសារប្រើប្រាស់ Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/)
 
 ---
 
