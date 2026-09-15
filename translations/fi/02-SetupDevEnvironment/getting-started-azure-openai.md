@@ -1,45 +1,45 @@
-# Kehitysympäristön määrittäminen Azure AI Foundrylle
+# Azure AI Foundryn kehitysympäristön pystyttäminen
 
-> Tämä opas määrittää **Azure AI Foundry** -mallit tämän kurssin Java AI -sovelluksille käyttäen **avainvapaata** todennusta (Microsoft Entra ID) — API-avaimia ei tarvitse hallita. Uusi työkaluihin? Aloita [kehitysympäristöoppaasta](./README.md).
+> Tämä opas määrittää **Azure AI Foundry** -mallit tämän kurssin Java AI -sovelluksiin käyttäen **avainvapaata** tunnistautumista (Microsoft Entra ID) — ei API-avaimien hallintaa. Uusi työkaluissa? Aloita [kehitysympäristön oppaasta](./README.md).
 
-Tämä opas määrittää **Azure AI Foundry** -mallit tämän kurssin Java AI -sovelluksille. Sinulla on kaksi vaihtoehtoa:
+Tämä opas määrittää **Azure AI Foundry** -mallit tämän kurssin Java AI -sovelluksiin. Sinulla on kaksi vaihtoehtoa:
 
-- **Vaihtoehto A — Provisionointi `azd`:llä + Bicepillä (suositeltu):** yksi komento ottaa käyttöön Foundry-tilin ja mallit koodina. Ei portaalin napsuttelua.
+- **Vaihtoehto A — Ota käyttöön `azd` + Bicepillä (suositus):** yhdellä komennolla Foundry-tili ja mallit koodina. Ei portaalin klikkailua.
 - **Vaihtoehto B — Luo resurssit manuaalisesti** Azure AI Foundry -portaalissa.
 
-Molemmat reitit käyttävät **avainvapaata todennusta** (Microsoft Entra ID) — API-avaimia ei tarvitse kopioida tai vuotaa.
+Molemmat polut käyttävät **avainvapaata tunnistautumista** (Microsoft Entra ID) — ei kopioitavia tai vuotavia API-avaimia.
 
 ## Sisällysluettelo
 
 - [Mitä luodaan](#mitä-luodaan)
-- [Ennakkoedellytykset](#ennakkoedellytykset)
-- [Vaihtoehto A: Provisionointi azd:llä + Bicepillä (suositeltu)](#vaihtoehto-a-provisionointi-azdllä--bicepillä-suositeltu)
+- [Esivaatimukset](#esivaatimukset)
+- [Vaihtoehto A: Käytä azd + Bicep (suositus)](#option-a-provision-with-azd--bicep-recommended)
 - [Vaihtoehto B: Luo resurssit manuaalisesti](#vaihtoehto-b-luo-resurssit-manuaalisesti)
-- [Ympäristön konfigurointi](#ympäristön-konfigurointi)
-- [Testaa asennuksesi](#testaa-asennuksesi)
+- [Määritä ympäristösi](#määritä-ympäristösi)
+- [Testaa asennus](#testaa-asennus)
 - [Mitä seuraavaksi?](#mitä-seuraavaksi)
 - [Resurssit](#resurssit)
 - [Lisäresurssit](#lisäresurssit)
 
 ## Mitä luodaan
 
-Bicep-mallit hakemistossa [`infra/`](../../../02-SetupDevEnvironment/infra) provisioivat:
+[`infra/`](../../../02-SetupDevEnvironment/infra) Bicep-mallit määrittävät:
 
-- **Azure AI Foundry** -tilin (`Microsoft.CognitiveServices/accounts`, tyyppi `AIServices`) projektilla
-- Chatin käyttöönoton — `gpt-4o-mini`
-- Upotuksen käyttöönoton — `text-embedding-3-small` (käytetään myöhemmissä luvuissa)
-- Avainvapaan roolimäärityksen (`Cognitive Services OpenAI User`), jotta kirjaudut sisään `az login` -komennolla ilman avainten hallintaa
+- **Azure AI Foundry** -tilin (`Microsoft.CognitiveServices/accounts`, tyyppi `AIServices`) projektin kanssa
+- Chat-käyttöönoton - GPT-5.6 Luna (`gpt-5.6-luna`), versio `2026-07-09`, kapasiteetti `GlobalStandard` `10` (10 pyyntöä/minuutti ja 10 000 tokenia/minuutti tälle mallille)
+- Upotuskäyttöönoton - `text-embedding-3-small`, versio `1` (käytössä myöhemmissä luvuissa)
+- Avainvapaa rooliasetus (`Cognitive Services OpenAI User`), jotta kirjaudut sisään `az login` -komennolla ilman avaimien hallintaa
 
-## Ennakkoedellytykset
+## Esivaatimukset
 
 - [Azure-tilaus](https://azure.microsoft.com/free/)
 - [Azure Developer CLI (`azd`)](https://aka.ms/azure-dev/install)
 - [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli)
 - [Java 21+](https://learn.microsoft.com/java/openjdk/download) ja [Maven 3.9+](https://maven.apache.org/download.cgi)
 
-## Vaihtoehto A: Provisionointi azd:llä + Bicepillä (suositeltu)
+## Vaihtoehto A: Käytä azd + Bicep (suositus)
 
-Kansiosta `02-SetupDevEnvironment`:
+Siirry `02-SetupDevEnvironment`-kansioon:
 
 ```bash
 cd 02-SetupDevEnvironment
@@ -52,90 +52,92 @@ az login
 azd up
 ```
 
-`azd` pyytää **ympäristön nimeä** (esimerkiksi `genai-java`) ja **aluetta**. Valitse alue, jolla `gpt-4o-mini` ja `text-embedding-3-small` ovat saatavilla — esimerkiksi `eastus2` tai `swedencentral`.
+`azd` pyytää **ympäristön nimeä** (esimerkiksi `genai-java`), **tilausta** ja **aluetta**. Valitse oma tilauksesi ja alue, josta löytyvät `gpt-5.6-luna` ja `text-embedding-3-small`, esimerkiksi `eastus2`. Varmista, että tilauksella on riittävä kiintiö mallille ja käyttöönotolle kyseisellä alueella; saatavuus ja kiintiöt vaihtelevat tilauksen mukaan.
 
-Kun provisiointi on valmis, azd:
+Kun käyttöönotto on valmis, azd:
 
-1. Ota käyttöön kaikki, mikä on määritelty tiedostossa [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep).
-2. Suorittaa jälkiprovisiointikoukun, joka kirjoittaa tiedoston [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) päätepisteelläsi ja käyttöönoton nimillä (ei salaisuuksia).
+1. Ottaa käyttöön kaiken, mikä on määritelty tiedostossa [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep).
+2. Suorittaa jälkikäyttöönoton hookin, joka kirjoittaa tiedoston [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) sisältämään endpointisi ja käyttöönoton nimet (ei salaisuuksia).
 
-> **Vinkki:** Suorita `azd up` uudelleen milloin tahansa muutosten soveltamiseksi. Suorita `azd down` poistaaksesi kaiken ja lopettaaksesi kustannukset.
+> **Vinkki:** Suorita `azd up` uudelleen milloin tahansa muutosten soveltamiseksi. Suorita `azd down` poistaaksesi kaiken ja lopettaaksesi kulut.
 
-Näyttääksesi luodut asetukset:
+Katso luotuja asetuksia:
 
 ```bash
 azd env get-values
 ```
 
-Siirry nyt kohtaan [Testaa asennuksesi](#testaa-asennuksesi).
+Siirry nyt kohtaan [Testaa asennus](#testaa-asennus).
 
 ## Vaihtoehto B: Luo resurssit manuaalisesti
 
-Haluatko mieluummin portaalin? Luo resurssit käsin:
+Haluatko käyttää portaalin kautta? Luo resurssit käsi kädessä:
 
 1. Mene [Azure AI Foundry -portaaliin](https://ai.azure.com/) ja kirjaudu sisään.
-2. **Luo projekti** (tämä myös luo AI Foundry -resurssin). Anna nimi, kuten `GenAIJava`.
+2. **Luo projekti** (tämä luo myös AI Foundry -resurssin). Anna sille nimi kuten `GenAIJava`.
 3. Avaa projektissasi **Models + endpoints** → **Deploy model** → **Deploy base model**.
-4. Ota käyttöön **gpt-4o-mini** (käyttöönoton nimi `gpt-4o-mini`). Toista **text-embedding-3-small** varten, jos haluat upotus-esimerkit.
-5. Kopioi **endpoint** (esim. `https://<resource>.openai.azure.com/`) kohdasta **Overview**.
-6. Myönnä itsellesi avainvapaa käyttöoikeus: resurssilla avaa **Access control (IAM)** → **Add role assignment** → määritä **Cognitive Services OpenAI User** tilillesi.
+4. Ota käyttöön **GPT-5.6 Luna** (mallin ja käyttöönoton nimi `gpt-5.6-luna`, versio `2026-07-09`) kapasiteetilla **Global Standard** `10`. Toista toimenpide **text-embedding-3-small** -mallille, versio `1`, jos haluat upotus-esimerkit.
+5. **Overview**-näkymästä kopioi **endpoint** (esimerkiksi `https://<resource>.openai.azure.com/`).
+6. Anna itsellesi avainvapaa pääsy: avaa resurssissa **Access control (IAM)** → **Add role assignment** → määritä rooli **Cognitive Services OpenAI User** tilillesi.
 
-> **Onko ongelmia?** Katso [Azure AI Foundryn dokumentaatio](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects).
+> **Onko ongelmia?** Tutustu [Azure AI Foundryn dokumentaatioon](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects).
 
-## Ympäristön konfigurointi
+## Määritä ympäristösi
 
-**Jos käytit Vaihtoehtoa A (`azd up`)**, asetustiedosto on jo kirjoitettu — mitään konfiguroitavaa ei ole. Siirry kohtaan [Testaa asennuksesi](#testaa-asennuksesi).
+**Jos käytit Vaihtoehto A:ta (`azd up`)**, asetustiedosto on jo kirjoitettu — mitään ei tarvitse konfiguroida. Siirry kohtaan [Testaa asennus](#testaa-asennus).
 
-**Jos käytit Vaihtoehtoa B (manuaalinen)**, luo esimerkin `.env` itse:
+**Jos käytit Vaihtoehto B:tä (manuaalinen)**, luo esimerkin `.env`-tiedosto itse:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 cp .env.example .env
 ```
 
-Muokkaa `.env`-tiedostoa päätepisteelläsi (ei avainta — todennus on avainvapaa):
+Muokkaa `.env`-tiedostoa omalla endpointillasi (ei avainta — tunnistautuminen on avainvapaata):
 
 ```bash
 AZURE_OPENAI_ENDPOINT=https://<your-resource>.openai.azure.com/
-AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
+AZURE_OPENAI_DEPLOYMENT=gpt-5.6-luna
 ```
 
-> **Turvallisuushuomautus:** API-avainta ei ole talletettavana. Todennat Microsoft Entra ID:llä `az login` -komennolla (paikallisesti) tai hallinnoidulla identiteetillä (Azuressa). `.env`-tiedosto sisältää vain ei-salaisia asetuksia ja on jo jätetty huomioimatta `.gitignore`-tiedostolla.
+Käytä resurssin Azure OpenAI -endpointia, ei projektin URL-osoitetta. basic-chat-sovellus käyttää sitä `/openai/v1`-polkuun ja määrittää eksplisiittisen bearer-token clientin; API-avainta ei tarvita.
 
-## Testaa asennuksesi
+> **Turvallisuusmuistutus:** API-avainta ei säilytetä. Tunnistaudut Microsoft Entra ID:n kautta `az login` -komennolla (paikallisesti) tai hallitulla identiteetillä (Azuren sisällä). `.env`-tiedosto sisältää vain ei-salaisia asetuksia ja on jo suojattu `.gitignore`-tiedostolla.
 
-Varmista, että olet kirjautunut sisään, jotta avainvapaa todennus saa tokenin, ja suorita esimerkki:
+## Testaa asennus
+
+Varmista, että olet kirjautunut sisään, jotta avainvapaa tunnistus voi hakea tokenin, ja suorita esimerkki:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 
-az login          # jos et ole jo kirjautunut sisään
+az login          # jos et ole vielä kirjautunut sisään
 mvn clean spring-boot:run
 ```
 
-Näet vastauksen `gpt-4o-mini`-mallilta!
+Näet vastauksen `gpt-5.6-luna` -mallilta. Suorita esimerkit peräkkäin pysyäksesi pienemmän oletuskiintiön sisällä; jos saat HTTP 429 -virheen, odota uudelleenyrittämisen aikaväli ennen kuin yrität uudelleen.
 
-> **VS Code -käyttäjille:** Paina `F5` suorittaaksesi. Sovellus lataa `.env`-tiedoston automaattisesti.
+> **VS Code -käyttäjille:** Paina `F5` käynnistääksesi. Sovellus lataa automaattisesti `.env`-tiedostosi.
 
-> **Täydellinen esimerkki:** Katso [Basic Chat with Azure AI Foundry -esimerkki](./examples/basic-chat-azure/README.md) yksityiskohtiin ja vianmääritykseen.
+> **Täysi esimerkki:** Katso [Basic Chat with Azure AI Foundry -esimerkki](./examples/basic-chat-azure/README.md) lisätietoja ja vianmääritystä varten.
 
 ## Mitä seuraavaksi?
 
-**Asennus valmis!** Sinulla on nyt:
-- Azure AI Foundry käyttöön otettuna `gpt-4o-mini` ja `text-embedding-3-small`-malleilla
-- Avainvapaa todennus (Microsoft Entra ID) — ei avaimia hallittavana
-- Paikallinen `.env` päätepisteellä ja käyttöönoton nimillä
-- Java-kehitysympäristö valmiina käytettäväksi
+Kun käyttöönotto on valmis ja esimerkki toimii, sinulla on:
+- Azure AI Foundry ja `gpt-5.6-luna` ja `text-embedding-3-small` käyttöön otettuna
+- Avainvapaa tunnistautuminen (Microsoft Entra ID) — ilman avaimien hallintaa
+- Paikallinen `.env`-tiedosto endpointilla ja käyttöönottojen nimillä
+- Java-kehitysympäristö valmiina käyttöön
 
-**Jatka kohtaan** [Luku 3: Keskeiset generatiivisen tekoälyn tekniikat](../03-CoreGenerativeAITechniques/README.md) aloittaaksesi tekoälysovellusten rakentamisen!
+**Jatka lukemista luvusta** [Luku 3: Keskeiset generatiivisen tekoälyn tekniikat](../03-CoreGenerativeAITechniques/README.md) aloittaaksesi tekoälysovellusten rakentamisen!
 
 ## Resurssit
 
 - [Azure Developer CLI (azd)](https://aka.ms/azure-dev/install)
-- [Avainvapaa todennus Microsoft Entra ID:llä](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
-- [Azure AI Foundry -dokumentaatio](https://learn.microsoft.com/azure/ai-foundry/)
-- [Spring AI Azure OpenAI -dokumentaatio](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
-- [Azure OpenAI Java SDK](https://learn.microsoft.com/java/api/overview/azure/ai-openai-readme)
+- [Avainvapaa tunnistus Microsoft Entra ID:llä](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
+- [Azure AI Foundryn dokumentaatio](https://learn.microsoft.com/azure/ai-foundry/)
+- [Spring AI 2 OpenAI Java SDK:n siirtymä](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [Virallinen OpenAI Java SDK Azure OpenAI v1:llä](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
 
 ## Lisäresurssit
 
