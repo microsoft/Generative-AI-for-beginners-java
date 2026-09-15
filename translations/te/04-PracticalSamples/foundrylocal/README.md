@@ -1,354 +1,230 @@
-# ఫౌన్రీ లోకల్ స్ప్రింగ్ బూట్ ట్యూటోరియల్
+# Foundry లోకల్ స్ప్రింగ్ బూట్ ట్యూటోరియల్
 
-## సూచిక
+మీ స్వంత మెషీన్ పై ఒక చిన్న భాషా నమూనాను అమలు చేసి దాని OpenAI-అనుకూల
+REST ఎండ్ పాయింట్‌ను జావా కన్సోల్ అప్లికేషన్ నుండి కాల్ చేయండి. ఎలాంటి Azure డిప్లాయ్‌మెంట్, Azure సైన్-ఇన్,
+క్లౌడ్ API కీలను లేదా క్లౌడ్ ఇన్ఫెరెన్స్ ఉపయోగించబడదు. **GPT-5.6 Luna కేవలం Azure-కే మాత్రమే; దాన్ని
+Foundry లోకల్ మోడల్‌గా ఆకృతీకరించ‌కండి.**
 
-- [ముందస్తు పరిజ్ఞానం](#ముందస్తు-పరిజ్ఞానం)
-- [ప్రాజెక్ట్ అవలోకనం](#ప్రాజెక్ట్-అవలోకనం)
-- [కోడ్ అర్థం చేసుకోవడం](#కోడ్-అర్థం-చేసుకోవడం)
-  - [1. అప్లికేషన్ కాన్ఫిగరేషన్ (application.properties)](#1-అప్లికేషన్-కాన్ఫిగరేషన్-applicationproperties)
-  - [2. మెయిన్ అప్లికేషన్ క్లాస్ (Application.java)](#2-మెయిన్-అప్లికేషన్-క్లాస్-applicationjava)
-  - [3. AI సర్వీస్ లేయర్ (FoundryLocalService.java)](#3-ai-సర్వీస్-లేయర్-foundrylocalservicejava)
-  - [4. ప్రాజెక్ట్ డిపెండెన్సీలు (pom.xml)](#4-ప్రాజెక్ట్-డిపెండెన్సీలు-pomxml)
-- [ఇది ఎలా కలిసి పనిచేస్తుంది](#ఇది-ఎలా-కలిసి-పనిచేస్తుంది)
-- [ఫౌన్రీ లోకల్ సెటప్ చేయడం](#ఫౌన్రీ-లోకల్-సెటప్-చేయడం)
-- [అప్లికేషన్ నడపడం](#అప్లికేషన్-నడపడం)
-- [నిరాకరించబడిన అవుట్పుట్](#నిరాకరించబడిన-అవుట్పుట్)
-- [తర్వాతి దశలు](#తర్వాతి-దశలు)
-- [తొలగింపుల నివారణ](#తొలగింపుల-నివారణ)
+## సంస్కరణలు మరియు కావలసినవైద్యాలు
 
+| భాగం | సంస్కరణ |
+| --- | --- |
+| జావా | 21 లేదా తర్వాత |
+| మేవెన్ | 3.6.3 లేదా తర్వాత |
+| స్ప్రింగ్ బూట్ | 4.1.1 |
+| OpenAI జావా SDK | 4.63.1 |
+| Foundry లోకల్ SDK (లోకల్ REST సర్వర్) | 2.0.1 |
+| Node.js (లోకల్ REST సర్వర్) | 20 లేదా తర్వాత |
+| Foundry లోకల్ CLI (ఐచ్ఛికం, వేరు విడుదల) | 0.10.3 ప్రివ్యూ |
 
-## ముందస్తు పరిజ్ఞానం
+స్ప్రింగ్ బూట్ స్ప్రింగ్ ఫ్రేమ్‌వర్క్, జాక్సన్, జUnit, మరియు మేవెన్ ప్లగిన్ సంస్కరణలను నిర్వహిస్తుంది.
+ఈ ఉదాహరణలో స్ప్రింగ్ AI కాకుండా OpenAI జావా SDK ని నేరుగా ఉపయోగిస్తున్నారు. పాత, ఉపయోగించని
+స్ప్రింగ్ AI మైల్స్‌టోన్ ప్రాపర్టీ మరియు రిపాజిటరీని తీసివేశారు.
 
-ఈ ట్యూటోరియల్ ప్రారంభించే ముందు, మీరు నిర్ధారించుకోండి:
+సిఫార్సు చేసిన స్టార్టర్ మోడల్ **Qwen 2.5 0.5B**, CPU వేరియంట్
+`qwen2.5-0.5b-instruct-generic-cpu:4` (సుమారు 822 MB క్యాటలాగులో).
+ఇది GPU ఎగ్జిక్యూషన్ ప్రొవైడర్లను అవసరం చేయకుండా నిర్వహిస్తుంది. ఇతర మద్దతు ఉన్న, క్యాచెస్ చేసిన చిన్న మోడల్స్
+స్పష్టంగా ఎంచుకోవచ్చు. మోడల్ మరియు రన్‌టైమ్ ఇన్‌స్టలేషన్‌కు నెట్‌వర్క్ యాక్సెస్ అవసరం;
+ప్రాంప్ట్‌లు మరియు ఇన్ఫెరెన్స్ స్థానికంగా ఉంటాయి. Foundry లోకల్ అవసరంలేని టెలిమేట్రీ డిసేబుల్ అయినప్పటికీ
+కనీస రన్‌టైమ్ డయాగ్నొస్టిక్స్ ఆవిర్భవించవచ్చు.
 
-- **Java 21 లేదా అంతకంటే పైభాగం** మీ సిస్టమ్లో ఇన్‌స్టాల్ అయి ఉందని
-- **Maven 3.6+** ప్రాజెక్ట్ నిర్మించే కోసం
-- **Foundry Local** ఇన్‌స్టాల్ చేసి నడుస్తోంది
+ఈ నమూనా డైరెక్టరీ నుంచి క్రింది కమాండ్లను నడపండి.
 
-### **Foundry Local ఇన్‌స్టాల్ చేయండి:**
+## జావా బిల్డ్ మరియు టెస్ట్ చేయండి
 
-> **గమనిక:** Foundry Local CLI **Windows** మరియు **macOS** కోసం మాత్రమే అందుబాటులో ఉంటుంది. లినక్స్ కోసం [Foundry Local SDKs](https://github.com/microsoft/Foundry-Local) (Python, JavaScript, C#, Rust) ద్వారా మద్దతు ఉంటుంది.
-
-```bash
-# విండోస్
-winget install Microsoft.FoundryLocal
-
-# మాకోఎస్
-brew tap microsoft/foundrylocal
-brew install foundrylocal
+```powershell
+mvn clean verify
 ```
 
-ఇన్‌స్టలేషన్‌ను నిర్ధారించండి:
-```bash
+HTTP కాంట్రాక్ట్ టెస్టులు తాత్కాలిక లూప్‌బాక్ సర్వర్‌ను ప్రారంభించి వాస్తవ
+OpenAI జావా SDK ని పరీక్షిస్తాయి. అవి రిక్వెస్ట్ సీరియలైజేషన్, మోడల్ అన్వేషణ, స్పష్టమైన మోడల్
+ఎంచుకోవడం, అస్పష్టమైన లేదా సరియైన కాకపోయిన మోడల్ జాబితాలు, HTTP తప్పిదాలు, శూన్యమైన ప్రతిస్పందనలు,
+స్థానిక URL లు మరియు కమాండ్ లైన్ విఫలం వ్యాప్తి వంటి అంశాలను కవర్ చేస్తాయి. వీకు మోడల్ లేదా
+నెట్‌వర్క్ యాక్సెస్ అవసరం లేదు, మేవెన్ డిపెండెన్సీ ఇన్‌స్టలేషన్ తప్ప. లైవ్ టెస్ట్ ఐచ్ఛికం.
+
+## లోకల్ మోడల్ ప్రారంభించండి
+
+### సిఫార్సు: పిన్నడ్ SDK సర్వర్
+
+నేటివ్ Foundry లోకల్ జావా SDK లేదు. చిన్న Node.js హెల్పర్ అధికారిక SDK REST సర్వర్‌ను హోస్ట్ చేస్తుంది;
+అప్లికేషన్ మరియు చాట్ రిక్వెస్ట్ జావా లోనే ఉంటాయి.
+
+పిన్న్డ్ రన్‌టైమ్ డిపెండెన్సీలను ఇన్‌స్టాల్ చేయండి:
+
+```powershell
+npm ci
+```
+
+విండోస్ x64 SDK యొక్క నేటివ్ ఇన్‌స్టాల్ సమయంలో NuGet చేరుకోలేకపోతే, అందించిన ఫాల్బ్యాక్ ఉపయోగించండి.
+ఇది సరిపోయే అధికారిక GitHub రన్‌టైమ్ ఆర్కైవ్‌ను డౌన్లోడ్ చేసి,
+విడుదల SHA-256 డైజెస్ట్‌ను తనిఖీ చేసి, దాని DLL లను నేటివ్ అడాన్ పక్కన ఉంచుతుంది. ఇది TLS ధృవీకరణను
+డిసేబుల్ చేయదు, ఎలివేషన్ అవసరం చేయదు లేదా SDK మూలం మార్చదు.
+
+```powershell
+npm ci --ignore-scripts
+pwsh -File ./scripts/install-foundry-runtime.ps1
+```
+
+ఈ మెషీన్ మీద ఇప్పటికే క్యాచెస్ చేయబడిన మోడల్స్ జాబితా చేయండి:
+
+```powershell
+npm run start:foundry -- --list
+```
+
+మొదటి రన్ లో, చిన్న CPU మోడల్ డౌన్లోడ్‌ను స్పష్టంగా అనుమతించండి:
+
+```powershell
+npm run start:foundry -- --model qwen2.5-0.5b-instruct-generic-cpu:4 --download --port 5273
+```
+
+తర్వాతి రన్ లలో, క్యాచ్డ్ మోడల్ అవసరమైతే `--download` ను తీసేయండి:
+
+```powershell
+npm run start:foundry -- --model qwen2.5-0.5b-instruct-generic-cpu:4 --port 5273
+```
+
+హెల్పర్ సరిపోనున్న క్యాచ్డ్ మోడల్‌ని ఇష్టపడుతుంది, అలియాస్ లేదా ఖచ్చిత వేరియంట్ ID ని అంగీకరిస్తుంది,
+మరియు `--download` అందించబడకపోతే లేనిది మోడల్‌ని నిరాకరించును. ఇది అవసరమైనప్పుడు మాత్రమే ఎంపిక చేసిన
+మోడల్ యొక్క ఎగ్జిక్యూషన్ ప్రొవైడర్‌ను నమోదు చేస్తుంది. క్యాచ్డ్ GPU వేరియంట్స్ కూడా
+అనుకూల ఎగ్జిక్యూషన్-ప్రొవైడర్ ప్యాకేజీలు మరియు డ్రైవర్లను అవసరం చేసుకోవచ్చు.
+
+పోర్ట్ 5273 పనిచేస్తే, అందుబాటులో ఉన్న పోర్ట్ కోసం `--port 0` అందించండి. హెల్పర్
+సిద్ధమైనప్పుడు `FOUNDRY_LOCAL_BASE_URL`, ఖచ్చితమైన `FOUNDRY_LOCAL_MODEL` ID మరియు PID ను ప్రింట్ చేస్తుంది.
+జావా లో ప్రింట్ చేసిన ఎండ్‌పాయింట్ ను ఉపయోగించండి. జావా నడిపేటప్పుడు ఈ టెర్మినల్ ను తెరిచి ఉంచండి;
+**Ctrl+C** REST సర్వర్ ని ఆపు మరియు మోడల్ రిలీజు చేస్తుంది.
+
+డిఫాల్ట్ క్యాష్ `~/.foundry/cache/models`. వేరే ఉన్న క్యాష్ కోసం `FOUNDRY_LOCAL_CACHE_DIR` ను సెట్ చేయండి.
+లాగ్లు మరియు హెల్పర్ స్థితి ఈ నమూనా యొక్క `target/foundry-local` డైరెక్టరీలో రాయబడతాయి. `mvn clean`
+నడపేముందు హెల్పర్ ఆపు.
+
+### ఐచ్ఛికం: Foundry లోకల్ CLI
+
+CLI మరియు SDK వేరు విడుదలలు కలిగి ఉంటాయి: CLI **0.10.3** SDK **1.2.4** ను సైతం కలిగి ఉంటుంది;
+ముందు హెల్పర్ ఉపయోగించే SDK **2.0.1**. తాజా CLI ఇన్‌స్టాల్ చేయడం తాజా భాష SDK ఇన్‌స్టాల్ చేయదు.
+[CLI విడుదల గమనికలు](https://github.com/microsoft/Foundry-Local/releases/tag/cli-preview-0.10.3) చూడండి.
+
+విండోస్ లో CLI లేకపోతే per-user ఇన్‌స్టాల్ కమాండ్ ఉపయోగించండి:
+
+```powershell
+winget install --id Microsoft.FoundryLocal --exact --source winget --scope user --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
+```
+
+లేదా ఇప్పటికే ఉన్న ఇన్‌స్టలేషన్ ను అప్‌గ్రేడ్ చేయండి:
+
+```powershell
+winget upgrade --id Microsoft.FoundryLocal --exact --source winget --scope user --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
 foundry --version
 ```
 
-## ప్రాజెక్ట్ అవలోకనం
+CLI 0.10.x పాత `foundry service` కమాండ్లను `foundry server` తో మార్చింది:
 
-ఈ ప్రాజెక్ట్ నాలుగు ప్రధాన భాగాల నుండి కూడి ఉంటుంది:
-
-1. **Application.java** - ప్రధాన స్ప్రింగ్ బూట్ అప్లికేషన్ ప్రవేశ బిందువు
-2. **FoundryLocalService.java** - AI కమ్యూనికేషన్ నిర్వహించే సర్వీస్ లేయర్
-3. **application.properties** - Foundry Local కనెక్షన్ కాన్ఫిగరేషన్
-4. **pom.xml** - Maven డిపెండెన్సీలు మరియు ప్రాజెక్ట్ కాన్ఫిగరేషన్
-
-## కోడ్ అర్థం చేసుకోవడం
-
-### 1. అప్లికేషన్ కాన్ఫిగరేషన్ (application.properties)
-
-**ఫైల్:** `src/main/resources/application.properties`
-
-```properties
-foundry.local.base-url=http://localhost:5273/v1
-# foundry.local.model is auto-detected from Foundry Local. Set it here to override:
-# foundry.local.model=Phi-4-mini-instruct-cuda-gpu:5
+```powershell
+foundry server start --port 5273
+foundry cache list
+foundry model load qwen2.5-0.5b-instruct-generic-cpu:4
+foundry server status --output json
 ```
 
-**ఇది ఏమి చేస్తుంది:**
-- **base-url**: Foundry Local ఎక్కడ నడుస్తోందో సూచిస్తుంది, OpenAI API అనుగుణంగా `/v1` పాథ్‌తో సహా. డిఫాల్ట్ పోర్ట్ `5273`. పోర్ట్ వేరైతే, `foundry service status` ద్వారా చెక్ చేయండి.
-- **model** (ఐచ్ఛికం): టెక్స్ట్ జనరేషన్ కోసం ఉపయోగించే AI మోడల్ పేరు. **డిఫాల్ట్ గా, అప్లికేషన్ Foundry Local `/v1/models` ఎండ్‌పాయింట్‌ను స్టార్ట్‌అప్‌లో క్విల్యరి చేసి మోడల్‌ను ఆటో-డిటెక్ట్ చేస్తుంది**, కాబట్టి మీరు దాన్ని సెట్ చేయాల్సిన అవసరం లేదు. అవసరమైతే స్పష్టంగా సెట్ చేయవచ్చు.
+`model load` కు మునుపే డౌన్లోడ్ చేసిన మోడల్ కావాలి. డౌన్లోడ్ కమాండ్ల కోసం `foundry model --help` చూసుకోండి.
+స్థితి అవుట్పుట్ లోని నిజమైన ఎండ్‌పాయింట్ ఉపయోగించండి; CLI లేకుంటే
+ఆటోమేటిక్ గా కేటాయించిన పోర్ట్ డిఫాల్ట్ గా ఉంటాయి. CLI మరియు SDK హెల్పర్
+అదే పోర్ట్ లో ప్రారంభించవద్దు. పూర్తి అయిన తర్వాత:
 
-**ప్రధాన భావన:** స్ప్రింగ్ బూట్ ఈ ప్రాపర్టీస్‌ను ఆటోమేటిక్‌గా లోడ్ చేసి, `@Value` యానోటేషన్ ఉపయోగించి మీ అప్లికేషన్‌కు అందజేస్తుంది.
-
-### 2. మెయిన్ అప్లికేషన్ క్లాస్ (Application.java)
-
-**ఫైల్:** `src/main/java/com/example/Application.java`
-
-```java
-@SpringBootApplication
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(Application.class);
-        app.setWebApplicationType(WebApplicationType.NONE);  // ఏ వెబ్ సర్వర్ అవసరం లేదు
-        app.run(args);
-    }
+```powershell
+foundry server stop
 ```
 
-**ఇది ఏమి చేస్తుంది:**
-- `@SpringBootApplication` స్ప్రింగ్ బూట్ ఆటో-కాన్ఫిగరేషన్‌ను ఎనేబుల్ చేస్తుంది
-- `WebApplicationType.NONE` స్ప్రింగ్‌కు ఇది వెబ్ సర్వర్ కాకుండా కమాండ్-లైన్ యాప్ అని తెలియజేస్తుంది
-- మెయిన్ మెతడ్ స్ప్రింగ్ అప్లికేషన్‌ను ప్రారంభిస్తుంది
+## జావా అప్లికేషన్ నడపండి
 
-**డెమో రన్నర్:**
-```java
-@Bean
-public CommandLineRunner foundryLocalRunner(FoundryLocalService foundryLocalService) {
-    return args -> {
-        System.out.println("=== Foundry Local Demo ===");
-        System.out.println("Calling Foundry Local service...");
-        
-        String testMessage = "Hello! Can you tell me what you are and what model you're running?";
-        System.out.println("Sending message: " + testMessage);
-        
-        String response = foundryLocalService.chat(testMessage);
-        System.out.println("Response from Foundry Local:");
-        System.out.println(response);
-        System.out.println("=========================");
-    };
-}
-```
+రెండో టెర్మినలులో, మీ సర్వర్ ప్రింట్ చేసిన ఎండ్‌పాయింట్ మరియు ఖచ్చిత మోడల్ ID సెట్ చేయండి:
 
-**ఇది ఏమి చేస్తుంది:**
-- `@Bean` స్ప్రింగ్ నిర్వహించే కంపోనెంట్ సృష్టిస్తుంది
-- `CommandLineRunner` స్ప్రింగ్ బూట్ ప్రారంభమైన తర్వాత కోడ్ నడిపిస్తుంది
-- `foundryLocalService` స్ప్రింగ్ ఆటోమేటిక్‌గా ఇంజెక్ట్ చేస్తుంది (డిపెండెన్సీ ఇంజెక్షన్)
-- AIకి టెస్ట్ సందేశం పంపి, ప్రతిస్పందనను చూపిస్తుంది
-
-### 3. AI సర్వీస్ లేయర్ (FoundryLocalService.java)
-
-**ఫైల్:** `src/main/java/com/example/FoundryLocalService.java`
-
-#### కాన్ఫిగరేషన్ ఇంజెక్షన్:
-```java
-@Service
-public class FoundryLocalService {
-    
-    @Value("${foundry.local.base-url:http://localhost:5273/v1}")
-    private String baseUrl;
-    
-    @Value("${foundry.local.model:}")
-    private String model;    // ఖాళీగా ఉంటే ఆటోగా గుర్తించబడింది
-```
-
-**ఇది ఏమి చేస్తుంది:**
-- `@Service` స్ప్రింగ్‌కి ఈ క్లాస్ బిజినెస్ లాజిక్ అందిస్తుంది అని చెబుతుంది
-- `@Value` application.properties నుండి కాన్ఫిగరేషన్ విలువలను ఇంజెక్ట్ చేస్తుంది
-- మోడల్ ఉంటే ఖాళీగా ఉంటే, ఇది Foundry Local నుండి స్టార్ట్‌అప్ వద్ద **ఆటో-డిటెక్షన్** ఆప్షన్ ప్రేరేపిస్తుంది. అంటే ఏదైనా లోడ్ అయిన మోడల్‌తో ఈ యాప్ పనిచేస్తుంది, మాన్యువల్ కాన్ఫిగరేషన్ అవసరం లేదు
-
-#### క్లయింట్ ప్రారంభం:
-```java
-@PostConstruct
-public void init() {
-    // స్పష్టంగా కాన్ఫిగర్ చేయబడకపోతే Foundry Local నుండి మోడల్‌ను ఆటోమేటిక్‌గా గుర్తించండి
-    if (model == null || model.isBlank()) {
-        model = detectModel();
-    }
-
-    this.openAIClient = OpenAIOkHttpClient.builder()
-            .baseUrl(baseUrl)                // బయస్ URL ఇప్పటికే కాన్ఫిగరేషన్ నుండి /v1 ను కలిగి ఉంది
-            .apiKey("not-needed")            // లోకల్ సర్వర్‌కు నిజమైన API కీల్లు అవసరం లేదు
-            .build();
-}
-```
-
-**ఇది ఏమి చేస్తుంది:**
-- `@PostConstruct` స్ప్రింగ్ సర్వీస్ సృష్టించిన తర్వాత ఈ మెతడ్ నడిపిస్తుంది
-- మోడల్ సెట్ కానప్పుడు, Foundry Local `/v1/models` ఎండ్‌పాయింట్‌ను క్విల్యరి చేసి మొదటి లోడ్ అయిన మోడల్‌ను ఎంచుకుంటుంది
-- మీరు లోకల్ Foundry Local ఇన్స్టెన్స్ కు పాయింట్ చేసే OpenAI క్లయింట్ సృష్టిస్తుంది
-- application.properties నుండి base URL ఇప్పటికే OpenAI API అనుగుణంగా `/v1`ను కలిగి ఉంటుంది
-- API కీ "not-needed"గా సెట్ చేయబడి ఉంది, ఎందుకంటే లోకల్ డెవలప్‌మెంట్‌లో ధృవీకరణ అవసరం లేదు
-
-#### చాట్ మెతడ్:
-```java
-public String chat(String message) {
-    try {
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(model)                    // ఏ ఏఐ మోడల్ ఉపయోగించాలి
-                .addUserMessage(message)         // మీ ప్రశ్న/ప్రాంప్ట్
-                .maxCompletionTokens(150)        // స్పందన పొడవు పరిమితం చేయండి
-                .temperature(0.7)                // సృజనాత్మకత నియంత్రించండి (0.0-1.0)
-                .build();
-        
-        ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
-        
-        // API ఫలితం నుంచి ఏఐ యొక్క స్పందనను తీసుకోండి
-        if (chatCompletion.choices() != null && !chatCompletion.choices().isEmpty()) {
-            return chatCompletion.choices().get(0).message().content().orElse("No response found");
-        }
-        
-        return "No response content found";
-    } catch (Exception e) {
-        throw new RuntimeException("Error calling chat completion: " + e.getMessage(), e);
-    }
-}
-```
-
-**ఇది ఏమి చేస్తుంది:**
-- **ChatCompletionCreateParams**: AI అభ్యర్థనను కాన్ఫిగర్ చేస్తుంది
-  - `model`: ఉపయోగించే AI మోడల్ ను పేర్కొంటుంది (exact ID తో `foundry model list` నుండి సరిపోలాలి)
-  - `addUserMessage`: మీ సందేశాన్ని సంభాషణలో జత చేస్తుంది
-  - `maxCompletionTokens`: జవాబు పొడవును పరిమితం చేస్తుంది (సంప్రదాయ వనరుల పరిరక్షణ)
-  - `temperature`: యాదృచ్ఛికత నియంత్రిస్తుంది (0.0 = నిర్దిష్టమైన, 1.0 = సృజనాత్మక)
-- **API కాల్**: Foundry Localకి అభ్యర్థన పంపుతుంది
-- **ప్రతిస్పందన ప్రాసెసింగ్**: AI యొక్క టెక్స్ట్ ప్రతిస్పందనను సురక్షితంగా తీసుకుంటుంది
-- **లోపం నిర్వహణ**: సహాయక లోప సందేశాలతో ఎక్స్‌సెప్షన్స్‌ను వ్రాప్ చేస్తుంది
-
-### 4. ప్రాజెక్ట్ డిపెండెన్సీలు (pom.xml)
-
-**ప్రధాన డిపెండెన్సీలు:**
-
-```xml
-<!-- Spring Boot - Application framework -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter</artifactId>
-    <version>${spring-boot.version}</version>
-</dependency>
-
-<!-- OpenAI Java SDK - For AI API calls -->
-<dependency>
-    <groupId>com.openai</groupId>
-    <artifactId>openai-java</artifactId>
-    <version>2.12.0</version>
-</dependency>
-
-<!-- Jackson - JSON processing -->
-<dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-    <version>2.17.0</version>
-</dependency>
-```
-
-**ఇవి ఏమి చేస్తాయి:**
-- **spring-boot-starter**: కోర్ స్ప్రింగ్ బూట్ ఫంక్షనాలిటీ అందిస్తుంది
-- **openai-java**: అధికారిక OpenAI జావా SDK API కమ్యూనికేషన్ కోసం
-- **jackson-databind**: API కాల్స్ JSON సీరియలైజేషన్/డీసీరియలైజేషన్ నిర్వహిస్తుంది
-
-## ఇది ఎలా కలిసి పనిచేస్తుంది
-
-మీరు అప్లికేషన్ నడపగానే పూర్తి ఫ్లో ఇలా ఉంటుంది:
-
-1. **స్టార్ట్‌అప్**: స్ప్రింగ్ బూట్ ప్రారంభమై `application.properties` చదవడం
-2. **సర్వీస్ సృష్టి**: స్ప్రింగ్ `FoundryLocalService`ను సృష్టించి కాన్ఫిగర్ విలువలను ఇంజెక్ట్ చేస్తుంది
-3. **మోడల్ గుర్తింపు**: మోడల్ సెట్ కానపోతే, సర్వీస్ Foundry Local `/v1/models` ఎండ్‌పాయింట్‌ను క్విల్యరి చేసి మొదటి అందుబాటులో ఉన్న మోడల్‌ను ఆటోమేటిక్ గా ఉపయోగిస్తుంది
-4. **క్లయింట్ సెటప్**: `@PostConstruct` OpenAI క్లయింట్‌ను Foundry Localతో కనెక్ట్ అయ్యేటట్లు ఇనిషియలైజ్ చేస్తుంది
-5. **డెమో అమలు**: `CommandLineRunner` స్టార్ట్‌అప్ తర్వాత నడుస్తుంది
-6. **AI కాల్**: డెమో `foundryLocalService.chat()` మెతడ్‌ను టెస్ట్ మెసేజ్‌తో పిలుస్తుంది
-7. **API అభ్యర్థన**: సర్వీస్ OpenAI అనుగుణంగా అభ్యర్థనను తయారు చేసి Foundry Localకి పంపిస్తుంది
-8. **ప్రతిస్పందన ప్రాసెసింగ్**: సర్వీస్ AI ప్రతిస్పందన తీసుకుంటుంది మరియు వాపాస్ చేస్తుంది
-9. **ప్రదర్శన**: అప్లికేషన్ ప్రతిస్పందనను ప్రింట్ చేసి బయటకు వస్తుంది
-
-## ఫౌన్రీ లోకల్ సెటప్ చేయడం
-
-1. [ముందస్తు పరిజ్ఞానం](#ముందస్తు-పరిజ్ఞానం) విభాగంలో ఇచ్చిన సూచనల ప్రకారం **Foundry Local ఇన్‌స్టాల్ చేయండి**.
-
-2. **సర్వీస్ ప్రారంభించండి** (ఇంతవరకు ప్రారంభించకపోతే):
-   ```bash
-   foundry service start
-   ```
-
-3. **సర్వీస్ స్థితిని తనిఖీ చేయండి** మరియు పోర్ట్ గమనించండి:
-   ```bash
-   foundry service status
-   ```
-
-4. **మోడల్ డౌన్లోడ్ చేసి నడపండి** (మొదటి రన్ లో డౌన్లోడ్ చేయబడుతుంది, తర్వాతి రన్లకు క్యాష్ చేయబడింది):
-   ```bash
-   foundry model run phi-4-mini
-   ```
-   ఇది ఇంటరాక్టివ్ చాట్ సెషన్ ను ఓపెన్ చేస్తుంది. మీరు `Ctrl+C` తో బహిష్కరించవచ్చు. మోడల్ సర్వీస్ లో లోడ్ అయి ఉంటుంది.
-
-   > **సలహా:** `foundry model list` ను నడపండి అందుబాటులో ఉన్న అన్ని మోడల్స్ చూడటానికి. `phi-4-mini` ని అవసరమైతే క్యాటలాగ్‌లోని ఏ ఇతర అలియాస్ తో మార్చండి (ఉదా: `qwen2.5-0.5b` ఒక చిన్న/వేగవంతమైన మోడల్ కోసం).
-
-5. **మోడల్ లోడ్ అయిందేమో నిర్ధారించండి:**
-   ```bash
-   foundry service ps
-   ```
-
-6. అవసరమైతే **`application.properties` నవీకరించండి:**
-   - డిఫాల్ట్ `base-url` (`http://localhost:5273/v1`) డిఫాల్ట్ CLI పోర్ట్ తో సరిపోలుతుంది. `foundry service status` వేరియల్ పోర్ట్ చూపిస్తే మాత్రమే నవీకరించండి.
-   - మోడల్ స్టార్ట్‌అప్ సమయంలో ఆటో-డిటెక్ట్ అవుతుంది — ఎటువంటి సెటప్ అవసరం లేదు.
-
-   ```properties
-   foundry.local.base-url=http://localhost:5273/v1
-   # Model is auto-detected. Uncomment below to override:
-   # foundry.local.model=Phi-4-mini-instruct-cuda-gpu:5
-   ```
-
-## అప్లికేషన్ నడపడం
-
-### దశ 1: Foundry Localలో ఒక మోడల్ లోడ్ అయిందని నిర్ధారించుకోండి
-```bash
-foundry service ps
-```
-మోడల్స్ ఏవీ లేకుంటే లోడ్ చేయండి:
-```bash
-foundry model run phi-4-mini
-```
-
-### దశ 2: అప్లికేషన్ నిర్మించి నడపండి
-వేరే టెర్మినల్లో:
-```bash
-cd 04-PracticalSamples/foundrylocal
+```powershell
+$env:FOUNDRY_LOCAL_BASE_URL = "http://127.0.0.1:5273/v1"
+$env:FOUNDRY_LOCAL_MODEL = "qwen2.5-0.5b-instruct-generic-cpu:4"
 mvn spring-boot:run
 ```
 
-లేదా JAR గా రూపొందించి నడపండి:
-```bash
-mvn clean package
+లేదా ప్యాకేజ్ చేసిన అప్లికేషన్ నడపండి:
+
+```powershell
 java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
 ```
 
-## నిరాకరించబడిన అవుట్పుట్
+ఒక్క జావా ఎంట్రీపాయింట్ `com.example.Application`. ఇది ఎంపిక చేసిన
+ఎండ్‌పాయింట్, నిజమైన మోడల్ ID, ప్రాంప్ట్, మరియు ఉత్పత్తి చేసిన ప్రతిస్పందనను ప్రింట్ చేస్తుంది, తరువాత తన స్ప్రింగ్
+కాంటెక్స్ట్ మరియు HTTP క్లయింట్ ని మూసివేస్తుంది. విఫలమైన ఇన్ఫెరెన్స్ లేదా లేనిది ప్రతిస్పందన టెక్స్టు విజయవంతమైన ప్లేస్‌హోల్డర్ కాకుండా
+వైఫల్య ఎగ్జిట్‌ను ఉత్పత్తి చేస్తుంది.
 
+### కాన్ఫిగరేషన్
+
+| పరిసర మార్పిడి | డిఫాల్ట్ | ప్రయోజనం |
+| --- | --- | --- |
+| `FOUNDRY_LOCAL_BASE_URL` | `http://127.0.0.1:5273/v1` | లూప్‌బ్యాక్ HTTP ఎండ్‌పాయింట్, `/v1` తో సహా |
+| `FOUNDRY_LOCAL_MODEL` | ఖాళీ | ఖచ్చిత మోడల్ ID; లేకపోతే ఒకే ఒక ప్రచురించిన మోడల్ ఎంచుకోబడుతుంది |
+| `FOUNDRY_LOCAL_PROMPT` | లోకల్ మోడల్స్ గురించి ఒక వాక్య ప్రశ్న | కన్సోల్ రన్నర్ పంపించే ప్రాంప్ట్ |
+
+సమానమైన స్ప్రింగ్ ఆర్గ్యుమెంట్లు `--foundry.local.base-url=...`,
+`--foundry.local.model=...`, మరియు `--foundry.local.prompt=...`.
+కేవలం లూప్‌బ్యాక్ HTTP ఎండ్‌పాయింట్‌లు మాత్రమే స్వీకరించబడతాయి. రిమోట్/క్లౌడ్ ఎండ్‌పాయింట్లను,
+ఎంబెడ్డెడ్ క్రెడెన్షియల్స్, క్వేరి స్ట్రింగులు, మరియు `/v1` లేకుండా మార్గాల‌ను తిరస్కరిస్తుంది.
+
+ఖాళీ మోడల్ సెట్టింగ్ `/v1/models` ద్వారానే ఒకే ఒక మోడల్ ప్రచురించినప్పుడు మాత్రమే పని చేస్తుంది.
+ప్రచురించిన మోడల్ తప్పకుండా లోడ్ కాకపోవచ్చు. బహుళ మోడల్స్ ప్రచురించినట్లయితే,
+కేటలాగ్ క్రమం పై ఆధారపడకుండా ఖచ్చిత లోడ్ అయిన ID ను సెట్ చేయండి.
+
+రిక్వెస్ట్‌లు `temperature=0`, 150-టోకెన్ అవుట్పుట్ పరిమితి, 120-సెకన్ల టైమౌట్, మరియు
+ఆటోమేటిక్ రీట్రై లేని విధంగా ఉంటాయి. `max_tokens` రిక్వెస్ట్ ఫీల్డ్ ఆవశ్యకమైంది: ఇది
+Foundry లోకల్ REST కాంట్రాక్ట్ ద్వారా మద్దతు పొందింది, అయితే OpenAI జావా లో ఇది మేల్కొల్పబడుతుంది.
+ఆ ఫీల్డ్ కొత్త క్లౌడ్ మోడల్స్ కోసం. మోడల్ గుర్తింపు కాన్ఫిగరేషన్ నుండి లేదా
+కనుగొనడమునుంచి వస్తుంది, మోడల్ స్వయంగా నిష్ఠలపై కాదు.
+
+## ప్రత్యక్ష సరైనత నిర్ధారణ
+
+స్థానిక సర్వర్ నడుస్తున్నప్పుడు, ఆప్ట్-ఇన్ ప్రత్యక్ష పరీక్ష సహా అన్ని পরীক্ষలను రూపొందించండి.
+ఎండ్పాయింట్ పోర్టును మీ సర్వర్ ముద్రించిన విలువతో మార్చండి. PowerShellలో డాటెడ్
+Maven ప్రాపర్టీలను ఉల్లేఖించండి:
+
+```powershell
+mvn "-Dfoundry.local.live=true" "-Dfoundry.local.base-url=http://127.0.0.1:5273/v1" "-Dfoundry.local.model=qwen2.5-0.5b-instruct-generic-cpu:4" verify
 ```
-=== Foundry Local Demo ===
-Calling Foundry Local service...
-Sending message: Hello! Can you tell me what you are and what model you're running?
-Response from Foundry Local:
-Hello! I'm Phi, an AI developed by Microsoft. I can assist with a wide variety of 
-tasks including answering questions, helping with analysis, creative writing, coding, 
-and general conversation. How can I help you today?
-=========================
-```
 
-## తర్వాతి దశలు
+ప్రత్యక్ష పరీక్ష `Application.main` ను పిలుస్తుంది, "ఫ్రాన్స్ రాజధాని పారిస్" అనే వాస్తవాన్ని అందిస్తుంది,
+నగరాన్ని అడుగుతుంది, మరియు ఉత్పత్తి చేర్పించిన వాస్తవ టెక్స్ట్ `Paris` అని నిర్ధారిస్తుంది.
+ఇది విజయవంతమైన HTTP స్థితి మాత్రమే కాదు, ఒక సారాంశ ఫలితాన్ని తనిఖీ చేస్తుంది.
 
-మరిన్ని ఉదాహరణల కోసం, చూడండి [అధ్యాయం 04: ప్రాక్టికల్ సామ్పిల్స్](../README.md)
+ఇది ఒక ఐక్యపరీక్ష, ఖచ్చితత ప్రమాణం కాదు. ధృవీకరణ సమయంలో,
+0.5B మోడల్ రెండు వేర్వేరు "2 + 2" ప్రాంప్ట్‌కు Java మరియు నేరుగా REST ద్వారా `3` అని స్పందించింది.
+గణిత లేదా వాస్తవ ఖచ్చితత కోసం స్వతంత్ర నిర్ధారణ లేకుండా దీనిపై ఆధారపడవద్దు; గణనల కోసం నియమిత పరికరాలను ఉపయోగించండి.
 
-## తొలగింపుల నివారణ
 
-### సాధారణ సమస్యలు
+## సమస్య పరిష్కారం
 
-**"Connection refused" లేదా "Service unavailable"**
-- సర్వీస్ తనిఖీ చేయండి: `foundry service status`
-- అవసరమైతే రీస్టార్ట్ చేయండి: `foundry service restart`
-- `application.properties` లోని పోర్ట్ `foundry service status` అవుట్‌పుట్‌తో సరిపోలుతుందో చూడండి
-- URL `/v1` తో ముగుస్తున్నదని నిర్ధారించుకోండి: `http://localhost:5273/v1`
+| లక్షణం | తనిఖీ చేయండి |
+| --- | --- |
+| కనెక్షన్ తిరస్కరించబడింది | రెడీ సందేశం కోసం వేచివుండండి; ముద్రించిన పోర్టు మరియు `/v1` మార్గాన్ని ఉపయోగించండి. |
+| బహుళ మోడల్స్ ప్రకటన | `FOUNDRY_LOCAL_MODEL` ను లోడ్ చేసిన మోడల్ ఖచ్చిత IDకి సెట్ చేయండి. |
+| మోడల్ లేని సమస్య | `--list` ఉపయోగించండి, లేకపోతే స్పష్టంగా డౌన్లోడ్ కి అనుమతించండి `--download`. |
+| GPU ప్రొవైడర్ విఫలమవుతుంది లేదా నిలిచిపోతుంది | చిన్న CPU మోడల్ ఉపయోగించండి. క్యాష్ చేయబడిన GPU మోడల్ ఇంకా దాని ప్రొవైడర్ అవసరం. |
+| CLI ఇంకా `initializing` ఉన్నది | `foundry server logs --lines 80` చదవండి; డెమన్‌ను ఆపి SDK సహాయకుడిని ఉపయోగించండి. |
+| NuGet TLS/డౌన్లోడ్ విఫలం | నెట్‌వర్క్ యాక్సెస్‌ను పరిష్కరించండి లేకపోతే పై నిర్ధారిత Windows x64 ఫాల్బ్యాక్ ఉపయోగించండి. TLS ను నిలిపివేయవద్దు. |
+| పోర్ట్ ఆక్రమించబడింది | `--port 0` ను ఉపయోగించి ముద్రించిన ఎండ్పాయింట్‌తో Java ని కాన్ఫిగర్ చేయండి. |
+| ఎలాంటి ఎంపికలు లేదా లేఖనం లేదు | యాప్ ఉద్దేశపూర్వకంగా విఫలం అవుతుంది; మోడల్ మరియు రన్‌టైమ్ లోగ్స్‌ను పరిక్షించండి. |
 
-**స్టార్ట్‌అప్ వద్ద "No model found"**
-- అప్లికేషన్ ఆటోమేటిక్ గా మోడల్ డిటెక్ట్ చేస్తుంది. కనీసం ఒక మోడల్ లోడ్ అయి ఉందని నిర్ధారించుకోండి: `foundry service ps`
-- మోడల్స్ లోడ్ కాకపోతే: `foundry model run phi-4-mini`
-- మీరు `application.properties` లో మోడల్ పేరును మానually మార్పిడి చేసినట్లయితే, అది `foundry model list` లో సరిపోలుతుందో చూసుకోండి
+## మూలం మరియు సూచనలు
 
-**"400 Bad Request" లోపాలు**
-- base URL `/v1` తో ముగుస్తుందని నిర్ధారించుకోండి: `http://localhost:5273/v1`
-- మీ కోడ్‌లో `maxCompletionTokens()` ఉపయోగిస్తున్నారని నిర్ధారించుకోండి (పాత `maxTokens()` కాదు)
-
-**Maven కంపైల్ లోపాలు**
-- Java 21 లేదా అంతకంటే పైభాగం ఉందని తనిఖీ చేయండి: `java -version`
-- క్లీన్ చేసి మళ్లీ కంపైల్ చేయండి: `mvn clean compile`
-- డిపెండెన్సీస్ డౌన్‌లోడ్ కోసం ఇంటర్నెట్ కనెక్షన్ ఉందని చూసుకోండి
-
-**సర్వీస్ కనెక్షన్ సమస్యలు**
-- "Request to local service failed" చూపిస్తే, ఈ కమాండ్ నడపండి: `foundry service restart`
-- లోడ్ అయిన మోడల్స్ తనిఖీ చేయండి: `foundry service ps`
-- సర్వీస్ లాగ్స్ చూడండి: `foundry service diag`
+- [Application.java](../../../../04-PracticalSamples/foundrylocal/src/main/java/com/example/Application.java): ఒక షాట్ Spring Boot రన్నర్.
+- [FoundryLocalService.java](../../../../04-PracticalSamples/foundrylocal/src/main/java/com/example/FoundryLocalService.java): టైప్డ్ డిస్కవరీ మరియు స్థానిక చాట్ పూర్తి చేయబడింది.
+- [FoundryLocalServiceTest.java](../../../../04-PracticalSamples/foundrylocal/src/test/java/com/example/FoundryLocalServiceTest.java): HTTP ఒప్పందం, రన్నర్ మరియు ప్రత్యక్ష పరీక్షలు.
+- [start-foundry.mjs](../../../../04-PracticalSamples/foundrylocal/scripts/start-foundry.mjs): అధికారిక SDK REST సర్వర్ క్యాష్-మోడల్ ఎంపిక మరియు శుభ్రతతో.
+- [install-foundry-runtime.ps1](../../../../04-PracticalSamples/foundrylocal/scripts/install-foundry-runtime.ps1): నిర్ధారిత Windows x64 నేటివ్-రన్నటైం ఫాల్బ్యాక్.
+- [application.properties](../../../../04-PracticalSamples/foundrylocal/src/main/resources/application.properties), [pom.xml](../../../../04-PracticalSamples/foundrylocal/pom.xml), మరియు [package.json](../../../../04-PracticalSamples/foundrylocal/package.json): కాన్ఫిగరేషన్ మరియు ఆధారాలు.
+- [Foundry Local REST integration](https://learn.microsoft.com/azure/foundry-local/how-to/how-to-integrate-with-inference-sdks).
+- [Foundry Local 2.0.1 release and migration notes](https://github.com/microsoft/Foundry-Local/releases/tag/v2.0.1).
+- [Chapter 04: Practical samples](../README.md).
 
 ---
 
 <!-- CO-OP TRANSLATOR DISCLAIMER START -->
-**అస్పష్టత**:  
-ఈ డాక్యుమెంట్‌ను AI అనువాద సేవ [Co-op Translator](https://github.com/Azure/co-op-translator) ఉపయోగించి అనువదಿಸಲಾಗಿದೆ. మేము సరిగ్గా ఉండేందుకు ప్రయత్నిస్తున్నప్పటికీ, స్వయంచాలక అనువాదాల్లో పొరపాట్లు లేదా అకురసిటీలు ఉండవచ్చును. స్థానిక భాషలోని అసలు డాక్యుమెంట్‌ను అధికారిక మూలంగా పరిగణించాలి. కీలకమైన సమాచారానికి, ప్రొఫెషనల్ మానవ అనువాదాన్ని సిఫార్సు చేస్తాము. ఈ అనువాదంలో ఉపయోగంతో జరిగే ఏదైనా తప్పుదోవ లేదా అర్థ విఫలమయ్యే దుష్ప్రభావాలకు మేము బాధ్యత వహించమని కోరుకుంటాము.
+**అస్వీకరణ**:
+ఈ పత్రం AI అనువాద సేవ [Co-op Translator](https://github.com/Azure/co-op-translator) ఉపయోగించి అనువదించబడింది. మేము ఖచ్చితత్వానికి ప్రయత్నిస్తున్నప్పటికీ, ఆటోమేటెడ్ అనువాదాలు తప్పులు లేదా అసమగ్రతలను కలిగి ఉండవచ్చు. దాని స్వదేశ భాషలో ఉన్న అసలు పత్రాన్ని అధికారం కలిగిన మూలంగా పరిగణించాలి. కీలకమైన సమాచారం కోసం, ప్రొఫెషనల్ మానవ అనువాదాన్ని సిఫారసు చేస్తాము. ఈ అనువాదం ఉపయోగం వల్ల కలిగే ఏవైనా అపార్థాలు లేదా తప్పుదారులు కోసం మేము బాధ్యత వహించము.
 <!-- CO-OP TRANSLATOR DISCLAIMER END -->
