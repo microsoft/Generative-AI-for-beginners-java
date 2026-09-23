@@ -1,38 +1,63 @@
-# MCP 计算器初学者教程
+# MCP 计算器新手教程
 
 ## 目录
 
 - [你将学到什么](#你将学到什么)
 - [先决条件](#先决条件)
-- [理解项目结构](#理解项目结构)
+- [依赖版本](#依赖版本)
+- [了解项目结构](#了解项目结构)
 - [核心组件讲解](#核心组件讲解)
   - [1. 主应用程序](#1-主应用程序)
   - [2. 计算器服务](#2-计算器服务)
   - [3. 直接 MCP 客户端](#3-直接-mcp-客户端)
   - [4. AI 驱动客户端](#4-ai-驱动客户端)
 - [运行示例](#运行示例)
-- [它们如何协同工作](#它们如何协同工作)
-- [下一步](#下一步)
+- [离线测试](#离线测试)
+- [整体协作流程](#整体协作流程)
+- [后续步骤](#后续步骤)
 
 ## 你将学到什么
 
-本教程解释如何使用模型上下文协议（MCP）构建一个计算器服务。你将了解：
+本教程介绍如何使用模型上下文协议（MCP）构建计算器服务。你将理解：
 
-- 如何创建 AI 可用作工具的服务
+- 如何创建 AI 可以用作工具的服务
 - 如何设置与 MCP 服务的直接通信
-- AI 模型如何自动选择要使用的工具
-- 直接协议调用与 AI 辅助交互的区别
+- AI 模型如何自动选择使用哪些工具
+- 直接协议调用与 AI 协助交互的区别
 
 ## 先决条件
 
-在开始之前，请确保你已经具备：
-- 安装了 Java 21 或更高版本
-- 用于依赖管理的 Maven
-- Azure AI Foundry 模型部署（使用 `azd up` 进行预配 — 参见[第2章](../../02-SetupDevEnvironment/getting-started-azure-openai.md)）
-- [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli)，已使用 `az login` 登录（无密钥认证）
-- 基本的 Java 和 Spring Boot 知识
+开始前，请确保你具有：
+- 已安装 Java 21 或更高版本
+- 使用 Maven 进行依赖管理
+- 基础的 Java 和 Spring Boot 理解
 
-## 理解项目结构
+仅 AI 客户端需要 Azure OpenAI 部署和经过身份验证的 `DefaultAzureCredential`，
+例如本地已有 Azure CLI 登录或 Azure 托管身份。该身份需要
+在资源上拥有认知服务 OpenAI 用户角色。详见 [第2章](../../02-SetupDevEnvironment/getting-started-azure-openai.md)。
+服务器、直接 SDK 客户端及所有自动测试均不需要 Azure 账号或模型访问权限。
+
+## 依赖版本
+
+已验证于 2026-09-14 的发布依赖：
+
+| 依赖 | 版本 |
+| --- | --- |
+| Spring Boot | 4.1.1 |
+| Spring AI | 2.0.1 |
+| MCP Java SDK（Spring AI 管理） | 2.0.0 |
+| LangChain4j / core | 1.20.0 |
+| LangChain4j MCP | 1.20.0-beta30 |
+| LangChain4j 官方 OpenAI 适配器 | 1.20.0-beta30 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
+| JUnit Jupiter（Boot 管理） | 6.0.3 |
+
+MCP 和官方 OpenAI 适配器为在 Maven Central 发布的 beta 版本，而非快照版本。
+它们的版本与 LangChain4j core 不同，无需快照或里程碑仓库。
+仅客户端依赖为测试作用域，因为可运行示例位于 `src/test/java` 目录下。
+
+## 了解项目结构
 
 计算器项目包含几个重要文件：
 
@@ -44,7 +69,7 @@ calculator/
 └── src/test/java/com/microsoft/mcp/sample/client/
     ├── SDKClient.java                     # Direct MCP communication
     ├── LangChain4jClient.java            # AI-powered client
-    └── Bot.java                          # Simple chat interface
+    └── Bot.java                          # Chat interface and interactive entrypoint
 ```
 
 ## 核心组件讲解
@@ -53,7 +78,7 @@ calculator/
 
 **文件：** `McpServerApplication.java`
 
-这是我们计算器服务的入口点。它是一个标准的 Spring Boot 应用程序，但有一个特殊的附加项：
+这是我们计算器服务的入口点。它是一个标准的 Spring Boot 应用，但有一个特别的附加功能：
 
 ```java
 @SpringBootApplication
@@ -71,15 +96,15 @@ public class McpServerApplication {
 ```
 
 **功能说明：**
-- 在端口 8080 启动 Spring Boot Web 服务器
-- 创建一个 `ToolCallbackProvider` ，将我们的计算器方法作为 MCP 工具暴露
-- `@Bean` 注解告诉 Spring 把它当作组件管理，供其他部分使用
+- 启动一个运行在 8080 端口的 Spring Boot 网页服务器
+- 创建一个 `ToolCallbackProvider`，使计算器方法作为 MCP 工具可用
+- `@Bean` 注解使 Spring 管理此组件，供其他部分使用
 
 ### 2. 计算器服务
 
 **文件：** `CalculatorService.java`
 
-所有数学计算都在这里完成。每个方法都用 `@Tool` 标记，让 MCP 可以调用：
+这里实现所有数学运算。每个方法均带有 `@Tool` 注解，使其可通过 MCP 调用：
 
 ```java
 @Service
@@ -100,7 +125,7 @@ public class CalculatorService {
     // 更多计算器操作...
     
     private String formatResult(double a, String operator, double b, double result) {
-        return String.format("%.2f %s %.2f = %.2f", a, operator, b, result);
+        return String.format(java.util.Locale.ROOT, "%.2f %s %.2f = %.2f", a, operator, b, result);
     }
 }
 ```
@@ -108,213 +133,192 @@ public class CalculatorService {
 **主要特性：**
 
 1. **`@Tool` 注解**：告诉 MCP 该方法可被外部客户端调用
-2. <strong>清晰描述</strong>：每个工具都有描述，帮助 AI 模型理解何时使用它
-3. <strong>统一返回格式</strong>：所有操作返回人类可读的字符串，如 "5.00 + 3.00 = 8.00"
-4. <strong>错误处理</strong>：除零和负数开方都会返回错误消息
+2. <strong>清晰描述</strong>：每个工具均有描述，帮助 AI 模型了解何时使用
+3. <strong>统一返回格式</strong>：所有操作返回可读字符串，如 "5.00 + 3.00 = 8.00"
+4. <strong>错误处理</strong>：除数为零和负数开平方返回错误信息
 
 **可用操作：**
-- `add(a, b)` - 两数相加
-- `subtract(a, b)` - 第二个数从第一个数减去
-- `multiply(a, b)` - 两数相乘
-- `divide(a, b)` - 第一个数除以第二个数（含零检测）
-- `power(base, exponent)` - 求 base 的 exponent 次幂
-- `squareRoot(number)` - 计算平方根（含负数检测）
-- `modulus(a, b)` - 求余数
-- `absolute(number)` - 绝对值
-- `help()` - 返回所有操作的信息
+- `add(a, b)` - 加法运算
+- `subtract(a, b)` - 计算第一个数减第二个数
+- `multiply(a, b)` - 乘法运算
+- `divide(a, b)` - 第一个数除以第二个数（含零检验）
+- `power(base, exponent)` - 计算 base 的 exponent 次方
+- `squareRoot(number)` - 计算平方根（含负数检验）
+- `modulus(a, b)` - 计算取余数
+- `absolute(number)` - 返回绝对值
+- `help()` - 返回所有操作信息
 
 ### 3. 直接 MCP 客户端
 
-**文件：** `SDKClient.java`
+请参阅 [SDKClient.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/SDKClient.java)。
 
-该客户端直接与 MCP 服务器通信，不使用 AI。它手动调用具体的计算器函数：
+此客户端使用位于 `/mcp` 的 `HttpClientStreamableHttpTransport`，初始化连接，
+发送心跳，支持工具列表分页。检查所有九个预期工具均存在，并调用它们，
+包括 `modulus` 和 `help`，无需 AI 模型。
+
+当前请求构建代码如下：
 
 ```java
-public class SDKClient {
-    
-    public static void main(String[] args) {
-        McpClientTransport transport = WebFluxSseClientTransport.builder(
-            WebClient.builder().baseUrl("http://localhost:8080")
-        ).build();
-        new SDKClient(transport).run();
-    }
-    
-    public void run() {
-        var client = McpClient.sync(this.transport).build();
-        client.initialize();
-        
-        // 列出可用工具
-        ListToolsResult toolsList = client.listTools();
-        System.out.println("Available Tools = " + toolsList);
-        
-        // 调用特定的计算器功能
-        CallToolResult resultAdd = client.callTool(
-            new CallToolRequest("add", Map.of("a", 5.0, "b", 3.0))
-        );
-        System.out.println("Add Result = " + resultAdd);
-        
-        CallToolResult resultSqrt = client.callTool(
-            new CallToolRequest("squareRoot", Map.of("number", 16.0))
-        );
-        System.out.println("Square Root Result = " + resultSqrt);
-        
-        client.closeGracefully();
-    }
-}
+var request = CallToolRequest.builder("add")
+    .arguments(Map.of("a", 5.0, "b", 3.0))
+    .build();
+var result = client.callTool(request);
 ```
 
-**功能说明：**
-1. <strong>连接</strong> 到位于 `http://localhost:8080` 的计算器服务器，使用构建者模式
-2. <strong>列出</strong> 所有可用工具（计算器函数）
-3. <strong>调用</strong> 带有准确参数的具体函数
-4. <strong>打印</strong> 结果
-
-**注意：** 示例使用 Spring AI 1.1.0-SNAPSHOT 依赖，新增了 `WebFluxSseClientTransport` 的构建者模式。如果你使用的是旧版本稳定版，可能需要直接使用构造器。
-
-**适用场景：** 当你明确知道要执行哪个计算，并想以编程方式调用时使用。
+协议错误会导致客户端失败，而不是误报成功。MCP 客户端使用 try-with-resources
+确保在发现问题或工具调用失败时正确关闭。
 
 ### 4. AI 驱动客户端
 
-**文件：** `LangChain4jClient.java`
+请参阅 [LangChain4jClient.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/LangChain4jClient.java)
+和 [Bot.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/Bot.java)。
 
-该客户端使用 AI 模型（GPT-4o-mini）自动决定使用哪些计算器工具：
+`OpenAiOfficialChatModel` 实现了当前 LangChain4j 的 `ChatModel` API。
+`StreamableHttpMcpTransport` 连接至同一 `/mcp` 端点，和 SDK 客户端一致。
+`AiServices` 负责发现工具并管理工具调用和结果对话。
+
+默认部署为 **GPT-5.6 Luna**，明确禁用推理能力：
 
 ```java
-public class LangChain4jClient {
-    
-    public static void main(String[] args) throws Exception {
-        // 设置 AI 模型（Azure AI Foundry，通过 Microsoft Entra ID 无密钥认证）
-        String endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1";
-        String token = new DefaultAzureCredentialBuilder().build()
-                .getToken(new TokenRequestContext().addScopes("https://ai.azure.com/.default"))
-                .block().getToken();
-        ChatLanguageModel model = OpenAiOfficialChatModel.builder()
-                .baseUrl(baseUrl)
-                .apiKey(token)
-                .modelName("gpt-4o-mini")
-                .build();
-
-        // 连接到我们的计算器 MCP 服务器
-        McpTransport transport = new HttpMcpTransport.Builder()
-                .sseUrl("http://localhost:8080/sse")
-                .logRequests(true)  // 显示 AI 正在做什么
-                .logResponses(true)
-                .build();
-
-        McpClient mcpClient = new DefaultMcpClient.Builder()
-                .transport(transport)
-                .build();
-
-        // 给予 AI 访问我们的计算器工具的权限
-        ToolProvider toolProvider = McpToolProvider.builder()
-                .mcpClients(List.of(mcpClient))
-                .build();
-
-        // 创建一个可以使用我们计算器的 AI 机器人
-        Bot bot = AiServices.builder(Bot.class)
-                .chatLanguageModel(model)
-                .toolProvider(toolProvider)
-                .build();
-
-        // 现在我们可以用自然语言让 AI 进行计算
-        String response = bot.chat("Calculate the sum of 24.5 and 17.3 using the calculator service");
-        System.out.println(response);
-
-        response = bot.chat("What's the square root of 144?");
-        System.out.println(response);
-    }
-}
+var parameters = OpenAiOfficialChatRequestParameters.builder()
+    .modelName("gpt-5.6-luna")
+    .reasoningEffort("none")
+    .maxCompletionTokens(1024)
+    .parallelToolCalls(false)
+    .build();
 ```
 
-**功能说明：**
-1. <strong>创建</strong> AI 模型连接，使用无密钥认证（Microsoft Entra ID）
-2. <strong>将</strong> AI 连接至我们的 MCP 计算器服务器
-3. <strong>赋予</strong> AI 访问我们所有计算器工具的权限
-4. <strong>支持</strong> 自然语言请求，例如“计算 24.5 和 17.3 的和”
+这些默认设置适用于所有完成请求，包括工具执行后的后续请求。
+客户端使用可刷新 `BearerTokenCredential`，基于 `DefaultAzureCredential`
+和 `https://ai.azure.com/.default` 范围，而非作为 API key 的一次性令牌。
+既接受资源 URL，也接受已以 `/openai/v1` 结尾的 URL。
 
-**AI 自动执行：**
-- 识别你想要加法
-- 选择 `add` 工具
-- 调用 `add(24.5, 17.3)`
-- 返回自然语言格式的结果
+Bot 保持有限的会话历史，打印 `Tool executed: ...` 和实际 MCP 结果，
+若响应跳过工具调用则失败。工具循环限制为四轮往返。
+身份验证、模型、MCP 和工具错误都会传播；自动模型重试被禁用。
+MCP 传输/客户端和官方 OpenAI 客户端均在成功或失败时关闭。
 
 ## 运行示例
 
-### 第1步：启动计算器服务器
+### 第一步：启动计算器服务器
 
-首先，登录并设置你的 Azure AI Foundry 终结点（AI 客户端需要，无密钥认证，无需 API 密钥）：
+服务器无需 Azure 配置。以下命令在本示例目录下运行。
+该示例使用端口 **18081**，避免与其他示例冲突；默认端口为8080。
 
-**Windows:**
-```cmd
-az login
-set AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-```
-
-**Linux/macOS:**
-```bash
-az login
-export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-```
-
-启动服务器：
-```bash
+```powershell
 cd 04-PracticalSamples/calculator
-mvn clean spring-boot:run
+mvn spring-boot:run "-Dspring-boot.run.arguments=--server.port=18081"
 ```
 
-服务器将在 `http://localhost:8080` 启动。你应看到：
-```
-Started McpServerApplication in X.XXX seconds
-```
+MCP 端点为 `http://localhost:18081/mcp`。健康检查和发现信息分别位于
+`http://localhost:18081/health` 和 `http://localhost:18081/info`。
+流媒体 HTTP 取代了旧的仅 SSE 传输；`/sse` 和 `/v1/tools` 不再是端点。
 
-### 第2步：使用直接客户端测试
+### 第二步：用直接客户端测试
 
-在服务器运行的同时，打开一个<strong>新</strong>终端，运行直接 MCP 客户端：
-```bash
+在另一个 PowerShell 终端中：
+
+```powershell
 cd 04-PracticalSamples/calculator
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient" -Dexec.classpathScope=test
+$env:MCP_SERVER_URL = "http://localhost:18081"
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.SDKClient" "-Dexec.classpathScope=test"
 ```
 
-你会看到类似输出：
-```
-Available Tools = [add, subtract, multiply, divide, power, squareRoot, modulus, absolute, help]
-Add Result = 5.00 + 3.00 = 8.00
-Square Root Result = √16.00 = 4.00
-```
+无需输入。所有九个工具都会被测试。期望的算术结果包括
+8、6、42、5、256、4、2 和 5.5，以及随后输出的帮助文本。
 
-### 第3步：使用 AI 客户端测试
+### 第三步：用 AI 客户端测试
 
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient" -Dexec.classpathScope=test
-```
+经身份验证（见先决条件）后，在同一终端配置 AI 客户端：
 
-你会看到 AI 自动使用工具：
-```
-The sum of 24.5 and 17.3 is 41.8.
-The square root of 144 is 12.
+```powershell
+$env:AZURE_OPENAI_ENDPOINT = "https://your-resource.openai.azure.com/"
+$env:AZURE_OPENAI_DEPLOYMENT = "gpt-5.6-luna"
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.LangChain4jClient" "-Dexec.classpathScope=test" "-Dexec.args=--prompt 'Calculate the sum of 24.5 and 17.3 using the calculator service'"
 ```
 
-### 第4步：关闭 MCP 服务器
+期望看到一行 `Tool executed: add`，结果为 `41.80`，随后是模型回答。
+单提示模式执行完毕后会直接退出，无需等待输入。若想运行原始的四次提示演示：
 
-测试完成后，可以在 AI 客户端终端按 `Ctrl+C` 停止它。MCP 服务器会继续运行，直到你手动停止。
-停止服务器时，在其终端按 `Ctrl+C`。
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.LangChain4jClient" "-Dexec.classpathScope=test" "-Dexec.args=--demo"
+```
 
-## 它们如何协同工作
+演示依次调用 `add`、`squareRoot`、`help` 及串联的 `power` 和 `divide` 操作。
+期望数字结果为 41.8、12 和 64。省略参数时也会运行该演示。
 
-当你问 AI “5 + 3 等于多少？”的完整流程如下：
+### 第四步：运行交互式 Bot
+
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.Bot" "-Dexec.classpathScope=test"
+```
+
+输入 `Multiply 6 by 7 using the calculator service`，然后输入 `exit` 或 `quit`。
+期望得到实际的 `multiply` 工具结果 42。空白行会被忽略；EOF 也会结束会话。
+非交互式的简单测试可以通过以下命令执行：
+
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.Bot" "-Dexec.classpathScope=test" "-Dexec.args=--prompt 'Multiply 6 by 7 using the calculator service'"
+```
+
+两个 AI 入口均支持 `--prompt "question"`、`--demo` 和 `--interactive` 参数。
+无效参数会在打开连接前失败。Maven 的每个 `-D...` 参数请在 PowerShell 中完整引用。
+Bash 环境使用 `export NAME=value` 代替 `$env:NAME = "value"`。
+
+**配额:** AI 示例请顺序运行。简单提示通常需要两次模型请求；
+完整演示通常需要九次，包括工具结果的后续请求。在共享 10 RPM
+部署环境下，请等待新配额窗口后再运行下一个 AI 示例。遇到 429 状态会明显失败，且没有
+自动重试；请遵循服务的 retry-after 指示。实际请求次数依模型而异。
+离线测试不消耗任何配额，也不检验 Luna 的实时可用性或回答质量。
+
+### 配置与关闭
+
+| 设置项 | 默认/行为 |
+| --- | --- |
+| `MCP_SERVER_URL` | `http://localhost:8080`；基础地址，不含 `/mcp` |
+| `-Dmcp.server.url=...` | 覆盖所有客户端的 `MCP_SERVER_URL` |
+| `AZURE_OPENAI_ENDPOINT` | 仅 AI 客户端必需；资源 URL 或 `/openai/v1` URL |
+| `AZURE_OPENAI_DEPLOYMENT` | `gpt-5.6-luna`；Azure 部署名称 |
+| `AZURE_OPENAI_MAX_COMPLETION_TOKENS` | `1024`；正整数 |
+| 推理努力 | 总是 `none`，包括工具循环的后续请求 |
+
+被覆盖的部署必须支持 `reasoning_effort=none` 和 `max_completion_tokens`。
+客户端不会自动读取 `.env` 文件。测试完成后使用 `Ctrl+C` 停止服务器。
+客户端正常返回，无需调用 `System.exit` 或等待关闭睡眠。
+
+## 离线测试
+
+```powershell
+mvn -B -ntp clean verify
+```
+
+所有测试均为针对 Azure 的离线测试：协议套件启动 Spring 服务器和
+模拟 OpenAI 兼容服务，监听随机回环端口，然后关闭。Maven 可能仍需
+下载依赖。不使用任何凭据、实时部署或预先存在的 MCP 服务器。
+
+- 计算器单元测试涵盖所有算术操作、小数结果、帮助信息和领域错误。
+- MCP 测试涵盖初始化、发现、所有九个工具调用、工具失败以及健康/信息检查。
+- AI 协议测试执行完整演示和交互式 Bot，连接真实计算器，
+  验证工具结果是否喂入下一步完成，检查每个 HTTP 正文包含 Luna、
+  `reasoning_effort: "none"` 和 `max_completion_tokens`，无旧版 `max_tokens`。
+- 配置/输入测试涵盖部署和端点覆盖、空行、EOF、退出/退出命令、
+  单提示模式、无效选项和错误传播。配额测试证明 429 不重试。
+
+## 整体协作流程
+
+当你向 AI 询问“5 + 3 等于多少？”时，完整流程如下：
 
 1. <strong>你</strong> 用自然语言向 AI 提问
-2. **AI** 分析请求，判断你要做加法
+2. **AI** 分析你的请求，识别出你需要加法
 3. **AI** 调用 MCP 服务器：`add(5.0, 3.0)`
-4. <strong>计算器服务</strong> 执行：`5.0 + 3.0 = 8.0`
-5. <strong>计算器服务</strong> 返回：`"5.00 + 3.00 = 8.00"`
-6. **AI** 接收结果并格式化为自然语言回答
-7. <strong>你</strong> 得到回应：“5 和 3 的和是 8”
+4. <strong>计算器服务</strong> 执行运算：`5.0 + 3.0 = 8.0`
+5. <strong>计算器服务</strong> 返回结果：`"5.00 + 3.00 = 8.00"`
+6. **AI** 接收结果并格式化自然语言回答
+7. <strong>你</strong> 得到结果：“5 和 3 的和是 8”
 
-## 下一步
+## 后续步骤
 
-更多示例，请参见 [第 04 章：实用示例](../README.md)
+欲了解更多示例，请参见 [第04章：实用示例](../README.md)
 
 ---
 

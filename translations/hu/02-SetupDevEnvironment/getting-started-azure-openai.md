@@ -1,34 +1,34 @@
-# Azure AI Foundry fejlesztői környezet beállítása
+# Fejlesztői környezet beállítása az Azure AI Foundry-hoz
 
-> Ez az útmutató az ebben a kurzusban használt Java AI alkalmazásokhoz állítja be az **Azure AI Foundry** modelleket, **kulcs nélküli** hitelesítéssel (Microsoft Entra ID) — nincs API kulcs kezelés. Új vagy az eszközzel? Kezdd a [fejlesztői környezet útmutatónál](./README.md).
+> Ez az útmutató beállítja az **Azure AI Foundry** modelleket a jelen tanfolyam Java AI alkalmazásaihoz, **kulcs nélküli** hitelesítést használva (Microsoft Entra ID) — nincs API-kulcs, amit kezelni kell. Új vagy az eszközökkel? Kezdd a [fejlesztői környezet útmutatóval](./README.md).
 
-Ez az útmutató az ebben a kurzusban használt Java AI alkalmazásokhoz állítja be az **Azure AI Foundry** modelleket. Két lehetőséged van:
+Ez az útmutató beállítja az **Azure AI Foundry** modelleket a jelen tanfolyam Java AI alkalmazásaihoz. Két út áll rendelkezésedre:
 
-- **A lehetőség — `azd` + Bicep használata a kiépítéshez (ajánlott):** egy parancs telepíti a Foundry fiókot és a modelleket kódként. Nincs portálon kattintás.
-- **B lehetőség — erőforrások kézi létrehozása** az Azure AI Foundry portálon.
+- **A lehetőség — Telepítés `azd` + Bicep használatával (ajánlott):** egy parancs telepíti a Foundry fiókot és a modelleket kódként. Nem szükséges portálon kattintani.
+- **B lehetőség — Erőforrások kézi létrehozása** az Azure AI Foundry portálon.
 
-Mindkét út **kulcs nélküli hitelesítést** használ (Microsoft Entra ID) — nincsenek API kulcsok, amelyeket másolni vagy szivárogtatni kéne.
+Mindkét út **kulcs nélküli hitelesítést** (Microsoft Entra ID) használ — nincs API-kulcs, amit másolni vagy véletlenül kiszivárogtatni kellene.
 
 ## Tartalomjegyzék
 
 - [Mi jön létre](#mi-jön-létre)
 - [Előfeltételek](#előfeltételek)
-- [A lehetőség: Kiépítés az azd + Bicep segítségével (ajánlott)](#option-a-provision-with-azd--bicep-recommended)
+- [A lehetőség: Telepítés az azd + Bicep segítségével (Ajánlott)](#option-a-provision-with-azd--bicep-recommended)
 - [B lehetőség: Erőforrások kézi létrehozása](#b-lehetőség-erőforrások-kézi-létrehozása)
 - [Környezet beállítása](#környezet-beállítása)
-- [Teszteld a beállításodat](#teszteld-a-beállításodat)
-- [Mi következik?](#mi-következik)
+- [Teszteld a beállítást](#teszteld-a-beállítást)
+- [Mi a következő?](#mi-a-következő)
 - [Erőforrások](#erőforrások)
 - [További erőforrások](#további-erőforrások)
 
 ## Mi jön létre
 
-Az [`infra/`](../../../02-SetupDevEnvironment/infra) mappában lévő Bicep sablonok az alábbiakat hozzák létre:
+Az [`infra/`](../../../02-SetupDevEnvironment/infra) Bicep sablonok előállítják:
 
-- Egy **Azure AI Foundry** fiókot (`Microsoft.CognitiveServices/accounts`, típus `AIServices`) egy projekttel
-- Egy **beszélgetés** deploy-t — `gpt-4o-mini`
-- Egy **embedding** deploy-t — `text-embedding-3-small` (a későbbi fejezetekben használva)
-- Egy **kulcs nélküli szerepkör-hozzárendelést** (`Cognitive Services OpenAI User`), hogy az `az login` segítségével jelentkezz be kulcskezelés helyett
+- Egy **Azure AI Foundry** fiókot (`Microsoft.CognitiveServices/accounts`, `AIServices` típus) egy projekttel
+- Egy **chat** telepítést - GPT-5.6 Luna (`gpt-5.6-luna`), `2026-07-09` verzióval, `GlobalStandard` kapacitás `10` (10 kérés/perc és 10,000 token/perc a modellhez)
+- Egy **embedding** telepítést - `text-embedding-3-small`, `1` verzió (későbbi fejezetekben használva)
+- Egy **kulcs nélküli szerepkör hozzárendelést** (`Cognitive Services OpenAI User`), így az `az login` használatával jelentkezel be kulcsok kezelése nélkül
 
 ## Előfeltételek
 
@@ -37,7 +37,7 @@ Az [`infra/`](../../../02-SetupDevEnvironment/infra) mappában lévő Bicep sabl
 - [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli)
 - [Java 21+](https://learn.microsoft.com/java/openjdk/download) és [Maven 3.9+](https://maven.apache.org/download.cgi)
 
-## A lehetőség: Kiépítés az azd + Bicep segítségével (ajánlott)
+## A lehetőség: Telepítés az azd + Bicep segítségével (Ajánlott)
 
 A `02-SetupDevEnvironment` mappából:
 
@@ -48,18 +48,18 @@ cd 02-SetupDevEnvironment
 azd auth login
 az login
 
-# A Foundry fiók és a modell telepítések előkészítése
+# A Foundry fiók és modelltelepítések előkészítése
 azd up
 ```
 
-Az `azd` kérni fog egy **környezeti nevet** (például `genai-java`) és egy **régiót**. Válassz olyan régiót, ahol elérhető a `gpt-4o-mini` és a `text-embedding-3-small` — például `eastus2` vagy `swedencentral`.
+Az `azd` egy **környezeti nevet** kér be (például `genai-java`), **előfizetést** és **régiót**. Válassz saját előfizetést és egy régiót, ahol a `gpt-5.6-luna` és a `text-embedding-3-small` elérhető, például `eastus2`. Győződj meg arról, hogy az előfizetés elegendő kvótával rendelkezik az adott régióban a modell és a telepítés típusához; a rendelkezésre állás és kvóta előfizetéstől függően változik.
 
-A kiépítés befejeztével az azd:
+Amikor a telepítés befejeződik, az azd:
 
-1. Telepíti az összeset, ami szerepel az [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep) fájlban.
-2. Lefuttat egy postprovision hook-ot, amely létrehozza az [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) fájlt endpoint és deployment nevek tárolásával (nincs titok).
+1. Telepíti az összes, a [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep) fájlban definiált erőforrást.
+2. Lefuttat egy utólagos hook-ot, ami létrehozza a [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) fájlt az endpoint és a telepítési nevek megadásával (titkok nélkül).
 
-> **Tipp:** Bármikor futtasd újra az `azd up` parancsot a változtatások érvényesítéséhez. Az `azd down` megöli az összes erőforrást és megszünteti a költséget.
+> **Tipp:** Futtasd újra bármikor az `azd up` parancsot a változtatások alkalmazásához. Az `azd down` törli az összes erőforrást és megállítja a költségeket.
 
 A generált beállítások megtekintéséhez:
 
@@ -67,44 +67,46 @@ A generált beállítások megtekintéséhez:
 azd env get-values
 ```
 
-Most ugorj a [Teszteld a beállításodat](#teszteld-a-beállításodat) részhez.
+Most ugorj a [Teszteld a beállítást](#teszteld-a-beállítást) részhez.
 
 ## B lehetőség: Erőforrások kézi létrehozása
 
-Inkább portált használnál? Kézzel hozd létre az erőforrásokat:
+Ha inkább a portált használod, hozd létre az erőforrásokat kézzel:
 
-1. Lépj be az [Azure AI Foundry portálra](https://ai.azure.com/).
-2. **Hozz létre egy projektet** (ez egy AI Foundry erőforrást is létrehoz). Adj neki nevet, például `GenAIJava`.
-3. A projektben menj a **Modellek + végpontok** → **Modell telepítése** → **Alapmodell telepítése**.
-4. Telepítsd a **gpt-4o-mini**-t (telepítés neve `gpt-4o-mini`). Ismételd meg a **text-embedding-3-small**-lal, ha az embedding példákat szeretnéd.
-5. Az **Áttekintés** fülön másold ki a **végpontot** (például `https://<resource>.openai.azure.com/`).
-6. Adj magadnak kulcs nélküli hozzáférést: a erőforrásnál nyisd meg a **Hozzáférés vezérlése (IAM)** → **Szerepkör hozzárendelés hozzáadása** → rendeld a **Cognitive Services OpenAI User** szerepkört a fiókodhoz.
+1. Menj az [Azure AI Foundry portálra](https://ai.azure.com/) és jelentkezz be.
+2. **Hozz létre egy projektet** (ez létrehoz egy AI Foundry erőforrást is). Adj neki nevet, például `GenAIJava`.
+3. A projektben nyisd meg a **Modellek + végpontok** → **Modell telepítése** → **Alapmodell telepítése** menüpontot.
+4. Telepítsd a **GPT-5.6 Luna** modellt és telepítést (`gpt-5.6-luna` névvel, `2026-07-09` verzió), **Global Standard** kapacitással `10`. Ismételd meg a **text-embedding-3-small** (`1` verzió) esetén, ha az embedding példákat is használni szeretnéd.
+5. Az **Áttekintés** nézetből másold ki a **végpont URL-jét** (például `https://<resource>.openai.azure.com/`).
+6. Adj magadnak kulcs nélküli hozzáférést: az erőforrásnál nyisd meg a **Hozzáférés-kezelés (IAM)** → **Szerepkör hozzárendelés hozzáadása** → rendeld hozzá a **Cognitive Services OpenAI User** szerepkört a fiókodhoz.
 
-> **Még gondjaid vannak?** Nézd meg az [Azure AI Foundry dokumentációját](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects).
+> **Még mindig gond van?** Nézd meg az [Azure AI Foundry dokumentációját](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects).
 
 ## Környezet beállítása
 
-**Ha az A lehetőséget használtad (`azd up`)**, a beállítási fájl már megvan — nincs teendő. Ugorj a [Teszteld a beállításodat](#teszteld-a-beállításodat) pontra.
+**Ha az A lehetőséget választottad (`azd up`),** a beállítási fájlod már elkészült — nincs mit konfigurálni. Ugorj a [Teszteld a beállítást](#teszteld-a-beállítást) részhez.
 
-**Ha a B lehetőséget (kézi) választottad**, magadnak kell létrehoznod az example `.env` fájlt:
+**Ha a B lehetőséget választottad (kézi),** hozd létre magadnak az example `.env` fájlját:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 cp .env.example .env
 ```
 
-A `.env`-et szerkeszd a végpontoddal (kulcs nélkül — hitelesítés kulcs nélkül történik):
+Szerkeszd az `.env` fájlt a végpontoddal (nincs kulcs — a hitelesítés kulcs nélküli):
 
 ```bash
 AZURE_OPENAI_ENDPOINT=https://<your-resource>.openai.azure.com/
-AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
+AZURE_OPENAI_DEPLOYMENT=gpt-5.6-luna
 ```
 
-> **Biztonsági megjegyzés:** Nincs API kulcs, amit tárolni kéne. A Microsoft Entra ID-n keresztül hitelesítesz az `az login` parancssal (lokálisan) vagy felügyelt identitással (az Azure-ban). A `.env` fájl csak titoktalan beállításokat tartalmaz és a `.gitignore` már figyel rá.
+Használd az erőforrás Azure OpenAI végpontját, ne projekt URL-t. A basic-chat app ezt `/openai/v1`-re fordítja le, és egy explicit bearer-token klienst konfigurál; API-kulcs nem szükséges.
 
-## Teszteld a beállításodat
+> **Biztonsági megjegyzés:** Nincs API-kulcs tárolni való. A hitelesítés Microsoft Entra ID-n keresztül történik az `az login` (helyi) vagy egy kezelt identitás (Azure-ban) segítségével. Az `.env` fájl csak nem titkos beállításokat tartalmaz, és már szerepel a `.gitignore`-ban.
 
-Győződj meg róla, hogy be vagy jelentkezve, hogy a kulcs nélküli hitelesítés tudjon tokent szerezni, majd futtasd a példát:
+## Teszteld a beállítást
+
+Győződj meg róla, hogy be vagy jelentkezve, hogy a kulcs nélküli hitelesítés tokenhez jusson, majd futtasd az példát:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
@@ -113,35 +115,35 @@ az login          # ha még nem jelentkeztél be
 mvn clean spring-boot:run
 ```
 
-Látnod kell a `gpt-4o-mini` modell válaszát!
+Választ kell kapnod a `gpt-5.6-luna` modelltől. Futtasd az példákat egymás után, hogy a kis alapkvótán belül maradj; ha HTTP 429 választ kapsz, várd meg a retry intervallumot, mielőtt újra próbálkozol.
 
-> **VS Code használóknak:** Nyomj `F5`-öt a futtatáshoz. Az alkalmazás automatikusan betölti a `.env`-ed.
+> **VS Code felhasználók:** Nyomd meg az `F5` gombot a futtatáshoz. Az app automatikusan betölti az `.env` fájlt.
 
-> **Teljes példa:** Lásd a [Basic Chat with Azure AI Foundry példát](./examples/basic-chat-azure/README.md) részletes ismertetésért és hibakeresésért.
+> **Teljes példa:** Részletekért és hibakeresésért lásd a [Basic Chat az Azure AI Foundry-val példát](./examples/basic-chat-azure/README.md).
 
-## Mi következik?
+## Mi a következő?
 
-**A beállítás készen van!** Most már rendelkezel:
-- Azure AI Foundry-val `gpt-4o-mini` és `text-embedding-3-small` telepítve
-- Kulcs nélküli hitelesítéssel (Microsoft Entra ID) — nincs kulcskezelés
-- Egy helyi `.env` fájl az endpointtal és a deployment nevekkel
-- Egy működő Java fejlesztői környezet
+A telepítés és az példa sikeres futtatása után rendelkezel:
+- Azure AI Foundry-val, melyen a `gpt-5.6-luna` és `text-embedding-3-small` telepítve van
+- Kulcs nélküli hitelesítéssel (Microsoft Entra ID) — nincs kulcs, amit kezelni kellene
+- Egy helyi `.env` fájllal, amely tartalmazza a végpont és a telepítési neveket
+- Egy Java fejlesztői környezettel, ami készen áll a használatra
 
-**Folytasd a** [3. fejezettel: Alapvető generatív AI technikák](../03-CoreGenerativeAITechniques/README.md), hogy elkezdhesd AI alkalmazások építését!
+**Folytasd a** [3. fejezettel: Alapvető generatív AI technikák](../03-CoreGenerativeAITechniques/README.md), hogy elkezd az AI alkalmazások fejlesztését!
 
 ## Erőforrások
 
 - [Azure Developer CLI (azd)](https://aka.ms/azure-dev/install)
-- [Kulcs nélküli hitelesítés Microsoft Entra ID-vel](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
-- [Azure AI Foundry Dokumentáció](https://learn.microsoft.com/azure/ai-foundry/)
-- [Spring AI Azure OpenAI Dokumentáció](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
-- [Azure OpenAI Java SDK](https://learn.microsoft.com/java/api/overview/azure/ai-openai-readme)
+- [Kulcs nélküli hitelesítés Microsoft Entra ID használatával](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
+- [Azure AI Foundry dokumentáció](https://learn.microsoft.com/azure/ai-foundry/)
+- [Spring AI 2 OpenAI Java SDK átállás](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [Hivatalos OpenAI Java SDK Azure OpenAI v1-hez](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
 
 ## További erőforrások
 
 - [VS Code letöltése](https://code.visualstudio.com/Download)
 - [Docker Desktop beszerzése](https://www.docker.com/products/docker-desktop)
-- [Fejlesztői konténer konfigurációja](../../../.devcontainer/devcontainer.json)
+- [Dev Container konfiguráció](../../../.devcontainer/devcontainer.json)
 
 ---
 

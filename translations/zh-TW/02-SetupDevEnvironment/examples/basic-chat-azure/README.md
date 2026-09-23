@@ -1,12 +1,14 @@
-# 基本聊天與 Azure AI Foundry - 端到端範例
+# 使用 Azure AI Foundry 的基本聊天示範 - 端到端範例
 
-此範例是一個簡單的 Spring Boot 應用程式，使用 **keyless 認證**（Microsoft Entra ID）連接到 **Azure AI Foundry** 模型並測試您的設定。它使用 Spring AI 的 `ChatClient`。
+這個範例是使用 **Azure AI Foundry** 模型並透過 <strong>無密鑰驗證</strong>（Microsoft Entra ID）連接的簡單 Spring Boot 應用程式，用於測試您的設定。它使用 Spring AI 的 `ChatClient`，其背後是 **官方 OpenAI Java SDK** 和 **Azure OpenAI v1** 端點。
+
+[pom.xml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/pom.xml) 中的版本為 Spring Boot **4.1.1**、Spring AI **2.0.1**、OpenAI Java **4.63.1**、Azure Identity **1.18.6** 和 dotenv-java **3.2.0**。範例使用 `spring-ai-starter-model-openai`，並明確宣告 `openai-java` 與 `azure-identity`；Spring AI 2 移除了舊的 Azure OpenAI 起始套件。
 
 ## 目錄
 
-- [前置條件](#前置條件)
+- [先決條件](#先決條件)
 - [快速開始](#快速開始)
-- [認證如何運作](#認證如何運作)
+- [驗證機制說明](#驗證機制說明)
 - [執行應用程式](#執行應用程式)
   - [使用 Maven](#使用-maven)
   - [使用 VS Code](#使用-vs-code)
@@ -20,16 +22,16 @@
 - [後續步驟](#後續步驟)
 - [資源](#資源)
 
-## 前置條件
+## 先決條件
 
-在執行此範例之前，請確保您已擁有：
+執行此範例前，請確保您擁有：
 
-- 具備 `gpt-4o-mini` 部署的 Azure AI Foundry 資源 — 使用 `azd up` 或手動透過 [Azure AI Foundry 安裝指南](../../getting-started-azure-openai.md) 建立
-- 該資源的 **認知服務 OpenAI 使用者** 角色（Bicep 範本會自動分配）
-- 已使用 `az login` 登入的 [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli)
+- 一個具備 `gpt-5.6-luna` 部署的 Azure AI Foundry 資源 — 可透過 `azd up` 指令快建，或參考 [Azure AI Foundry 設定指南](../../getting-started-azure-openai.md) 手動建立
+- 該資源上的 **認知服務 OpenAI 使用者** 角色（Bicep 模板會自動指派此角色）
+- 已登入的 [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli) (`az login`)
 - Java 21+ 與 Maven 3.9+
 
-> **不需 API 金鑰** — 認證透過 Microsoft Entra ID 以無金鑰方式進行。
+> **不需 API 金鑰** — 驗證透過 Microsoft Entra ID 無密鑰進行。
 
 ## 快速開始
 
@@ -37,11 +39,11 @@
 # 1. 導航至專案
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 
-# 2. 登入以便無金鑰認證能取得令牌
+# 2. 登入，以便無需密鑰的身份驗證可以取得令牌
 az login
 
 # 3. 配置端點
-#    - 如果你執行過 `azd up`，.env 檔案已為你寫好（可跳過此步驟）。
+#    - 如果你執行過 `azd up`，.env 已為你寫入（可跳過此步驟）。
 #    - 否則請複製範本並設定 AZURE_OPENAI_ENDPOINT：
 cp .env.example .env
 
@@ -49,11 +51,17 @@ cp .env.example .env
 mvn spring-boot:run
 ```
 
-## 認證如何運作
+## 驗證機制說明
 
-此範例使用 **Microsoft Entra ID** 進行認證 — 無需 API 金鑰。
+此範例使用 **Microsoft Entra ID** 進行驗證 — 無需 API 金鑰。
 
-當僅設定 `spring.ai.azure.openai.endpoint`（且未指定 api-key）時，Spring AI 使用 [`DefaultAzureCredential`](https://learn.microsoft.com/java/api/com.azure.identity.defaultazurecredential) 建立 Azure OpenAI 用戶端。該憑證會自動從您本地的 `az login` 工作階段取得存取權杖，或在 Azure 執行時從管理身分識別 (Managed Identity) 取得，因此同一份程式碼可在兩者間無需變更地運作。
+應用程式在 [BasicChatApplication.java](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/java/com/example/BasicChatApplication.java) 中明確設定驗證：
+
+1. `azureCredential()` 使用 `AuthenticationUtil.getBearerTokenSupplier` 搭配 `DefaultAzureCredential` 和 `https://ai.azure.com/.default` 範圍建立 `BearerTokenCredential`。
+2. `azureOpenAiClient()` 使用 `OpenAIOkHttpClient.builder()` 構建 `OpenAIClient`，將資源端點解析為 `/openai/v1`，並以 `.credential(...)` 提供持有者權杖憑證。
+3. `azureChatModel()` 將此客戶端參數輸入 Spring AI 的 `OpenAiChatModel`，作為本課程 `ChatClient` 的後端。
+
+這些明確的 bean 可避免全域 `OPENAI_API_KEY` 覆蓋 Azure 驗證。僅從 YAML 中省略 API 金鑰並非完整驗證設定。`DefaultAzureCredential` 可在本地使用您的 `az login` 會話或 Azure 管理身分；所選的身分必須具備上述的資源角色。
 
 ## 執行應用程式
 
@@ -69,13 +77,18 @@ mvn spring-boot:run
 2. 按下 `F5` 或使用「執行與除錯」面板
 3. 選擇「Spring Boot-BasicChatApplication」設定
 
-> <strong>注意</strong>：VS Code 設定會自動載入您的 .env 檔案
+> <strong>注意</strong>：應用程式會從其工作目錄載入 `.env`，包括透過 VS Code 啟動時。
 
 ### 預期輸出
 
-```
+執行成功後的示範輸出（已省略啟動日誌；輸出回應文字會變動）：
+
+```text
 Starting Basic Chat with Azure OpenAI...
-Environment variables loaded successfully
+Environment variables loaded from .env file
+Endpoint: https://your-resource.openai.azure.com/
+Deployment: gpt-5.6-luna
+Auth: keyless (Microsoft Entra ID via DefaultAzureCredential)
 Connecting to Azure OpenAI...
 Sending prompt: What is AI in a short sentence? Max 100 words.
 
@@ -91,21 +104,32 @@ Success! Azure OpenAI connection is working correctly.
 
 ### 環境變數
 
-| 變數 | 說明 | 必填 | 範例 |
+| 變數 | 說明 | 是否必須 | 範例 |
 |----------|-------------|----------|---------|
 | `AZURE_OPENAI_ENDPOINT` | Foundry（Azure OpenAI）端點 URL | 是 | `https://my-resource.openai.azure.com/` |
-| `AZURE_OPENAI_DEPLOYMENT` | 聊天模型部署名稱 | 否 | `gpt-4o-mini`（預設） |
+| `AZURE_OPENAI_DEPLOYMENT` | 聊天模型部署名稱 | 否 | `gpt-5.6-luna` （預設） |
 
-> 無 API 金鑰變數 — 認證採用無金鑰方式（透過 `az login` 使用 Microsoft Entra ID）。
+> 不存在 API 金鑰變數 — 驗證是無密鑰的（透過 `az login` 使用 Microsoft Entra ID）。
 
 ### Spring 設定
 
-`application.yml` 檔案配置：
-- <strong>端點</strong>：`${AZURE_OPENAI_ENDPOINT}` - 取自環境變數
-- <strong>部署</strong>：`${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}` - 取自環境變數並有預設值
-- <strong>認證</strong>：無金鑰 — 未設定 `api-key`，Spring AI 使用 `DefaultAzureCredential`
-- <strong>溫度</strong>：`0.7` - 控制創意度（0.0 = 確定性，1.0 = 創意）
-- <strong>最大令牌數</strong>：`500` - 最大回應長度
+[application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml) 使用 `spring.ai.openai` 前綴與扁平化的聊天屬性（無 `options` 區塊）：
+
+```yaml
+spring:
+  ai:
+    openai:
+      base-url: ${AZURE_OPENAI_ENDPOINT}
+      microsoft-foundry: true
+      chat:
+        model: ${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
+        reasoning-effort: none
+        max-completion-tokens: 500
+```
+
+`model` 是 **Azure 部署名稱**。驗證來自上述明確的 bean，而非 `api-key` 設定。本課程關閉推理並將完成 token 上限設為 500；保留 `temperature` 和傳統 `max-tokens` 未設定。
+
+Microsoft 推薦 [官方 OpenAI SDK 與 Azure OpenAI v1 及 Responses API 用於新應用程式](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)。聊天完成（Chat Completions）仍適用於此基於訊息的既有課程。對 GPT-5.6，包含工具的聊天完成請將 `reasoning_effort` 設為 `none`；如需結合推理與工具請使用 Responses。詳見 [推理模型與工具呼叫](https://learn.microsoft.com/azure/foundry/openai/how-to/reasoning#tool-calling-with-reasoning-models)。
 
 ## 故障排除
 
@@ -114,57 +138,66 @@ Success! Azure OpenAI connection is working correctly.
 <details>
 <summary><strong>錯誤：401 / "PermissionDenied" / 權杖錯誤</strong></summary>
 
-- 執行 `az login` — 無金鑰認證須有有效登入以取得權杖
-- 確認您的帳戶在資源有 **認知服務 OpenAI 使用者** 角色
-- 角色剛指派後，請等待一分鐘讓權限生效
-- 確認您處於正確的租戶/訂閱 (`az account show`)
+- 執行 `az login` — 無密鑰驗證需有效登入以取得權杖
+- 確認帳號在資源上有 **認知服務 OpenAI 使用者** 角色
+- 若剛指派角色，請稍待片刻讓它生效
+- 確認您在正確的租戶/訂閱中（`az account show`）
 </details>
 
 <details>
-<summary><strong>錯誤："The endpoint is not valid" / 連線錯誤</strong></summary>
+<summary><strong>錯誤："端點無效" / 連線錯誤</strong></summary>
 
-- 確認 `AZURE_OPENAI_ENDPOINT` 為完整基本 URL（例如 `https://your-resource.openai.azure.com/`）
-- 檢查尾端斜線的一致性
-- 驗證端點與您已有的資源相符 (`azd env get-values`)
+- 確保 `AZURE_OPENAI_ENDPOINT` 是完整的基本 URL（例如 `https://your-resource.openai.azure.com/`）
+- 檢查結尾斜線是否一致
+- 驗證端點與已配置資源相符（`azd env get-values`）
 </details>
 
 <details>
-<summary><strong>錯誤："The deployment was not found"</strong></summary>
+<summary><strong>錯誤："找不到部署"</strong></summary>
 
-- 確認 `AZURE_OPENAI_DEPLOYMENT` 與 Azure 部署名稱一致
-- 檢查模型已成功部署且處於啟用狀態
-- 預設部署名稱為 `gpt-4o-mini`
+- 確認 `AZURE_OPENAI_DEPLOYMENT` 與 Azure 中的部署名稱吻合
+- 檢查模型是否成功部署且處於啟用狀態
+- 預設部署名稱為 `gpt-5.6-luna`
+</details>
+
+<details>
+<summary><strong>錯誤：429 / 超出速率限制</strong></summary>
+
+- 預設的 GPT-5.6 Luna 部署有全球標準容量 10：每分鐘 10 個請求，每分鐘 10,000 個 token
+- 請依序執行範例並在服務重試間隔後重試
+- 此基本範例關閉自動 SDK 重試，失敗請求會直接回報
 </details>
 
 <details>
 <summary><strong>VS Code：環境變數未載入</strong></summary>
 
-- 確認您的 `.env` 檔置於專案根目錄（與 `pom.xml` 同層級）
-- 嘗試在 VS Code 內建終端機執行 `mvn spring-boot:run`
-- 確認 VS Code Java 延伸套件已安裝完畢
+- 確保 `.env` 檔案位於專案根目錄（與 `pom.xml` 同層級）
+- 嘗試在 VS Code 整合終端執行 `mvn spring-boot:run`
+- 確認已正確安裝 VS Code Java 擴充套件
 </details>
 
 ### 除錯模式
 
-欲啟用詳細日誌，請解除註解 `application.yml` 中這些行：
+要啟用詳細日誌，請取消註解 [application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml) 中以下行：
 
 ```yaml
 logging:
   level:
-    org.springframework.ai: DEBUG
-    com.azure: DEBUG
+    "[org.springframework.ai]": DEBUG
+    "[com.azure]": DEBUG
 ```
 
 ## 後續步驟
 
-**設定完成！** 繼續您的學習旅程：
+**設定完成！** 繼續您的學習之旅：
 
-[第 3 章：核心生成式 AI 技術](../../../03-CoreGenerativeAITechniques/README.md)
+[第三章：核心生成式 AI 技術](../../../03-CoreGenerativeAITechniques/README.md)
 
 ## 資源
 
-- [Spring AI Azure OpenAI 文件](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
-- [使用 Microsoft Entra ID 進行無金鑰認證](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
+- [Spring AI 2 過渡到 OpenAI Java SDK](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [官方 OpenAI Java SDK 與 Azure OpenAI v1](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
+- [使用 Microsoft Entra ID 無密鑰驗證](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
 - [Azure AI Foundry 入口網站](https://ai.azure.com/)
 - [Azure AI Foundry 文件](https://learn.microsoft.com/azure/ai-foundry/)
 

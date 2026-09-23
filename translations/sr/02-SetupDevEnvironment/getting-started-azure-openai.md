@@ -1,34 +1,34 @@
-# Подешавање развојног окружења за Azure AI Foundry
+# Постављање развојног окружења за Azure AI Foundry
 
-> Овај водич подешава **Azure AI Foundry** моделе за Java AI апликације у овом курсу, користећи **аутентификацију без кључа** (Microsoft Entra ID) — нема потребе за управљањем API кључевима. Новац у алатима? Почните са [водичем за развојно окружење](./README.md).
+> Овај водич поставља **Azure AI Foundry** моделе за Java AI апликације у овом курсу, користећи **аутентификацију без кључа** (Microsoft Entra ID) — нема потребе за управљањем API кључевима. Нови сте у алатима? Започните са [водичем за развојно окружење](./README.md).
 
-Овај водич подешава **Azure AI Foundry** моделе за Java AI апликације у овом курсу. Имате два пута:
+Овај водич поставља **Azure AI Foundry** моделе за Java AI апликације у овом курсу. Имате два пута:
 
-- **Опција А — Прoвизија са `azd` + Bicep (препоручено):** једна команда приступа Foundry налог и моделе као код. Без кликтања у порталу.
-- **Опција Б — Креирајте ресурсе ручно** у Azure AI Foundry порталу.
+- **Опција А — Постављање са `azd` + Bicep (препоручено):** једна команда разврстава налог Foundry и моделе као код. Није потребно кликање по порталу.
+- **Опција Б — Креирање ресурса ручно** у Azure AI Foundry порталу.
 
-Оба пута користе **аутентификацију без кључа** (Microsoft Entra ID) — нема API кључева које треба копирати или пропуштати.
+Оба пута користе **аутентификацију без кључа** (Microsoft Entra ID) — нема API кључева које треба копирати или угрозити.
 
 ## Садржај
 
 - [Шта се креира](#шта-се-креира)
 - [Претпоставке](#претпоставке)
-- [Опција А: Прoвизија са azd + Bicep (Препоручено)](#опција-а-прoвизија-са-azd--bicep-препоручено)
+- [Опција А: Постављање са azd + Bicep (Препоручено)](#option-a-provision-with-azd--bicep-recommended)
 - [Опција Б: Креирање ресурса ручно](#опција-б-креирање-ресурса-ручно)
-- [Подешавање вашег окружења](#подешавање-вашег-окружења)
-- [Тестирање вашег подешавања](#тестирање-вашег-подешавања)
-- [Шта следи?](#шта-следи)
+- [Конфигурисање вашег окружења](#конфигуришите-своје-окружење)
+- [Тестирајте своју поставку](#тестирајте-своју-поставку)
+- [Шта даље?](#шта-даље)
 - [Ресурси](#ресурси)
 - [Додатни ресурси](#додатни-ресурси)
 
 ## Шта се креира
 
-Bicep шаблони у [`infra/`](../../../02-SetupDevEnvironment/infra) креирају:
+Bicep шаблони у [`infra/`](../../../02-SetupDevEnvironment/infra) постављају:
 
 - **Azure AI Foundry** налог (`Microsoft.CognitiveServices/accounts`, тип `AIServices`) са пројектом
-- **chat** деплојмент — `gpt-4o-mini`
-- **embedding** деплојмент — `text-embedding-3-small` (користи се у каснијим поглављима)
-- **додељивање улоге без кључа** (`Cognitive Services OpenAI User`) тако да се улазите помоћу `az login` уместо управљања кључевима
+- Чат распореда - GPT-5.6 Luna (`gpt-5.6-luna`), верзија `2026-07-09`, са капацитетом `GlobalStandard` 10 (10 захтева/минут и 10,000 токена/минут за овај модел)
+- Распоред уграђивања - `text-embedding-3-small`, верзија `1` (користи се у каснијим поглављима)
+- Додела улоге без кључа (`Cognitive Services OpenAI User`) тако да се пријављујете помоћу `az login` уместо управљања кључевима
 
 ## Претпоставке
 
@@ -37,74 +37,76 @@ Bicep шаблони у [`infra/`](../../../02-SetupDevEnvironment/infra) кре
 - [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli)
 - [Java 21+](https://learn.microsoft.com/java/openjdk/download) и [Maven 3.9+](https://maven.apache.org/download.cgi)
 
-## Опција А: Прoвизија са azd + Bicep (Препоручено)
+## Опција А: Постављање са azd + Bicep (Препоручено)
 
 Из фолдера `02-SetupDevEnvironment`:
 
 ```bash
 cd 02-SetupDevEnvironment
 
-# Пријавите се (за оба алата)
+# Пријавите се (оба алата)
 azd auth login
 az login
 
-# Обезбедите Foundry налог + распоређивања модела
+# Обезбедите налог Foundry + распореде модела
 azd up
 ```
 
-`azd` ће тражити **име окружења** (на пример `genai-java`) и **регион**. Изаберите регион где су `gpt-4o-mini` и `text-embedding-3-small` доступни — на пример `eastus2` или `swedencentral`.
+`azd` тражи **назив окружења** (на пример `genai-java`), **претплату** и **регион**. Изаберите своју претплату и регион где су доступни `gpt-5.6-luna` и `text-embedding-3-small`, на пример `eastus2`. Потврдите да претплата има довољну квоту за модел и тип распореда у том региону; доступност и квота варирају по претплати.
 
-Када завршите провизију, azd:
+Када постављање заврши, azd:
 
-1. Деплојује све дефинисано у [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep).
-2. Покреће postprovision hook који пише [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) са вашим endpoint и именима деплојмента (без тајни).
+1. Распоређује све дефинисано у [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep).
+2. Покреће постпостављачки hook који уписује [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) са вашим именима крајњег тачке и распореда (без тајни).
 
-> **Савет:** Покрените `azd up` кад год желите да примените промене. Покрените `azd down` да избришете све и зауставите трошкове.
+> **Савет:** Покрените поново `azd up` у било ком тренутку да примените измене. Покрените `azd down` да избришете све и прекинете настајање трошкова.
 
-Да бисте видели генерисане поставке:
+Да видите генерисане поставке:
 
 ```bash
 azd env get-values
 ```
 
-Сада прескочите на [Тестирање вашег подешавања](#тестирање-вашег-подешавања).
+Сада пређите на [Тестирајте своју поставку](#тестирајте-своју-поставку).
 
 ## Опција Б: Креирање ресурса ручно
 
-Преферирате портал? Креирајте ресурсе ручно:
+Више волите портал? Креирајте ресурсе ручно:
 
 1. Идите на [Azure AI Foundry портал](https://ai.azure.com/) и пријавите се.
-2. **Креирајте пројекат** (ово такође креира AI Foundry ресурс). Дајте му име као што је `GenAIJava`.
+2. **Креирајте пројекат** (ово такође креира AI Foundry ресурс). Дајте име као `GenAIJava`.
 3. У вашем пројекту отворите **Models + endpoints** → **Deploy model** → **Deploy base model**.
-4. Деплојујте **gpt-4o-mini** (име деплојмента `gpt-4o-mini`). Поновите за **text-embedding-3-small** ако желите примере укључивања.
-5. Из **Overview**, копирајте **endpoint** (на пример `https://<resource>.openai.azure.com/`).
-6. Дајте себи приступ без кључа: на ресурсу отворите **Access control (IAM)** → **Add role assignment** → доделите **Cognitive Services OpenAI User** вашем налогу.
+4. Распоредите **GPT-5.6 Luna** (име модела и распореда `gpt-5.6-luna`, верзија `2026-07-09`) са капацитетом **Global Standard** 10. Поновите за **text-embedding-3-small**, верзија `1`, ако желите примере уграђивања.
+5. Са странице **Overview**, копирајте **крајњу тачку** (на пример `https://<resource>.openai.azure.com/`).
+6. Дозволите себи приступ без кључа: на ресурсу отворите **Access control (IAM)** → **Add role assignment** → доделите улогу **Cognitive Services OpenAI User** вашем налогу.
 
-> **И даље имате проблема?** Погледајте [документацију за Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects).
+> **Још увек имате проблема?** Погледајте [документацију Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects).
 
-## Подешавање вашег окружења
+## Конфигуришите своје окружење
 
-**Ако сте користили Опцију А (`azd up`)**, ваш фајл са поставкама је већ написан — није потребно ништа да подешавате. Прескочите на [Тестирање вашег подешавања](#тестирање-вашег-подешавања).
+**Ако сте користили опцију А (`azd up`)**, ваш фајл са подешавањима је већ уписан — нема шта да се подешава. Пређите на [Тестирајте своју поставку](#тестирајте-своју-поставку).
 
-**Ако сте користили Опцију Б (ручно)**, креирајте пример `.env` фајл сами:
+**Ако сте користили опцију Б (ручно)**, сами креирајте `.env` фајл примера:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 cp .env.example .env
 ```
 
-Уредите `.env` са вашим endpoint-ом (без кључа — аутентификација је без кључа):
+Уредите `.env` са вашом крајњом тачком (без кључа — аутентификација је без кључа):
 
 ```bash
 AZURE_OPENAI_ENDPOINT=https://<your-resource>.openai.azure.com/
-AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
+AZURE_OPENAI_DEPLOYMENT=gpt-5.6-luna
 ```
 
-> **Безбедносна напомена:** Нема API кључа за чување. Аутентикујете се преко Microsoft Entra ID помоћу `az login` (локално) или управљеног идентитета (у Azure). `.env` фајл садржи само неповерљиве поставке и већ је додат у `.gitignore`.
+Користите Azure OpenAI крајњу тачку ресурса, не URL пројекта. апликација basic-chat је пребацује на `/openai/v1` и конфигурише изричитог клијента са bearer токеном; API кључ није потребан.
 
-## Тестирање вашег подешавања
+> **Безбедносна напомена:** Не постоји API кључ за чување. Аутентификујете се помоћу Microsoft Entra ID преко `az login` (локално) или управљеног идентитета (у Azure). Фајл `.env` садржи само непотпунске параметре и већ је обухваћен `.gitignore`.
 
-Уверите се да сте пријављени како би аутентификација без кључа добила токен, затим покрените пример:
+## Тестирајте своју поставку
+
+Уверите се да сте пријављени како би аутентификација без кључа могла добити токен, затим покрените пример:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
@@ -113,35 +115,35 @@ az login          # ако већ нисте пријављени
 mvn clean spring-boot:run
 ```
 
-Требало би да видите одговор од модела `gpt-4o-mini`!
+Требало би да видите одговор са модела `gpt-5.6-luna`. Покретајте примере узастопно да би сте остали унутар мале подразумеване квоте; ако добијете HTTP 429, сачекајте период поновног покушаја пре него што покушате поново.
 
-> **Корисници VS Code:** Притисните `F5` да покренете. Апликација аутоматски учитава ваш `.env`.
+> **Корисници VS Code:** Притисните `F5` за покретање. Апликација аутоматски учитава ваш `.env`.
 
-> **Комплетан пример:** Погледајте [Basic Chat са Azure AI Foundry пример](./examples/basic-chat-azure/README.md) за детаље и решавање проблема.
+> **Комлетан пример:** Погледајте [Основни чат са Azure AI Foundry примером](./examples/basic-chat-azure/README.md) за детаље и решавање проблема.
 
-## Шта следи?
+## Шта даље?
 
-**Подешавање је завршено!** Сада имате:
-- Azure AI Foundry са деплојованим `gpt-4o-mini` и `text-embedding-3-small`
+Након постављања и успешног покретања примера, имаћете:
+- Azure AI Foundry са разврстаним `gpt-5.6-luna` и `text-embedding-3-small`
 - Аутентификацију без кључа (Microsoft Entra ID) — нема кључева за управљање
-- Локални `.env` са вашим endpoint и именима деплојмента
-- Спремно Java развојно окружење
+- Локални `.env` са вашим крајњим тачкама и именима распореда
+- Јава развојно окружење спремно за рад
 
-**Наставите даље у** [Поглавље 3: Основне технике генеративне вештачке интелигенције](../03-CoreGenerativeAITechniques/README.md) да бисте почели са израдом AI апликација!
+**Наставите на** [Поглавље 3: Основне технике генеративне вештачке интелигенције](../03-CoreGenerativeAITechniques/README.md) да бисте почели са израдом AI апликација!
 
 ## Ресурси
 
 - [Azure Developer CLI (azd)](https://aka.ms/azure-dev/install)
 - [Аутентификација без кључа са Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
-- [Azure AI Foundry документација](https://learn.microsoft.com/azure/ai-foundry/)
-- [Spring AI Azure OpenAI документација](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
-- [Azure OpenAI Java SDK](https://learn.microsoft.com/java/api/overview/azure/ai-openai-readme)
+- [Документација Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/)
+- [Преход са Spring AI 2 на OpenAI Java SDK](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [Званични OpenAI Java SDK са Azure OpenAI v1](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
 
 ## Додатни ресурси
 
-- [Преузмите VS Code](https://code.visualstudio.com/Download)
-- [Преузмите Docker Desktop](https://www.docker.com/products/docker-desktop)
-- [Конфигурација Dev Container-а](../../../.devcontainer/devcontainer.json)
+- [Преузми VS Code](https://code.visualstudio.com/Download)
+- [Преузми Docker Desktop](https://www.docker.com/products/docker-desktop)
+- [Конфигурација Dev Container](../../../.devcontainer/devcontainer.json)
 
 ---
 

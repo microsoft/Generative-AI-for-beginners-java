@@ -1,36 +1,36 @@
 # Configuración del Entorno de Desarrollo para Azure AI Foundry
 
-> Esta guía configura los modelos de **Azure AI Foundry** para las aplicaciones de IA en Java de este curso, usando autenticación **sin claves** (Microsoft Entra ID) — no hay claves de API que gestionar. ¿Nuevo en estas herramientas? Comienza con la [guía del entorno de desarrollo](./README.md).
+> Esta guía configura los modelos de **Azure AI Foundry** para las aplicaciones Java de IA en este curso, usando autenticación **sin clave** (Microsoft Entra ID), sin claves API que administrar. ¿Nuevo en las herramientas? Comienza con la [guía del entorno de desarrollo](./README.md).
 
-Esta guía configura los modelos de **Azure AI Foundry** para las aplicaciones de IA en Java de este curso. Tienes dos opciones:
+Esta guía configura los modelos de **Azure AI Foundry** para las aplicaciones Java de IA en este curso. Tienes dos opciones:
 
-- **Opción A — Provisionar con `azd` + Bicep (recomendado):** un comando despliega la cuenta de Foundry y los modelos como código. Sin hacer clic en el portal.
-- **Opción B — Crear los recursos manualmente** en el portal de Azure AI Foundry.
+- **Opción A — Provisionar con `azd` + Bicep (recomendado):** un comando despliega la cuenta Foundry y los modelos como código. Sin clics en el portal.
+- **Opción B — Crear recursos manualmente** en el portal de Azure AI Foundry.
 
-Ambas opciones usan autenticación **sin claves** (Microsoft Entra ID) — no hay claves de API que copiar o exponer.
+Ambos caminos usan **autenticación sin clave** (Microsoft Entra ID), sin claves API que copiar o filtrar.
 
 ## Tabla de Contenidos
 
 - [Qué se crea](#qué-se-crea)
-- [Requisitos Previos](#requisitos-previos)
+- [Requisitos previos](#requisitos-previos)
 - [Opción A: Provisionar con azd + Bicep (Recomendado)](#option-a-provision-with-azd--bicep-recommended)
 - [Opción B: Crear Recursos Manualmente](#opción-b-crear-recursos-manualmente)
-- [Configura Tu Entorno](#configura-tu-entorno)
-- [Prueba Tu Configuración](#prueba-tu-configuración)
-- [¿Qué Sigue?](#qué-sigue)
+- [Configura tu entorno](#configura-tu-entorno)
+- [Prueba tu configuración](#prueba-tu-configuración)
+- [¿Qué sigue?](#qué-sigue)
 - [Recursos](#recursos)
-- [Recursos Adicionales](#recursos-adicionales)
+- [Recursos adicionales](#recursos-adicionales)
 
 ## Qué se crea
 
-Las plantillas Bicep en [`infra/`](../../../02-SetupDevEnvironment/infra) crean:
+Las plantillas Bicep en [`infra/`](../../../02-SetupDevEnvironment/infra) aprovisionan:
 
 - Una cuenta de **Azure AI Foundry** (`Microsoft.CognitiveServices/accounts`, tipo `AIServices`) con un proyecto
-- Un despliegue de **chat** — `gpt-4o-mini`
-- Un despliegue de **embedding** — `text-embedding-3-small` (usada en capítulos posteriores)
-- Una **asignación de rol sin clave** (`Cognitive Services OpenAI User`) para que inicies sesión con `az login` en lugar de administrar claves
+- Un despliegue **chat** - GPT-5.6 Luna (`gpt-5.6-luna`), versión `2026-07-09`, con capacidad `GlobalStandard` `10` (10 solicitudes/minuto y 10,000 tokens/minuto para este modelo)
+- Un despliegue **embedding** - `text-embedding-3-small`, versión `1` (usado en capítulos posteriores)
+- Una asignación de rol **sin clave** (`Cognitive Services OpenAI User`) para iniciar sesión con `az login` en lugar de gestionar claves
 
-## Requisitos Previos
+## Requisitos previos
 
 - Una [suscripción de Azure](https://azure.microsoft.com/free/)
 - [Azure Developer CLI (`azd`)](https://aka.ms/azure-dev/install)
@@ -48,45 +48,45 @@ cd 02-SetupDevEnvironment
 azd auth login
 az login
 
-# Proporcionar la cuenta Foundry + despliegues de modelos
+# Proveer la cuenta de Foundry + despliegues de modelos
 azd up
 ```
 
-`azd` solicitará un **nombre de entorno** (por ejemplo `genai-java`) y una **región**. Elige una región donde estén disponibles `gpt-4o-mini` y `text-embedding-3-small` — por ejemplo, `eastus2` o `swedencentral`.
+`azd` solicita un **nombre de entorno** (por ejemplo `genai-java`), **suscripción** y **región**. Elige tu suscripción y una región donde `gpt-5.6-luna` y `text-embedding-3-small` estén disponibles, por ejemplo `eastus2`. Confirma que la suscripción tiene cuota suficiente para el modelo y tipo de despliegue en esa región; la disponibilidad y cuota varían según la suscripción.
 
-Cuando finalice la provisión, azd:
+Cuando finaliza el aprovisionamiento, azd:
 
 1. Despliega todo lo definido en [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep).
-2. Ejecuta un hook postprovisionamiento que escribe [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) con tu endpoint y nombres de despliegue (sin secretos).
+2. Ejecuta un gancho post aprovisionamiento que escribe [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) con tu endpoint y nombres de despliegue (sin secretos).
 
-> **Consejo:** Ejecuta `azd up` nuevamente en cualquier momento para aplicar cambios. Ejecuta `azd down` para eliminar todo y dejar de generar costos.
+> **Consejo:** Vuelve a ejecutar `azd up` en cualquier momento para aplicar cambios. Ejecuta `azd down` para eliminar todo y dejar de incurrir en costos.
 
-Para ver los ajustes generados:
+Para ver la configuración generada:
 
 ```bash
 azd env get-values
 ```
 
-Ahora ve a [Prueba Tu Configuración](#prueba-tu-configuración).
+Ahora ve a [Prueba tu configuración](#prueba-tu-configuración).
 
-## Opción B: Crear Recursos Manualmente
+## Opción B: Crear recursos manualmente
 
-¿Prefieres el portal? Crea los recursos manualmente:
+¿Prefieres el portal? Crea tú mismo los recursos:
 
 1. Ve al [portal de Azure AI Foundry](https://ai.azure.com/) e inicia sesión.
-2. **Crea un proyecto** (esto también crea un recurso de AI Foundry). Ponle un nombre como `GenAIJava`.
+2. **Crea un proyecto** (esto también crea un recurso AI Foundry). Asígnale un nombre como `GenAIJava`.
 3. En tu proyecto, abre **Modelos + endpoints** → **Desplegar modelo** → **Desplegar modelo base**.
-4. Despliega **gpt-4o-mini** (nombre de despliegue `gpt-4o-mini`). Repite para **text-embedding-3-small** si deseas los ejemplos de embedding.
+4. Despliega **GPT-5.6 Luna** (nombre de modelo y despliegue `gpt-5.6-luna`, versión `2026-07-09`) con capacidad **Global Standard** `10`. Repite para **text-embedding-3-small**, versión `1`, si quieres los ejemplos embedding.
 5. Desde **Resumen**, copia el **endpoint** (por ejemplo `https://<recurso>.openai.azure.com/`).
-6. Concede acceso sin clave: en el recurso, abre **Control de acceso (IAM)** → **Agregar asignación de rol** → asigna **Cognitive Services OpenAI User** a tu cuenta.
+6. Concédate acceso sin clave: en el recurso, abre **Control de acceso (IAM)** → **Agregar asignación de rol** → asigna **Cognitive Services OpenAI User** a tu cuenta.
 
-> **¿Todavía tienes problemas?** Consulta la [documentación de Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects).
+> **¿Aún tienes problemas?** Consulta la [documentación de Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects).
 
-## Configura Tu Entorno
+## Configura tu entorno
 
-**Si usaste la Opción A (`azd up`)**, tu archivo de configuración ya está creado — no necesitas hacer nada más. Salta a [Prueba Tu Configuración](#prueba-tu-configuración).
+**Si usaste la Opción A (`azd up`)**, tu archivo de configuración ya está escrito — no necesitas configurar nada. Salta a [Prueba tu configuración](#prueba-tu-configuración).
 
-**Si usaste la Opción B (manual)**, crea tú mismo el archivo `.env` del ejemplo:
+**Si usaste la Opción B (manual)**, crea el archivo `.env` del ejemplo tú mismo:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
@@ -97,14 +97,16 @@ Edita `.env` con tu endpoint (sin clave — la autenticación es sin clave):
 
 ```bash
 AZURE_OPENAI_ENDPOINT=https://<your-resource>.openai.azure.com/
-AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
+AZURE_OPENAI_DEPLOYMENT=gpt-5.6-luna
 ```
 
-> **Nota de seguridad:** No hay clave API que almacenar. Autenticas con Microsoft Entra ID mediante `az login` (localmente) o una identidad administrada (en Azure). El archivo `.env` contiene solo configuraciones no secretas y ya está cubierto por `.gitignore`.
+Usa el endpoint Azure OpenAI del recurso, no la URL del proyecto. La app basic-chat lo resuelve a `/openai/v1` y configura un cliente con token bearer explícito; no se requiere clave API.
 
-## Prueba Tu Configuración
+> **Nota de seguridad:** No hay clave API que almacenar. Autenticas con Microsoft Entra ID vía `az login` (local) o identidad administrada (en Azure). El archivo `.env` contiene solo configuraciones no secretas y ya está cubierto por `.gitignore`.
 
-Asegúrate de haber iniciado sesión para que la autenticación sin clave obtenga un token, luego ejecuta el ejemplo:
+## Prueba tu configuración
+
+Asegúrate de haber iniciado sesión para que la autenticación sin clave pueda obtener un token, luego ejecuta el ejemplo:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
@@ -113,35 +115,35 @@ az login          # si aún no has iniciado sesión
 mvn clean spring-boot:run
 ```
 
-¡Deberías ver una respuesta del modelo `gpt-4o-mini`!
+Deberías ver una respuesta del modelo `gpt-5.6-luna`. Ejecuta los ejemplos secuencialmente para mantenerte dentro de la pequeña cuota predeterminada; si recibes HTTP 429, espera el intervalo de reintento antes de volver a intentarlo.
 
 > **Usuarios de VS Code:** Presiona `F5` para ejecutar. La aplicación carga tu `.env` automáticamente.
 
-> **Ejemplo completo:** Consulta el [Ejemplo Básico de Chat con Azure AI Foundry](./examples/basic-chat-azure/README.md) para detalles y solución de problemas.
+> **Ejemplo completo:** Consulta el [ejemplo básico de chat con Azure AI Foundry](./examples/basic-chat-azure/README.md) para detalles y solución de problemas.
 
-## ¿Qué Sigue?
+## ¿Qué sigue?
 
-**¡Configuración completa!** Ahora tienes:
-- Azure AI Foundry con `gpt-4o-mini` y `text-embedding-3-small` desplegados
-- Autenticación sin claves (Microsoft Entra ID) — sin claves que gestionar
-- Un archivo `.env` local con tu endpoint y nombres de despliegue
-- Un entorno de desarrollo en Java listo para usar
+Después de aprovisionar y ejecutar el ejemplo con éxito, tendrás:
+- Azure AI Foundry con `gpt-5.6-luna` y `text-embedding-3-small` desplegados
+- Autenticación sin clave (Microsoft Entra ID), sin claves que administrar
+- Un `.env` local con tu endpoint y nombres de despliegue
+- Un entorno de desarrollo Java listo para usar
 
-**Continúa a** [Capítulo 3: Técnicas Básicas de IA Generativa](../03-CoreGenerativeAITechniques/README.md) para comenzar a construir aplicaciones de IA.
+**Continúa a** [Capítulo 3: Técnicas básicas de IA generativa](../03-CoreGenerativeAITechniques/README.md) para comenzar a construir aplicaciones de IA.
 
 ## Recursos
 
 - [Azure Developer CLI (azd)](https://aka.ms/azure-dev/install)
-- [Autenticación sin claves con Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
+- [Autenticación sin clave con Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
 - [Documentación de Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/)
-- [Documentación Spring AI Azure OpenAI](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
-- [Azure OpenAI Java SDK](https://learn.microsoft.com/java/api/overview/azure/ai-openai-readme)
+- [Transición Spring AI 2 OpenAI Java SDK](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [SDK oficial OpenAI Java con Azure OpenAI v1](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
 
-## Recursos Adicionales
+## Recursos adicionales
 
 - [Descargar VS Code](https://code.visualstudio.com/Download)
 - [Obtener Docker Desktop](https://www.docker.com/products/docker-desktop)
-- [Configuración del contenedor de desarrollo](../../../.devcontainer/devcontainer.json)
+- [Configuración de Dev Container](../../../.devcontainer/devcontainer.json)
 
 ---
 

@@ -1,34 +1,34 @@
-# 设置 Azure AI Foundry 的开发环境
+# 为 Azure AI Foundry 设置开发环境
 
-> 本指南使用 <strong>无密钥</strong> 认证（Microsoft Entra ID）为本课程中的 Java AI 应用设置 **Azure AI Foundry** 模型 — 无需管理 API 密钥。工具使用新手？请先阅读[开发环境指南](./README.md)。
+> 本指南为本课程中的 Java AI 应用设置 **Azure AI Foundry** 模型，使用 <strong>无密钥</strong> 认证（Microsoft Entra ID）— 无需管理 API 密钥。工具新手？请从 [开发环境指南](./README.md) 开始。
 
-本指南为本课程的 Java AI 应用设置 **Azure AI Foundry** 模型。您有两种途径：
+本指南设置本课程中 Java AI 应用的 **Azure AI Foundry** 模型。您有两种路径：
 
-- **方案 A — 使用 `azd` + Bicep 自动配置（推荐）：** 一条命令通过代码部署 Foundry 账户和模型，无需门户操作。
-- **方案 B — 在 Azure AI Foundry 门户手动创建资源。**
+- **选项 A — 使用 `azd` + Bicep 进行预配（推荐）：** 一条命令以代码方式部署 Foundry 账户和模型。无需点击门户。
+- **选项 B — 在 Azure AI Foundry 门户中手动创建资源**。
 
-两种方案均使用 <strong>无密钥认证</strong>（Microsoft Entra ID） — 无需复制或泄露 API 密钥。
+两种路径均使用 <strong>无密钥认证</strong>（Microsoft Entra ID）— 无需复制或泄露 API 密钥。
 
 ## 目录
 
-- [将创建的内容](#将创建的内容)
+- [创建了哪些内容](#创建了哪些内容)
 - [先决条件](#先决条件)
-- [方案 A：使用 azd + Bicep 自动配置（推荐）](#option-a-provision-with-azd--bicep-recommended)
-- [方案 B：手动创建资源](#方案-b：手动创建资源)
+- [选项 A：使用 azd + Bicep 进行预配（推荐）](#option-a-provision-with-azd--bicep-recommended)
+- [选项 B：手动创建资源](#选项-b：手动创建资源)
 - [配置您的环境](#配置您的环境)
 - [测试您的设置](#测试您的设置)
-- [接下来做什么？](#接下来做什么？)
+- [接下来是什么？](#接下来是什么？)
 - [资源](#资源)
-- [更多资源](#更多资源)
+- [附加资源](#附加资源)
 
-## 将创建的内容
+## 创建了哪些内容
 
-[`infra/`](../../../02-SetupDevEnvironment/infra) 中的 Bicep 模板将创建：
+[`infra/`](../../../02-SetupDevEnvironment/infra) 中的 Bicep 模板预配：
 
-- 一个 **Azure AI Foundry** 账户（资源类型 `Microsoft.CognitiveServices/accounts`，种类 `AIServices`），以及一个项目
-- 一个 <strong>聊天</strong> 部署 — `gpt-4o-mini`
-- 一个 <strong>向量嵌入</strong> 部署 — `text-embedding-3-small`（后续章节使用）
-- 一个 <strong>无密钥角色分配</strong>（`Cognitive Services OpenAI User`），可通过 `az login` 签入，无需管理密钥
+- 一个带有项目的 **Azure AI Foundry** 账户（`Microsoft.CognitiveServices/accounts`，类型为 `AIServices`）
+- 一个 <strong>聊天</strong> 部署 - GPT-5.6 Luna (`gpt-5.6-luna`)，版本 `2026-07-09`，带有 `GlobalStandard` 容量 `10`（此模型支持每分钟 10 个请求和 10,000 个令牌）
+- 一个 <strong>嵌入</strong> 部署 - `text-embedding-3-small`，版本 `1`（后续章节使用）
+- 一个 <strong>无密钥角色分配</strong>（`Cognitive Services OpenAI User`），使您可以通过 `az login` 登录，而无需管理密钥
 
 ## 先决条件
 
@@ -37,9 +37,9 @@
 - [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli)
 - [Java 21+](https://learn.microsoft.com/java/openjdk/download) 和 [Maven 3.9+](https://maven.apache.org/download.cgi)
 
-## 方案 A：使用 azd + Bicep 自动配置（推荐）
+## 选项 A：使用 azd + Bicep 进行预配（推荐）
 
-在 `02-SetupDevEnvironment` 文件夹中执行：
+在 `02-SetupDevEnvironment` 文件夹中：
 
 ```bash
 cd 02-SetupDevEnvironment
@@ -48,96 +48,98 @@ cd 02-SetupDevEnvironment
 azd auth login
 az login
 
-# 配置Foundry账户和模型部署
+# 配置Foundry账户及模型部署
 azd up
 ```
 
-`azd` 会提示您输入 <strong>环境名称</strong>（比如 `genai-java`）和 <strong>区域</strong>。选择支持 `gpt-4o-mini` 和 `text-embedding-3-small` 的区域，例如 `eastus2` 或 `swedencentral`。
+`azd` 会提示输入 <strong>环境名称</strong>（例如 `genai-java`）、<strong>订阅</strong> 和 <strong>区域</strong>。请选择您自己的订阅和 `gpt-5.6-luna` 及 `text-embedding-3-small` 可用的区域，例如 `eastus2`。确认所选订阅在该区域内有足够的配额用于模型和部署类型；可用性和配额因订阅而异。
 
-配置完成后，azd 会：
+预配完成后，azd 会：
 
-1. 部署 [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep) 中定义的所有资源。
-2. 运行一个后置配置钩子，写入 [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) 文件，包含您的终结点和部署名称（无秘密信息）。
+1. 部署 [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep) 中定义的所有内容。
+2. 运行后续钩子，写入 [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure)，包含您的端点和部署名称（无任何密钥）。
 
-> **提示：** 随时重新运行 `azd up` 应用更改。运行 `azd down` 删除所有资源并停止产生费用。
+> **提示：** 可以随时重新运行 `azd up` 以应用更改。运行 `azd down` 可删除所有内容并停止费用产生。
 
-查看生成的设置：
+要查看生成的设置：
 
 ```bash
 azd env get-values
 ```
 
-然后跳转到 [测试您的设置](#测试您的设置)。
+现在跳转到 [测试您的设置](#测试您的设置)。
 
-## 方案 B：手动创建资源
+## 选项 B：手动创建资源
 
 偏好使用门户？请手动创建资源：
 
 1. 访问 [Azure AI Foundry 门户](https://ai.azure.com/) 并登录。
-2. <strong>创建一个项目</strong>（这也会创建一个 AI Foundry 资源）。命名例如 `GenAIJava`。
-3. 在您的项目中，打开 <strong>模型与终结点</strong> → <strong>部署模型</strong> → <strong>部署基础模型</strong>。
-4. 部署 **gpt-4o-mini**（部署名称为 `gpt-4o-mini`）。如果需要嵌入示例，也部署 **text-embedding-3-small**。
-5. 在 <strong>概览</strong> 菜单中，复制 <strong>终结点</strong>（例如 `https://<resource>.openai.azure.com/`）。
-6. 授予自己无密钥访问权限：在资源上打开 **访问控制 (IAM)** → <strong>添加角色分配</strong> → 将 **Cognitive Services OpenAI User** 角色分配给您的账户。
+2. <strong>创建项目</strong>（这也会创建一个 AI Foundry 资源）。命名为 `GenAIJava`。
+3. 在您的项目中，打开 **模型 + 端点** → <strong>部署模型</strong> → <strong>部署基础模型</strong>。
+4. 部署 **GPT-5.6 Luna**（模型和部署名称为 `gpt-5.6-luna`，版本为 `2026-07-09`），容量为 <strong>全球标准</strong> `10`。如果要使用嵌入示例，请重复部署 `text-embedding-3-small`，版本 `1`。
+5. 在 <strong>概览</strong> 中，复制 <strong>端点</strong>（例如 `https://<resource>.openai.azure.com/`）。
+6. 授予自己无密钥访问权限：在资源中打开 **访问控制（IAM）** → <strong>添加角色分配</strong> → 将 **Cognitive Services OpenAI User** 指派给您的账户。
 
-> **仍有困难？** 参见 [Azure AI Foundry 文档](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects)。
+> **仍有问题？** 请参见 [Azure AI Foundry 文档](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects)。
 
 ## 配置您的环境
 
-**如果您使用了方案 A（`azd up`），** 您的设置文件已经写好，无需配置。直接跳转到 [测试您的设置](#测试您的设置)。
+**如果使用了选项 A（`azd up`）**，您的设置文件已经写好 — 无需配置。跳转到 [测试您的设置](#测试您的设置)。
 
-**如果您使用了方案 B（手动），** 请自行创建示例的 `.env` 文件：
+**如果使用了选项 B（手动）**，请自行创建示例的 `.env` 文件：
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 cp .env.example .env
 ```
 
-用您的终结点编辑 `.env` 文件（无需密钥 — 认证为无密钥）：
+使用您的端点编辑 `.env`（无密钥 — 认证是无密钥的）：
 
 ```bash
 AZURE_OPENAI_ENDPOINT=https://<your-resource>.openai.azure.com/
-AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
+AZURE_OPENAI_DEPLOYMENT=gpt-5.6-luna
 ```
 
-> **安全提示：** 无需保存任何 API 密钥。认证通过 `az login`（本地）或托管身份（Azure 内）使用 Microsoft Entra ID 完成。`.env` 文件只包含非机密设置，且已被 `.gitignore` 保护。
+使用资源的 Azure OpenAI 端点，而非项目 URL。basic-chat 应用会将其解析至 `/openai/v1` 并配置一个明确的 Bearer 令牌客户端；无须 API 密钥。
+
+> **安全提示：** 无需存储 API 密钥。您通过 `az login`（本地）或托管身份（在 Azure 中）使用 Microsoft Entra ID 认证。`.env` 文件只包含非机密设置，且已列入 `.gitignore`。
 
 ## 测试您的设置
 
-确保您已登录以便无密钥认证获得令牌，然后运行示例：
+确保您已登录，以便无密钥认证能获取令牌，然后运行示例：
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 
-az login          # 如果您尚未登录
+az login          # 如果你还没有登录
 mvn clean spring-boot:run
 ```
 
-您应该看到来自 `gpt-4o-mini` 模型的响应！
+您应看到来自 `gpt-5.6-luna` 模型的响应。请按顺序运行示例以保持在较小的默认配额内；如果收到 HTTP 429 错误，请等待重试间隔后再试。
 
-> **VS Code 用户：** 按 `F5` 运行。应用会自动加载您的 `.env` 文件。
+> <strong>VS Code 用户：</strong>按 `F5` 运行。应用会自动加载您的 `.env` 文件。
 
-> **完整示例：** 详情和故障排查见 [Azure AI Foundry 基础聊天示例](./examples/basic-chat-azure/README.md)。
+> **完整示例：** 详情及故障排除请参见 [Azure AI Foundry 的基础聊天示例](./examples/basic-chat-azure/README.md)。
 
-## 接下来做什么？
+## 接下来是什么？
 
-**设置完成！** 您现在拥有：
-- 已部署 `gpt-4o-mini` 和 `text-embedding-3-small` 的 Azure AI Foundry
-- 无密钥认证（Microsoft Entra ID）— 无需管理密钥
-- 包含终结点和部署名称的本地 `.env` 文件
-- 准备好的 Java 开发环境
+预配完成且示例成功运行后，您将拥有：
+- 部署了 `gpt-5.6-luna` 和 `text-embedding-3-small` 的 Azure AI Foundry
+- 无需管理的无密钥认证（Microsoft Entra ID）
+- 一个包含端点和部署名称的本地 `.env`
+- 一个准备就绪的 Java 开发环境
 
-<strong>继续阅读</strong> [第三章：核心生成式 AI 技术](../03-CoreGenerativeAITechniques/README.md) 开始构建 AI 应用吧！
+<strong>继续阅读</strong> [第三章：核心生成式 AI 技术](../03-CoreGenerativeAITechniques/README.md)，开始构建 AI 应用！
 
 ## 资源
 
 - [Azure 开发者 CLI (azd)](https://aka.ms/azure-dev/install)
 - [使用 Microsoft Entra ID 的无密钥认证](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
 - [Azure AI Foundry 文档](https://learn.microsoft.com/azure/ai-foundry/)
-- [Spring AI Azure OpenAI 文档](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
-- [Azure OpenAI Java SDK](https://learn.microsoft.com/java/api/overview/azure/ai-openai-readme)
+- [Spring AI 2 OpenAI Java SDK 迁移](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [Azure OpenAI v1 的官方 OpenAI Java SDK](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
 
-## 更多资源
+## 附加资源
 
 - [下载 VS Code](https://code.visualstudio.com/Download)
 - [获取 Docker Desktop](https://www.docker.com/products/docker-desktop)

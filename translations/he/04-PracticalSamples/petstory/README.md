@@ -1,38 +1,48 @@
-# מדריך ליצירת סיפורי חיות מחמד למתחילים
+# מדריך ליצירת סיפור על חיית מחמד למתחילים
 
-## תוכן העניינים
+העלה תמונת חיית מחמד, נתח אותה עם GPT-5.6 Luna, ויצר סיפור מתוך התיאור המתקבל. שני בקשות המודל משתמשות ב-`reasoning_effort: none`.
+
+| רכיב | גרסה |
+| --- | --- |
+| Java | 21 ומעלה |
+| Spring Boot | 4.1.1 |
+| ערכת כלים Java של OpenAI | 4.63.1 |
+| Azure Identity | 1.18.6 |
+
+## תוכן עניינים
 
 - [דרישות מוקדמות](#דרישות-מוקדמות)
 - [הבנת מבנה הפרויקט](#הבנת-מבנה-הפרויקט)
-- [הסבר על הרכיבים הבסיסיים](#הסבר-על-הרכיבים-הבסיסיים)
-  - [1. היישום הראשי](#1-היישום-הראשי)
-  - [2. בקר רשת](#2-בקר-רשת)
-  - [3. שירות סיפורים](#3-שירות-סיפורים)
+- [הסבר רכיבי הליבה](#הסבר-רכיבי-הליבה)
+  - [1. האפליקציה הראשית](#1-אפליקציה-ראשית)
+  - [2. בותר האינטרנט](#2-בותר-האינטרנט)
+  - [3. שירות הסיפור](#3-שירות-הסיפור)
   - [4. תבניות רשת](#4-תבניות-רשת)
-  - [5. הגדרות](#5-הגדרות)
-- [הפעלת היישום](#הפעלת-היישום)
-- [איך הכל עובד ביחד](#איך-הכל-עובד-ביחד)
-- [הבנת האינטגרציה עם ה-AI](#הבנת-האינטגרציה-עם-ה-ai)
-- [שלבים הבאים](#שלבים-הבאים)
+  - [5. תצורה](#5-תצורה)
+- [הרצת האפליקציה](#הרצת-האפליקציה)
+- [בדיקות לא מקוונות](#בדיקות-לא-מקוונות)
+- [כיצד הכל עובד יחד](#כיצד-הכל-עובד-יחד)
+- [הבנת האינטגרציה של ה-AI](#הבנת-האינטגרציה-של-ה-ai)
+- [השלבים הבאים](#השלבים-הבאים)
 
 ## דרישות מוקדמות
 
-לפני שמתחילים, וודאו שיש לכם:
+לפני שתתחיל, ודא שיש לך:
 - Java 21 או גרסה גבוהה יותר מותקנת
-- Maven לניהול התלויות
-- פריסת מודל Azure AI Foundry (הפעילו עם `azd up` — ראה [פרק 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md)), מחוברים עם `az login` (אימות ללא מפתח)
-- הבנה בסיסית ב-Java, Spring Boot ופיתוח רשת
+- Maven לניהול תלותים
+- פריסת Azure AI Foundry של GPT-5.6 Luna בשם `gpt-5.6-luna`, או הגדרת `AZURE_OPENAI_DEPLOYMENT` המצביעה על פריסה זו. ראה [פרק 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md) לפריסת המשאבים והתחברות באמצעות `az login` לאימות ללא מפתח. הפריסה חייבת לתמוך בקלט תמונה וב-`reasoning_effort: none`.
+- הבנה בסיסית של Java, Spring Boot ופיתוח אינטרנט
 
 ## הבנת מבנה הפרויקט
 
-לפרויקט סיפורי חיות המחמד יש מספר קבצים חשובים:
+לפרויקט סיפור חיית המחמד יש מספר קבצים חשובים:
 
 ```
 petstory/
 ├── src/main/java/com/example/petstory/
 │   ├── PetStoryApplication.java       # Main Spring Boot application
 │   ├── PetController.java             # Web request handler
-│   ├── StoryService.java              # AI story generation service
+│   ├── StoryService.java              # AI image analysis and story generation
 │   └── SecurityConfig.java            # Security configuration
 ├── src/main/resources/
 │   ├── application.properties         # App configuration
@@ -42,13 +52,13 @@ petstory/
 └── pom.xml                           # Maven dependencies
 ```
 
-## הסבר על הרכיבים הבסיסיים
+## הסבר רכיבי הליבה
 
-### 1. היישום הראשי
+### 1. אפליקציה ראשית
 
 **קובץ:** `PetStoryApplication.java`
 
-זהו נקודת הכניסה ליישום ה-Spring Boot שלנו:
+זהו נקודת הכניסה לאפליקציית Spring Boot שלנו:
 
 ```java
 @SpringBootApplication
@@ -60,209 +70,50 @@ public class PetStoryApplication {
 ```
 
 **מה זה עושה:**
-- האנוטציה `@SpringBootApplication` מאפשרת קונפיגורציה אוטומטית וסריקת רכיבים
-- מפעילה שרת אינטגרטיבי (Tomcat) בריבוט 8080
-- יוצרת באופן אוטומטי את כל הבאנים והשירותים הדרושים של Spring
+- ההערת `@SpringBootApplication` מאפשרת קונפיגורציה אוטומטית וסריקת רכיבים
+- מתחיל שרת אינטרנט משולב (Tomcat) על פורט 8080
+- יוצר את כל Beens ושירותי ה-Spring הנחוצים אוטומטית
 
-### 2. בקר רשת
+### 2. בותר האינטרנט
 
-**קובץ:** `PetController.java`
+**קובץ:** [PetController.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/PetController.java)
 
-מתמודד עם כל בקשות הרשת ואינטראקציות המשתמש:
+| נקודת קצה | בקשה | תגובה מוצלחת |
+| --- | --- | --- |
+| `GET /` | אין גוף | טופס HTML להעלאת קובץ עם אסימון CSRF |
+| `POST /analyze-image` | `multipart/form-data`, שדה קובץ `image` | JSON: `{"description":"חיית מחמד שובבה..."}` |
+| `POST /generate-story` | `application/x-www-form-urlencoded`, שדה `description` | דף HTML עם התיאור והסיפור שנוצר |
 
-```java
-@Controller
-public class PetController {
-    
-    private final StoryService storyService;
-    
-    public PetController(StoryService storyService) {
-        this.storyService = storyService;
-    }
-    
-    @GetMapping("/")
-    public String index() {
-        return "index";  // מחזיר את תבנית index.html
-    }
-    
-    @PostMapping("/generate-story")
-    public String generateStory(@RequestParam("description") String description, 
-                               Model model, 
-                               RedirectAttributes redirectAttributes) {
-        
-        // אימות קלט
-        if (description.trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Please provide a description.");
-            return "redirect:/";
-        }
-        
-        // ניקוי הקלט לאבטחה
-        String sanitizedDescription = sanitizeInput(description);
-        
-        // יצירת סיפור עם טיפול בשגיאות
-        try {
-            String story = storyService.generateStory(sanitizedDescription);
-            model.addAttribute("caption", sanitizedDescription);
-            model.addAttribute("story", story);
-            return "result";  // מחזיר את תבנית result.html
-            
-        } catch (Exception e) {
-            // השתמש בסיפור חלופי אם ה-AI נכשל
-            String fallbackStory = generateFallbackStory(sanitizedDescription);
-            model.addAttribute("story", fallbackStory);
-            return "result";
-        }
-    }
-    
-    private String sanitizeInput(String input) {
-        return input.replaceAll("[<>\"'&]", "")  // Remove dangerous characters
-                   .trim()
-                   .substring(0, Math.min(input.length(), 500));  // הגבלת אורך
-    }
-}
-```
+שני נקודות הקצה POST דורשות את עוגיית הסשן ואסימון ה-CSRF שהתקבלו מ-`GET /`. סקריפט ההעלאה שולח את הערך הנסתר `_csrf` בכותרת `X-CSRF-TOKEN`; שליחת הסיפור שולחת זאת כשדה `_csrf` בטופס. לקוחות API חייבים לשמור על העוגייה בין הבקשות. אלה נקודות קצה של טפסים, לא נקודות JSON.
 
-**תכונות עיקריות:**
+התיאורים חייבים להיות לא ריקים ולא ליותר מ-1000 תווים. הבורר קוצר את התיאור ומסיר `<`, `>`, מרכאות כפולות, גרשיים, ו-`&` לפני העברתו לשירות. התבנית לתוצאה גם מבצעת בריחת תווים על הפלט עם `th:text`.
 
-1. **ניהול נתיבים**: `@GetMapping("/")` מציג את טופס ההעלאה, `@PostMapping("/generate-story")` מעבד הגשות
-2. **אימות קלט**: בודק תיאורים ריקים והגבלת אורך
-3. **אבטחה**: מנקה את קלט המשתמש כדי למנוע התקפות XSS
-4. **ניהול שגיאות**: מספק סיפורים חלופיים כאשר שירות ה-AI נכשל
-5. **קשירת מודל**: מעביר נתונים לתבניות HTML בעזרת `Model` של Spring
+כשיש כישלונות באימות תמונה מחזירים HTTP 400 עם שדה `error`; כשיש כישלונות במודל מחזירים HTTP 502 עם שדה `error` וללא `description`. תיאורי סיפור לא תקינים או כישלונות במודל מנותבים מחדש ל-`/` עם שגיאה גלויה. שדות חובה חסרים מחזירים HTTP 400, ואסימוני CSRF חסרים או לא תקינים מחזירים HTTP 403. לא מוצגים תיאורי גיבוי או סיפורים כהצלחות AI.
 
-**מערכת גיבוי:**
-הבקר כולל תבניות סיפורים מוקדמות שמשמשות כשהשירות AI אינו זמין:
+### 3. שירות הסיפור
 
-```java
-private String generateFallbackStory(String description) {
-    String[] storyTemplates = {
-        "Meet the most wonderful pet in the world – a furry ball of energy...",
-        "Once upon a time, there lived a remarkable pet whose heart was as big...",
-        "In a cozy home filled with love, there lived an extraordinary pet..."
-    };
-    
-    // השתמש ב-hash של התיאור לתשובות עקביות
-    int index = Math.abs(description.hashCode() % storyTemplates.length);
-    return storyTemplates[index];
-}
-```
+**קובץ:** [StoryService.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/StoryService.java)
 
-### 3. שירות סיפורים
+ערכת הכלים הרשמית של OpenAI Java 4.63.1 קוראת ל-API של Azure AI Foundry התואם ל-OpenAI Chat Completions. Azure Identity 1.18.6 מספקת אסימון Microsoft Entra דרך `DefaultAzureCredential`; אין צורך במפתח API.
 
-**קובץ:** `StoryService.java`
+| פעולה | קלט | `max_completion_tokens` |
+| --- | --- | --- |
+| `analyzeImage` | נתוני תמונה מקודדים ככתובת URL בסיס64 עם סוג MIME שהועלה | 300 |
+| `generateStory` | תיאור חיית מחמד בהודעת משתמש | 800 |
 
-שירות זה מתקשר עם Azure AI Foundry ליצירת סיפורים עם אימות ללא מפתח:
+שתי הבקשות משתמשות בפריסת המודל המוגדרת, כברירת מחדל `gpt-5.6-luna`, וקובעות במפורש `ReasoningEffort.NONE` (`reasoning_effort: none`). אף בקשה אינה שולחת `temperature` או את הפרמטר הישן `max_tokens`.
 
-```java
-@Service
-public class StoryService {
-    
-    private final OpenAIClient openAIClient;
-    private final String modelName;
-    
-    public StoryService(@Value("${azure.openai.endpoint:}") String endpoint,
-                       @Value("${azure.openai.deployment:gpt-4o-mini}") String modelName) {
-        this.modelName = modelName;
-        if (endpoint == null || endpoint.isBlank()) {
-            endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        }
-        
-        // נקודת הקצה התואמת ל-OpenAI של Foundry נמצאת תחת /openai/v1/
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1/";
-        
-        // אימות ללא מפתח עם Microsoft Entra ID (ללא מפתח API)
-        DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-        this.openAIClient = OpenAIOkHttpClient.builder()
-                .baseUrl(baseUrl)
-                .credential(BearerTokenCredential.create(
-                        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-                .build();
-    }
-    
-    public String generateStory(String description) {
-        String systemPrompt = "You are a creative storyteller who writes fun, " +
-                             "family-friendly short stories about pets. " +
-                             "Keep stories under 500 words and appropriate for all ages.";
-        
-        String userPrompt = "Write a fun short story about a pet described as: " + description;
-        
-        // הגדר את בקשת ה-AI
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(modelName)
-                .addSystemMessage(systemPrompt)
-                .addUserMessage(userPrompt)
-                .maxCompletionTokens(500)  // הגבל את אורך התגובה
-                .temperature(0.8)          // שלוט ביצירתיות (0.0-1.0)
-                .build();
-        
-        // שלח בקשה וקבל תגובה
-        ChatCompletion response = openAIClient.chat().completions().create(params);
-        
-        return response.choices().get(0).message().content().orElse("");
-    }
-}
-```
-
-**רכיבים עיקריים:**
-
-1. **לקוח OpenAI**: משתמש ב-SDK הרשמי של OpenAI ב-Java, מוגדר ל-Azure AI Foundry (ללא מפתח)
-2. **הנחיית מערכת**: מגדיר את התנהגות ה-AI לכתיבת סיפורי חיות משפחתיים
-3. **הנחיית משתמש**: מורה ל-AI מה לספר בדיוק לפי התיאור
-4. **פרמטרים**: שולט על אורך הסיפור ורמת היצירתיות
-5. **ניהול שגיאות**: זורק חריגות שהבקר תופס ומטפל בהן
+ניתוח תמונה מקבל JPEG, PNG, GIF, ו-WebP, דוחה תמונות ריקות וקבצים מעל 10MB, ומגביל את התיאור המתקבל ל-1000 תווים. בקשת הסיפור מבקשת סיפור קצר ידידותי למשפחה. בחירות ריקות או תוכן ריק במודל הן שגיאות, וכישלונות שומרים על סיבת הכישלון המקורית לאבחון צד השרת. לקוח ה-SDK נסגר כאשר האפליקציה נסגרת.
 
 ### 4. תבניות רשת
 
-**קובץ:** `index.html` (טופס העלאה)
+**קובץ:** [index.html](../../../../04-PracticalSamples/petstory/src/main/resources/templates/index.html) (טופס העלאה)
 
-העמוד הראשי שבו משתמשים מתארים את חיית המחמד שלהם:
+הדף מתחיל עם בורר תמונות, לא אזור טקסט לתיאור. **נתח תמונה** מציג מראש את התמונה שנבחרה ושולח אותה ל-`/analyze-image`. תגובה מוצלחת מציגה את התיאור, ממלאת את שדה `description` הנסתר, ומגלה את כפתור **צור סיפור**. כפתור זה שולח את הטופס הקיים ל-`/generate-story`.
 
-```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Pet Story Generator</title>
-    <!-- CSS styling -->
-</head>
-<body>
-    <div class="container">
-        <h1>Pet Story Generator</h1>
-        <p>Describe your pet and we'll create a fun story about them!</p>
-        
-        <!-- Error message display -->
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-        
-        <!-- Story generation form -->
-        <form action="/generate-story" method="post">
-            <div class="form-group">
-                <label for="description">Describe your pet:</label>
-                <textarea id="description" name="description" 
-                         placeholder="Tell us about your pet - what they look like, their personality, favorite activities..."
-                         maxlength="1000" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Generate Story</button>
-        </form>
-        
-        <!-- Image upload section with client-side processing -->
-        <div class="upload-section">
-            <h2>Or Upload a Photo</h2>
-            <input type="file" id="imageInput" accept="image/*" />
-            <button onclick="analyzeImage()" class="upload-btn">Analyze Image</button>
-        </div>
-        
-        <script>
-            // Client-side image analysis using Transformers.js
-            async function analyzeImage() {
-                // Image processing code here
-                // Generates description automatically from uploaded image
-            }
-        </script>
-    </div>
-</body>
-</html>
-```
+אין הורדת מודל בדפדפן או תלות ב-CDN. ניתוח התמונה מתבצע בשרת דרך הפריסה של Azure שהוגדרה. כישלונות נשארים גלויים ואינם מאפשרים יצירת סיפור עם תיאור מזויף. בחירת קובץ שונה מוחקת את הניתוח הקודם.
 
-**קובץ:** `result.html` (הצגת סיפור)
+**קובץ:** `result.html` (תצוגת הסיפור)
 
 מציג את הסיפור שנוצר:
 
@@ -297,18 +148,18 @@ public class StoryService {
 </html>
 ```
 
-**תכונות התבנית:**
+**מאפייני התבנית:**
 
 1. **אינטגרציה עם Thymeleaf**: משתמש בתכונות `th:` לתוכן דינמי
-2. **עיצוב רספונסיבי**: סגנונות CSS למובייל ודסקטופ
-3. **ניהול שגיאות**: מציג הודעות אימות למשתמשים
-4. **עיבוד בצד הלקוח**: JavaScript לניתוח תמונה (באמצעות Transformers.js)
+2. **עיצוב רספונסיבי**: עיצוב CSS למובייל ולשולחן עבודה
+3. **טיפול בשגיאות**: מציג שגיאות אימות למשתמשים
+4. **טיפול בהעלאה**: JavaScript מציג מראש את התמונה, שולח בקשת multipart עם הגנת CSRF, ומציג את התיאור המוחזר
 
-### 5. הגדרות
+### 5. תצורה
 
 **קובץ:** `application.properties`
 
-הגדרות התצורה של היישום:
+הגדרות תצורה לאפליקציה:
 
 ```properties
 spring.application.name=pet-story-app
@@ -322,21 +173,21 @@ logging.level.com.example.petstory=INFO
 
 # Azure AI Foundry (keyless) configuration
 azure.openai.endpoint=${AZURE_OPENAI_ENDPOINT:}
-azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
 ```
 
-**הסבר על ההגדרות:**
+**הסבר התצורה:**
 
-1. **העלאת קבצים**: מאפשר תמונות עד 10MB
-2. **רישומונים (לוגים)**: שולט על אילו מידע נרשם בפעילות
+1. **העלאת קבצים**: מוגבלים עד לגודל 10MB גם הקובץ עצמו וגם בקשת ה-multipart; שמור על תמונות בגודל נמוך מהגבול כדי להשאיר מקום לכותרות ה-multipart
+2. **רישום (לוגינג)**: שולט אילו מידע נרשם במהלך הריצה
 3. **Azure AI Foundry**: מגדיר את נקודת הקצה ופריסת המודל לשימוש (אימות ללא מפתח)
-4. **אבטחה**: הגדרת טיפול בשגיאות למניעת חשיפת מידע רגיש
+4. **אבטחה**: הגנת CSRF נשארת מופעלת; אבחון המודל נרשם בשרת, בעוד שהבורר מציג הודעות שגיאה כלליות בעת כישלונות מודל
 
-## הפעלת היישום
+## הרצת האפליקציה
 
-### שלב 1: התחברו והגדירו את נקודת הקצה שלכם
+### שלב 1: התחבר וקבע את נקודת הקצה שלך
 
-האימות הוא ללא מפתח (Microsoft Entra ID), לכן אין מפתח API. התחברו והגדירו את נקודת הקצה של Foundry:
+האימות הוא ללא מפתח (Microsoft Entra ID), כך שאין מפתח API. התחבר וקבע את נקודת הקצה Foundry שלך:
 
 **Windows (שורת הפקודה):**
 ```cmd
@@ -356,93 +207,91 @@ az login
 export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 ```
 
-**למה זה צריך:**
-- Azure AI Foundry משתמש ב-Microsoft Entra ID לאימות בקשות חישוב
+**מדוע זה נדרש:**
+- Azure AI Foundry משתמש ב-Microsoft Entra ID לאימות בקשות אינפרנציה
 - אימות ללא מפתח אומר שאין סודות בקוד המקור או בסביבה
-- על החשבון שלכם להיות עם תפקיד **Cognitive Services OpenAI User** במשאב
+- החשבון שלך צריך את התפקיד **Cognitive Services OpenAI User** במשאב
 
-### שלב 2: בניה והפעלה
+שם הפריסה ברירת המחדל הוא `gpt-5.6-luna`. אם לפריסת GPT-5.6 Luna שלך יש שם אחר, הגדר את `AZURE_OPENAI_DEPLOYMENT` באותו מסוף לפני הפעלת האפליקציה. גם ניתוח התמונה וגם יצירת הסיפור משתמשים בהגדרה זו.
 
-נווטו לספריית הפרויקט:
+### שלב 2: בניה והרצה
+
+נווט לספריית הפרויקט:
 ```bash
 cd 04-PracticalSamples/petstory
 ```
 
-בנו את היישום:
+בניה של קובץ JAR עצמאי והרצת כל הבדיקות הלא מקוונות:
 ```bash
-mvn clean compile
+mvn clean package
 ```
 
-התחילו את השרת:
+הפעל את השרת:
 ```bash
 mvn spring-boot:run
 ```
 
-היישום יפעל בכתובת `http://localhost:8080`.
+האפליקציה תתחיל בכתובת `http://localhost:8080`.
 
-### שלב 3: בדקו את היישום
+לחלופין, הפעל את קובץ ה-JAR הארוז על פורט פנוי, לדוגמה:
 
-1. **פתחו** את `http://localhost:8080` בדפדפן שלכם
-2. **תארו** את חיית המחמד שלכם באזור הטקסט (למשל, "רטריבר גולדן שובב שאוהב להביא כדור")
-3. **לחצו** על "Generate Story" כדי לקבל סיפור שיצר ה-AI
-4. **באופן חלופי**, העלו תמונת חיית מחמד ליצירת תיאור אוטומטית
-5. **צפו** בסיפור היצירתי בהתאם לתיאור של חיית המחמד שלכם
+```bash
+java -jar target/pet-story-app-0.0.1-SNAPSHOT.jar --server.port=8083
+```
 
-## איך הכל עובד ביחד
+עבור פקודה זו, פתח את `http://localhost:8083/`. אותם נתיבי `/analyze-image` ו- `/generate-story` זמינים על הפורט הנבחר.
 
-הנה הזרימה המלאה כשאתם יוצרים סיפור חיית מחמד:
+### שלב 3: בדוק את האפליקציה
 
-1. **קלט משתמש**: אתם מתארים את חיית המחמד בטופס האינטרנט
-2. **שליחת טופס**: הדפדפן שולח בקשת POST ל-`/generate-story`
-3. **עיבוד הבקר**: `PetController` מאמת ומנקה את הקלט
-4. **קריאה לשירות AI**: `StoryService` שולח בקשה למודל ב-Azure AI Foundry
-5. **יצירת סיפור**: ה-AI יוצר סיפור יצירתי לפי התיאור
-6. **טיפול בתגובה**: הבקר מקבל את הסיפור ומוסיף אותו למודל
-7. **הצגת תבנית**: Thymeleaf מרנדר את `result.html` עם הסיפור
-8. **הצגה**: המשתמש רואה את הסיפור בדפדפן שלו
+1. **פתח** את `http://localhost:8080` בדפדפן שלך
+2. **בחר** תמונת חיית מחמד ברורה בפורמט JPEG, PNG, GIF, או WebP, מתחת ל-10MB
+3. **לחץ** על "נתח תמונה" והמתן לתיאור חיית המחמד
+4. **לחץ** על "צור סיפור" לאחר ניתוח מוצלח
+5. **הצג** את הסיפור והשתמש בקישור בדף התוצאה כדי לחזור לטופס ההעלאה
+
+הזרימה המוצלחת של תמונה לסיפור מבצעת שתי קריאות למודל, אחת לכל כפתור. אינפרנציה חיה צורכת את המינון של הפריסה שלך ועלולה לגרור חיובים; הרץ בדיקות מעשנות אחת אחרי השנייה כשמשתפים פריסה עם הגבלת קצב. טעינת דף הבית לא מפעילה את המודל.
+
+## בדיקות לא מקוונות
+
+מספריית הדוגמאות, הרץ:
+
+```bash
+mvn test
+```
+
+[StoryServiceTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/StoryServiceTest.java) תופס בקשות אמיתיות ל-SDK של OpenAI עם מתקין HTTP חזרה לפנים. הבדיקה בודקת את פריסת שניהם, `reasoning_effort: none`, מגבלות טוקנים, מטען תמונה, אימות קלט, תגובות ריקות, ושגיאות מקוריות.
+
+[PetControllerTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/PetControllerTest.java) משתמש ב-MockMvc עם שירות מודל מדומה לבדיקת דפי Thymeleaf מוצגים, חוזה העלאה, CSRF, אימות, בריחת פלט, וכישלונות גלויים. בדיקות אלה אינן זקוקות לאישורי Azure ואינן קוראות לאינפרנציה בתשלום של Azure. Maven כותב דוחות Surefire תחת `target/surefire-reports`.
+
+## כיצד הכל עובד יחד
+
+כך נראית זרימת העבודה המלאה בעת יצירת סיפור על חיית מחמד:
+
+1. **בחירת תמונה**: אתה בוחר תמונת חיית מחמד בטופס ההעלאה
+2. **העלאת תמונה**: "נתח תמונה" שולח בקשת POST מרובת חלקים ל-/analyze-image עם כותרת CSRF
+3. **ניתוח תמונה**: `StoryService` שולח את התמונה ל-GPT-5.6 Luna עם הגדרת reasoning ל-none
+4. **הצגת תיאור**: הדפדפן מציג את התיאור שהוחזר ושומר אותו בטופס
+5. **שליחת סיפור**: "צור סיפור" שולח את `description` ו- `_csrf` ל-/generate-story
+6. **יצירת הסיפור**: הבורר מאמת את התיאור וקורא לאותה פריסה עם reasoning מוגדר ל-none
+7. **הצגת התבנית**: Thymeleaf מבצע בריחה ומציג את התיאור והסיפור בדף התוצאה
 
 **זרימת טיפול בשגיאות:**
-אם שירות ה-AI נכשל:
-1. הבקר תופס את החריגה
-2. יוצר סיפור חלופי מתבניות כתובות מראש
-3. מציג את הסיפור החלופי עם הערה על אי זמינות ה-AI
-4. המשתמש עדיין מקבל סיפור, לשמירת חוויית משתמש טובה
+אם המודל נכשל, השרת רושם את הסיבה. ניתוח תמונה מחזיר HTTP 502 והדפדפן מציג את השגיאה מבלי לחשוף את "צור סיפור". יצירת הסיפור מנותבת לטופס עם הודעת שגיאה. אף נתיב אינו מחליף בשקט תוצאה שנכתבה מראש.
 
-## הבנת האינטגרציה עם ה-AI
+## הבנת האינטגרציה של ה-AI
 
 ### Azure AI Foundry (ללא מפתח)
-היישום משתמש ב-Azure AI Foundry עם אימות ללא מפתח (Microsoft Entra ID):
+השירות מגדיר את ה-SDK עם נקודת הקצה `/openai/v1/` של המשאב שלך. `DefaultAzureCredential` ו-`AuthenticationUtil.getBearerTokenSupplier` מספקים אסימוני Microsoft Entra עבור `https://ai.azure.com/.default`. פיתוח מקומי יכול להשתמש בהתחברות Azure CLI שלך; אפליקציה המופעלת ב-Azure יכולה להשתמש בזיהוי מנוהל עם ההרשאות הנחוצות למשאב.
 
-```java
-// אימות ללא מפתח - ללא מפתח API
-DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-this.openAIClient = OpenAIOkHttpClient.builder()
-    .baseUrl(endpoint + "openai/v1/")
-    .credential(BearerTokenCredential.create(
-        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-    .build();
-```
+### הנדסת פרומפטים
+ניתוח תמונה מבקש תכונות נראות לעין של חיית המחמד בפסקה קצרה ואומר למודל להתייחס לטקסט בתמונה כנתונים, לא כהוראות. יצירת סיפור משתמשת בתיאור שהוחזר בבקשת כתיבה קצרה, ידידותית למשפחה. אף אחד מהקריאות לא מאפשר הסקה או מגדיר טמפרטורה.
 
-### הנחיית פרומפט (Prompt Engineering)
-השירות משתמש בפרומפטים מעוצבים בקפידה לקבלת תוצאות טובות:
+### עיבוד תגובת המודל
+מנהל התגובות המשותף דוחה בחירות חסרות ותוכן ריק או ריק מרווחים, מקצר תוכן תקין ושומר על כישלונות מקוריים לאבחון. תיאורי תמונה מוגבלים ל-1000 תווים כדי להתאים לטופס הסיפור הבא. כישלון המודל המקורי נשמר לאבחון אך לא מוצג למשתמש.
 
-```java
-String systemPrompt = "You are a creative storyteller who writes fun, " +
-                     "family-friendly short stories about pets. " +
-                     "Keep stories under 500 words and appropriate for all ages.";
-```
+## השלבים הבאים
 
-### עיבוד תגובה
-תגובה ה-AI מוצאת ומאומתת:
-
-```java
-ChatCompletion response = openAIClient.chat().completions().create(params);
-String story = response.choices().get(0).message().content().orElse("");
-```
-
-## שלבים הבאים
-
-לדוגמאות נוספות, ראו [פרק 04: דוגמאות מעשיות](../README.md)
+לדוגמאות נוספות ראו [פרק 04: דוגמאות מעשיות](../README.md)
 
 ---
 

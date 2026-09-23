@@ -1,115 +1,115 @@
-# Java के लिए जनरेटिव AI के विकास पर्यावरण की स्थापना
+# Java के लिए जनरेटिव AI के लिए विकास वातावरण सेट अप करना
 
-> **त्वरित शुरूआत:** अपने AI मॉडल को कुछ ही मिनटों में Bicep + `azd` के साथ **Azure AI Foundry** पर कोड के रूप में प्रदत्त करें — देखें [Azure AI Foundry सेटअप गाइड](getting-started-azure-openai.md)। प्रमाणीकरण **कीलेस** (Microsoft Entra ID) है, इसलिए कोई API कुंजी प्रबंधित करने की आवश्यकता नहीं है।
+> **त्वरित शुरुआत:** कुछ ही मिनटों में Bicep + `azd` के साथ अपने AI मॉडल्स को **Azure AI Foundry** पर कोड के रूप में प्रोविजन करें — देखें [Azure AI Foundry सेटअप गाइड](getting-started-azure-openai.md)। प्रमाणीकरण **कीलेस** है (Microsoft Entra ID), इसलिए कोई API कुंजी प्रबंधित करने की आवश्यकता नहीं है।
 
 ## आप क्या सीखेंगे
 
-- AI अनुप्रयोगों के लिए Java विकास पर्यावरण स्थापित करना
-- अपनी पसंदीदा विकास पर्यावरण का चयन और कॉन्फ़िगर करना (Codespaces के साथ क्लाउड-प्रथम, स्थानीय डिव कंटेनर, या पूर्ण स्थानीय सेटअप)
-- Azure AI Foundry मॉडल से कनेक्ट करके अपने सेटअप का परीक्षण करना
+- AI अनुप्रयोगों के लिए Java विकास वातावरण सेट अप करना
+- अपने पसंदीदा विकास पर्यावरण (Codespaces के साथ क्लाउड-प्रथम, स्थानीय डेवलपमेंट कंटेनर, या पूर्ण स्थानीय सेटअप) का चयन और कॉन्फ़िगर करना
+- Azure AI Foundry मॉडल से कनेक्ट करके अपनी सेटअप का परीक्षण करना
 
-## सामग्री सूची
+## सामग्री सारिणी
 
 - [आप क्या सीखेंगे](#आप-क्या-सीखेंगे)
 - [परिचय](#परिचय)
-- [चरण 1: अपना विकास पर्यावरण सेट करें](#चरण-1-अपना-विकास-पर्यावरण-सेट-करें)
-  - [विकल्प A: GitHub Codespaces (अनुशंसित)](#विकल्प-a-github-codespaces-अनुशंसित)
-  - [विकल्प B: स्थानीय डिव कंटेनर](#विकल्प-b-स्थानीय-डिव-कंटेनर)
+- [चरण 1: अपना विकास वातावरण सेट अप करें](#चरण-1-अपना-विकास-वातावरण-सेट-अप-करें)
+  - [विकल्प A: GitHub Codespaces (सिफारिश की गई)](#विकल्प-a-github-codespaces-सिफारिश-की-गई)
+  - [विकल्प B: स्थानीय डेवलपमेंट कंटेनर](#विकल्प-b-स्थानीय-dev-container)
   - [विकल्प C: अपने मौजूदा स्थानीय इंस्टॉलेशन का उपयोग करें](#विकल्प-c-अपने-मौजूदा-स्थानीय-इंस्टॉलेशन-का-उपयोग-करें)
-- [चरण 2: Azure AI Foundry की व्यवस्था करें](#चरण-2-azure-ai-foundry-की-व्यवस्था-करें)
+- [चरण 2: Azure AI Foundry प्रोविजन करें](#चरण-2-azure-ai-foundry-प्रोविजन-करें)
 - [चरण 3: अपने सेटअप का परीक्षण करें](#चरण-3-अपने-सेटअप-का-परीक्षण-करें)
 - [समस्या निवारण](#समस्या-निवारण)
 - [सारांश](#सारांश)
-- [अगले कदम](#अगले-कदम)
+- [अगले चरण](#अगले-चरण)
 
 ## परिचय
 
-यह अध्याय आपको एक विकास पर्यावरण स्थापित करने के लिए मार्गदर्शन करेगा। इस पाठ्यक्रम में हम मॉडल के लिए **Azure AI Foundry** का उपयोग करेंगे। आप Bicep और Azure Developer CLI (`azd`) के साथ मॉडल को कोड के रूप में स्थापित करते हैं, फिर **कीलेस प्रमाणीकरण** (Microsoft Entra ID) के साथ कनेक्ट करते हैं — कोई API कुंजियाँ कॉपी या लीक करने की जरूरत नहीं।
+यह अध्याय आपको विकास वातावरण सेट अप करने में मार्गदर्शन करेगा। हम पूरे पाठ्यक्रम में मॉडलों के लिए **Azure AI Foundry** का उपयोग करेंगे। आप मॉडलों को Bicep और Azure Developer CLI (`azd`) के साथ कोड के रूप में प्रोविजन करते हैं, फिर **कीलेस प्रमाणीकरण** (Microsoft Entra ID) के साथ कनेक्ट करते हैं — कोई API कुंजियाँ कॉपी या लीक नहीं करनी हैं।
 
-**कोई स्थानीय सेटअप आवश्यक नहीं!** आप GitHub Codespaces का उपयोग कर सकते हैं, जो आपके ब्राउज़र में पूर्ण विकास पर्यावरण प्रदान करता है, और वहीं से Foundry को प्रदान करें।
+**कोई स्थानीय सेटअप आवश्यक नहीं!** आप GitHub Codespaces का उपयोग कर सकते हैं, जो आपके ब्राउज़र में एक पूर्ण विकास वातावरण प्रदान करता है, और वहां से Foundry को प्रोविजन कर सकते हैं।
 
-हम इस कोर्स के लिए **Azure AI Foundry** का उपयोग करते हैं क्योंकि यह:
-- **कोड के रूप में प्रदान किया गया है** — एक `azd up` खाते और मॉडल तैनातियों को तैनात करता है
-- **कीलेस** — अपने Azure साइन-इन या प्रबंधित पहचान से प्रमाणीकरण करें
-- **उत्पादन-तैयार** — वही कोड स्थानीय और Azure में चलता है
-- **लचीला** — तैनाती नाम बदलकर मॉडल बदलें, आपके कोड को नहीं
+हम इस पाठ्यक्रम के लिए **Azure AI Foundry** का उपयोग करते हैं क्योंकि यह:
+- **कोड के रूप में प्रोविजन किया गया** — एक `azd up` खाते और मॉडल डिप्लॉयमेंट्स को तैनात करता है
+- **कीलेस** — अपने Azure साइन-इन या मैनेज्ड आइडेंटिटी से प्रमाणीकरण करें
+- **प्रोडक्शन-तैयार** — एक ही कोड लोकल और Azure दोनों पर चलता है
+- **लचीला** — मॉडल बदलें डिप्लॉयमेंट नाम बदलकर, न कि अपने कोड को
 
-> **ध्यान दें**: Azure AI Foundry तैनातियां टोकन के आधार पर बिल की जाती हैं (pay-as-you-go)। प्रावधान, क्षेत्र, और लागत विवरण के लिए [Azure AI Foundry सेटअप गाइड](getting-started-azure-openai.md) देखें।
+> **नोट**: Azure AI Foundry डिप्लॉयमेंट टोकन के आधार पर बिल किया जाता है (पे-एज़-यू-गो)। प्रोविजनिंग, क्षेत्र, और लागत विवरण के लिए [Azure AI Foundry सेटअप गाइड](getting-started-azure-openai.md) देखें।
 
 
-## चरण 1: अपना विकास पर्यावरण सेट करें
+## चरण 1: अपना विकास वातावरण सेट अप करें
 
 <a name="quick-start-cloud"></a>
 
-हमने इस जनरेटिव AI for Java कोर्स के लिए सभी आवश्यक उपकरण आपको उपलब्ध कराने और सेटअप समय कम करने के लिए एक पूर्व-कॉन्फ़िगर किया हुआ विकास कंटेनर बनाया है। अपनी पसंदीदा विकास विधि चुनें:
+हमने इस जनरेटिव AI फॉर जावा पाठ्यक्रम के लिए सभी आवश्यक उपकरण सुनिश्चित करने के लिए एक पूर्व-निर्धारित विकास कंटेनर बनाया है ताकि सेटअप समय कम हो। अपनी पसंदीदा विकास विधि चुनें:
 
-### पर्यावरण सेटअप विकल्प:
+### वातावरण सेटअप विकल्प:
 
-#### विकल्प A: GitHub Codespaces (अनुशंसित)
+#### विकल्प A: GitHub Codespaces (सिफारिश की गई)
 
 **2 मिनट में कोडिंग शुरू करें - कोई स्थानीय सेटअप आवश्यक नहीं!**
 
-1. इस रिपॉजिटरी को अपने GitHub खाते में फोर्क करें  
-   > **ध्यान दें**: यदि आप बुनियादी कॉन्फिग संपादित करना चाहते हैं तो कृपया [Dev Container Configuration](../../../.devcontainer/devcontainer.json) देखें
+1. इस रिपॉजिटरी को अपने GitHub खाते में फोर्क करें
+   > **नोट**: यदि आप बेसिक कॉन्फ़िग संपादित करना चाहते हैं, तो कृपया [Dev Container Configuration](../../../.devcontainer/devcontainer.json) देखें
 2. क्लिक करें **Code** → **Codespaces** टैब → **...** → **New with options...**
-3. डिफ़ॉल्ट का उपयोग करें – यह चुनता है **Dev container configuration**: इस कोर्स के लिए बनाया गया **Generative AI Java Development Environment** कस्टम devcontainer
+3. डिफ़ॉल्ट का उपयोग करें – यह इस कोर्स के लिए बनाई गई कस्टम Devcontainer के साथ **Dev container configuration**: **Generative AI Java Development Environment** चयन करेगा
 4. क्लिक करें **Create codespace**
-5. पर्यावरण तैयार होने तक लगभग 2 मिनट प्रतीक्षा करें
-6. आगे बढ़ें [चरण 2: Azure AI Foundry की व्यवस्था करें](#चरण-2-azure-ai-foundry-की-व्यवस्था-करें)
+5. लगभग 2 मिनट के लिए इंतजार करें जब तक वातावरण तैयार न हो जाए
+6. [चरण 2: Azure AI Foundry प्रोविजन करें](#चरण-2-azure-ai-foundry-प्रोविजन-करें) पर जाएं
 
-<img src="../../../translated_images/hi/codespaces.9945ded8ceb431a5.webp" alt="Screenshot: Codespaces submenu" width="50%">
+<img src="../../../translated_images/hi/codespaces.9945ded8ceb431a5.webp" alt="स्क्रीनशॉट: Codespaces सबमेनू" width="50%">
 
-<img src="../../../translated_images/hi/image.833552b62eee7766.webp" alt="Screenshot: New with options" width="50%">
+<img src="../../../translated_images/hi/image.833552b62eee7766.webp" alt="स्क्रीनशॉट: New with options" width="50%">
 
-<img src="../../../translated_images/hi/codespaces-create.b44a36f728660ab7.webp" alt="Screenshot: Create codespace options" width="50%">
+<img src="../../../translated_images/hi/codespaces-create.b44a36f728660ab7.webp" alt="स्क्रीनशॉट: Create codespace विकल्प" width="50%">
 
 
 > **Codespaces के लाभ**:
 > - कोई स्थानीय इंस्टॉलेशन आवश्यक नहीं
-> - किसी भी ब्राउज़र वाले डिवाइस पर काम करता है
-> - सभी टूल और डिपेंडेंसी के साथ पूर्व-कॉन्फ़िगर किया हुआ
-> - व्यक्तिगत खातों के लिए प्रति माह 60 घंटे मुफ्त
-> - सभी सीखने वालों के लिए सुसंगत पर्यावरण
+> - ब्राउज़र वाले किसी भी डिवाइस पर काम करता है
+> - सभी उपकरणों और निर्भरताओं के साथ पूर्व-निर्धारित
+> - व्यक्तिगत खातों के लिए प्रति माह 60 घंटे नि:शुल्क
+> - सभी शिक्षार्थियों के लिए समान वातावरण
 
-#### विकल्प B: स्थानीय डिव कंटेनर
+#### विकल्प B: स्थानीय Dev Container
 
-**उन डेवलपर्स के लिए जो Docker के साथ स्थानीय विकास पसंद करते हैं**
+**डिवेलपर्स के लिए जो Docker के साथ स्थानीय विकास पसंद करते हैं**
 
-1. इस रिपॉजिटरी को फोर्क और क्लोन करें अपने स्थानीय मशीन में  
-   > **ध्यान दें**: यदि आप बुनियादी कॉन्फिग संपादित करना चाहते हैं तो कृपया [Dev Container Configuration](../../../.devcontainer/devcontainer.json) देखें
-2. [Docker Desktop](https://www.docker.com/products/docker-desktop/) और [VS Code](https://code.visualstudio.com/) इंस्टॉल करें
-3. VS Code में [Dev Containers एक्सटेंशन](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) इंस्टॉल करें
+1. इस रिपॉजिटरी को फोर्क करें और अपनी स्थानीय मशीन पर क्लोन करें
+   > **नोट**: यदि आप बेसिक कॉन्फ़िग संपादित करना चाहते हैं, तो कृपया [Dev Container Configuration](../../../.devcontainer/devcontainer.json) देखें
+2. [Docker Desktop](https://www.docker.com/products/docker-desktop/) और [VS Code](https://code.visualstudio.com/) इंस्टाल करें
+3. VS Code में [Dev Containers एक्सटेंशन](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) इंस्टाल करें
 4. VS Code में रिपॉजिटरी फ़ोल्डर खोलें
-5. जब पूछा जाए, क्लिक करें **Reopen in Container** (या `Ctrl+Shift+P` → "Dev Containers: Reopen in Container" का उपयोग करें)
+5. संकेत मिलने पर, क्लिक करें **Reopen in Container** (या `Ctrl+Shift+P` → "Dev Containers: Reopen in Container" का उपयोग करें)
 6. कंटेनर के बनने और शुरू होने का इंतजार करें
-7. आगे बढ़ें [चरण 2: Azure AI Foundry की व्यवस्था करें](#चरण-2-azure-ai-foundry-की-व्यवस्था-करें)
+7. [चरण 2: Azure AI Foundry प्रोविजन करें](#चरण-2-azure-ai-foundry-प्रोविजन-करें) पर जाएं
 
-<img src="../../../translated_images/hi/devcontainer.21126c9d6de64494.webp" alt="Screenshot: Dev container setup" width="50%">
+<img src="../../../translated_images/hi/devcontainer.21126c9d6de64494.webp" alt="स्क्रीनशॉट: Dev container सेटअप" width="50%">
 
-<img src="../../../translated_images/hi/image-3.bf93d533bbc84268.webp" alt="Screenshot: Dev container build complete" width="50%">
+<img src="../../../translated_images/hi/image-3.bf93d533bbc84268.webp" alt="स्क्रीनशॉट: Dev container बिल्ड पूर्ण" width="50%">
 
 #### विकल्प C: अपने मौजूदा स्थानीय इंस्टॉलेशन का उपयोग करें
 
-**उन डेवलपर्स के लिए जिनके पास मौजूदा Java पर्यावरण है**
+**उन डिवेलपर्स के लिए जिनके पास पहले से Java वातावरण हैं**
 
-पूर्वापेक्षाएँ:
+आवश्यकताएँ:
 - [Java 21+](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html) 
 - [Maven 3.9+](https://maven.apache.org/download.cgi)
-- [VS Code](https://code.visualstudio.com) या आपकी पसंदीदा IDE
+- [VS Code](https://code.visualstudio.com) या अपनी पसंद का IDE
 
 चरण:
-1. इस रिपॉजिटरी को अपने स्थानीय मशीन में क्लोन करें
-2. प्रोजेक्ट अपनी IDE में खोलें
-3. आगे बढ़ें [चरण 2: Azure AI Foundry की व्यवस्था करें](#चरण-2-azure-ai-foundry-की-व्यवस्था-करें)
+1. इस रिपॉजिटरी को अपनी स्थानीय मशीन पर क्लोन करें
+2. परियोजना को अपने IDE में खोलें
+3. [चरण 2: Azure AI Foundry प्रोविजन करें](#चरण-2-azure-ai-foundry-प्रोविजन-करें) पर जाएं
 
-> **प्रो टिप**: यदि आपकी मशीन कम स्पेस वाली है लेकिन आप स्थानीय रूप से VS Code चाहते हैं, तो GitHub Codespaces का उपयोग करें! आप अपने स्थानीय VS Code को क्लाउड-होस्टेड Codespace से कनेक्ट कर सकते हैं, दोनों का सर्वश्रेष्ठ लाभ पाने के लिए।
+> **प्रो टिप**: यदि आपका मशीन कम स्पेक का है लेकिन आप स्थानीय VS Code उपयोग करना चाहते हैं, तो GitHub Codespaces का उपयोग करें! आप अपने स्थानीय VS Code को क्लाउड-होस्टेड Codespace से जोड़ सकते हैं जिससे दोनों का सर्वश्रेष्ठ लाभ मिल सके।
 
-<img src="../../../translated_images/hi/image-2.fc0da29a6e4d2aff.webp" alt="Screenshot: created local devcontainer instance" width="50%">
+<img src="../../../translated_images/hi/image-2.fc0da29a6e4d2aff.webp" alt="स्क्रीनशॉट: स्थानीय devcontainer इंस्टेंस बनाया गया" width="50%">
 
 
-## चरण 2: Azure AI Foundry की व्यवस्था करें
+## चरण 2: Azure AI Foundry प्रोविजन करें
 
-पाठ्यक्रम के AI मॉडल को Azure AI Foundry में कोड के रूप में तैनात करें। रिपॉजिटरी रूट से:
+इस कोर्स के AI मॉडल्स को Azure AI Foundry पर कोड के रूप में डिप्लॉय करें। रिपॉजिटरी रूट से:
 
 ```bash
 cd 02-SetupDevEnvironment
@@ -117,106 +117,119 @@ azd auth login
 az login
 azd up
 ```
-  
-`azd` आपसे एक पर्यावरण नाम और क्षेत्र के लिए पूछता है, `gpt-4o-mini` और `text-embedding-3-small` तैनतियों के साथ Azure AI Foundry खाता प्रदान करता है, और उदाहरण के `.env` में एंडपॉइंट लिखता है — सभी **कीलेस** प्रमाणीकरण (कोई API कुंजी नहीं) के साथ।
 
-> **पूर्ण मार्गदर्शन:** पूर्वापेक्षाओं, मैनुअल (पोर्टल) विकल्प, क्षेत्र मार्गदर्शन और लागत/सफाई नोट के लिए [Azure AI Foundry सेटअप गाइड](getting-started-azure-openai.md) देखें।
+`azd` आपसे पर्यावरण नाम, सदस्यता, और क्षेत्र पूछता है, `gpt-5.6-luna` और `text-embedding-3-small` डिप्लॉयमेंट के साथ Azure AI Foundry अकाउंट प्रोविजन करता है, और उदाहरण की `.env` में एंडपॉइंट लिखता है - यह सब **कीलेस** प्रमाणीकरण (कोई API कुंजी नहीं) के साथ।
+
+> **पूर्ण मार्गदर्शन:** आवश्यकताओं, एक मैनुअल (पोर्टल) विकल्प, क्षेत्र निर्देश, और लागत/सफाई नोट्स के लिए [Azure AI Foundry सेटअप गाइड](getting-started-azure-openai.md) देखें।
 
 ## चरण 3: अपने सेटअप का परीक्षण करें
 
-एक बार आपके Foundry मॉडल तैनात हो जाने के बाद, उदाहरण ऐप के साथ कनेक्शन का परीक्षण करें [`02-SetupDevEnvironment/examples/basic-chat-azure`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) में।
+एक बार जब आपके Foundry मॉडल प्रोविजन हो जाएं, तो उदाहरण ऐप में [`02-SetupDevEnvironment/examples/basic-chat-azure`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) के साथ कनेक्शन का परीक्षण करें।
 
-1. अपने विकास पर्यावरण में टर्मिनल खोलें।
-2. उदाहरण तक नेविगेट करें:  
+1. अपने विकास वातावरण में टर्मिनल खोलें।
+2. उदाहरण फ़ोल्डर पर जाएं:
    ```bash
    cd 02-SetupDevEnvironment/examples/basic-chat-azure
    ```
-  
-3. सुनिश्चित करें कि आप साइन इन हैं (कीलेस प्रमाणीकरण के लिए टोकन चाहिए):  
+3. सुनिश्चित करें कि आप साइन इन हैं (कीलेस ऑथ के लिए टोकन की आवश्यकता है):
    ```bash
    az login
    ```
-  
-   > यदि आपने `azd up` चलाया है, तो आपका एंडपॉइंट `.env` फ़ाइल में पहले से लिखा गया है।  
-4. एप्लिकेशन चलाएं:  
+   > यदि आपने `azd up` चलाया है, तो आपकी एंडपॉइंट के साथ `.env` फ़ाइल पहले से लिखी गई होगी।
+4. एप्लिकेशन चलाएँ:
    ```bash
    mvn clean spring-boot:run
    ```
-  
-आपको `gpt-4o-mini` मॉडल से एक प्रतिक्रिया दिखनी चाहिए।
+
+आपको `gpt-5.6-luna` मॉडल से प्रतिक्रिया दिखनी चाहिए।
 
 ### उदाहरण कोड को समझना
 
-`examples/basic-chat-azure` के तहत उदाहरण एक Spring Boot ऐप है जो **Spring AI** का उपयोग करता है Azure AI Foundry से कीलेस प्रमाणीकरण के साथ कनेक्ट करने के लिए।
+[basic-chat उदाहरण](./examples/basic-chat-azure/README.md) **Spring Boot 4.1.1** और **Spring AI 2.0.1** का उपयोग करता है। Spring AI का `ChatClient` आधिकारिक OpenAI Java SDK द्वारा समर्थित है, जो Azure OpenAI **v1** एंडपॉइंट से कीलेस प्रमाणीकरण के साथ जुड़ता है।
 
 **यह कोड क्या करता है:**
-- आपके Azure साइन-इन (Microsoft Entra ID) का उपयोग करके Azure AI Foundry से **कनेक्ट** होता है — कोई API कुंजी नहीं
-- `gpt-4o-mini` मॉडल को एक प्रॉम्प्ट **भेजता है**
+- Azure AI Foundry से आपके Azure साइन-इन (Microsoft Entra ID) का उपयोग करके **कनेक्ट** करता है — कोई API कुंजी नहीं
+- `gpt-5.6-luna` मॉडल को **प्रॉम्प्ट भेजता है**
 - AI की प्रतिक्रिया **प्राप्त** करता है और दिखाता है
-- आपके सेटअप के सही काम करने को **सत्यापित** करता है
+- यह सत्यापित करता है कि आपका सेटअप सही ढंग से काम कर रहा है
 
-**मुख्य डिपेंडेंसी** (`pom.xml` में):  
+**प्रमुख निर्भरताएँ** ([pom.xml](../../../02-SetupDevEnvironment/examples/basic-chat-azure/pom.xml) से अंश):
 ```xml
 <dependency>
     <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-starter-model-azure-openai</artifactId>
+    <artifactId>spring-ai-starter-model-openai</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.openai</groupId>
+    <artifactId>openai-java</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.azure</groupId>
+    <artifactId>azure-identity</artifactId>
+    <version>${azure-identity.version}</version>
 </dependency>
 ```
-  
-**कॉन्फ़िगरेशन** (`application.yml`):  
+
+POM OpenAI Java **4.63.1** को प्रबंधित करता है और Azure Identity **1.18.6** को स्पष्ट रूप से सेट करता है। Spring AI 2 ने Azure-विशिष्ट स्टार्टर हटा दिया; Azure Identity अभी भी क्रेडेंशियल बीन के लिए आवश्यक है।
+
+**कॉन्फ़िगरेशन** ([application.yml](../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml)):
 ```yaml
 spring:
   ai:
-    azure:
-      openai:
-        # Endpoint only - no api-key. Spring AI uses DefaultAzureCredential (keyless).
-        endpoint: ${AZURE_OPENAI_ENDPOINT}
-        chat:
-          options:
-            deployment-name: ${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+    openai:
+      base-url: ${AZURE_OPENAI_ENDPOINT}
+      microsoft-foundry: true
+      chat:
+        model: ${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
+        reasoning-effort: none
+        max-completion-tokens: 500
 ```
-  
+
+कीलेस ऑथ को स्पष्ट रूप से [BasicChatApplication.java](../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/java/com/example/BasicChatApplication.java) में कॉन्फ़िगर किया गया है, न कि अनुपस्थित API कुंजी से अनुमानित। इसका बीयरर क्रेडेंशियल `https://ai.azure.com/.default` स्कोप के साथ `DefaultAzureCredential` का उपयोग करता है, और इसका `OpenAIClient` `/openai/v1` को लक्षित करता है। ऐप वह क्लाइंट Spring AI के चैट मॉडल को प्रदान करता है, इसलिए ग्लोबल `OPENAI_API_KEY` Azure प्रमाणीकरण को ओवरराइड नहीं कर सकता।
+
+चैट सेटिंग्स सीधे `spring.ai.openai.chat` के अंतर्गत हैं, बिना `options` ब्लॉक के। पाठ शेष रखता है Chat Completions के साथ `reasoning-effort: none` और 500-टोकन की सीमा; यह `temperature` या `max-tokens` सेट नहीं करता। API विकल्प और टूल-कॉलिंग मार्गदर्शन के लिए [उदाहरण के कॉन्फ़िगरेशन संदर्भ](./examples/basic-chat-azure/README.md#spring-configuration) देखें।
+
 ## सारांश
 
-शानदार! अब आपके पास सब कुछ सेट है:
+ऊपर दिए गए चरणों को पूरा करने के बाद, आपके पास होगा:
 
-- Bicep + `azd` के साथ Azure AI Foundry मॉडल कोड के रूप में प्रदान किया गया
-- अपना Java विकास पर्यावरण चल रहा है (चाहे वह Codespaces हो, dev कंटेनर हो, या स्थानीय)
-- कीलेस प्रमाणीकरण (Microsoft Entra ID) के साथ Azure AI Foundry से कनेक्ट किया — कोई API कुंजी नहीं
+- Bicep + `azd` के साथ Azure AI Foundry मॉडल्स को कोड के रूप में प्रोविजन किया गया
+- आपका Java विकास वातावरण चल रहा है (चाहे वह Codespaces हो, dev containers हो, या स्थानीय हो)
+- Azure AI Foundry से कीलेस प्रमाणीकरण (Microsoft Entra ID) के साथ जुड़ा हुआ — कोई API कुंजी नहीं
 - एक सरल उदाहरण के साथ परीक्षण किया जो आपके मॉडल से बात करता है
 
-## अगले कदम
+## अगले चरण
 
-[अध्याय 3: कोर जनरेटिव AI तकनीकें](../03-CoreGenerativeAITechniques/README.md)
+[अध्याय 3: मूल जनरेटिव AI तकनीकें](../03-CoreGenerativeAITechniques/README.md)
 
 ## समस्या निवारण
 
-कोई समस्या आ रही है? यहाँ सामान्य समस्याएं और समाधान हैं:
+समस्या हो रही है? यहाँ सामान्य समस्याएँ और समाधान हैं:
 
-- **प्रमाणीकरण विफल (401/403)?**  
-  - `az login` चलाएं — प्रमाणीकरण कीलेस है, इसलिए आपको साइन इन होना चाहिए  
-  - सुनिश्चित करें कि आपके खाते के पास संसाधन पर **Cognitive Services OpenAI User** भूमिका है  
-  - यदि आपने अभी अभी प्रावधान किया है, तो भूमिका असाइनमेंट के फैलाव के लिए एक मिनट प्रतीक्षा करें  
+- **प्रमाणीकरण विफल (401/403)?** 
+  - `az login` चलाएं — प्रमाणीकरण कीलेस है, तो आपको साइन इन होना चाहिए
+  - सत्यापित करें कि आपके खाते को संसाधन पर **Cognitive Services OpenAI User** भूमिका प्राप्त है
+  - यदि आपने अभी प्रोविजन किया है, तो भूमिका असाइनमेंट के फैलने में कुछ मिनट लग सकते हैं
 
-- **Maven नहीं मिला?**  
-  - यदि आप dev कंटेनर/Codespaces का उपयोग कर रहे हैं, तो Maven पहले से इंस्टॉल्ड होना चाहिए  
-  - स्थानीय सेटअप के लिए, सुनिश्चित करें कि Java 21+ और Maven 3.9+ इंस्टॉल हैं  
-  - सत्यापन के लिए `mvn --version` चलाएं  
+- **Maven नहीं मिला?** 
+  - यदि dev containers/Codespaces का उपयोग कर रहे हैं, तो Maven पहले से इंस्टॉल होना चाहिए
+  - स्थानीय सेटअप के लिए, सुनिश्चित करें कि Java 21+ और Maven 3.9+ इंस्टॉल हैं
+  - इंस्टॉलेशन सुनिश्चित करने के लिए `mvn --version` चलाएं
 
-- **`azd` नहीं मिला या प्रावधान विफल?**  
-  - [Azure Developer CLI](https://aka.ms/azure-dev/install) इंस्टॉल करें और `azd auth login` चलाएं  
-  - वह क्षेत्र चुनें जहाँ `gpt-4o-mini` उपलब्ध है (जैसे `eastus2`)  
-  - विवरण के लिए [Azure AI Foundry सेटअप गाइड](getting-started-azure-openai.md) देखें  
+- **`azd` नहीं मिला या प्रोविजनिंग विफल?** 
+  - [Azure Developer CLI](https://aka.ms/azure-dev/install) इंस्टॉल करें और `azd auth login` चलाएं
+  - ऐसा क्षेत्र चुनें जहां `gpt-5.6-luna` और `text-embedding-3-small` उपलब्ध हों (जैसे `eastus2`), और आपकी चुनी गई सदस्यता में पर्याप्त कोटा हो
+  - विवरण के लिए [Azure AI Foundry सेटअप गाइड](getting-started-azure-openai.md) देखें
 
-- **Dev कंटेनर शुरू नहीं हो रहा?**  
-  - सुनिश्चित करें कि Docker Desktop चल रहा है (स्थानीय विकास के लिए)  
-  - कंटेनर दोबारा बनाएं: `Ctrl+Shift+P` → "Dev Containers: Rebuild Container"  
+- **Dev container शुरू नहीं हो रहा?** 
+  - सुनिश्चित करें कि Docker Desktop चल रहा हो (स्थानीय विकास के लिए)
+  - कंटेनर को पुनर्निर्मित करने का प्रयास करें: `Ctrl+Shift+P` → "Dev Containers: Rebuild Container"
 
-- **एप्लिकेशन संकलन त्रुटियाँ?**  
-  - सुनिश्चित करें कि आप सही डायरेक्टरी में हैं: `02-SetupDevEnvironment/examples/basic-chat-azure`  
-  - क्लीन और रीबिल्ड करें: `mvn clean compile`  
+- **एप्लिकेशन संकलन त्रुटियाँ?**
+  - सुनिश्चित करें कि आप सही निर्देशिका में हैं: `02-SetupDevEnvironment/examples/basic-chat-azure`
+  - क्लीन और पुन:निर्माण करें: `mvn clean compile`
 
-> **मदद चाहिए?**: अभी भी समस्या आ रही है? रिपॉजिटरी में एक इश्यू खोलें, हम आपकी मदद करेंगे।
+> **मदद चाहिए?**: अभी भी समस्या है? रिपॉजिटरी में एक इश्यू खोलें और हम आपकी मदद करेंगे।
 
 ---
 

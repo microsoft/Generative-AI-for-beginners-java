@@ -1,40 +1,65 @@
-# MCP skaičiuoklės pamoka pradedantiesiems
+# MCP skaičiuoklės vadovas pradedantiesiems
 
 ## Turinys
 
-- [Ko išmoksite](#ko-išmoksite)
+- [Ką išmoksite](#ką-išmoksite)
 - [Reikalavimai](#reikalavimai)
+- [Priklausomybių versijos](#priklausomybių-versijos)
 - [Projekto struktūros supratimas](#projekto-struktūros-supratimas)
-- [Pagrindiniai komponentai paaiškinti](#pagrindiniai-komponentai-paaiškinti)
+- [Pagrindinių komponentų paaiškinimas](#pagrindinių-komponentų-paaiškinimas)
   - [1. Pagrindinė programa](#1-pagrindinė-programa)
   - [2. Skaičiuoklės paslauga](#2-skaičiuoklės-paslauga)
   - [3. Tiesioginis MCP klientas](#3-tiesioginis-mcp-klientas)
   - [4. Dirbtiniu intelektu pagrįstas klientas](#4-dirbtiniu-intelektu-pagrįstas-klientas)
 - [Pavyzdžių paleidimas](#pavyzdžių-paleidimas)
-- [Kaip visa tai veikia kartu](#kaip-visa-tai-veikia-kartu)
+- [Offline testai](#offline-testai)
+- [Kaip viskas veikia kartu](#kaip-viskas-veikia-kartu)
 - [Kiti žingsniai](#kiti-žingsniai)
 
-## Ko išmoksite
+## Ką išmoksite
 
-Šioje pamokoje paaiškinama, kaip sukurti skaičiuoklės paslaugą naudojant Model Context Protocol (MCP). Sužinosite:
+Šis vadovas paaiškina, kaip sukurti skaičiuoklės paslaugą naudojant Model Context Protocol (MCP). Suprasite:
 
-- Kaip sukurti paslaugą, kurią DI gali naudoti kaip įrankį
-- Kaip nustatyti tiesioginę komunikaciją su MCP paslaugomis
-- Kaip DI modeliai gali automatiškai pasirinkti, kuriuos įrankius naudoti
-- Skirtumus tarp tiesioginių protokolo kvietimų ir DI pagalbos interakcijų
+- Kaip sukurti paslaugą, kurią AI gali naudoti kaip įrankį
+- Kaip nustatyti tiesioginį ryšį su MCP paslaugomis
+- Kaip AI modeliai gali automatiškai pasirinkti, kokius įrankius naudoti
+- Kokie skirtumai tarp tiesioginių protokolo kvietimų ir AI pagalbinės sąveikos
 
 ## Reikalavimai
 
-Prieš pradedant, įsitikinkite, kad turite:
+Prieš pradėdami, įsitikinkite, kad turite:
 - Įdiegtą Java 21 ar naujesnę versiją
-- Maven priklausomybių valdymui
-- Azure AI Foundry modelio diegimą (įdiekite su `azd up` — žr. [2 skyrių](../../02-SetupDevEnvironment/getting-started-azure-openai.md))
-- [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli), prisijungus su `az login` (autentifikacija be rakto)
+- Maven skirtą priklausomybių valdymui
 - Pagrindines Java ir Spring Boot žinias
+
+Tik AI klientams reikalinga Azure OpenAI diegimas ir autentifikuotas `DefaultAzureCredential`,
+pavyzdžiui, vietinė esama prisijungimo per Azure CLI arba valdoma tapatybė Azure. Tapatybė turi
+turėti Cognitive Services OpenAI vartotojo vaidmenį resurse. Žr. [2 skyrių](../../02-SetupDevEnvironment/getting-started-azure-openai.md).
+Serveriui, tiesioginiam SDK klientui ir visiems automatiniams testams Azure paskyra ar modeliui prieiga nereikalinga.
+
+## Priklausomybių versijos
+
+Išleistas priklausomybes patikrinta 2026-09-14:
+
+| Priklausomybė | Versija |
+| --- | --- |
+| Spring Boot | 4.1.1 |
+| Spring AI | 2.0.1 |
+| MCP Java SDK (Spring AI valdomas) | 2.0.0 |
+| LangChain4j / core | 1.20.0 |
+| LangChain4j MCP | 1.20.0-beta30 |
+| LangChain4j oficialus OpenAI adapteris | 1.20.0-beta30 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
+| JUnit Jupiter (valdomas Boot) | 6.0.3 |
+
+MCP ir oficialūs OpenAI adapteriai yra paskelbti beta versijomis Maven Central, ne snapshotai.
+Jų versijos skiriasi nuo LangChain4j core. Snapshootų ar milestone kodų saugyklos nereikalingos.
+Klientų priklausomybės turi testų apimtį, nes paleidžiami pavyzdžiai yra `src/test/java` direktorijoje.
 
 ## Projekto struktūros supratimas
 
-Skaičiuoklės projekte yra keletas svarbių failų:
+Skaičiuoklės projekte yra keli svarbūs failai:
 
 ```
 calculator/
@@ -44,16 +69,16 @@ calculator/
 └── src/test/java/com/microsoft/mcp/sample/client/
     ├── SDKClient.java                     # Direct MCP communication
     ├── LangChain4jClient.java            # AI-powered client
-    └── Bot.java                          # Simple chat interface
+    └── Bot.java                          # Chat interface and interactive entrypoint
 ```
 
-## Pagrindiniai komponentai paaiškinti
+## Pagrindinių komponentų paaiškinimas
 
 ### 1. Pagrindinė programa
 
 **Failas:** `McpServerApplication.java`
 
-Tai mūsų skaičiuoklės paslaugos įėjimo taškas. Tai standartinė Spring Boot programa su viena ypatinga pridėtine dalimi:
+Tai įėjimo taškas mūsų skaičiuoklės paslaugai. Standartinė Spring Boot programa su viena ypatinga papildoma dalimi:
 
 ```java
 @SpringBootApplication
@@ -70,16 +95,16 @@ public class McpServerApplication {
 }
 ```
 
-**Tai daro:**
-- Paleidžia Spring Boot žiniatinklio serverį 8080 prievade
-- Sukuria `ToolCallbackProvider`, kuris padaro mūsų skaičiuoklės metodus pasiekiamus kaip MCP įrankius
-- `@Bean` anotacija nurodo Spring valdyti šį komponentą, kad kitos dalys galėtų jį naudoti
+**Ką tai daro:**
+- Paleidžia Spring Boot tinklo serverį 8080 prievade
+- Sukuria `ToolCallbackProvider`, kuris leidžia naudotis mūsų skaičiuoklės metodais kaip MCP įrankiais
+- `@Bean` anotacija leidžia Spring tvarkyti šį komponentą, kurį gali naudoti kitos dalys
 
 ### 2. Skaičiuoklės paslauga
 
 **Failas:** `CalculatorService.java`
 
-Čia vyksta visi matematiniai skaičiavimai. Kiekvienas metodas pažymėtas `@Tool`, kad būtų prieinamas per MCP:
+Čia vyksta visa matematika. Kiekvienas metodas pažymėtas `@Tool`, kad jis būtų prieinamas per MCP:
 
 ```java
 @Service
@@ -97,224 +122,203 @@ public class CalculatorService {
         return formatResult(a, "-", b, result);
     }
     
-    // Daugiau skaičiuotuvo operacijų...
+    // Daugiau kalkuliatoriaus operacijų...
     
     private String formatResult(double a, String operator, double b, double result) {
-        return String.format("%.2f %s %.2f = %.2f", a, operator, b, result);
+        return String.format(java.util.Locale.ROOT, "%.2f %s %.2f = %.2f", a, operator, b, result);
     }
 }
 ```
 
 **Pagrindinės savybės:**
 
-1. **`@Tool` anotacija**: Nurodo MCP, kad šį metodą galima kviesti išoriniams klientams
-2. **Aiškūs aprašymai**: Kiekvienas įrankis turi aprašymą, kuris padeda DI modeliams suprasti, kada jį naudoti
-3. **Nuoseklus atsakymų formatas**: Visos operacijos grąžina žmonėms suprantamus tekstus, pvz., "5.00 + 3.00 = 8.00"
-4. **Klaidų tvarkymas**: Dalyba iš nulio ir neigiamų skaičių šaknies radimas grąžina klaidų pranešimus
+1. **`@Tool` anotacija**: Informuoja MCP, kad šį metodą gali iškviesti išoriniai klientai
+2. **Aiškūs aprašymai**: Kiekvienas įrankis turi aprašymą, padedantį AI modeliams suprasti, kada jį naudoti
+3. **Nuoseklus gražinimo formatas**: Visos operacijos gražina žmonėms suprantamus tekstus, pvz., "5.00 + 3.00 = 8.00"
+4. **Klaidų tvarkymas**: Dalijimas iš nulio ir neigiamo šaknies ėmimas gražina klaidų pranešimus
 
 **Galimos operacijos:**
 - `add(a, b)` - Sudeda du skaičius
-- `subtract(a, b)` - Atima antrą skaičių iš pirmo
-- `multiply(a, b)` - Dauginą du skaičius
-- `divide(a, b)` - Dalina pirmą iš antro (tikrina nulį)
-- `power(base, exponent)` - Kelia pagrindą laipsniu
-- `squareRoot(number)` - Apskaičiuoja kvadratinę šaknį (tikrina neigiamus)
-- `modulus(a, b)` - Grąžina likutį po dalybos
-- `absolute(number)` - Grąžina absoliučią reikšmę
-- `help()` - Grąžina informaciją apie visas operacijas
+- `subtract(a, b)` - Atima antrą iš pirmo
+- `multiply(a, b)` - Dauginama du skaičius
+- `divide(a, b)` - Dalina pirmą iš antro (su patikra dėl nulio)
+- `power(base, exponent)` - Pakelia bazę laipsniu
+- `squareRoot(number)` - Skaičiuoja kvadratinę šaknį (su neigiamo patikra)
+- `modulus(a, b)` - Gražina dalybos liekaną
+- `absolute(number)` - Gražina absoliučią vertę
+- `help()` - Gražina informaciją apie visas operacijas
 
 ### 3. Tiesioginis MCP klientas
 
-**Failas:** `SDKClient.java`
+Žr. [SDKClient.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/SDKClient.java).
 
-Šis klientas tiesiogiai bendrauja su MCP serveriu nenaudodamas DI. Rankiniu būdu kviečia konkrečias skaičiuoklės funkcijas:
+Šis klientas naudoja `HttpClientStreamableHttpTransport` adresu `/mcp`, inicializuoja ryšį,
+atlieka serverio pinginimą ir seka įrankių sąrašo puslapiavimą. Tikrina, ar egzistuoja visi devyni laukiamieji įrankiai
+ir iškviečia kiekvieną iš jų, įskaitant `modulus` ir `help`, be AI modelio.
+
+Dabartinis užklausos konstruktorius atrodo taip:
 
 ```java
-public class SDKClient {
-    
-    public static void main(String[] args) {
-        McpClientTransport transport = WebFluxSseClientTransport.builder(
-            WebClient.builder().baseUrl("http://localhost:8080")
-        ).build();
-        new SDKClient(transport).run();
-    }
-    
-    public void run() {
-        var client = McpClient.sync(this.transport).build();
-        client.initialize();
-        
-        // Išvardinti galimus įrankius
-        ListToolsResult toolsList = client.listTools();
-        System.out.println("Available Tools = " + toolsList);
-        
-        // Iškviesti konkrečias skaičiuotuvo funkcijas
-        CallToolResult resultAdd = client.callTool(
-            new CallToolRequest("add", Map.of("a", 5.0, "b", 3.0))
-        );
-        System.out.println("Add Result = " + resultAdd);
-        
-        CallToolResult resultSqrt = client.callTool(
-            new CallToolRequest("squareRoot", Map.of("number", 16.0))
-        );
-        System.out.println("Square Root Result = " + resultSqrt);
-        
-        client.closeGracefully();
-    }
-}
+var request = CallToolRequest.builder("add")
+    .arguments(Map.of("a", 5.0, "b", 3.0))
+    .build();
+var result = client.callTool(request);
 ```
 
-**Tai daro:**
-1. **Prisijungia** prie skaičiuoklės serverio adresu `http://localhost:8080` naudodamas kūrėjo modelį
-2. **Išvardina** visus prieinamus įrankius (mūsų skaičiuoklės funkcijas)
-3. **Kviečia** konkrečias funkcijas su tikslias parametrais
-4. **Išspausdina** rezultatus tiesiogiai
-
-**Pastaba:** Šiame pavyzdyje naudojama Spring AI 1.1.0-SNAPSHOT priklausomybė, kuri pristatė kūrėjo modelį `WebFluxSseClientTransport`. Jei naudojate senesnę stabilią versiją, gali reikėti naudoti tiesioginį konstruktorių.
-
-**Kada naudoti:** Kai žinote, kokį tikslų skaičiavimą norite atlikti ir norite jį iškviesti programiškai.
+Protokolo klaidos priverčia klientą sugesti, neužrašant klaidingos sėkmės. MCP klientas
+uždaromas naudojant try-with-resources, įskaitant ir kai aptikimas ar įrankio kvietimas nepavyksta.
 
 ### 4. Dirbtiniu intelektu pagrįstas klientas
 
-**Failas:** `LangChain4jClient.java`
+Žr. [LangChain4jClient.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/LangChain4jClient.java)
+ir [Bot.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/Bot.java).
 
-Šis klientas naudoja DI modelį (GPT-4o-mini), kuris automatiškai nusprendžia, kuriuos skaičiuoklės įrankius naudoti:
+`OpenAiOfficialChatModel` įgyvendina dabartinį LangChain4j `ChatModel` API.
+`StreamableHttpMcpTransport` jungia jį prie to paties `/mcp` galinio taško kaip SDK klientą.
+`AiServices` atranda įrankius ir valdo pokalbį apie įrankių kvietimus ir rezultatus.
+
+Numatytoji diegimo versija yra **GPT-5.6 Luna**, su aiškiai išjungtu samprotavimu:
 
 ```java
-public class LangChain4jClient {
-    
-    public static void main(String[] args) throws Exception {
-        // Nustatykite DI modelį (Azure AI Foundry, be raktinio autentifikavimo per Microsoft Entra ID)
-        String endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1";
-        String token = new DefaultAzureCredentialBuilder().build()
-                .getToken(new TokenRequestContext().addScopes("https://ai.azure.com/.default"))
-                .block().getToken();
-        ChatLanguageModel model = OpenAiOfficialChatModel.builder()
-                .baseUrl(baseUrl)
-                .apiKey(token)
-                .modelName("gpt-4o-mini")
-                .build();
-
-        // Prisijunkite prie mūsų MCP skaičiuoklio serverio
-        McpTransport transport = new HttpMcpTransport.Builder()
-                .sseUrl("http://localhost:8080/sse")
-                .logRequests(true)  // Rodo, ką DI šiuo metu daro
-                .logResponses(true)
-                .build();
-
-        McpClient mcpClient = new DefaultMcpClient.Builder()
-                .transport(transport)
-                .build();
-
-        // Suteikite DI prieigą prie mūsų skaičiuoklio įrankių
-        ToolProvider toolProvider = McpToolProvider.builder()
-                .mcpClients(List.of(mcpClient))
-                .build();
-
-        // Sukurkite DI botą, kuris gali naudoti mūsų skaičiuoklį
-        Bot bot = AiServices.builder(Bot.class)
-                .chatLanguageModel(model)
-                .toolProvider(toolProvider)
-                .build();
-
-        // Dabar galime prašyti DI atlikti skaičiavimus natūralia kalba
-        String response = bot.chat("Calculate the sum of 24.5 and 17.3 using the calculator service");
-        System.out.println(response);
-
-        response = bot.chat("What's the square root of 144?");
-        System.out.println(response);
-    }
-}
+var parameters = OpenAiOfficialChatRequestParameters.builder()
+    .modelName("gpt-5.6-luna")
+    .reasoningEffort("none")
+    .maxCompletionTokens(1024)
+    .parallelToolCalls(false)
+    .build();
 ```
 
-**Tai daro:**
-1. **Sukuria** DI modelio ryšį be rakto (Microsoft Entra ID autentifikacija)
-2. **Jungia** DI prie mūsų skaičiuoklės MCP serverio
-3. **Suteikia** DI prieigą prie visų mūsų skaičiuoklės įrankių
-4. **Leidžia** natūralios kalbos užklausas, pvz., "Apskaičiuok 24.5 ir 17.3 sumą"
+Šie numatytieji nustatymai taikomi kiekvienam užbaigimui, įskaitant ir tolimesnius veiksmus po įrankio vykdymo.
+Klientas naudoja atnaujinamą `BearerTokenCredential`, pagrįstą `DefaultAzureCredential`
+ir `https://ai.azure.com/.default` sritį, o ne vienkartinį žetoną kaip API raktą.
+Priimami tiek resursų URL, tiek URL, kurie jau baigiasi `/openai/v1`.
 
-**DI automatiškai:**
-- Supranta, kad norite sudėti skaičius
-- Pasirenka įrankį `add`
-- Kvies `add(24.5, 17.3)`
-- Grąžina rezultatą natūralioje atsakyme
+Botas saugo ribotą pokalbio istoriją, išveda `Tool executed: ...` su faktiniu
+MCP rezultatu ir sugesta, jei atsakyme praleidžiami įrankiai. Įrankių ciklai ribojami iki keturių turų.
+Autentifikacijos, modelio, MCP ir įrankių klaidos perduodamos; automatiniai modelio bandymai iš naujo išjungti.
+Tiek MCP transportas/klientas, tiek oficialus OpenAI klientas uždaromi sėkmės ar nesėkmės atveju.
 
 ## Pavyzdžių paleidimas
 
-### 1 žingsnis: Paleiskite skaičiuoklės serverį
+### 1 žingsnis: paleisti skaičiuoklės serverį
 
-Pirmiausia prisijunkite ir nustatykite savo Azure AI Foundry galinį tašką (reikalinga DI klientui — autentifikacija be rakto, be API rakto):
+Serveriui nereikia konfiguruoti Azure. Žemiau pateiktos komandos paleidžiamos iš šio pavyzdžio aplanko.
+Pavyzdyje naudojamas prievadas **18081**, kad nesikirstų su kitu pavyzdžiu; numatytasis liko 8080.
 
-**Windows:**
-```cmd
-az login
-set AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-```
-
-**Linux/macOS:**
-```bash
-az login
-export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-```
-
-Paleiskite serverį:
-```bash
+```powershell
 cd 04-PracticalSamples/calculator
-mvn clean spring-boot:run
+mvn spring-boot:run "-Dspring-boot.run.arguments=--server.port=18081"
 ```
 
-Serveris pradės veikti adresu `http://localhost:8080`. Turėtumėte pamatyti:
-```
-Started McpServerApplication in X.XXX seconds
-```
+MCP galinio taško adresas yra `http://localhost:18081/mcp`. Sveikatingumo ir aptikimo informacija prieinama adresuose
+`http://localhost:18081/health` ir `http://localhost:18081/info`.
+Streamable HTTP pakeičia seną tik SSE transportą; `/sse` ir `/v1/tools` nėra galiniai taškai.
 
-### 2 žingsnis: Išbandykite tiesioginį klientą
+### 2 žingsnis: testuoti su tiesioginiu klientu
 
-Naujoje terminalo lange, kai serveris dar veikia, paleiskite tiesioginį MCP klientą:
-```bash
+Kitame PowerShell terminale:
+
+```powershell
 cd 04-PracticalSamples/calculator
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient" -Dexec.classpathScope=test
+$env:MCP_SERVER_URL = "http://localhost:18081"
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.SDKClient" "-Dexec.classpathScope=test"
 ```
 
-Pamatysite tokį išvestį:
-```
-Available Tools = [add, subtract, multiply, divide, power, squareRoot, modulus, absolute, help]
-Add Result = 5.00 + 3.00 = 8.00
-Square Root Result = √16.00 = 4.00
-```
+Vartotojo įvestis nereikalinga. Išbandomi visi devyni įrankiai. Laukiami aritmetiniai rezultatai yra
+8, 6, 42, 5, 256, 4, 2 ir 5.5, po to pateikiamas pagalbos tekstas.
 
-### 3 žingsnis: Išbandykite DI klientą
+### 3 žingsnis: testuoti su AI klientu
 
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient" -Dexec.classpathScope=test
-```
+Po autentifikacijos, kaip aprašyta reikalavimuose, sukonfigūruokite AI klientą tame pačiame terminale:
 
-Pamatysite, kaip DI automatiškai naudoja įrankius:
-```
-The sum of 24.5 and 17.3 is 41.8.
-The square root of 144 is 12.
+```powershell
+$env:AZURE_OPENAI_ENDPOINT = "https://your-resource.openai.azure.com/"
+$env:AZURE_OPENAI_DEPLOYMENT = "gpt-5.6-luna"
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.LangChain4jClient" "-Dexec.classpathScope=test" "-Dexec.args=--prompt 'Calculate the sum of 24.5 and 17.3 using the calculator service'"
 ```
 
-### 4 žingsnis: Užbaikite MCP serverio darbą
+Laukite eilutės `Tool executed: add` su `41.80`, po to modelio atsakymo.
+Vieno užklausos režimas išeina nebesulaukdamas įvesties. Norint paleisti pirminį keturių užklausų demonstravimą:
 
-Kai baigsite testavimą, galite sustabdyti DI klientą paspausdami `Ctrl+C` jo terminale. MCP serveris toliau veiks, kol jį sustabdysite.
-Serverį sustabdyti galite paspaudę `Ctrl+C` terminale, kuriame jis veikia.
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.LangChain4jClient" "-Dexec.classpathScope=test" "-Dexec.args=--demo"
+```
 
-## Kaip visa tai veikia kartu
+Demonstracija iškviečia `add`, `squareRoot`, `help` ir surištą `power` bei `divide` operacijas.
+Laukiami skaitiniai atsakymai yra 41.8, 12 ir 64. Argumentų nenurodymas taip pat paleidžia šią demonstraciją.
 
-Štai visas procesas, kai paklausiate DI „Kiek yra 5 + 3?“:
+### 4 žingsnis: paleisti interaktyvų botą
 
-1. **Jūs** kreipiatės į DI natūralia kalba
-2. **DI** analizuoja užklausą ir supranta, kad norite sudėti
-3. **DI** kviečia MCP serverį: `add(5.0, 3.0)`
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.Bot" "-Dexec.classpathScope=test"
+```
+
+Įveskite `Multiply 6 by 7 using the calculator service`, tada `exit` arba `quit`.
+Laukite faktinio `multiply` įrankio rezultato 42. Tuščios eilutės yra ignoruojamos; EOF taip pat baigia sesiją.
+Neinteraktyviam patikrinimui šiam įėjimo taškui:
+
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.Bot" "-Dexec.classpathScope=test" "-Dexec.args=--prompt 'Multiply 6 by 7 using the calculator service'"
+```
+
+Abu AI įėjimo taškai priima `--prompt "question"`, `--demo` ir `--interactive`.
+Netinkamos parinktys priverčia sugesti prieš atidarant ryšį. Kiekvienas Maven `-D...` argumentas yra pilnai cituojamas
+PowerShell aplinkoje. Bash naudokite `export NAME=value` vietoje `$env:NAME = "value"`.
+
+**Kvota:** Vykdykite AI pavyzdžius paeiliui. Paprasta užklausa paprastai reikalauja dviejų modelio užklausų;
+pilna demonstracija paprastai reikalauja devynių, įskaitant įrankių rezultatų tęsinį. Dalinamoje 10 RPM
+diegimo kvotoje palaukite naujo lango prieš kitą AI vykdymą. 429 klaidos iš karto neveikia pakartotinai;
+vykdykite paslaugos nurodymus retry-after. Faktiniai užklausų skaičiai priklauso nuo modelio.
+Offline testai nekonsumuoja jokios kvotos ir nenustato tiesioginės Luna prieinamumo ar atsakymų kokybės.
+
+### Konfigūracija ir išjungimas
+
+| Nustatymas | Numatytoji reikšmė / elgsena |
+| --- | --- |
+| `MCP_SERVER_URL` | `http://localhost:8080`; bazinis adresas, be `/mcp` |
+| `-Dmcp.server.url=...` | Pakeičia `MCP_SERVER_URL` visiems klientams |
+| `AZURE_OPENAI_ENDPOINT` | Reikia tik AI klientams; resurso URL arba `/openai/v1` URL |
+| `AZURE_OPENAI_DEPLOYMENT` | `gpt-5.6-luna`; Azure diegimo pavadinimas |
+| `AZURE_OPENAI_MAX_COMPLETION_TOKENS` | `1024`; teigiamas sveikasis skaičius |
+| Samprotavimo pastangos | Visada `none`, įskaitant įrankių ciklo tęsinį |
+
+Pakeistas diegimas turi palaikyti `reasoning_effort=none` ir `max_completion_tokens`.
+Klientai automatiškai neskaito `.env` failo. Baigę testavimą sustabdykite serverį su `Ctrl+C`.
+Klientai grąžina kontrolę normaliai, be `System.exit` ar miego laikų prieš išjungimą.
+
+## Offline testai
+
+```powershell
+mvn -B -ntp clean verify
+```
+
+Visi testai vykdomi offline atžvilgiu Azure: protokolo rinkinys paleidžia Spring serverį ir
+OpenAI suderinamą imitaciją atsitiktiniuose loopback prievaduose, tada uždaro juos. Maven gali vis tiek reikalauti
+parsisiųsti priklausomybes. Naudojami neprieinami kredencialai, tiesioginis diegimas ar esamas MCP serveris.
+
+- Skaičiuoklės vienetų testai apima visas aritmetines operacijas, dešimtainius rezultatus, pagalbą ir domeno klaidas.
+- MCP testai apima inicijavimą, aptikimą, visus devynis įrankių kvietimus, įrankių klaidas, sveikatą ir informaciją.
+- AI protokolo testai vykdo pilną demonstraciją ir interaktyvų botą prieš tikrą skaičiuoklę,
+  patvirtina, kad įrankių rezultatai yra perduodami kitam užbaigimui, ir tikrina kiekvieną HTTP turinį dėl Luna,
+  `reasoning_effort: "none"` ir `max_completion_tokens` be senovinio `max_tokens`.
+- Konfigūracijos/įvesties testai apima diegimo ir galinio taško perrašymus, tuščias eilutes, EOF, exit/quit,
+  vieno užklausimo režimą, klaidingas parinktis ir klaidų sklaidą. Kvotos testai įrodo, kad 429 neperbandomas.
+
+## Kaip viskas veikia kartu
+
+Štai pilnas srautas, kai paklausiate AI „Kiek yra 5 + 3?“:
+
+1. **Jūs** užduodate klausimą AI natūralia kalba
+2. **AI** analizuoja jūsų užklausą ir supranta, kad norite sudėti
+3. **AI** iškviečia MCP serverį: `add(5.0, 3.0)`
 4. **Skaičiuoklės paslauga** atlieka: `5.0 + 3.0 = 8.0`
 5. **Skaičiuoklės paslauga** grąžina: `"5.00 + 3.00 = 8.00"`
-6. **DI** gauna rezultatą ir pateikia natūralų atsakymą
-7. **Jūs** išgirstate: "5 ir 3 suma yra 8"
+6. **AI** gauna rezultatą ir formuoja natūralų atsakymą
+7. **Jūs** gaunate: „5 ir 3 suma yra 8“
 
 ## Kiti žingsniai
 
-Daugiau pavyzdžių rasite [4 skyriuje: Praktiniai pavyzdžiai](../README.md)
+Daugiau pavyzdžių žr. [4 skyrių: Praktiniai pavyzdžiai](../README.md)
 
 ---
 

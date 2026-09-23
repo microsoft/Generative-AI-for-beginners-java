@@ -1,10 +1,12 @@
-# Azure AI Foundry ile Temel Sohbet - Uçtan Uca Örnek
+# Azure AI Foundry ile Temel Sohbet - Baştan Sona Örnek
 
-Bu örnek, **Azure AI Foundry** modeline **anahtarsız kimlik doğrulama** (Microsoft Entra ID) kullanarak bağlanan ve kurulumu test eden basit bir Spring Boot uygulamasıdır. Spring AI'nin `ChatClient`'ını kullanır.
+Bu örnek, **keyless authentication** (Microsoft Entra ID) kullanarak **Azure AI Foundry** modeline bağlanan ve kurulumunuzu test eden basit bir Spring Boot uygulamasıdır. Resmi OpenAI Java SDK'sı ve **Azure OpenAI v1** uç noktası tarafından desteklenen Spring AI'nın `ChatClient`'ını kullanır.
+
+[pom.xml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/pom.xml) içindeki sürümler Spring Boot **4.1.1**, Spring AI **2.0.1**, OpenAI Java **4.63.1**, Azure Identity **1.18.6** ve dotenv-java **3.2.0**'dır. Örnek, `spring-ai-starter-model-openai` kullanır ve `openai-java` ile `azure-identity` yapılandırmasını açıkça belirtir; Spring AI 2 eski Azure OpenAI starter'ını kaldırmıştır.
 
 ## İçindekiler
 
-- [Ön Koşullar](#ön-koşullar)
+- [Önkoşullar](#önkoşullar)
 - [Hızlı Başlangıç](#hızlı-başlangıç)
 - [Kimlik Doğrulama Nasıl Çalışır](#kimlik-doğrulama-nasıl-çalışır)
 - [Uygulamayı Çalıştırma](#uygulamayı-çalıştırma)
@@ -13,23 +15,23 @@ Bu örnek, **Azure AI Foundry** modeline **anahtarsız kimlik doğrulama** (Micr
   - [Beklenen Çıktı](#beklenen-çıktı)
 - [Yapılandırma Referansı](#yapılandırma-referansı)
   - [Ortam Değişkenleri](#ortam-değişkenleri)
-  - [Spring Yapılandırması](#spring-yapılandırması)
+  - [Spring Konfigürasyonu](#spring-konfigürasyonu)
 - [Sorun Giderme](#sorun-giderme)
   - [Yaygın Sorunlar](#yaygın-sorunlar)
   - [Hata Ayıklama Modu](#hata-ayıklama-modu)
 - [Sonraki Adımlar](#sonraki-adımlar)
 - [Kaynaklar](#kaynaklar)
 
-## Ön Koşullar
+## Önkoşullar
 
-Bu örneği çalıştırmadan önce şunlara sahip olduğunuzdan emin olun:
+Bu örneği çalıştırmadan önce:
 
-- `gpt-4o-mini` dağıtımı bulunan bir Azure AI Foundry kaynağı — `azd up` ile veya manuel olarak [Azure AI Foundry kurulum kılavuzu](../../getting-started-azure-openai.md) üzerinden temin edin
-- O kaynakta **Cognitive Services OpenAI User** rolü (Bicep şablonları bunu sizin için atar)
-- [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli), `az login` ile oturum açılmış
+- `gpt-5.6-luna` dağıtımı içeren bir Azure AI Foundry kaynağı - `azd up` ile ya da el ile [Azure AI Foundry kurulum kılavuzu](../../getting-started-azure-openai.md) üzerinden sağlanmalı
+- Kaynak üzerindeki **Cognitive Services OpenAI User** rolü (Bicep şablonları bunu sizin için atar)
+- `az login` ile oturum açmış olarak [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli)
 - Java 21+ ve Maven 3.9+
 
-> **API anahtarı gerekmez** — kimlik doğrulama Microsoft Entra ID üzerinden anahtarsızdır.
+> **API anahtarı gerekmez** — kimlik doğrulama Microsoft Entra ID üzerinden keyless yapılır.
 
 ## Hızlı Başlangıç
 
@@ -37,12 +39,12 @@ Bu örneği çalıştırmadan önce şunlara sahip olduğunuzdan emin olun:
 # 1. Projeye gidin
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 
-# 2. Anahtarsız kimlik doğrulaması bir token alabilmesi için giriş yapın
+# 2. Anahtarsız kimlik doğrulama bir token alabilmesi için giriş yapın
 az login
 
 # 3. Uç noktayı yapılandırın
-#    - Eğer `azd up` komutunu çalıştırdıysanız, .env dosyası sizin için yazıldı (bunu atlayın).
-#    - Aksi takdirde şablonu kopyalayın ve AZURE_OPENAI_ENDPOINT ayarlayın:
+#    - Eğer `azd up` komutunu çalıştırdıysanız, .env sizin için yazıldı (bunu atlayın).
+#    - Aksi takdirde şablonu kopyalayıp AZURE_OPENAI_ENDPOINT ayarlayın:
 cp .env.example .env
 
 # 4. Uygulamayı çalıştırın
@@ -51,9 +53,15 @@ mvn spring-boot:run
 
 ## Kimlik Doğrulama Nasıl Çalışır
 
-Bu örnek, **Microsoft Entra ID** ile kimlik doğrulaması yapar — API anahtarı yoktur.
+Bu örnekte kimlik doğrulama **Microsoft Entra ID** ile yapılır — API anahtarı yoktur.
 
-Sadece `spring.ai.azure.openai.endpoint` ayarlandığında (api-key olmadan) Spring AI, Azure OpenAI istemcisini [`DefaultAzureCredential`](https://learn.microsoft.com/java/api/com.azure.identity.defaultazurecredential) ile oluşturur. Bu kimlik bilgisi otomatik olarak yerelde `az login` oturumunuzdan veya Azure'da çalışan yönetilen kimlikten bir belirteç bulur — böylece aynı kod her iki yerde de değişiklik yapmadan çalışır.
+Uygulama kimlik doğrulamayı açıkça [BasicChatApplication.java](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/java/com/example/BasicChatApplication.java) içinde yapılandırır:
+
+1. `azureCredential()` `DefaultAzureCredential` ve `https://ai.azure.com/.default` kapsamı ile `AuthenticationUtil.getBearerTokenSupplier` kullanarak bir `BearerTokenCredential` oluşturur.
+2. `azureOpenAiClient()` `OpenAIOkHttpClient.builder()` ile bir `OpenAIClient` oluşturur, kaynak uç noktasını `/openai/v1` olarak çözer ve `.credential(...)` ile taşıyıcı kimlik bilgisi sağlar.
+3. `azureChatModel()` bu istemciyi Spring AI'nın `OpenAiChatModel`'ine sağlar; bu da dersin `ChatClient`'ına destek verir.
+
+Bu açık bileşenler, genel bir `OPENAI_API_KEY`'nin Azure kimlik doğrulamasını geçersiz kılmasını engeller. YAML'den yalnızca bir API anahtarı omitting kimlik doğrulama yapılandırması değildir. `DefaultAzureCredential`, yerelde `az login` oturumunuzu veya Azure'daki yönetilen bir kimliği kullanabilir; seçilen kimliğin yukarıdaki kaynak rolüne sahip olması gerekir.
 
 ## Uygulamayı Çalıştırma
 
@@ -67,15 +75,20 @@ mvn spring-boot:run
 
 1. Projeyi VS Code'da açın
 2. `F5` tuşuna basın veya "Çalıştır ve Hata Ayıkla" panelini kullanın
-3. "Spring Boot-BasicChatApplication" yapılandırmasını seçin
+3. "Spring Boot-BasicChatApplication" konfigürasyonunu seçin
 
-> **Not**: VS Code yapılandırması .env dosyanızı otomatik yükler
+> **Not**: Uygulama çalışma dizininden, VS Code'dan başlatılsa bile, `.env` dosyasını yükler.
 
 ### Beklenen Çıktı
 
-```
+Başarılı bir çalıştırmadan sonra örnek çıktı (başlangıç kayıtları atlanmıştır; yanıt ifadeleri değişebilir):
+
+```text
 Starting Basic Chat with Azure OpenAI...
-Environment variables loaded successfully
+Environment variables loaded from .env file
+Endpoint: https://your-resource.openai.azure.com/
+Deployment: gpt-5.6-luna
+Auth: keyless (Microsoft Entra ID via DefaultAzureCredential)
 Connecting to Azure OpenAI...
 Sending prompt: What is AI in a short sentence? Max 100 words.
 
@@ -91,82 +104,102 @@ Success! Azure OpenAI connection is working correctly.
 
 ### Ortam Değişkenleri
 
-| Değişken | Açıklama | Gerekli | Örnek |
+| Değişken | Açıklama | Zorunlu | Örnek |
 |----------|-------------|----------|---------|
 | `AZURE_OPENAI_ENDPOINT` | Foundry (Azure OpenAI) uç nokta URL'si | Evet | `https://my-resource.openai.azure.com/` |
-| `AZURE_OPENAI_DEPLOYMENT` | Sohbet modeli dağıtım adı | Hayır | `gpt-4o-mini` (varsayılan) |
+| `AZURE_OPENAI_DEPLOYMENT` | Sohbet modeli dağıtım adı | Hayır | `gpt-5.6-luna` (varsayılan) |
 
-> API anahtarı değişkeni **yoktur** — kimlik doğrulama anahtarsızdır (Microsoft Entra ID üzerinden `az login`).
+> **API anahtarı değişkeni yok** — kimlik doğrulama keyless (Microsoft Entra ID, `az login` ile).
 
-### Spring Yapılandırması
+### Spring Konfigürasyonu
 
-`application.yml` dosyası yapılandırır:
-- **Uç Nokta**: `${AZURE_OPENAI_ENDPOINT}` - Ortam değişkeninden
-- **Dağıtım**: `${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}` - Ortam değişkeninden, yedekli
-- **Kimlik Doğrulama**: Anahtarsız — `api-key` ayarlanmadı, bu yüzden Spring AI `DefaultAzureCredential` kullanır
-- **Sıcaklık**: `0.7` - Yaratıcılığı kontrol eder (0.0 = belirleyici, 1.0 = yaratıcı)
-- **Maksimum Token**: `500` - Maksimum yanıt uzunluğu
+[application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml) ayarları `spring.ai.openai` önekini ve düzleştirilmiş sohbet özelliklerini kullanır (`options` bloğu yoktur):
+
+```yaml
+spring:
+  ai:
+    openai:
+      base-url: ${AZURE_OPENAI_ENDPOINT}
+      microsoft-foundry: true
+      chat:
+        model: ${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
+        reasoning-effort: none
+        max-completion-tokens: 500
+```
+
+`model` **Azure dağıtım adıdır**. Kimlik doğrulama yukarıda açıklanan açık bileşenlerden gelir; `api-key` ayarı kullanılmaz. Ders, muhakemeyi devre dışı bırakır ve tamamlama token sayısını 500 ile sınırlar; `temperature` ve eski `max-tokens` ayarları boş bırakılmıştır.
+
+Microsoft, [yeni uygulamalar için resmi OpenAI SDK'yı Azure OpenAI v1 ve Responses API ile kullanmayı önerir](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java). Bu mevcut mesaj tabanlı ders için Chat Completions desteklenmeye devam etmektedir. GPT-5.6 için, Chat Completions üzerinde araç içeren istekler `reasoning_effort`'i `none` olarak ayarlamalıdır; araçlarla birlikte muhakeme yaparken Responses API kullanılmalıdır. Ayrıntılar için [muhakeme modelleriyle araç çağrısı](https://learn.microsoft.com/azure/foundry/openai/how-to/reasoning#tool-calling-with-reasoning-models) adresine bakınız.
 
 ## Sorun Giderme
 
 ### Yaygın Sorunlar
 
 <details>
-<summary><strong>Hata: 401 / "PermissionDenied" / belirteç hataları</strong></summary>
+<summary><strong>Hata: 401 / "PermissionDenied" / token hataları</strong></summary>
 
-- `az login` komutunu çalıştırın — anahtarsız kimlik doğrulama bir belirteç almak için aktif oturum gerektirir
-- Hesabınızda kaynağa yönelik **Cognitive Services OpenAI User** rolü olduğundan emin olun
+- `az login` komutunu çalıştırın — anahtarsız kimlik doğrulama için aktif oturum gereklidir
+- Hesabınızın kaynak üzerinde **Cognitive Services OpenAI User** rolüne sahip olduğundan emin olun
 - Rolü yeni atadıysanız, yayılması için birkaç dakika bekleyin
-- Doğru kiracı/abone altında olduğunuzu doğrulayın (`az account show`)
+- Doğru kiracı/abone içinde olduğunuzu kontrol edin (`az account show`)
 </details>
 
 <details>
-<summary><strong>Hata: "Uç nokta geçerli değil" / bağlantı hataları</strong></summary>
+<summary><strong>Hata: "The endpoint is not valid" / bağlantı hataları</strong></summary>
 
-- `AZURE_OPENAI_ENDPOINT` değişkeninin tam temel URL (örneğin `https://your-resource.openai.azure.com/`) olduğundan emin olun
+- `AZURE_OPENAI_ENDPOINT` tam temel URL olmalıdır (örn. `https://your-resource.openai.azure.com/`)
 - Sonundaki eğik çizgi tutarlılığını kontrol edin
-- Uç noktanın sağladığınız kaynakla eşleştiğini doğrulayın (`azd env get-values`)
+- Uç noktanın sağlanan kaynakla eşleştiğini doğrulayın (`azd env get-values`)
 </details>
 
 <details>
-<summary><strong>Hata: "Dağıtım bulunamadı"</strong></summary>
+<summary><strong>Hata: "The deployment was not found"</strong></summary>
 
-- `AZURE_OPENAI_DEPLOYMENT` değişkeninin Azure’daki geçerli bir dağıtım adıyla eşleştiğini kontrol edin
-- Modelin başarıyla dağıtıldığını ve aktif olduğunu doğrulayın
-- Varsayılan dağıtım adı `gpt-4o-mini`’dir
+- `AZURE_OPENAI_DEPLOYMENT` dağıtım adıyla uyumlu olmalı
+- Modelin başarıyla dağıtıldığını ve aktif olduğunu kontrol edin
+- Varsayılan dağıtım adı `gpt-5.6-luna`dır
+</details>
+
+<details>
+<summary><strong>Hata: 429 / kota aşımı</strong></summary>
+
+- Varsayılan GPT-5.6 Luna dağıtımı Global Standard kapasitesine sahiptir: dakikada 10 istek ve dakikada 10.000 token
+- Örnekleri sırayla çalıştırın ve yeniden denemeden önce hizmetin yeniden deneme aralığını bekleyin
+- Bu temel örnek otomatik SDK yeniden denemelerini devre dışı bırakır, bu yüzden başarısız istek doğrudan raporlanır
 </details>
 
 <details>
 <summary><strong>VS Code: Ortam değişkenleri yüklenmiyor</strong></summary>
 
-- `.env` dosyanızın proje kök dizininde (pom.xml ile aynı seviyede) olduğundan emin olun
-- VS Code entegrasyon terminalinde `mvn spring-boot:run` komutunu deneyin
-- VS Code Java eklentisinin doğru yüklendiğini kontrol edin
+- `.env` dosyanızın proje ana dizininde olduğundan emin olun (`pom.xml` ile aynı seviye)
+- VS Code'un entegre terminalinde `mvn spring-boot:run` komutunu çalıştırmayı deneyin
+- VS Code Java uzantısının düzgün kurulmuş olduğunu kontrol edin
 </details>
 
 ### Hata Ayıklama Modu
 
-Ayrıntılı günlükleme için `application.yml` içindeki bu satırların yorumunu kaldırın:
+Daha ayrıntılı günlükleme için [application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml) içindeki bu satırların yorumunu kaldırın:
 
 ```yaml
 logging:
   level:
-    org.springframework.ai: DEBUG
-    com.azure: DEBUG
+    "[org.springframework.ai]": DEBUG
+    "[com.azure]": DEBUG
 ```
 
 ## Sonraki Adımlar
 
 **Kurulum Tamamlandı!** Öğrenme yolculuğunuza devam edin:
 
-[3. Bölüm: Temel Üretken AI Teknikleri](../../../03-CoreGenerativeAITechniques/README.md)
+[Bölüm 3: Temel Üretken Yapay Zeka Teknikleri](../../../03-CoreGenerativeAITechniques/README.md)
 
 ## Kaynaklar
 
-- [Spring AI Azure OpenAI Dokümantasyonu](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
-- [Microsoft Entra ID ile Anahtarsız Kimlik Doğrulama](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
+- [Spring AI 2 OpenAI Java SDK geçişi](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [Azure OpenAI v1 ile resmi OpenAI Java SDK](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
+- [Microsoft Entra ID ile anahtarsız kimlik doğrulama](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
 - [Azure AI Foundry Portalı](https://ai.azure.com/)
-- [Azure AI Foundry Dokümantasyonu](https://learn.microsoft.com/azure/ai-foundry/)
+- [Azure AI Foundry Belgeleri](https://learn.microsoft.com/azure/ai-foundry/)
 
 ---
 

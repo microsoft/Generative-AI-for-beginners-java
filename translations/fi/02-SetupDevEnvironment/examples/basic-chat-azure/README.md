@@ -1,61 +1,69 @@
-# Peruskeskustelu Azure AI Foundryn kanssa – kokonaisvaltainen esimerkki
+# Peruschat Azure AI Foundryn kanssa – End-to-End-esimerkki
 
-Tämä esimerkki on yksinkertainen Spring Boot -sovellus, joka yhdistää **Azure AI Foundry** -malliin käyttämällä **avaimetonta todennusta** (Microsoft Entra ID) ja testaa asetuksesi. Se käyttää Spring AI:n `ChatClient`-luokkaa.
+Tämä esimerkki on yksinkertainen Spring Boot -sovellus, joka yhdistää **Azure AI Foundry** -malliin käyttäen **avaimetonta todennusta** (Microsoft Entra ID) ja testaa asennuksesi. Se käyttää Spring AI:n `ChatClient`-luokkaa, jota tukevat **virallinen OpenAI Java SDK** ja **Azure OpenAI v1** -päätepiste.
+
+Versiot tiedostossa [pom.xml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/pom.xml) ovat Spring Boot **4.1.1**, Spring AI **2.0.1**, OpenAI Java **4.63.1**, Azure Identity **1.18.6** ja dotenv-java **3.2.0**. Näyte käyttää `spring-ai-starter-model-openai`-kirjastoa ja määrittelee erikseen `openai-java`- ja `azure-identity`-kirjastot; Spring AI 2 poisti vanhan Azure OpenAI -starterin.
 
 ## Sisällysluettelo
 
 - [Esivaatimukset](#esivaatimukset)
-- [Pika-aloitus](#pika-aloitus)
-- [Miten todennus toimii](#miten-todennus-toimii)
-- [Sovelluksen suorittaminen](#sovelluksen-suorittaminen)
-  - [Mavenin käyttö](#mavenin-käyttö)
-  - [VS Coden käyttö](#vs-coden-käyttö)
+- [Nopea aloitus](#nopea-aloitus)
+- [Kuinka todennus toimii](#kuinka-todennus-toimii)
+- [Sovelluksen ajaminen](#sovelluksen-ajaminen)
+  - [Mavenin käyttäminen](#mavenin-käyttö)
+  - [VS Code -käyttö](#vs-code-käyttö)
   - [Odotettu tuloste](#odotettu-tuloste)
-- [Konfiguraatioiden viite](#konfiguraatioiden-viite)
+- [Konfiguroinnin viite](#konfiguraation-viite)
   - [Ympäristömuuttujat](#ympäristömuuttujat)
-  - [Spring-konfiguraatio](#spring-konfiguraatio)
-- [Vianetsintä](#vianetsintä)
+  - [Spring-konfigurointi](#spring-konfiguraatio)
+- [Vianmääritys](#vianmääritys)
   - [Yleiset ongelmat](#yleiset-ongelmat)
-  - [Vikailmoitukset](#vikailmoitukset)
-- [Seuraavat askeleet](#seuraavat-askeleet)
+  - [Debug-tila](#debug-tila)
+- [Seuraavat vaiheet](#seuraavat-vaiheet)
 - [Resurssit](#resurssit)
 
 ## Esivaatimukset
 
 Ennen tämän esimerkin suorittamista varmista, että sinulla on:
 
-- Azure AI Foundry -resurssi, jossa on `gpt-4o-mini` -käyttöönotto — ota se käyttöön komennolla `azd up` tai manuaalisesti [Azure AI Foundryn asennusohjeen](../../getting-started-azure-openai.md) avulla
-- **Cognitive Services OpenAI User** -rooli kyseisessä resurssissa (Bicep-mallit asettavat tämän automaattisesti)
-- [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli), kirjautuneena sisään komennolla `az login`
+- Azure AI Foundry -resurssi, jossa on `gpt-5.6-luna`-käyttöönotto – ota se käyttöön komennolla `azd up` tai manuaalisesti [Azure AI Foundryn asennusopas](../../getting-started-azure-openai.md)
+- Resurssin **Cognitive Services OpenAI User** -rooli (Bicep-mallit määrittävät tämän puolestasi)
+- [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli), jossa olet kirjautunut sisään komennolla `az login`
 - Java 21+ ja Maven 3.9+
 
-> **API-avainta ei vaadita** — todennus tapahtuu avaimettomasti Microsoft Entra ID:n kautta.
+> **API-avainta ei tarvita** — todennus on avaimetonta Microsoft Entra ID:n kautta.
 
-## Pika-aloitus
+## Nopea aloitus
 
 ```bash
 # 1. Siirry projektiin
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 
-# 2. Kirjaudu sisään, jotta keyless-todennus voi saada tokenin
+# 2. Kirjaudu sisään, jotta avaimetonta todennusta varten voidaan saada token
 az login
 
 # 3. Määritä päätepiste
-#    - Jos kävit `azd up`, .env tiedosto on kirjoitettu puolestasi (hyppää tämä yli).
-#    - Muussa tapauksessa kopioi mallipohja ja aseta AZURE_OPENAI_ENDPOINT:
+#    - Jos suoritat `azd up`, .env tiedosto kirjoitettiin puolestasi (ohita tämä).
+#    - Muussa tapauksessa kopioi malli ja aseta AZURE_OPENAI_ENDPOINT:
 cp .env.example .env
 
 # 4. Suorita sovellus
 mvn spring-boot:run
 ```
 
-## Miten todennus toimii
+## Kuinka todennus toimii
 
-Tässä esimerkissä todentaminen tapahtuu **Microsoft Entra ID:n** avulla — API-avainta ei tarvita.
+Tämä esimerkki käyttää todennukseen **Microsoft Entra ID:tä** — API-avainta ei ole.
 
-Kun on asetettu vain `spring.ai.azure.openai.endpoint` (eikä api-avain), Spring AI rakentaa Azure OpenAI -asiakkaan käyttäen [`DefaultAzureCredential`](https://learn.microsoft.com/java/api/com.azure.identity.defaultazurecredential) -todennustietoja. Tämä tunnistus hakee automaattisesti tokenin paikallisesta `az login` -sessionistasi tai hallitun identiteetin avulla, kun sovellus ajetaan Azure-ympäristössä — joten sama koodi toimii molemmissa ympäristöissä ilman muutoksia.
+Sovellus määrittää todennuksen eksplisiittisesti tiedostossa [BasicChatApplication.java](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/java/com/example/BasicChatApplication.java):
 
-## Sovelluksen suorittaminen
+1. `azureCredential()` luo `BearerTokenCredential`-olion käyttäen `AuthenticationUtil.getBearerTokenSupplier`-metodia, joka hyödyntää `DefaultAzureCredential`ia ja laajuutta `https://ai.azure.com/.default`.
+2. `azureOpenAiClient()` rakentaa `OpenAIClient`-olion käyttäen `OpenAIOkHttpClient.builder()`:a, määrittelee resurssin päätepisteen `/openai/v1`:ksi ja antaa tunnisteen `.credential(...)`-metodilla.
+3. `azureChatModel()` antaa tämän asiakkaan Spring AI:n `OpenAiChatModel`-luokalle, joka tukee oppitunnin `ChatClient`-oliota.
+
+Nämä eksplisiittiset bean-määritelmät estävät globaalin `OPENAI_API_KEY`-avaimen korvaamasta Azure-todennusta. Pelkkä API-avaimen jättäminen pois YAML-tiedostosta ei riitä todennuksen määrittämiseen. `DefaultAzureCredential` voi käyttää paikallista `az login` -istuntoasi tai hallittua identiteettiä Azurella; kumpi tahansa valittu identiteetti tarvitsee yllä mainitun resurssiroolin.
+
+## Sovelluksen ajaminen
 
 ### Mavenin käyttö
 
@@ -63,19 +71,24 @@ Kun on asetettu vain `spring.ai.azure.openai.endpoint` (eikä api-avain), Spring
 mvn spring-boot:run
 ```
 
-### VS Coden käyttö
+### VS Code -käyttö
 
 1. Avaa projekti VS Codessa
 2. Paina `F5` tai käytä "Run and Debug" -paneelia
-3. Valitse "Spring Boot-BasicChatApplication" -konfiguraatio
+3. Valitse "Spring Boot-BasicChatApplication" -kokoonpano
 
-> **Huom:** VS Code -konfiguraatio lataa automaattisesti ympäristömuuttujat sisältävän .env -tiedoston
+> **Huom**: Sovellus lataa `.env`-tiedoston nykyisestä hakemistosta, myös kun se käynnistetään VS Codesta.
 
 ### Odotettu tuloste
 
-```
+Esimerkinomainen tuloste onnistuneen suorituksen jälkeen (käynnistyslokeja ei näytetä; vastausten muotoilu vaihtelee):
+
+```text
 Starting Basic Chat with Azure OpenAI...
-Environment variables loaded successfully
+Environment variables loaded from .env file
+Endpoint: https://your-resource.openai.azure.com/
+Deployment: gpt-5.6-luna
+Auth: keyless (Microsoft Entra ID via DefaultAzureCredential)
 Connecting to Azure OpenAI...
 Sending prompt: What is AI in a short sentence? Max 100 words.
 
@@ -87,86 +100,106 @@ AI, or Artificial Intelligence, is the simulation of human intelligence in machi
 Success! Azure OpenAI connection is working correctly.
 ```
 
-## Konfiguraatioiden viite
+## Konfiguraation viite
 
 ### Ympäristömuuttujat
 
 | Muuttuja | Kuvaus | Pakollinen | Esimerkki |
 |----------|-------------|----------|---------|
-| `AZURE_OPENAI_ENDPOINT` | Foundryn (Azure OpenAI) päätepisteen URL-osoite | Kyllä | `https://my-resource.openai.azure.com/` |
-| `AZURE_OPENAI_DEPLOYMENT` | Chat-mallin käyttöönoton nimi | Ei | `gpt-4o-mini` (oletus) |
+| `AZURE_OPENAI_ENDPOINT` | Foundryn (Azure OpenAI) päätepiste-URL | Kyllä | `https://my-resource.openai.azure.com/` |
+| `AZURE_OPENAI_DEPLOYMENT` | Chat-mallin käyttöönoton nimi | Ei | `gpt-5.6-luna` (oletus) |
 
-> API-avaimen muuttujaa **ei ole** — todennus on avaimetonta (Microsoft Entra ID `az login` -käytöllä).
+> API-avaintakaan ei ole — todennus on avaimetonta (Microsoft Entra ID käyttäen `az login`).
 
 ### Spring-konfiguraatio
 
-`application.yml`-tiedosto määrittelee:
-- **Päätepisteen**: `${AZURE_OPENAI_ENDPOINT}` – ympäristömuuttujasta
-- **Käyttöönoton**: `${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}` – ympäristömuuttujasta, oletuksella
-- **Todennuksen**: avaimeton — ei asetettu `api-key`, joten Spring AI käyttää `DefaultAzureCredential`-luokkaa
-- **Lämpötila**: `0.7` – ohjaa luovuutta (0.0 = deterministinen, 1.0 = luova)
-- **Maksimi tokenit**: `500` – suurin vastauksen pituus
+Asetukset tiedostossa [application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml) käyttävät etuliitettä `spring.ai.openai` ja tasoitettuja chat-ominaisuuksia (ei `options`-lohkoa):
 
-## Vianetsintä
+```yaml
+spring:
+  ai:
+    openai:
+      base-url: ${AZURE_OPENAI_ENDPOINT}
+      microsoft-foundry: true
+      chat:
+        model: ${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
+        reasoning-effort: none
+        max-completion-tokens: 500
+```
+
+`model` on **Azure-käyttöönoton nimi**. Todennus tulee yllä kuvatuista eksplisiittisistä bean-määrittelyistä, ei `api-key`-asetuksesta. Oppitunti poistaa päättelytoiminnon käytöstä ja rajoittaa täydennysten token-määrän 500:aan; `temperature` ja perinteinen `max-tokens` jätetään määrittämättä.
+
+Microsoft suosittelee [virallista OpenAI SDK:ta Azure OpenAI v1:n ja Responses API:n kanssa uusissa sovelluksissa](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java). Chat Completions -toimintoa tuetaan edelleen tässä olemassa olevassa viestipohjaisessa opetusohjelmassa. GPT-5.6:n kohdalla pyynnöt, joissa käytetään työkaluja Chat Completionsissa, on asetettava `reasoning_effort` arvoksi `none`; päättelyn yhdistäminen työkaluin kannattaa tehdä Responses API:n kautta. Katso [työkalukutsut päättelymalleissa](https://learn.microsoft.com/azure/foundry/openai/how-to/reasoning#tool-calling-with-reasoning-models).
+
+## Vianmääritys
 
 ### Yleiset ongelmat
 
 <details>
-<summary><strong>Virhe: 401 / "PermissionDenied" / token-virheet</strong></summary>
+<summary><strong>Virhe: 401 / "PermissionDenied" / token-virheitä</strong></summary>
 
-- Suorita `az login` — avaimeton todennus tarvitsee aktiivisen sisäänkirjautumisen saadakseen tokenin
-- Varmista, että tililläsi on **Cognitive Services OpenAI User** -rooli kyseisessä resurssissa
-- Jos rooli on juuri myönnetty, odota hetki, että se ehtii voimaan
-- Tarkista, että olet oikeassa vuokralaisessa/tilaajassa (`az account show`)
+- Suorita `az login` — avaimeton todennus tarvitsee aktiivisen kirjautumisen tokenin saamiseksi
+- Varmista, että tililläsi on **Cognitive Services OpenAI User** -rooli resurssilla
+- Jos rooli on juuri myönnetty, odota minuutti, että muutos rekisteröityy
+- Varmista, että olet oikeassa vuokraajassa/tilauksessa (`az account show`)
 </details>
 
 <details>
-<summary><strong>Virhe: "The endpoint is not valid" / yhteysvirheet</strong></summary>
+<summary><strong>Virhe: "The endpoint is not valid" / yhteysvirheitä</strong></summary>
 
-- Varmista, että `AZURE_OPENAI_ENDPOINT` on koko perus-URL (esim. `https://your-resource.openai.azure.com/`)
-- Tarkista, että osoitteen loppuosa (vinoviiva) on yhteneväinen
-- Varmista, että osoite vastaa varattua resurssiasi (`azd env get-values`)
+- Varmista, että `AZURE_OPENAI_ENDPOINT` on täydellinen perus-URL (esim. `https://your-resource.openai.azure.com/`)
+- Tarkista loppuviivan yhdenmukaisuus
+- Varmista, että päätepiste vastaa provisioimaasi resurssia (`azd env get-values`)
 </details>
 
 <details>
 <summary><strong>Virhe: "The deployment was not found"</strong></summary>
 
-- Varmista, että `AZURE_OPENAI_DEPLOYMENT` vastaa käyttöönoton nimeä Azuressa
-- Tarkista, että malli on onnistuneesti otettu käyttöön ja aktiivinen
-- Oletuskäyttöönoton nimi on `gpt-4o-mini`
+- Varmista, että `AZURE_OPENAI_DEPLOYMENT` vastaa Azureen manuaalisesti tehtyä käyttöönoton nimeä
+- Varmista, että malli on oikein otettu käyttöön ja aktiivinen
+- Oletuskäyttöönoton nimi on `gpt-5.6-luna`
+</details>
+
+<details>
+<summary><strong>Virhe: 429 / rajanopeuden ylitys</strong></summary>
+
+- Oletus GPT-5.6 Luna -käyttöönotossa on kapasiteetti Global Standard 10: 10 pyyntöä/min ja 10 000 tokenia/min
+- Suorita esimerkit peräkkäin ja odota palvelun uudelleenyritysväli ennen uusintaa
+- Tämä perusesimerkki poistaa automaattiset SDK-yritykset, joten epäonnistuneet pyynnöt raportoidaan heti
 </details>
 
 <details>
 <summary><strong>VS Code: Ympäristömuuttujat eivät lataudu</strong></summary>
 
-- Varmista, että .env-tiedosto on projektin juurihakemistossa (samalla tasolla kuin `pom.xml`)
-- Kokeile suorittaa `mvn spring-boot:run` VS Coden integroidussa terminaalissa
-- Tarkista, että VS Coden Java-laajennus on asennettu oikein
+- Varmista, että `.env`-tiedosto on projektin juurihakemistossa (samalla tasolla kuin `pom.xml`)
+- Kokeile ajaa `mvn spring-boot:run` VS Coden integroidussa terminaalissa
+- Tarkista, että VS Code Java -laajennus on asennettu oikein
 </details>
 
-### Vikailmoitukset
+### Debug-tila
 
-Yksityiskohtaisen lokituksen käyttämiseksi ota nämä rivit käyttöön `application.yml`-tiedostossa:
+Tarkempaa lokitusta varten poista kommentti näiltä riveiltä tiedostossa [application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml):
 
 ```yaml
 logging:
   level:
-    org.springframework.ai: DEBUG
-    com.azure: DEBUG
+    "[org.springframework.ai]": DEBUG
+    "[com.azure]": DEBUG
 ```
 
-## Seuraavat askeleet
+## Seuraavat vaiheet
 
 **Asennus valmis!** Jatka oppimismatkaasi:
 
-[Luku 3: Keskeiset generatiivisen tekoälyn tekniikat](../../../03-CoreGenerativeAITechniques/README.md)
+[Luku 3: Keskeiset Generatiivisen AI:n tekniikat](../../../03-CoreGenerativeAITechniques/README.md)
 
 ## Resurssit
 
-- [Spring AI Azure OpenAI Dokumentaatio](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
+- [Spring AI 2 OpenAI Java SDK -siirtymä](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [Virallinen OpenAI Java SDK Azure OpenAI v1:n kanssa](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
 - [Avaimeton todennus Microsoft Entra ID:llä](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
-- [Azure AI Foundry Portaalin](https://ai.azure.com/)
-- [Azure AI Foundry Dokumentaatio](https://learn.microsoft.com/azure/ai-foundry/)
+- [Azure AI Foundry -portaali](https://ai.azure.com/)
+- [Azure AI Foundry -dokumentaatio](https://learn.microsoft.com/azure/ai-foundry/)
 
 ---
 

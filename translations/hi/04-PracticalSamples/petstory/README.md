@@ -1,38 +1,48 @@
-# Pet Story Generator Tutorial for Beginners
+# शुरुआती लोगों के लिए पालतू कहानी जनरेटर ट्यूटोरियल
 
-## Table of Contents
+एक पालतू का फोटो अपलोड करें, इसे GPT-5.6 Luna के साथ विश्लेषण करें, और प्राप्त विवरण से एक कहानी उत्पन्न करें। दोनों मॉडल अनुरोधों में `reasoning_effort: none` का उपयोग किया गया है।
 
-- [Prerequisites](#prerequisites)
-- [Understanding the Project Structure](#understanding-the-project-structure)
-- [Core Components Explained](#core-components-explained)
-  - [1. Main Application](#1-main-application)
-  - [2. Web Controller](#2-web-controller)
-  - [3. Story Service](#3-story-service)
-  - [4. Web Templates](#4-web-templates)
-  - [5. Configuration](#5-configuration)
-- [Running the Application](#running-the-application)
-- [How It All Works Together](#how-it-all-works-together)
-- [Understanding the AI Integration](#understanding-the-ai-integration)
-- [Next Steps](#next-steps)
+| घटक | संस्करण |
+| --- | --- |
+| जावा | 21 या उससे ऊपर |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
 
-## Prerequisites
+## सामग्री सूची
 
-शुरू करने से पहले, सुनिश्चित करें कि आपके पास निम्नलिखित हैं:
-- Java 21 या इससे ऊपर संस्करण स्थापित है
-- निर्भरता प्रबंधन के लिए Maven
-- एक Azure AI Foundry मॉडल डिप्लॉयमेंट (इसे `azd up` के साथ प्रदान करें — देखें [Chapter 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md)), `az login` के साथ साइन इन करें (कीलेस प्रमाणीकरण)
-- Java, Spring Boot, और वेब विकास की बुनियादी समझ
+- [पूर्वापेक्षाएँ](#पूर्वापेक्षाएँ)
+- [परियोजना संरचना की समझ](#परियोजना-संरचना-की-समझ)
+- [मुख्य घटकों की व्याख्या](#मुख्य-घटकों-की-व्याख्या)
+  - [1. मुख्य अनुप्रयोग](#1-मुख्य-अनुप्रयोग)
+  - [2. वेब कंट्रोलर](#2-वेब-कंट्रोलर)
+  - [3. कहानी सेवा](#3-कहानी-सेवा)
+  - [4. वेब टेम्पलेट्स](#4-वेब-टेम्पलेट्स)
+  - [5. विन्यास](#5-विन्यास)
+- [एप्लिकेशन चलाना](#एप्लिकेशन-चलाना)
+- [ऑफ़लाइन परीक्षण](#ऑफ़लाइन-परीक्षण)
+- [सभी कैसे साथ काम करते हैं](#सभी-कैसे-साथ-काम-करते-हैं)
+- [एआई एकीकरण की समझ](#एआई-एकीकरण-की-समझ)
+- [अगले कदम](#अगले-कदम)
 
-## Understanding the Project Structure
+## पूर्वापेक्षाएँ
 
-पेट स्टोरी प्रोजेक्ट में कई महत्वपूर्ण फ़ाइलें हैं:
+शुरू करने से पहले, सुनिश्चित करें कि आपके पास है:
+- जावा 21 या उससे ऊपर स्थापित
+- Maven निर्भरता प्रबंधन के लिए
+- GPT-5.6 Luna नामक Azure AI Foundry परिनियोजन, या उस परिनियोजन की ओर इंगित करने वाला `AZURE_OPENAI_DEPLOYMENT` ओवरराइड। प्रावधान और बिना कुंजी प्रमाणीकरण के लिए `az login` के साथ साइन इन के लिए [अध्याय 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md) देखें। परिनियोजन को छवि इनपुट और `reasoning_effort: none` का समर्थन करना चाहिए।
+- जावा, Spring Boot, और वेब विकास की बुनियादी समझ
+
+## परियोजना संरचना की समझ
+
+पालतू कहानी परियोजना में कई महत्वपूर्ण फाइलें हैं:
 
 ```
 petstory/
 ├── src/main/java/com/example/petstory/
 │   ├── PetStoryApplication.java       # Main Spring Boot application
 │   ├── PetController.java             # Web request handler
-│   ├── StoryService.java              # AI story generation service
+│   ├── StoryService.java              # AI image analysis and story generation
 │   └── SecurityConfig.java            # Security configuration
 ├── src/main/resources/
 │   ├── application.properties         # App configuration
@@ -42,13 +52,13 @@ petstory/
 └── pom.xml                           # Maven dependencies
 ```
 
-## Core Components Explained
+## मुख्य घटकों की व्याख्या
 
-### 1. Main Application
+### 1. मुख्य अनुप्रयोग
 
-**फ़ाइल:** `PetStoryApplication.java`
+**फाइल:** `PetStoryApplication.java`
 
-यह हमारे Spring Boot एप्लिकेशन का एंट्री पॉइंट है:
+यह हमारे Spring Boot अनुप्रयोग का प्रवेश बिंदु है:
 
 ```java
 @SpringBootApplication
@@ -60,211 +70,52 @@ public class PetStoryApplication {
 ```
 
 **यह क्या करता है:**
-- `@SpringBootApplication` एनोटेशन ऑटो-कॉन्फ़िगरेशन और कंपोनेंट स्कैनिंग सक्षम करता है
+- `@SpringBootApplication` एनोटेशन ऑटो-कॉन्फ़िगरेशन और घटक स्कैनिंग सक्षम करता है
 - पोर्ट 8080 पर एक एम्बेडेड वेब सर्वर (Tomcat) शुरू करता है
-- सभी आवश्यक Spring बीन्स और सर्विसेज़ को स्वतः बनाता है
+- सभी आवश्यक Spring बीन और सेवाओं को स्वचालित रूप से बनाता है
 
-### 2. Web Controller
+### 2. वेब कंट्रोलर
 
-**फ़ाइल:** `PetController.java`
+**फाइल:** [PetController.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/PetController.java)
 
-यह सभी वेब अनुरोधों और उपयोगकर्ता इंटरैक्शन को संभालता है:
+| एंडपॉइंट | अनुरोध | सफल प्रतिक्रिया |
+| --- | --- | --- |
+| `GET /` | कोई बॉडी नहीं | CSRF टोकन के साथ HTML अपलोड फॉर्म |
+| `POST /analyze-image` | `multipart/form-data`, फ़ाइल फ़ील्ड `image` | JSON: `{"description":"एक चंचल पालतू..."}` |
+| `POST /generate-story` | `application/x-www-form-urlencoded`, फ़ील्ड `description` | विवरण और उत्पन्न कहानी के साथ HTML परिणाम पृष्ठ |
 
-```java
-@Controller
-public class PetController {
-    
-    private final StoryService storyService;
-    
-    public PetController(StoryService storyService) {
-        this.storyService = storyService;
-    }
-    
-    @GetMapping("/")
-    public String index() {
-        return "index";  // index.html टेम्पलेट लौटाता है
-    }
-    
-    @PostMapping("/generate-story")
-    public String generateStory(@RequestParam("description") String description, 
-                               Model model, 
-                               RedirectAttributes redirectAttributes) {
-        
-        // इनपुट सत्यापन
-        if (description.trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Please provide a description.");
-            return "redirect:/";
-        }
-        
-        // सुरक्षा के लिए इनपुट को शुद्ध करें
-        String sanitizedDescription = sanitizeInput(description);
-        
-        // त्रुटि संभालने के साथ कहानी जनरेट करें
-        try {
-            String story = storyService.generateStory(sanitizedDescription);
-            model.addAttribute("caption", sanitizedDescription);
-            model.addAttribute("story", story);
-            return "result";  // result.html टेम्पलेट लौटाता है
-            
-        } catch (Exception e) {
-            // यदि AI असफल होता है तो फॉलबैक कहानी का उपयोग करें
-            String fallbackStory = generateFallbackStory(sanitizedDescription);
-            model.addAttribute("story", fallbackStory);
-            return "result";
-        }
-    }
-    
-    private String sanitizeInput(String input) {
-        return input.replaceAll("[<>\"'&]", "")  // Remove dangerous characters
-                   .trim()
-                   .substring(0, Math.min(input.length(), 500));  // लंबाई सीमित करें
-    }
-}
-```
+दोनों POST एंडपॉइंट को सेशन कुकी और CSRF टोकन की आवश्यकता होती है जो `GET /` से प्राप्त होते हैं। अपलोड स्क्रिप्ट छिपे हुए `_csrf` मान को `X-CSRF-TOKEN` हेडर में भेजती है; कहानी सबमिशन इसे `_csrf` फॉर्म फील्ड के रूप में भेजता है। एपीआई क्लाइंट्स को अनुरोधों के बीच कुकी संरक्षित करनी चाहिए। ये फॉर्म एंडपॉइंट हैं, JSON अनुरोध एंडपॉइंट नहीं।
 
-**मुख्य विशेषताएं:**
+विवरण खाली नहीं होना चाहिए और 1000 वर्णों से अधिक लंबा नहीं होना चाहिए। कंट्रोलर विवरण को ट्रिम करता है और इसे सेवा को भेजने से पहले `<`, `>`, डबल कोट्स, अपॉस्ट्रॉफी, और `&` हटा देता है। परिणाम टेम्पलेट भी मॉडल आउटपुट को `th:text` के साथ एस्केप करता है।
 
-1. **रूट हैंडलिंग**: `@GetMapping("/")` अपलोड फॉर्म दिखाता है, `@PostMapping("/generate-story")` सबमिशन को प्रोसेस करता है
-2. **इनपुट सत्यापन**: खाली विवरण और लम्बाई सीमाओं की जांच करता है
-3. **सुरक्षा**: XSS हमलों को रोकने के लिए उपयोगकर्ता इनपुट को साफ करता है
-4. **त्रुटि प्रबंधन**: AI सेवा विफल होने पर बैकअप कहानियां प्रदान करता है
-5. **मॉडल बाइंडिंग**: Spring के `Model` का उपयोग करके डेटा को HTML टेम्प्लेट्स को भेजता है
+छवि सत्यापन विफलताएं HTTP 400 `error` फ़ील्ड के साथ लौटाती हैं; मॉडल विफलताएं HTTP 502 `error` फ़ील्ड के साथ और बिना `description` के लौटाती हैं। अमान्य कहानी विवरण या मॉडल विफलताएं `/` पर एक दृश्य त्रुटि के साथ पुनः निर्देशित करती हैं। आवश्यक फ़ील्ड गुम होने पर HTTP 400 होता है, और गुम या अमान्य CSRF टोकन HTTP 403 देता है। सफल AI परिणामों के रूप में कोई फॉलबैक विवरण या कहानियाँ प्रस्तुत नहीं की जाती हैं।
 
-**बैकअप सिस्टम:**
-कंट्रोलर में पहले से लिखे गए कहानी टेम्प्लेट शामिल हैं, जो AI सेवा अनुपलब्ध होने पर उपयोग किए जाते हैं:
+### 3. कहानी सेवा
 
-```java
-private String generateFallbackStory(String description) {
-    String[] storyTemplates = {
-        "Meet the most wonderful pet in the world – a furry ball of energy...",
-        "Once upon a time, there lived a remarkable pet whose heart was as big...",
-        "In a cozy home filled with love, there lived an extraordinary pet..."
-    };
-    
-    // लगातार प्रतिक्रियाओं के लिए विवरण हैश का उपयोग करें
-    int index = Math.abs(description.hashCode() % storyTemplates.length);
-    return storyTemplates[index];
-}
-```
+**फाइल:** [StoryService.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/StoryService.java)
 
-### 3. Story Service
+आधिकारिक OpenAI Java SDK 4.63.1 Azure AI Foundry के OpenAI-अनुकूल चैट समापन API को कॉल करता है। Azure Identity 1.18.6 `DefaultAzureCredential` के माध्यम से Microsoft Entra बीयरर टोकन प्रदान करता है; कोई API कुंजी आवश्यक नहीं है।
 
-**फ़ाइल:** `StoryService.java`
+| ऑपरेशन | इनपुट | `max_completion_tokens` |
+| --- | --- | --- |
+| `analyzeImage` | अपलोड किए गए MIME प्रकार के साथ एक बेस64 डेटा URL के रूप में एन्कोड किए गए छवि बाइट्स | 300 |
+| `generateStory` | एक पालतू विवरण उपयोगकर्ता संदेश में | 800 |
 
-यह सेवा Azure AI Foundry के साथ बिना कुंजी प्रमाणीकरण के कहानियाँ उत्पन्न करने के लिए संवाद करती है:
+दोनों अनुरोध निर्दिष्ट परिनियोजन का उपयोग करते हैं, जो डिफ़ॉल्ट रूप से `gpt-5.6-luna` है, और स्पष्ट रूप से `ReasoningEffort.NONE` (`reasoning_effort: none`) सेट करते हैं। कोई भी अनुरोध `temperature` या पुराने `max_tokens` पैरामीटर नहीं भेजता।
 
-```java
-@Service
-public class StoryService {
-    
-    private final OpenAIClient openAIClient;
-    private final String modelName;
-    
-    public StoryService(@Value("${azure.openai.endpoint:}") String endpoint,
-                       @Value("${azure.openai.deployment:gpt-4o-mini}") String modelName) {
-        this.modelName = modelName;
-        if (endpoint == null || endpoint.isBlank()) {
-            endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        }
-        
-        // Foundry का OpenAI-समतुल्य एंडपॉइंट /openai/v1/ के अंतर्गत है
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1/";
-        
-        // Microsoft Entra ID के साथ कीलेस प्रमाणीकरण (कोई API कुंजी नहीं)
-        DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-        this.openAIClient = OpenAIOkHttpClient.builder()
-                .baseUrl(baseUrl)
-                .credential(BearerTokenCredential.create(
-                        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-                .build();
-    }
-    
-    public String generateStory(String description) {
-        String systemPrompt = "You are a creative storyteller who writes fun, " +
-                             "family-friendly short stories about pets. " +
-                             "Keep stories under 500 words and appropriate for all ages.";
-        
-        String userPrompt = "Write a fun short story about a pet described as: " + description;
-        
-        // AI अनुरोध कॉन्फ़िगर करें
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(modelName)
-                .addSystemMessage(systemPrompt)
-                .addUserMessage(userPrompt)
-                .maxCompletionTokens(500)  // प्रतिक्रिया की लंबाई सीमित करें
-                .temperature(0.8)          // रचनात्मकता नियंत्रित करें (0.0-1.0)
-                .build();
-        
-        // अनुरोध भेजें और प्रतिक्रिया प्राप्त करें
-        ChatCompletion response = openAIClient.chat().completions().create(params);
-        
-        return response.choices().get(0).message().content().orElse("");
-    }
-}
-```
+छवि विश्लेषण JPEG, PNG, GIF, और WebP स्वीकार करता है, खाली छवियों और 10MB से अधिक फ़ाइलों को अस्वीकार करता है, और परिणामस्वरूप विवरण को 1000 वर्णों तक सीमित करता है। कहानी प्रॉम्प्ट एक पारिवारिक-मित्रतापूर्ण छोटी कहानी का अनुरोध करता है। खाली विकल्प या खाली मॉडल सामग्री त्रुटियाँ हैं, और विफलताएँ सर्वर-साइड निदान के लिए मूल कारण को संरक्षित करती हैं। एप्लिकेशन बंद होते समय SDK क्लाइंट बंद हो जाता है।
 
-**मुख्य घटक:**
+### 4. वेब टेम्पलेट्स
 
-1. **OpenAI क्लाइंट**: Azure AI Foundry (कीलेस) के लिए आधिकारिक OpenAI Java SDK का उपयोग करता है
-2. **सिस्टम प्रॉम्प्ट**: AI के व्यवहार को पारिवारिक-मित्रवत पालतू कहानियाँ लिखने के लिए निर्धारित करता है
-3. **यूजर प्रॉम्प्ट**: विवरण के आधार पर AI को ठीक वही कहानी लिखने के लिए कहता है
-4. **पैरामीटर्स**: कहानी की लंबाई और रचनात्मकता स्तर को नियंत्रित करता है
-5. **त्रुटि प्रबंधन**: अपवाद फेंकता है जिन्हें कंट्रोलर पकड़ता और प्रबंधित करता है
+**फाइल:** [index.html](../../../../04-PracticalSamples/petstory/src/main/resources/templates/index.html) (अपलोड फॉर्म)
 
-### 4. Web Templates
+पृष्ठ फोटो चुनने वाले के साथ शुरू होता है, न कि विवरण टेक्स्ट क्षेत्र के साथ। **Analyze Image** चयनित फोटो का प्रीव्यू दिखाता है और इसे `/analyze-image` पर पोस्ट करता है। सफल प्रतिक्रिया विवरण दिखाती है, छिपे हुए `description` फ़ील्ड को भरती है, और **Generate Story** प्रकट करती है। वह बटन मौजूदा फॉर्म को `/generate-story` पर सबमिट करता है।
 
-**फ़ाइल:** `index.html` (अपलोड फॉर्म)
+कोई ब्राउज़र मॉडल डाउनलोड या CDN निर्भरता नहीं है। छवि विश्लेषण सर्वर पर कॉन्फ़िगर किए गए Azure परिनियोजन के माध्यम से चलता है। विफलताएँ दृश्यमान रहती हैं और नकली विवरण के साथ कहानी निर्माण सक्षम नहीं करती हैं। अलग फ़ाइल चुनने पर पिछला विश्लेषण साफ़ हो जाता है।
 
-मुख्य पृष्ठ जहाँ उपयोगकर्ता अपने पालतू के बारे में बताते हैं:
+**फाइल:** `result.html` (कहानी प्रदर्शन)
 
-```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Pet Story Generator</title>
-    <!-- CSS styling -->
-</head>
-<body>
-    <div class="container">
-        <h1>Pet Story Generator</h1>
-        <p>Describe your pet and we'll create a fun story about them!</p>
-        
-        <!-- Error message display -->
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-        
-        <!-- Story generation form -->
-        <form action="/generate-story" method="post">
-            <div class="form-group">
-                <label for="description">Describe your pet:</label>
-                <textarea id="description" name="description" 
-                         placeholder="Tell us about your pet - what they look like, their personality, favorite activities..."
-                         maxlength="1000" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Generate Story</button>
-        </form>
-        
-        <!-- Image upload section with client-side processing -->
-        <div class="upload-section">
-            <h2>Or Upload a Photo</h2>
-            <input type="file" id="imageInput" accept="image/*" />
-            <button onclick="analyzeImage()" class="upload-btn">Analyze Image</button>
-        </div>
-        
-        <script>
-            // Client-side image analysis using Transformers.js
-            async function analyzeImage() {
-                // Image processing code here
-                // Generates description automatically from uploaded image
-            }
-        </script>
-    </div>
-</body>
-</html>
-```
-
-**फ़ाइल:** `result.html` (कहानी प्रदर्शन)
-
-उत्पन्न की गई कहानी दिखाता है:
+उत्पन्न कहानी दिखाता है:
 
 ```html
 <!DOCTYPE html>
@@ -297,18 +148,18 @@ public class StoryService {
 </html>
 ```
 
-**टेम्प्लेट विशेषताएं:**
+**टेम्पलेट सुविधाएँ:**
 
-1. **Thymeleaf इंटीग्रेशन**: डायनामिक कंटेंट के लिए `th:` एट्रिब्यूट्स का उपयोग करता है
-2. **रिस्पॉन्सिव डिज़ाइन**: मोबाइल और डेस्कटॉप के लिए CSS स्टाइलिंग
-3. **त्रुटि प्रबंधन**: उपयोगकर्ताओं को सत्यापन त्रुटियां दिखाता है
-4. **क्लाइंट-साइड प्रोसेसिंग**: इमेज एनालिसिस के लिए JavaScript (Transformers.js का उपयोग)
+1. **Thymeleaf एकीकरण**: गतिशील सामग्री के लिए `th:` विशेषताएँ उपयोग करता है
+2. **उत्तरदायी डिज़ाइन**: मोबाइल और डेस्कटॉप के लिए CSS स्टाइलिंग
+3. **त्रुटि हैंडलिंग**: उपयोगकर्ताओं को सत्यापन त्रुटियाँ दिखाता है
+4. **अपलोड हैंडलिंग**: जावास्क्रिप्ट फोटो का पूर्वावलोकन करता है, CSRF-संरक्षित मल्टीपार्ट अनुरोध भेजता है, और लौटाया गया विवरण प्रदर्शित करता है
 
-### 5. Configuration
+### 5. विन्यास
 
-**फ़ाइल:** `application.properties`
+**फाइल:** `application.properties`
 
-एप्लिकेशन के कॉन्फ़िगरेशन सेटिंग्स:
+एप्लिकेशन के लिए विन्यास सेटिंग्स:
 
 ```properties
 spring.application.name=pet-story-app
@@ -322,21 +173,21 @@ logging.level.com.example.petstory=INFO
 
 # Azure AI Foundry (keyless) configuration
 azure.openai.endpoint=${AZURE_OPENAI_ENDPOINT:}
-azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
 ```
 
-**कॉन्फ़िगरेशन समझाया गया:**
+**विन्यास व्याख्या:**
 
-1. **फ़ाइल अपलोड**: 10MB तक की छवियों की अनुमति देता है
-2. **लॉगिंग**: निष्पादन के दौरान कौन-सी जानकारी लॉग होती है यह नियंत्रित करता है
-3. **Azure AI Foundry**: उपयोग के लिए एन्डपॉइंट और मॉडल डिप्लॉयमेंट निर्दिष्ट करता है (कीलेस प्रमाणीकरण)
-4. **सुरक्षा**: संवेदनशील जानकारी उजागर न होने देने के लिए त्रुटि प्रबंधन कॉन्फ़िगरेशन
+1. **फाइल अपलोड**: फाइल और पूरी मल्टीपार्ट अनुरोध दोनों को 10MB तक सीमित किया गया है; मल्टीपार्ट हेडर के लिए जगह छोड़ने के लिए तस्वीरें उस सीमा से नीचे रखें
+2. **लॉगिंग**: निष्पादन के दौरान कौन सी जानकारी लॉग की जाती है उसे नियंत्रित करता है
+3. **Azure AI Foundry**: उपयोग करने के लिए एंडपॉइंट और मॉडल परिनियोजन निर्दिष्ट करता है (कुंजी रहित प्रमाणीकरण)
+4. **सुरक्षा**: CSRF सुरक्षा चालू रहती है; मॉडल डायग्नोस्टिक्स सर्वर पर लॉग होते हैं, जबकि कंट्रोलर सामान्य मॉडल-विफलता संदेश दिखाता है
 
-## Running the Application
+## एप्लिकेशन चलाना
 
-### Step 1: Sign In and Set Your Endpoint
+### चरण 1: साइन इन करें और अपना एंडपॉइंट सेट करें
 
-प्रमाणीकरण कीलेस है (Microsoft Entra ID), इसलिए कोई API key नहीं है। साइन इन करें और अपने Foundry Endpoint सेट करें:
+प्रमाणीकरण कुंजी रहित (Microsoft Entra ID) है, इसलिए कोई API कुंजी नहीं है। साइन इन करें और अपना Foundry एंडपॉइंट सेट करें:
 
 **Windows (Command Prompt):**
 ```cmd
@@ -356,21 +207,23 @@ az login
 export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 ```
 
-**यह आवश्यक क्यों है:**
-- Azure AI Foundry Microsoft Entra ID का उपयोग करता है इन्फरेंस अनुरोधों को प्रमाणित करने के लिए
-- कीलेस प्रमाणीकरण का मतलब है कि आपके स्रोत कोड या वातावरण में कोई सीक्रेट्स नहीं
-- आपके खाते को संसाधन पर **Cognitive Services OpenAI User** भूमिका की आवश्यकता है
+**यह क्यों आवश्यक है:**
+- Azure AI Foundry Microsoft Entra ID का उपयोग करता है इनफ़ेरेंस अनुरोधों को प्रमाणित करने के लिए
+- कुंजी रहित प्रमाणीकरण का अर्थ है आपके स्रोत कोड या पर्यावरण में कोई रहस्य नहीं
+- आपके खाते को संसाधन पर **Cognitive Services OpenAI User** भूमिका चाहिए
 
-### Step 2: Build and Run
+डिफ़ॉल्ट परिनियोजन नाम `gpt-5.6-luna` है। यदि आपके GPT-5.6 Luna परिनियोजन का अन्य नाम है, तो एप्लिकेशन शुरू करने से पहले उसी टर्मिनल में `AZURE_OPENAI_DEPLOYMENT` सेट करें। दोनों छवि विश्लेषण और कहानी निर्माण इस सेटिंग का उपयोग करते हैं।
 
-प्रोजेक्ट डायरेक्टरी पर जाएं:
+### चरण 2: निर्माण और चलाएं
+
+परियोजना निर्देशिका पर जाएं:
 ```bash
 cd 04-PracticalSamples/petstory
 ```
 
-एप्लिकेशन बनाएं:
+स्टैंडअलोन निष्पादनीय JAR बनाएं और सभी ऑफलाइन परीक्षण चलाएं:
 ```bash
-mvn clean compile
+mvn clean package
 ```
 
 सर्वर शुरू करें:
@@ -380,69 +233,65 @@ mvn spring-boot:run
 
 एप्लिकेशन `http://localhost:8080` पर शुरू होगा।
 
-### Step 3: Test the Application
+वैकल्पिक रूप से, कोई भी मुक्त पोर्ट पर पैकेज्ड JAR शुरू करें, उदाहरण के लिए:
 
-1. **ब्राउज़र में खोलें** `http://localhost:8080`
-2. **अपने पालतू का वर्णन करें** टेक्स्ट क्षेत्र में (उदा., "एक खिलंदड़ गोल्डन रिट्रीवर जो फ़ेच करना पसंद करता है")
-3. **"Generate Story" पर क्लिक करें** AI उत्पन्न कहानी पाने के लिए
-4. **या**, पालतू की तस्वीर अपलोड करें स्वतः विवरण उत्पन्न करने के लिए
-5. **रचनात्मक कहानी देखें** आपके पालतू के विवरण के आधार पर
-
-## How It All Works Together
-
-यहाँ वह संपूर्ण प्रक्रिया है जब आप पालतू कहानी उत्पन्न करते हैं:
-
-1. **उपयोगकर्ता इनपुट**: आप वेब फॉर्म पर अपने पालतू का वर्णन करते हैं
-2. **फॉर्म सबमिशन**: ब्राउज़र `/generate-story` पर POST अनुरोध भेजता है
-3. **कंट्रोलर प्रोसेसिंग**: `PetController` इनपुट को सत्यापित और साफ करता है
-4. **AI सेवा कॉल**: `StoryService` Azure AI Foundry मॉडल को अनुरोध भेजता है
-5. **कहानी उत्पादन**: AI विवरण के आधार पर रचनात्मक कहानी बनाता है
-6. **प्रतिक्रिया प्रबंधन**: कंट्रोलर कहानी प्राप्त करता है और मॉडल में जोड़ता है
-7. **टेम्प्लेट रेंडरिंग**: Thymeleaf `result.html` को कहानी के साथ रेंडर करता है
-8. **प्रदर्शन**: उपयोगकर्ता ब्राउज़र में उत्पन्न कहानी देखता है
-
-**त्रुटि प्रबंधन प्रवाह:**
-यदि AI सेवा विफल होती है:
-1. कंट्रोलर अपवाद पकड़ता है
-2. पहले से लिखे गए टेम्प्लेट का उपयोग कर बैकअप कहानी बनाता है
-3. AI अनुपलब्धता के बारे में नोट के साथ बेकअप कहानी दिखाता है
-4. उपयोगकर्ता को फिर भी एक कहानी मिलती है, जिससे अच्छा उपयोगकर्ता अनुभव सुनिश्चित होता है
-
-## Understanding the AI Integration
-
-### Azure AI Foundry (keyless)
-एप्लिकेशन Azure AI Foundry का उपयोग करता है कीलेस प्रमाणीकरण (Microsoft Entra ID) के साथ:
-
-```java
-// बिना कुंजी प्रमाणीकरण - कोई API कुंजी नहीं
-DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-this.openAIClient = OpenAIOkHttpClient.builder()
-    .baseUrl(endpoint + "openai/v1/")
-    .credential(BearerTokenCredential.create(
-        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-    .build();
+```bash
+java -jar target/pet-story-app-0.0.1-SNAPSHOT.jar --server.port=8083
 ```
 
-### Prompt Engineering
-सेवा अच्छे परिणाम पाने के लिए सावधानीपूर्वक बनाए गए प्रॉम्प्ट्स का उपयोग करती है:
+इस कमांड के लिए, `http://localhost:8083/` खोलें। चयनित पोर्ट पर वही `/analyze-image` और `/generate-story` मार्ग उपलब्ध हैं।
 
-```java
-String systemPrompt = "You are a creative storyteller who writes fun, " +
-                     "family-friendly short stories about pets. " +
-                     "Keep stories under 500 words and appropriate for all ages.";
+### चरण 3: एप्लिकेशन का परीक्षण करें
+
+1. **खोलें** `http://localhost:8080` अपने ब्राउज़र में
+2. **चुनें** JPEG, PNG, GIF, या WebP प्रारूप में एक साफ़ पालतू फोटो, 10MB से कम
+3. **क्लिक करें** "Analyze Image" और पालतू विवरण का इंतजार करें
+4. **क्लिक करें** "Generate Story" सफल विश्लेषण के बाद
+5. **देखें** कहानी और परिणाम पृष्ठ के लिंक का उपयोग करके अपलोड फॉर्म पर लौटें
+
+सफल फोटो-से-कहानी प्रवाह दो मॉडल कॉल बनाता है, प्रत्येक बटन के लिए एक। लाइव इन्फेरेंस आपके परिनियोजन कोटा का उपयोग करता है और शुल्क लगा सकता है; सीमित दर वाले परिनियोजन साझा करते समय स्मोक टेस्ट क्रमिक रूप से चलाएं। होम पेज लोड करने से मॉडल कॉल नहीं होता।
+
+## ऑफ़लाइन परीक्षण
+
+सैंपल निर्देशिका से, चलाएं:
+
+```bash
+mvn test
 ```
 
-### Response Processing
-AI प्रतिक्रिया को निकाला और सत्यापित किया जाता है:
+[StoryServiceTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/StoryServiceTest.java) एक लूपबैक HTTP फिक्स्चर वाले असली OpenAI SDK अनुरोधों को कैप्चर करता है। यह दोनों अनुरोधों के परिनियोजन, `reasoning_effort: none`, टोकन सीमा, छवि पेलोड, इनपुट सत्यापन, खाली प्रतिक्रियाओं, और अपस्ट्रीम त्रुटियों को जांचता है।
 
-```java
-ChatCompletion response = openAIClient.chat().completions().create(params);
-String story = response.choices().get(0).message().content().orElse("");
-```
+[PetControllerTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/PetControllerTest.java) MockMvc का उपयोग करता है एक नकली मॉडल सेवा के साथ रेंडर किए गए Thymeleaf पृष्ठों, अपलोड अनुबंध, CSRF, सत्यापन, आउटपुट एस्केपिंग, और दृश्य विफलताओं का परीक्षण करने के लिए। इन परीक्षणों को Azure क्रेडेंशियल की आवश्यकता नहीं है और ये कभी भी भुगतान किए गए Azure इन्फेरेंस को कॉल नहीं करते। Maven `target/surefire-reports` के तहत Surefire रिपोर्ट लिखता है।
 
-## Next Steps
+## सभी कैसे साथ काम करते हैं
 
-अधिक उदाहरणों के लिए देखें [Chapter 04: Practical samples](../README.md)
+यहां पूरी प्रक्रिया है जब आप एक पालतू कहानी उत्पन्न करते हैं:
+
+1. **फोटो चयन**: आप अपलोड फॉर्म में एक पालतू छवि चुनते हैं
+2. **छवि अपलोड**: "Analyze Image" CSRF हेडर के साथ `/analyze-image` पर एक मल्टीपार्ट POST भेजता है
+3. **छवि विश्लेषण**: `StoryService` छवि को reasoning सेटिंग `none` के साथ GPT-5.6 Luna को भेजता है
+4. **विवरण प्रदर्शन**: ब्राउज़र लौटाया गया विवरण दिखाता है और इसे फॉर्म में संग्रहीत करता है
+5. **कहानी सबमिशन**: "Generate Story" `description` और `_csrf` को `/generate-story` पर पोस्ट करता है
+6. **कहानी जनरेशन**: कंट्रोलर विवरण मान्य करता है और उसी परिनियोजन को reasoning सेटिंग `none` के साथ कॉल करता है
+7. **टेम्पलेट रेंडरिंग**: Thymeleaf परिणाम पृष्ठ में विवरण और कहानी को एस्केप और प्रदर्शित करता है
+
+**त्रुटि हैंडलिंग प्रवाह:**
+यदि मॉडल विफल रहता है, तो सर्वर कारण लॉग करता है। छवि विश्लेषण HTTP 502 लौटाता है और ब्राउज़र त्रुटि दिखाता है बिना "Generate Story" प्रकट किए। कहानी निर्माण फॉर्म पर त्रुटि संदेश के साथ पुनः निर्देशित करता है। कोई भी मार्ग मौन रूप से पूर्व-लिखित परिणाम प्रतिस्थापित नहीं करता।
+
+## एआई एकीकरण की समझ
+
+### Azure AI Foundry (कुंजी रहित)
+सेवा आपके संसाधन के `/openai/v1/` एंडपॉइंट के साथ SDK कॉन्फ़िगर करती है। `DefaultAzureCredential` और `AuthenticationUtil.getBearerTokenSupplier` Microsoft Entra टोकन प्रदान करते हैं `https://ai.azure.com/.default` के लिए। स्थानीय विकास आपके Azure CLI साइन-इन का उपयोग कर सकता है; Azure-होस्टेड ऐप आवश्यक संसाधन अनुमतियों के साथ प्रबंधित पहचान उपयोग कर सकता है।
+
+### प्रॉम्प्ट इंजीनियरिंग
+छवि विश्लेषण एक संक्षिप्त पैराग्राफ़ में दृश्य पालतू सुविधाओं का अनुरोध करता है और मॉडल को बताता है कि छवि में पाठ को निर्देशों के बजाय डेटा के रूप में मानें। कहानी निर्माण अलग, पारिवारिक-मित्रतापूर्ण लेखन अनुरोध में लौटाए गए विवरण का उपयोग करता है। कोई भी कॉल reasoning सक्षम नहीं करता या तापमान ओवरराइड सेट नहीं करता।
+
+### प्रतिक्रिया प्रसंस्करण
+साझा प्रतिक्रिया हैंडलर गुम विकल्पों और खाली या केवल रिक्त स्थान वाली सामग्री को अस्वीकार करता है, वैध सामग्री को ट्रिम करता है, और अपस्ट्रीम विफलताओं को संरक्षित करता है। छवि विवरण को 1000 वर्णों तक सीमित किया गया है ताकि बाद के कहानी फॉर्म में फिट हो सके। मूल मॉडल विफलता निदान के लिए रखी जाती है लेकिन उपयोगकर्ता को प्रदर्शित नहीं की जाती।
+
+## अगले कदम
+
+अधिक उदाहरणों के लिए, देखें [अध्याय 04: व्यावहारिक उदाहरण](../README.md)
 
 ---
 

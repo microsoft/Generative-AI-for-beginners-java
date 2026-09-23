@@ -1,29 +1,29 @@
-# Generativ AI för Nybörjare - Java Edition
+# Generativ AI för nybörjare - Java Edition
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generativ AI för Nybörjare - Java Edition](../../translated_images/sv/beg-genai-series.8b48be9951cc574c.webp)
+![Generativ AI för nybörjare - Java Edition](../../translated_images/sv/beg-genai-series.8b48be9951cc574c.webp)
 
-**Tidsåtgång**: Hela workshopen kan genomföras online utan lokal installation. Miljöinställningen tar 2 minuter, och att utforska exemplen tar 1-3 timmar beroende på utforskningsdjup.
+**Tidsåtgång**: Hela workshopen kan genomföras online utan lokal installation. Miljöuppsättningen tar 2 minuter, och att utforska exemplen kräver 1-3 timmar beroende på utforskningsdjup.
 
-> **Snabbstart**
+> **Snabbstart** 
 
 1. Forka detta repository till ditt GitHub-konto
-2. Klicka på **Code** → fliken **Codespaces** → **...** → **New with options...**
-3. Använd standardinställningarna – detta väljer utvecklingscontainern som skapats för denna kurs
+2. Klicka på **Code** → fliken **Codespaces** → **...** → **Nytt med alternativ...**
+3. Använd standardinställningarna – detta väljer utvecklingscontainern skapad för denna kurs
 4. Klicka på **Create codespace**
-5. Vänta ca 2 minuter tills miljön är redo
-6. Gå direkt till [Kapitel 2: Provision Azure AI Foundry](./02-SetupDevEnvironment/README.md#step-2-provision-azure-ai-foundry)
+5. Vänta ~2 minuter på att miljön ska bli klar
+6. Hoppa direkt till [Kapitel 2: Provisera Azure AI Foundry](./02-SetupDevEnvironment/README.md#step-2-provision-azure-ai-foundry)
 
-## Flerspråkigt Stöd
+## Fler språk stöds
 
-### Stöds via GitHub Action (Automatiserat & Alltid Uppdaterat)
+### Stöds via GitHub Action (Automatiserat & alltid uppdaterat)
 
 <!-- CO-OP TRANSLATOR LANGUAGES TABLE START -->
-[Arabiska](../ar/README.md) | [Bengali](../bn/README.md) | [Bulgariska](../bg/README.md) | [Burmese (Myanmar)](../my/README.md) | [Kinesiska (Förenklad)](../zh-CN/README.md) | [Kinesiska (Traditionell, Hong Kong)](../zh-HK/README.md) | [Kinesiska (Traditionell, Macau)](../zh-MO/README.md) | [Kinesiska (Traditionell, Taiwan)](../zh-TW/README.md) | [Kroatiska](../hr/README.md) | [Tjeckiska](../cs/README.md) | [Danska](../da/README.md) | [Holländska](../nl/README.md) | [Estniska](../et/README.md) | [Finska](../fi/README.md) | [Franska](../fr/README.md) | [Tyska](../de/README.md) | [Grekiska](../el/README.md) | [Hebreiska](../he/README.md) | [Hindi](../hi/README.md) | [Ungerska](../hu/README.md) | [Indonesiska](../id/README.md) | [Italienska](../it/README.md) | [Japanska](../ja/README.md) | [Kannada](../kn/README.md) | [Khmer](../km/README.md) | [Koreanska](../ko/README.md) | [Litauiska](../lt/README.md) | [Malay](../ms/README.md) | [Malayalam](../ml/README.md) | [Marathi](../mr/README.md) | [Nepali](../ne/README.md) | [Nigeriansk Pidgin](../pcm/README.md) | [Norska](../no/README.md) | [Persiska (Farsi)](../fa/README.md) | [Polska](../pl/README.md) | [Portugisiska (Brasilien)](../pt-BR/README.md) | [Portugisiska (Portugal)](../pt-PT/README.md) | [Punjabi (Gurmukhi)](../pa/README.md) | [Rumänska](../ro/README.md) | [Ryska](../ru/README.md) | [Serbiska (Kyrilliska)](../sr/README.md) | [Slovakiska](../sk/README.md) | [Slovenska](../sl/README.md) | [Spanska](../es/README.md) | [Swahili](../sw/README.md) | [Svenska](./README.md) | [Tagalog (Filipino)](../tl/README.md) | [Tamil](../ta/README.md) | [Telugu](../te/README.md) | [Thailändska](../th/README.md) | [Turkiska](../tr/README.md) | [Ukrainska](../uk/README.md) | [Urdu](../ur/README.md) | [Vietnamesiska](../vi/README.md)
+[Arabiska](../ar/README.md) | [Bengali](../bn/README.md) | [Bulgariska](../bg/README.md) | [Burmesiska (Myanmar)](../my/README.md) | [Kinesiska (Förenklad)](../zh-CN/README.md) | [Kinesiska (Traditionell, Hong Kong)](../zh-HK/README.md) | [Kinesiska (Traditionell, Macau)](../zh-MO/README.md) | [Kinesiska (Traditionell, Taiwan)](../zh-TW/README.md) | [Kroatiska](../hr/README.md) | [Tjeckiska](../cs/README.md) | [Danska](../da/README.md) | [Holländska](../nl/README.md) | [Estniska](../et/README.md) | [Finska](../fi/README.md) | [Franska](../fr/README.md) | [Tyska](../de/README.md) | [Grekiska](../el/README.md) | [Hebreiska](../he/README.md) | [Hindi](../hi/README.md) | [Ungerska](../hu/README.md) | [Indonesiska](../id/README.md) | [Italienska](../it/README.md) | [Japanska](../ja/README.md) | [Kannada](../kn/README.md) | [Khmer](../km/README.md) | [Koreanska](../ko/README.md) | [Litauiska](../lt/README.md) | [Malayiska](../ms/README.md) | [Malayalam](../ml/README.md) | [Marathi](../mr/README.md) | [Nepalesiska](../ne/README.md) | [Nigeriansk Pidgin](../pcm/README.md) | [Norska](../no/README.md) | [Persiska (Farsi)](../fa/README.md) | [Polska](../pl/README.md) | [Portugisiska (Brasilien)](../pt-BR/README.md) | [Portugisiska (Portugal)](../pt-PT/README.md) | [Punjabi (Gurmukhi)](../pa/README.md) | [Rumänska](../ro/README.md) | [Ryska](../ru/README.md) | [Serbiska (kyrilliska)](../sr/README.md) | [Slovakiska](../sk/README.md) | [Slovenska](../sl/README.md) | [Spanska](../es/README.md) | [Swahili](../sw/README.md) | [Svenska](./README.md) | [Tagalog (Filippinska)](../tl/README.md) | [Tamil](../ta/README.md) | [Telugu](../te/README.md) | [Thailändska](../th/README.md) | [Turkiska](../tr/README.md) | [Ukrainska](../uk/README.md) | [Urdu](../ur/README.md) | [Vietnamesiska](../vi/README.md)
 
-> **Föredrar du att Klona Lokalt?**
+> **Föredrar du att klona lokalt?**
 >
-> Detta repository inkluderar över 50 språköversättningar vilket kraftigt ökar nedladdningsstorleken. För att klona utan översättningar, använd sparse checkout:
+> Detta repository innehåller över 50 språköversättningar vilket avsevärt ökar nedladdningsstorleken. För att klona utan översättningar, använd sparsamt utcheckning:
 >
 > **Bash / macOS / Linux:**
 > ```bash
@@ -42,72 +42,72 @@
 > Detta ger dig allt du behöver för att slutföra kursen med en mycket snabbare nedladdning.
 <!-- CO-OP TRANSLATOR LANGUAGES TABLE END -->
 
-## Kursstruktur & Lärandväg
+## Kursstruktur & lärandeväg
 
 ### **Kapitel 1: Introduktion till Generativ AI**
-- **Grundläggande Begrepp**: Förstå Stora Språkmodeller, token, inbäddningar och AI-funktioner
-- **Java AI Ekosystem**: Översikt över Spring AI och OpenAI SDK:er
-- **Model Context Protocol**: Introduktion till MCP och dess roll i AI-agentkommunikation
-- **Praktiska Tillämpningar**: Verkliga scenarier inklusive chatbotar och innehållsgenerering
+- **Grundläggande koncept**: Förstå stora språkmodeller, tokens, embeddingar och AI:s förmågor
+- **Java AI-ekosystem**: Översikt av Spring AI och OpenAI SDK:er
+- **Model Context Protocol**: Introduktion till MCP och dess roll i AI-agenters kommunikation
+- **Praktiska tillämpningar**: Verkliga scenarier inklusive chattbotar och innehållsgenerering
 - **[→ Starta Kapitel 1](./01-IntroToGenAI/README.md)**
 
-### **Kapitel 2: Utvecklingsmiljö Setup**
-- **Azure AI Foundry**: Provisionera modellutplaceringar som kod med Bicep och Azure Developer CLI (azd)
-- **Spring Boot + Spring AI**: Bästa praxis för företagsutveckling av AI-applikationer
-- **Keyless Authentication**: Anslut säkert med Microsoft Entra ID — inga API-nycklar att hantera
+### **Kapitel 2: Uppställning av utvecklingsmiljö**
+- **Azure AI Foundry**: Provisera GPT-5.6 Luna chatt och text-embedding-3-small embeddingar med Bicep och Azure Developer CLI (azd)
+- **Spring Boot 4.1.1 + Spring AI 2.0.1**: Lär dig med `ChatClient`, backat av officiella OpenAI Java SDK och Azure OpenAI v1
+- **Nyckellös autentisering**: Anslut säkert med Microsoft Entra ID – inga API-nycklar att hantera
 - **Utvecklingsverktyg**: Docker-containrar, VS Code och GitHub Codespaces-konfiguration
 - **[→ Starta Kapitel 2](./02-SetupDevEnvironment/README.md)**
 
-### **Kapitel 3: Kärntekniker för Generativ AI**
+### **Kapitel 3: Kärntekniker för generativ AI**
+- **Officiella OpenAI Java SDK**: Ring Azure OpenAI v1 direkt med nyckellös autentisering
 - **Prompt Engineering**: Tekniker för optimala AI-modellsvar
-- **Inbäddningar & Vektoroperationer**: Implementera semantisk sökning och likhetsmatchning
+- **Embeddingar & vektoroperationer**: Implementera semantisk sökning och likhetsmatchning
 - **Retrieval-Augmented Generation (RAG)**: Kombinera AI med dina egna datakällor
-- **Funktionsanrop**: Utöka AI-funktionalitet med egna verktyg och plugins
+- **Funktionsanrop**: Utöka AI:s förmågor med egna verktyg och tillägg
 - **[→ Starta Kapitel 3](./03-CoreGenerativeAITechniques/README.md)**
 
-### **Kapitel 4: Praktiska Tillämpningar & Projekt**
+### **Kapitel 4: Praktiska tillämpningar & projekt**
 - **Pet Story Generator** (`petstory/`): Kreativ innehållsgenerering med Azure AI Foundry
 - **Foundry Local Demo** (`foundrylocal/`): Lokal AI-modellsintegration med OpenAI Java SDK
-- **MCP Calculator Service** (`calculator/`): Grundläggande Model Context Protocol-implementering med Spring AI
+- **MCP Calculator Service** (`calculator/`): Enkel Model Context Protocol-implementation med Spring AI
 - **[→ Starta Kapitel 4](./04-PracticalSamples/README.md)**
 
 ### **Kapitel 5: Ansvarsfull AI-utveckling**
-- **Azure AI Foundry Content Safety**: Testa inbyggda innehållsfilter och säkerhetsmekanismer (hårda block och mjuka nekanden)
-- **Ansvarsfull AI Demo**: Praktiskt exempel som visar hur moderna AI-säkerhetssystem fungerar
-- **Bästa Praxis**: Viktiga riktlinjer för etisk AI-utveckling och implementering
+- **Azure AI Foundry innehållssäkerhet**: Testa inbyggda innehållsfilter och säkerhetsmekanismer (hårda blockeringar och mjuka avslag)
+- **Demonstration av ansvarsfull AI**: Praktiskt exempel som visar hur moderna AI-säkerhetssystem fungerar i praktiken
+- **Bästa praxis**: Viktiga riktlinjer för etisk AI-utveckling och distribution
 - **[→ Starta Kapitel 5](./05-ResponsibleGenAI/README.md)**
 
-## Ytterligare Resurser
+## Ytterligare resurser
 
 <!-- CO-OP TRANSLATOR OTHER COURSES START -->
 ### LangChain
-[![LangChain4j för Nybörjare](https://img.shields.io/badge/LangChain4j%20for%20Beginners-22C55E?style=for-the-badge&&labelColor=E5E7EB&color=0553D6)](https://aka.ms/langchain4j-for-beginners)
-[![LangChain.js för Nybörjare](https://img.shields.io/badge/LangChain.js%20for%20Beginners-22C55E?style=for-the-badge&labelColor=E5E7EB&color=0553D6)](https://aka.ms/langchainjs-for-beginners?WT.mc_id=m365-94501-dwahlin)
-[![LangChain för Nybörjare](https://img.shields.io/badge/LangChain%20for%20Beginners-22C55E?style=for-the-badge&labelColor=E5E7EB&color=0553D6)](https://github.com/microsoft/langchain-for-beginners?WT.mc_id=m365-94501-dwahlin)
+[![LangChain4j för nybörjare](https://img.shields.io/badge/LangChain4j%20for%20Beginners-22C55E?style=for-the-badge&&labelColor=E5E7EB&color=0553D6)](https://aka.ms/langchain4j-for-beginners)
+[![LangChain.js för nybörjare](https://img.shields.io/badge/LangChain.js%20for%20Beginners-22C55E?style=for-the-badge&labelColor=E5E7EB&color=0553D6)](https://aka.ms/langchainjs-for-beginners?WT.mc_id=m365-94501-dwahlin)
+[![LangChain för nybörjare](https://img.shields.io/badge/LangChain%20for%20Beginners-22C55E?style=for-the-badge&labelColor=E5E7EB&color=0553D6)](https://github.com/microsoft/langchain-for-beginners?WT.mc_id=m365-94501-dwahlin)
 ---
 
 ### Azure / Edge / MCP / Agenter
-[![AZD för Nybörjare](https://img.shields.io/badge/AZD%20for%20Beginners-0078D4?style=for-the-badge&labelColor=E5E7EB&color=0078D4)](https://github.com/microsoft/AZD-for-beginners?WT.mc_id=academic-105485-koreyst)
-[![Edge AI för Nybörjare](https://img.shields.io/badge/Edge%20AI%20for%20Beginners-00B8E4?style=for-the-badge&labelColor=E5E7EB&color=00B8E4)](https://github.com/microsoft/edgeai-for-beginners?WT.mc_id=academic-105485-koreyst)
-[![MCP för Nybörjare](https://img.shields.io/badge/MCP%20for%20Beginners-009688?style=for-the-badge&labelColor=E5E7EB&color=009688)](https://github.com/microsoft/mcp-for-beginners?WT.mc_id=academic-105485-koreyst)
-[![AI Agenter för Nybörjare](https://img.shields.io/badge/AI%20Agents%20for%20Beginners-00C49A?style=for-the-badge&labelColor=E5E7EB&color=00C49A)](https://github.com/microsoft/ai-agents-for-beginners?WT.mc_id=academic-105485-koreyst)
+[![AZD för nybörjare](https://img.shields.io/badge/AZD%20for%20Beginners-0078D4?style=for-the-badge&labelColor=E5E7EB&color=0078D4)](https://github.com/microsoft/AZD-for-beginners?WT.mc_id=academic-105485-koreyst)
+[![Edge AI för nybörjare](https://img.shields.io/badge/Edge%20AI%20for%20Beginners-00B8E4?style=for-the-badge&labelColor=E5E7EB&color=00B8E4)](https://github.com/microsoft/edgeai-for-beginners?WT.mc_id=academic-105485-koreyst)
+[![MCP för nybörjare](https://img.shields.io/badge/MCP%20for%20Beginners-009688?style=for-the-badge&labelColor=E5E7EB&color=009688)](https://github.com/microsoft/mcp-for-beginners?WT.mc_id=academic-105485-koreyst)
+[![AI-agenter för nybörjare](https://img.shields.io/badge/AI%20Agents%20for%20Beginners-00C49A?style=for-the-badge&labelColor=E5E7EB&color=00C49A)](https://github.com/microsoft/ai-agents-for-beginners?WT.mc_id=academic-105485-koreyst)
 
 ---
-
-### Generativ AI Serie
-[![Generativ AI för Nybörjare](https://img.shields.io/badge/Generative%20AI%20for%20Beginners-8B5CF6?style=for-the-badge&labelColor=E5E7EB&color=8B5CF6)](https://github.com/microsoft/generative-ai-for-beginners?WT.mc_id=academic-105485-koreyst)
+ 
+### Serien Generativ AI
+[![Generativ AI för nybörjare](https://img.shields.io/badge/Generative%20AI%20for%20Beginners-8B5CF6?style=for-the-badge&labelColor=E5E7EB&color=8B5CF6)](https://github.com/microsoft/generative-ai-for-beginners?WT.mc_id=academic-105485-koreyst)
 [![Generativ AI (.NET)](https://img.shields.io/badge/Generative%20AI%20(.NET)-9333EA?style=for-the-badge&labelColor=E5E7EB&color=9333EA)](https://github.com/microsoft/Generative-AI-for-beginners-dotnet?WT.mc_id=academic-105485-koreyst)
 [![Generativ AI (Java)](https://img.shields.io/badge/Generative%20AI%20(Java)-C084FC?style=for-the-badge&labelColor=E5E7EB&color=C084FC)](https://github.com/microsoft/generative-ai-for-beginners-java?WT.mc_id=academic-105485-koreyst)
 [![Generativ AI (JavaScript)](https://img.shields.io/badge/Generative%20AI%20(JavaScript)-E879F9?style=for-the-badge&labelColor=E5E7EB&color=E879F9)](https://github.com/microsoft/generative-ai-with-javascript?WT.mc_id=academic-105485-koreyst)
 
 ---
-
-### Grundläggande Lärande
-[![ML för Nybörjare](https://img.shields.io/badge/ML%20for%20Beginners-22C55E?style=for-the-badge&labelColor=E5E7EB&color=22C55E)](https://aka.ms/ml-beginners?WT.mc_id=academic-105485-koreyst)
-[![Data Science för Nybörjare](https://img.shields.io/badge/Data%20Science%20for%20Beginners-84CC16?style=for-the-badge&labelColor=E5E7EB&color=84CC16)](https://aka.ms/datascience-beginners?WT.mc_id=academic-105485-koreyst)
-[![AI för Nybörjare](https://img.shields.io/badge/AI%20for%20Beginners-A3E635?style=for-the-badge&labelColor=E5E7EB&color=A3E635)](https://aka.ms/ai-beginners?WT.mc_id=academic-105485-koreyst)
-[![Cybersäkerhet för Nybörjare](https://img.shields.io/badge/Cybersecurity%20for%20Beginners-F97316?style=for-the-badge&labelColor=E5E7EB&color=F97316)](https://github.com/microsoft/Security-101?WT.mc_id=academic-96948-sayoung)
-
+ 
+### Kärnlärande
+[![ML för nybörjare](https://img.shields.io/badge/ML%20for%20Beginners-22C55E?style=for-the-badge&labelColor=E5E7EB&color=22C55E)](https://aka.ms/ml-beginners?WT.mc_id=academic-105485-koreyst)
+[![Data Science för nybörjare](https://img.shields.io/badge/Data%20Science%20for%20Beginners-84CC16?style=for-the-badge&labelColor=E5E7EB&color=84CC16)](https://aka.ms/datascience-beginners?WT.mc_id=academic-105485-koreyst)
+[![AI för nybörjare](https://img.shields.io/badge/AI%20for%20Beginners-A3E635?style=for-the-badge&labelColor=E5E7EB&color=A3E635)](https://aka.ms/ai-beginners?WT.mc_id=academic-105485-koreyst)
+[![Cybersäkerhet för nybörjare](https://img.shields.io/badge/Cybersecurity%20for%20Beginners-F97316?style=for-the-badge&labelColor=E5E7EB&color=F97316)](https://github.com/microsoft/Security-101?WT.mc_id=academic-96948-sayoung)
 [![Webbutveckling för nybörjare](https://img.shields.io/badge/Web%20Dev%20for%20Beginners-EC4899?style=for-the-badge&labelColor=E5E7EB&color=EC4899)](https://aka.ms/webdev-beginners?WT.mc_id=academic-105485-koreyst)
 [![IoT för nybörjare](https://img.shields.io/badge/IoT%20for%20Beginners-14B8A6?style=for-the-badge&labelColor=E5E7EB&color=14B8A6)](https://aka.ms/iot-beginners?WT.mc_id=academic-105485-koreyst)
 [![XR-utveckling för nybörjare](https://img.shields.io/badge/XR%20Development%20for%20Beginners-38BDF8?style=for-the-badge&labelColor=E5E7EB&color=38BDF8)](https://github.com/microsoft/xr-development-for-beginners?WT.mc_id=academic-105485-koreyst)
@@ -117,16 +117,16 @@
 ### Copilot-serien
 [![Copilot för AI-parprogrammering](https://img.shields.io/badge/Copilot%20for%20AI%20Paired%20Programming-FACC15?style=for-the-badge&labelColor=E5E7EB&color=FACC15)](https://aka.ms/GitHubCopilotAI?WT.mc_id=academic-105485-koreyst)
 [![Copilot för C#/.NET](https://img.shields.io/badge/Copilot%20for%20C%23/.NET-FBBF24?style=for-the-badge&labelColor=E5E7EB&color=FBBF24)](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers?WT.mc_id=academic-105485-koreyst)
-[![Copilot-äventyret](https://img.shields.io/badge/Copilot%20Adventure-FDE68A?style=for-the-badge&labelColor=E5E7EB&color=FDE68A)](https://github.com/microsoft/CopilotAdventures?WT.mc_id=academic-105485-koreyst)
+[![Copilot-äventyr](https://img.shields.io/badge/Copilot%20Adventure-FDE68A?style=for-the-badge&labelColor=E5E7EB&color=FDE68A)](https://github.com/microsoft/CopilotAdventures?WT.mc_id=academic-105485-koreyst)
 <!-- CO-OP TRANSLATOR OTHER COURSES END -->
 
 ## Få hjälp
 
-Om du fastnar eller har frågor om att bygga AI-appar. Gå med i samtal med andra lärande och erfarna utvecklare om MCP. Det är en stödjande gemenskap där frågor är välkomna och kunskap delas fritt.
+Om du fastnar eller har frågor om att bygga AI-appar. Gå med i samtal med medstudenter och erfarna utvecklare om MCP. Det är en stödjande gemenskap där frågor är välkomna och kunskap delas fritt.
 
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-Om du har produktfeedback eller stöter på fel under byggandet, besök:
+Om du har produktfeedback eller stöter på fel vid byggnation, besök:
 
 [![Microsoft Foundry Developer Forum](https://img.shields.io/badge/GitHub-Microsoft_Foundry_Developer_Forum-blue?style=for-the-badge&logo=github&color=000000&logoColor=fff)](https://aka.ms/foundry/forum)
 

@@ -1,38 +1,48 @@
-# Veilednings for nybegynnere i Pet Story Generator
+# Veiledningskurs for Generering av Kjæledyrhistorier for Nybegynnere
+
+Last opp et kjæledyrbilde, analyser det med GPT-5.6 Luna, og generer en historie basert på den resulterende beskrivelsen. Begge modellforespørslene bruker `reasoning_effort: none`.
+
+| Komponent | Versjon |
+| --- | --- |
+| Java | 21 eller nyere |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
 
 ## Innholdsfortegnelse
 
 - [Forutsetninger](#forutsetninger)
-- [Forstå prosjektstrukturen](#forstå-prosjektstrukturen)
-- [Kjernekomponenter forklart](#kjernekomponenter-forklart)
-  - [1. Hovedapplikasjon](#1-hovedapplikasjon)
-  - [2. Web-kontroller](#2-web-kontroller)
+- [Forståelse av Prosjektstrukturen](#forståelse-av-prosjektstrukturen)
+- [Forklaring av Kjernesystemer](#forklaring-av-kjernesystemer)
+  - [1. Hovedapplikasjonen](#1-hovedapplikasjonen)
+  - [2. Webkontroller](#2-webkontroller)
   - [3. Historietjeneste](#3-historietjeneste)
   - [4. Webmaler](#4-webmaler)
   - [5. Konfigurasjon](#5-konfigurasjon)
-- [Kjøre applikasjonen](#kjøre-applikasjonen)
-- [Hvordan det hele fungerer sammen](#hvordan-det-hele-fungerer-sammen)
-- [Forstå AI-integrasjonen](#forstå-ai-integrasjonen)
-- [Neste steg](#neste-steg)
+- [Kjøre Applikasjonen](#kjøre-applikasjonen)
+- [Offline Tester](#offline-tester)
+- [Hvordan Alt Henger Sammen](#hvordan-alt-henger-sammen)
+- [Forståelse av AI-integrasjon](#forståelse-av-ai-integrasjon)
+- [Neste Steg](#neste-steg)
 
 ## Forutsetninger
 
 Før du begynner, sørg for at du har:
 - Java 21 eller nyere installert
-- Maven for avhengighetsstyring
-- En Azure AI Foundry-modellutplassering (provisjoner den med `azd up` — se [Kapittel 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md)), logget inn med `az login` (nøkkelfri autentisering)
+- Maven for avhengighetsadministrasjon
+- En Azure AI Foundry-distribusjon av GPT-5.6 Luna kalt `gpt-5.6-luna`, eller en `AZURE_OPENAI_DEPLOYMENT`-overstyring som peker til denne distribusjonen. Se [Kapittel 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md) for provisjonering og logg inn med `az login` for nøkkelfri autentisering. Distribusjonen må støtte bildeinput og `reasoning_effort: none`.
 - Grunnleggende forståelse av Java, Spring Boot og webutvikling
 
-## Forstå prosjektstrukturen
+## Forståelse av Prosjektstrukturen
 
-Pet story-prosjektet har flere viktige filer:
+Kjæledyrhistorieprosjektet har flere viktige filer:
 
 ```
 petstory/
 ├── src/main/java/com/example/petstory/
 │   ├── PetStoryApplication.java       # Main Spring Boot application
 │   ├── PetController.java             # Web request handler
-│   ├── StoryService.java              # AI story generation service
+│   ├── StoryService.java              # AI image analysis and story generation
 │   └── SecurityConfig.java            # Security configuration
 ├── src/main/resources/
 │   ├── application.properties         # App configuration
@@ -42,9 +52,9 @@ petstory/
 └── pom.xml                           # Maven dependencies
 ```
 
-## Kjernekomponenter forklart
+## Forklaring av Kjernesystemer
 
-### 1. Hovedapplikasjon
+### 1. Hovedapplikasjonen
 
 **Fil:** `PetStoryApplication.java`
 
@@ -59,210 +69,51 @@ public class PetStoryApplication {
 }
 ```
 
-**Hva dette gjør:**
-- `@SpringBootApplication`-annotasjonen aktiverer automatisk konfigurasjon og komponent-skanning
+**Dette gjør den:**
+- `@SpringBootApplication`-annotasjonen aktiverer automatisk konfigurasjon og komponentskanning
 - Starter en innebygd webserver (Tomcat) på port 8080
-- Oppretter alle nødvendige Spring beans og tjenester automatisk
+- Oppretter alle nødvendige Spring-bønner og tjenester automatisk
 
-### 2. Web-kontroller
+### 2. Webkontroller
 
-**Fil:** `PetController.java`
+**Fil:** [PetController.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/PetController.java)
 
-Denne håndterer alle webforespørsler og brukerinteraksjoner:
+| Endepunkt | Forespørsel | Vellykket respons |
+| --- | --- | --- |
+| `GET /` | Ingen kropp | HTML opplastingsskjema med CSRF-token |
+| `POST /analyze-image` | `multipart/form-data`, filfelt `image` | JSON: `{"description":"Et lekent kjæledyr..."}` |
+| `POST /generate-story` | `application/x-www-form-urlencoded`, felt `description` | HTML resultatside med beskrivelse og generert historie |
 
-```java
-@Controller
-public class PetController {
-    
-    private final StoryService storyService;
-    
-    public PetController(StoryService storyService) {
-        this.storyService = storyService;
-    }
-    
-    @GetMapping("/")
-    public String index() {
-        return "index";  // Returnerer index.html-mal
-    }
-    
-    @PostMapping("/generate-story")
-    public String generateStory(@RequestParam("description") String description, 
-                               Model model, 
-                               RedirectAttributes redirectAttributes) {
-        
-        // Inndata validering
-        if (description.trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Please provide a description.");
-            return "redirect:/";
-        }
-        
-        // Rens inndata for sikkerhet
-        String sanitizedDescription = sanitizeInput(description);
-        
-        // Generer historie med feilhåndtering
-        try {
-            String story = storyService.generateStory(sanitizedDescription);
-            model.addAttribute("caption", sanitizedDescription);
-            model.addAttribute("story", story);
-            return "result";  // Returnerer result.html-mal
-            
-        } catch (Exception e) {
-            // Bruk reservehistorie hvis AI mislykkes
-            String fallbackStory = generateFallbackStory(sanitizedDescription);
-            model.addAttribute("story", fallbackStory);
-            return "result";
-        }
-    }
-    
-    private String sanitizeInput(String input) {
-        return input.replaceAll("[<>\"'&]", "")  // Remove dangerous characters
-                   .trim()
-                   .substring(0, Math.min(input.length(), 500));  // Begrens lengde
-    }
-}
-```
+Begge POST-endepunktene krever sesjonskake og CSRF-token hentet fra `GET /`. Opplastingsskriptet sender den skjulte `_csrf`-verdien i `X-CSRF-TOKEN`-headeren; historielasting sender den som `_csrf`-skjema-felt. API-klienter må bevare kaken mellom forespørsler. Dette er skjemaendepunkter, ikke JSON-forespørselsendepunkter.
 
-**Nøkkelfunksjoner:**
+Beskrivelser må være ikke-tomme og ikke lengre enn 1000 tegn. Kontrolleren trimmer beskrivelsen og fjerner `<`, `>`, doble anførselstegn, apostrofer og `&` før den sender til tjenesten. Resultatmalen unngår også modellutdata med `th:text`.
 
-1. **Rutehåndtering**: `@GetMapping("/")` viser opplastingsskjemaet, `@PostMapping("/generate-story")` behandler innsendinger
-2. **Inndatavalidering**: Sjekker for tomme beskrivelser og lengdebegrensninger
-3. **Sikkerhet**: Rengjør brukerinput for å forhindre XSS-angrep
-4. **Feilhåndtering**: Tilbyr reservehistorier når AI-tjenesten svikter
-5. **Model Binding**: Sender data til HTML-maler ved hjelp av Springs `Model`
-
-**Reservesystem:**
-Kontrolleren inkluderer forhåndsskrevede historietemplater som brukes når AI-tjenesten er utilgjengelig:
-
-```java
-private String generateFallbackStory(String description) {
-    String[] storyTemplates = {
-        "Meet the most wonderful pet in the world – a furry ball of energy...",
-        "Once upon a time, there lived a remarkable pet whose heart was as big...",
-        "In a cozy home filled with love, there lived an extraordinary pet..."
-    };
-    
-    // Bruk beskrivelseshash for konsistente svar
-    int index = Math.abs(description.hashCode() % storyTemplates.length);
-    return storyTemplates[index];
-}
-```
+Feil ved bildevalidering returnerer HTTP 400 med et `error`-felt; modellfeil returnerer HTTP 502 med et `error`-felt og ingen `description`. Ugyldige historiebeskrivelser eller modellfeil omdirigerer til `/` med synlig feil. Manglende obligatoriske felt returnerer HTTP 400, og manglende eller ugyldige CSRF-tokener returnerer HTTP 403. Ingen reservebeskrivelser eller historier presenteres som vellykkede AI-resultater.
 
 ### 3. Historietjeneste
 
-**Fil:** `StoryService.java`
+**Fil:** [StoryService.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/StoryService.java)
 
-Denne tjenesten kommuniserer med Azure AI Foundry for å generere historier ved bruk av nøkkelfri autentisering:
+Den offisielle OpenAI Java SDK 4.63.1 kaller Azure AI Foundrys OpenAI-kompatible Chat Completions API. Azure Identity 1.18.6 leverer et Microsoft Entra-bærertoken via `DefaultAzureCredential`; ingen API-nøkkel er nødvendig.
 
-```java
-@Service
-public class StoryService {
-    
-    private final OpenAIClient openAIClient;
-    private final String modelName;
-    
-    public StoryService(@Value("${azure.openai.endpoint:}") String endpoint,
-                       @Value("${azure.openai.deployment:gpt-4o-mini}") String modelName) {
-        this.modelName = modelName;
-        if (endpoint == null || endpoint.isBlank()) {
-            endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        }
-        
-        // Foundrys OpenAI-kompatible endepunkt finnes under /openai/v1/
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1/";
-        
-        // Nøkkelfri autentisering med Microsoft Entra ID (ingen API-nøkkel)
-        DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-        this.openAIClient = OpenAIOkHttpClient.builder()
-                .baseUrl(baseUrl)
-                .credential(BearerTokenCredential.create(
-                        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-                .build();
-    }
-    
-    public String generateStory(String description) {
-        String systemPrompt = "You are a creative storyteller who writes fun, " +
-                             "family-friendly short stories about pets. " +
-                             "Keep stories under 500 words and appropriate for all ages.";
-        
-        String userPrompt = "Write a fun short story about a pet described as: " + description;
-        
-        // Konfigurer AI-forespørselen
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(modelName)
-                .addSystemMessage(systemPrompt)
-                .addUserMessage(userPrompt)
-                .maxCompletionTokens(500)  // Begrens svarlengde
-                .temperature(0.8)          // Kontroller kreativitet (0.0-1.0)
-                .build();
-        
-        // Send forespørsel og få svar
-        ChatCompletion response = openAIClient.chat().completions().create(params);
-        
-        return response.choices().get(0).message().content().orElse("");
-    }
-}
-```
+| Operasjon | Inndata | `max_completion_tokens` |
+| --- | --- | --- |
+| `analyzeImage` | Bildedata kodet som base64-data-URL med opplastet MIME-type | 300 |
+| `generateStory` | En kjæledyrbeskrivelse i en brukermelding | 800 |
 
-**Viktige komponenter:**
+Begge forespørslene bruker den konfigurerte distribusjonen, som standard `gpt-5.6-luna`, og setter eksplisitt `ReasoningEffort.NONE` (`reasoning_effort: none`). Ingen av forespørslene sender `temperature` eller den eldre `max_tokens`-parameteren.
 
-1. **OpenAI-klient**: Bruker den offisielle OpenAI Java SDK konfigurert for Azure AI Foundry (nøkkelfri)
-2. **Systemprompt**: Setter AI-ens oppførsel til å skrive familievennlige dyrehistorier
-3. **Brukerprompt**: Forteller AI nøyaktig hvilken historie som skal skrives basert på beskrivelsen
-4. **Parametere**: Kontrollere lengde og kreativitetsnivå på historien
-5. **Feilhåndtering**: Kaster unntak som kontrolleren fanger og håndterer
+Bildeanalyse aksepterer JPEG, PNG, GIF og WebP, forkaster tomme bilder og filer over 10MB, og begrenser den resulterende beskrivelsen til 1000 tegn. Historieprompten ber om en familievennlig kort historie. Tomme valg eller blankt modellinnhold er feil, og feil bevarer den opprinnelige årsaken for serverdiagnostikk. SDK-klienten lukkes når applikasjonen avsluttes.
 
 ### 4. Webmaler
 
-**Fil:** `index.html` (Opplastingsskjema)
+**Fil:** [index.html](../../../../04-PracticalSamples/petstory/src/main/resources/templates/index.html) (Opplastingsskjema)
 
-Hovedsiden hvor brukere beskriver kjæledyrene sine:
+Siden starter med en fotovelger, ikke et tekstområde for beskrivelse. **Analyser bilde** forhåndsviser det valgte bildet og sender det til `/analyze-image`. Et vellykket svar viser beskrivelsen, fyller det skjulte `description`-feltet, og avslører **Generer historie**. Den knappen sender det eksisterende skjemaet til `/generate-story`.
 
-```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Pet Story Generator</title>
-    <!-- CSS styling -->
-</head>
-<body>
-    <div class="container">
-        <h1>Pet Story Generator</h1>
-        <p>Describe your pet and we'll create a fun story about them!</p>
-        
-        <!-- Error message display -->
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-        
-        <!-- Story generation form -->
-        <form action="/generate-story" method="post">
-            <div class="form-group">
-                <label for="description">Describe your pet:</label>
-                <textarea id="description" name="description" 
-                         placeholder="Tell us about your pet - what they look like, their personality, favorite activities..."
-                         maxlength="1000" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Generate Story</button>
-        </form>
-        
-        <!-- Image upload section with client-side processing -->
-        <div class="upload-section">
-            <h2>Or Upload a Photo</h2>
-            <input type="file" id="imageInput" accept="image/*" />
-            <button onclick="analyzeImage()" class="upload-btn">Analyze Image</button>
-        </div>
-        
-        <script>
-            // Client-side image analysis using Transformers.js
-            async function analyzeImage() {
-                // Image processing code here
-                // Generates description automatically from uploaded image
-            }
-        </script>
-    </div>
-</body>
-</html>
-```
+Det er ingen nedlasting av modell i nettleseren eller CDN-avhengighet. Bildeanalyse kjøres på serveren gjennom den konfigurerte Azure-distribusjonen. Feil er synlige og tillater ikke historiegenerering med fabrikert beskrivelse. Å velge en annen fil fjerner forrige analyse.
 
-**Fil:** `result.html` (Historievisning)
+**Fil:** `result.html` (Historievennlig visning)
 
 Viser den genererte historien:
 
@@ -297,12 +148,12 @@ Viser den genererte historien:
 </html>
 ```
 
-**Malens egenskaper:**
+**Malfunksjoner:**
 
 1. **Thymeleaf-integrasjon**: Bruker `th:`-attributter for dynamisk innhold
-2. **Responsivt design**: CSS-styling for mobil og desktop
+2. **Responsivt Design**: CSS-styling for mobil og desktop
 3. **Feilhåndtering**: Viser valideringsfeil til brukerne
-4. **Klientsidig behandling**: JavaScript for bildeanalyse (ved bruk av Transformers.js)
+4. **Opplastingshåndtering**: JavaScript forhåndsviser bildet, sender en CSRF-beskyttet multipart-forespørsel, og viser den returnerte beskrivelsen
 
 ### 5. Konfigurasjon
 
@@ -322,23 +173,23 @@ logging.level.com.example.petstory=INFO
 
 # Azure AI Foundry (keyless) configuration
 azure.openai.endpoint=${AZURE_OPENAI_ENDPOINT:}
-azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
 ```
 
 **Konfigurasjon forklart:**
 
-1. **Filopplasting**: Tillater bilder opptil 10MB
-2. **Logging**: Styrer hva slags informasjon som logges under kjøring
-3. **Azure AI Foundry**: Spesifiserer endepunkt og modellutplassering som skal brukes (nøkkelfri autentisering)
-4. **Sikkerhet**: Feilhåndteringskonfigurasjon for å unngå eksponering av sensitiv informasjon
+1. **Filopplastning**: Både filen og den komplette multipart-forespørselen er begrenset til 10MB; hold bilder under denne grensen for å gi plass til multipart-headere
+2. **Logging**: Styrer hvilken informasjon som logges under kjøring
+3. **Azure AI Foundry**: Spesifiserer endepunkt og modell-distribusjon som skal brukes (nøkkelfri autentisering)
+4. **Sikkerhet**: CSRF-beskyttelse forblir aktivert; modelldiagnostikk logges på serveren, mens kontrolleren viser generiske modellfeilmeldinger
 
-## Kjøre applikasjonen
+## Kjøre Applikasjonen
 
-### Steg 1: Logg inn og sett endepunktet ditt
+### Trinn 1: Logg Inn og Sett Endepunktet Ditt
 
-Autentiseringen er nøkkelfri (Microsoft Entra ID), så det kreves ingen API-nøkkel. Logg inn og sett Foundry-endepunktet ditt:
+Autentisering er nøkkelfri (Microsoft Entra ID), så det finnes ingen API-nøkkel. Logg inn og sett Foundry-endepunktet ditt:
 
-**Windows (Kommandoprompt):**
+**Windows (Kommandolinje):**
 ```cmd
 az login
 set AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
@@ -357,20 +208,22 @@ export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 ```
 
 **Hvorfor dette er nødvendig:**
-- Azure AI Foundry bruker Microsoft Entra ID for å autentisere inferensforespørsler
-- Nøkkelfri autentisering betyr ingen hemmeligheter i kildekode eller miljø
-- Kontoen din må ha rollen **Cognitive Services OpenAI User** på ressursen
+- Azure AI Foundry bruker Microsoft Entra ID for autentisering av inferensforespørsler
+- Nøkkelfri autentisering betyr ingen hemmeligheter i din kildekode eller miljø
+- Kontoen din trenger rollen **Cognitive Services OpenAI User** på ressursen
 
-### Steg 2: Bygg og kjør
+Standard distribusjonsnavn er `gpt-5.6-luna`. Hvis distribusjonen din for GPT-5.6 Luna har et annet navn, sett `AZURE_OPENAI_DEPLOYMENT` i samme terminal før du starter applikasjonen. Både bildeanalyse og historiegenerering bruker denne innstillingen.
+
+### Trinn 2: Bygg og Kjør
 
 Naviger til prosjektmappen:
 ```bash
 cd 04-PracticalSamples/petstory
 ```
 
-Bygg applikasjonen:
+Bygg den frittstående kjørbare JAR-filen og kjør alle offline-tester:
 ```bash
-mvn clean compile
+mvn clean package
 ```
 
 Start serveren:
@@ -380,67 +233,63 @@ mvn spring-boot:run
 
 Applikasjonen vil starte på `http://localhost:8080`.
 
-### Steg 3: Test applikasjonen
+Alternativt, start den pakkede JAR-filen på en ledig port, for eksempel:
+
+```bash
+java -jar target/pet-story-app-0.0.1-SNAPSHOT.jar --server.port=8083
+```
+
+For den kommandoen, åpne `http://localhost:8083/`. De samme rutene `/analyze-image` og `/generate-story` er tilgjengelige på den valgte porten.
+
+### Trinn 3: Test Applikasjonen
 
 1. **Åpne** `http://localhost:8080` i nettleseren din
-2. **Beskriv** kjæledyret ditt i tekstfeltet (f.eks. "En leken golden retriever som elsker å hente")
-3. **Klikk** på "Generate Story" for å få en AI-generert historie
-4. **Alternativt**, last opp et bilde av kjæledyret for automatisk å generere en beskrivelse
-5. **Se** den kreative historien basert på kjæledyrets beskrivelse
+2. **Velg** et klart kjæledyrbilde i JPEG, PNG, GIF eller WebP-format, under 10MB
+3. **Klikk** på "Analyze Image" og vent på kjæledyrbeskrivelsen
+4. **Klikk** på "Generate Story" etter vellykket analyse
+5. **Se** historien og bruk lenken på resultatssiden for å gå tilbake til opplastingsskjemaet
 
-## Hvordan det hele fungerer sammen
+Den vellykkede bilde-til-historie-flyten gjør to modellkall, ett per knapp. Live inferens bruker ditt distribusjonskvote og kan påløpe kostnader; kjør røyktester serielt når du deler en ratebegrenset distribusjon. Å laste hjemmesiden kaller ikke modellen.
 
-Her er den komplette flyten når du genererer en kjæledyrhistorie:
+## Offline Tester
 
-1. **Brukerinndata**: Du beskriver kjæledyret ditt i webskjemaet
-2. **Skjemainnsending**: Nettleseren sender POST-forespørsel til `/generate-story`
-3. **Kontrollerbehandling**: `PetController` validerer og renser inndata
-4. **AI-tjenestekall**: `StoryService` sender forespørsel til Azure AI Foundry-modellen
-5. **Historiegenerering**: AI genererer en kreativ historie basert på beskrivelsen
-6. **Responsbehandling**: Kontrolleren mottar historien og legger den til i modellen
-7. **Malerendering**: Thymeleaf gjengir `result.html` med historien
-8. **Visning**: Brukeren ser den genererte historien i nettleseren
+Fra sample-katalogen, kjør:
+
+```bash
+mvn test
+```
+
+[StoryServiceTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/StoryServiceTest.java) fanger ekte OpenAI SDK-forespørsler med en loopback HTTP-fixture. Den sjekker begge forespørslers distribusjon, `reasoning_effort: none`, tokengrenser, bildeinnhold, inngangsvalidering, tomme svar og oppstrømsfeil.
+
+[PetControllerTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/PetControllerTest.java) bruker MockMvc med en modelltjeneste-mock for å teste de gjengitte Thymeleaf-sidene, opplastingskontrakt, CSRF, validering, utdata-escaper og synlige feil. Disse testene trenger ikke Azure-legitimasjon og kaller aldri betalt Azure-inferens. Maven skriver Surefire-rapporter under `target/surefire-reports`.
+
+## Hvordan Alt Henger Sammen
+
+Her er hele flyten når du genererer en kjæledyrhistorie:
+
+1. **Bildeseleksjon**: Du velger et kjæledyrbilde i opplastingsskjemaet
+2. **Bildeopplasting**: "Analyze Image" sender en multipart POST til `/analyze-image` med CSRF-header
+3. **Bildeanalyse**: `StoryService` sender bildet til GPT-5.6 Luna med reasoning satt til `none`
+4. **Beskrivelsesvisning**: Nettleseren viser den returnerte beskrivelsen og lagrer den i skjemaet
+5. **Historieinnsending**: "Generate Story" sender `description` og `_csrf` til `/generate-story`
+6. **Historiegenerering**: Kontrolleren validerer beskrivelsen og kaller samme distribusjon med reasoning satt til `none`
+7. **Malgjengivelse**: Thymeleaf escaper og viser beskrivelse og historie på resultatssiden
 
 **Feilhåndteringsflyt:**
-Hvis AI-tjenesten skulle feile:
-1. Kontrolleren fanger unntaket
-2. Genererer en reservehistorie ved hjelp av forhåndsskrevede maler
-3. Viser reservehistorien med en merknad om at AI ikke var tilgjengelig
-4. Brukeren får fortsatt en historie, noe som sikrer en god brukeropplevelse
+Hvis modellen feiler, logger serveren årsaken. Bildeanalyse returnerer HTTP 502 og nettleseren viser feilen uten å avsløre "Generate Story". Historiegenerering omdirigerer til skjemaet med en feilmelding. Ingen av veiene erstatter stille en forhåndsskrevet resultat.
 
-## Forstå AI-integrasjonen
+## Forståelse av AI-integrasjon
 
 ### Azure AI Foundry (nøkkelfri)
-Applikasjonen bruker Azure AI Foundry med nøkkelfri autentisering (Microsoft Entra ID):
+Tjenesten konfigurerer SDK med ressursens `/openai/v1/`-endepunkt. `DefaultAzureCredential` og `AuthenticationUtil.getBearerTokenSupplier` leverer Microsoft Entra-tokener for `https://ai.azure.com/.default`. Lokal utvikling kan bruke din Azure CLI-innlogging; en Azure-hostet app kan bruke en administrert identitet med nødvendige ressursrettigheter.
 
-```java
-// Nøkkelfri autentisering - ingen API-nøkkel
-DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-this.openAIClient = OpenAIOkHttpClient.builder()
-    .baseUrl(endpoint + "openai/v1/")
-    .credential(BearerTokenCredential.create(
-        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-    .build();
-```
-
-### Prompt Engineering
-Tjenesten bruker nøye utformede prompts for å oppnå gode resultater:
-
-```java
-String systemPrompt = "You are a creative storyteller who writes fun, " +
-                     "family-friendly short stories about pets. " +
-                     "Keep stories under 500 words and appropriate for all ages.";
-```
+### Prompt engineering
+Bildeanalyse ber om observerbare kjæledyrsberegenskaper i et kort avsnitt og forteller modellen å behandle tekst i bildet som data, ikke instruksjoner. Historiegenerering bruker den returnerte beskrivelsen i en separat, familievennlig skriveforespørsel. Ingen av kallene aktiverer resonnering eller setter temperaturoverstyring.
 
 ### Responsbehandling
-AI-responsen blir hentet ut og validert:
+Den delte responsbehandleren forkaster manglende valg og tomt eller bare mellomrom-innhold, trimmer gyldig innhold, og bevarer oppstrømsfeil. Bildebeskrivelser er begrenset til 1000 tegn for å passe etterfølgende historiefelt. Opprinnelig modellfeil beholdes for diagnostikk, men vises ikke til brukeren.
 
-```java
-ChatCompletion response = openAIClient.chat().completions().create(params);
-String story = response.choices().get(0).message().content().orElse("");
-```
-
-## Neste steg
+## Neste Steg
 
 For flere eksempler, se [Kapittel 04: Praktiske eksempler](../README.md)
 

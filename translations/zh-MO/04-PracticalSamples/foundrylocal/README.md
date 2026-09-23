@@ -1,354 +1,230 @@
-# Foundry Local Spring Boot 教學
+# Foundry 本地 Spring Boot 教學
 
-## 目錄
-
-- [先決條件](#先決條件)
-- [專案概覽](#專案概覽)
-- [理解程式碼](#理解程式碼)
-  - [1. 應用程式設定 (application.properties)](#1-應用程式設定-applicationproperties)
-  - [2. 主要應用程式類 (Application.java)](#2-主要應用程式類-applicationjava)
-  - [3. AI 服務層 (FoundryLocalService.java)](#3-ai-服務層-foundrylocalservicejava)
-  - [4. 專案相依性 (pom.xml)](#4-專案相依性-pomxml)
-- [整體運作流程](#整體運作流程)
-- [設定 Foundry Local](#設定-foundry-local)
-- [執行應用程式](#執行應用程式)
-- [預期輸出](#預期輸出)
-- [下一步](#下一步)
-- [故障排除](#故障排除)
+在您自己的機器上運行一個小型語言模型，並從 Java 控制台應用程序調用其與 OpenAI 兼容的
+REST 端點。不使用 Azure 部署、Azure 登錄、
+雲端 API 金鑰或雲端推理。**GPT-5.6 Luna 僅限 Azure；請勿將其配置為 Foundry 本地模型。**
 
 
-## 先決條件
+## 版本和先決條件
 
-開始本教學前，請確保您已安裝：
+| 組件 | 版本 |
+| --- | --- |
+| Java | 21 或更高版本 |
+| Maven | 3.6.3 或更高版本 |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Foundry 本地 SDK（本地 REST 伺服器） | 2.0.1 |
+| Node.js（本地 REST 伺服器） | 20 或更高版本 |
+| Foundry 本地 CLI（可選，獨立版本） | 0.10.3 預覽版 |
 
-- **Java 21 或更高版本**
-- **Maven 3.6 以上** 用於專案建置
-- **Foundry Local** 已安裝並啟動
+Spring Boot 管理 Spring Framework、Jackson、JUnit 和 Maven 插件版本。
+此範例直接使用 OpenAI Java SDK，而非 Spring AI。已移除舊的未使用
+Spring AI 里程碑屬性和倉庫。
 
-### **安裝 Foundry Local：**
+推薦的入門模型是 **Qwen 2.5 0.5B**，CPU 變體
+`qwen2.5-0.5b-instruct-generic-cpu:4`（目錄中約 822 MB）。
+它避免需要 GPU 執行提供者。其他受支持的已快取小型模型
+可明確選擇。模型和運行時安裝需要網路存取；
+提示和推理則保持本地。Foundry 本地即使在禁用非必要遙測時，仍可能發出最輕微的運行時
+診斷。
 
-> **注意：** Foundry Local CLI 僅支援 **Windows** 與 **macOS**。Linux 可透過 [Foundry Local SDKs](https://github.com/microsoft/Foundry-Local)（Python、JavaScript、C#、Rust）支援。
+從此範例目錄運行以下命令。
 
-```bash
-# Windows 作業系統
-winget install Microsoft.FoundryLocal
+## 建構並測試 Java
 
-# macOS 作業系統
-brew tap microsoft/foundrylocal
-brew install foundrylocal
+```powershell
+mvn clean verify
 ```
 
-驗證安裝：
-```bash
+HTTP 合約測試啟動一個臨時回環伺服器並測試實際的
+OpenAI Java SDK。它們涵蓋請求序列化、模型發現、明確模型
+選擇、模糊或格式錯誤的模型列表、HTTP 失敗、空白回應、
+本地專用網址，以及命令行失敗傳播。它們不需要模型或
+除 Maven 依賴安裝外的網路存取。實時測試為選擇性。
+
+## 啟動本地模型
+
+### 推薦：鎖定版 SDK 伺服器
+
+沒有原生 Foundry 本地 Java SDK。小型的 Node.js 輔助程式託管
+官方 SDK 的 REST 伺服器；應用程式和聊天請求仍為 Java。
+
+安裝鎖定版運行時依賴：
+
+```powershell
+npm ci
+```
+
+如果 Windows x64 在 SDK 原生安裝期間無法連接 NuGet，請使用隨附的
+備用方案。它會下載相符的官方 GitHub 運行時壓縮包，檢查
+發行版本的 SHA-256 摘要，並將其 DLL 放置於原生擴充旁邊。它不會
+禁用 TLS 驗證、不需要提權，亦不修改 SDK 源碼。
+
+```powershell
+npm ci --ignore-scripts
+pwsh -File ./scripts/install-foundry-runtime.ps1
+```
+
+列出此機器上已快取的模型：
+
+```powershell
+npm run start:foundry -- --list
+```
+
+初次運行時，明確允許下載小型 CPU 模型：
+
+```powershell
+npm run start:foundry -- --model qwen2.5-0.5b-instruct-generic-cpu:4 --download --port 5273
+```
+
+後續運行時，省略 `--download` 以要求使用已快取模型：
+
+```powershell
+npm run start:foundry -- --model qwen2.5-0.5b-instruct-generic-cpu:4 --port 5273
+```
+
+輔助程式偏好使用匹配的快取模型，接受別名或精確變體 ID，
+且除非指定 `--download`，否則拒絕缺失模型。只有在需要執行提供者時，
+才註冊所選模型的執行提供者。已快取的 GPU 變體仍可能
+需要相容的執行提供者套件和驅動程式。
+
+若埠 5273 已被佔用，請傳遞 `--port 0` 指定可用埠。輔助程式啟動後會列印
+`FOUNDRY_LOCAL_BASE_URL`、精確的 `FOUNDRY_LOCAL_MODEL` ID 和其 PID。
+在 Java 中使用列印的端點。運行 Java 時請保持此終端開啟；
+**Ctrl+C** 停止 REST 伺服器並釋放模型。
+
+預設快取路徑為 `~/.foundry/cache/models`。若要使用其他已存在快取，
+請設置 `FOUNDRY_LOCAL_CACHE_DIR`。日誌和輔助狀態寫在此範例的
+`target/foundry-local` 目錄下。運行 `mvn clean` 前請先停止輔助程式。
+
+### 可選：Foundry 本地 CLI
+
+CLI 與 SDK 有獨立版本：CLI **0.10.3** 捆綁 SDK **1.2.4**；
+上述輔助程式使用 SDK **2.0.1**。安裝最新版 CLI 不代表安裝
+最新語言 SDK。參見 [CLI 發行說明](https://github.com/microsoft/Foundry-Local/releases/tag/cli-preview-0.10.3)。
+
+Windows 下，若無 CLI，請使用每用戶安裝命令：
+
+```powershell
+winget install --id Microsoft.FoundryLocal --exact --source winget --scope user --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
+```
+
+或升級現有安裝：
+
+```powershell
+winget upgrade --id Microsoft.FoundryLocal --exact --source winget --scope user --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
 foundry --version
 ```
 
-## 專案概覽
+CLI 0.10.x 用 `foundry server` 替代舊的 `foundry service` 命令：
 
-此專案包含四個主要元件：
-
-1. **Application.java** - 主要的 Spring Boot 應用程式進入點
-2. **FoundryLocalService.java** - 處理 AI 通訊的服務層
-3. **application.properties** - Foundry Local 連線設定
-4. **pom.xml** - Maven 相依性與專案設定
-
-## 理解程式碼
-
-### 1. 應用程式設定 (application.properties)
-
-**檔案：** `src/main/resources/application.properties`
-
-```properties
-foundry.local.base-url=http://localhost:5273/v1
-# foundry.local.model is auto-detected from Foundry Local. Set it here to override:
-# foundry.local.model=Phi-4-mini-instruct-cuda-gpu:5
+```powershell
+foundry server start --port 5273
+foundry cache list
+foundry model load qwen2.5-0.5b-instruct-generic-cpu:4
+foundry server status --output json
 ```
 
-**功能說明：**
-- **base-url**：指定 Foundry Local 運行位置，包含 `/v1` 路徑以相容 OpenAI API。預設埠號為 `5273`。若不同，請使用 `foundry service status` 查詢。
-- **model** （可選）：指定用於文字生成的 AI 模型名稱。**預設情況下，應用程式會在啟動時透過查詢 Foundry Local 的 `/v1/models` 自動偵測模型，因此不必設定。若需要，可手動指定以覆蓋自動偵測。**
+`model load` 需要已下載的模型。查詢 `foundry model --help` 以獲得
+下載命令。使用狀態輸出中的實際端點；CLI 否則
+預設為自動分配埠。不要在同一埠啟動 CLI 與 SDK 輔助程式。
+完成後：
 
-**關鍵概念：** Spring Boot 會自動載入這些屬性，並可利用 `@Value` 標註注入至您的應用程式。
-
-### 2. 主要應用程式類 (Application.java)
-
-**檔案：** `src/main/java/com/example/Application.java`
-
-```java
-@SpringBootApplication
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(Application.class);
-        app.setWebApplicationType(WebApplicationType.NONE);  // 無需網絡伺服器
-        app.run(args);
-    }
+```powershell
+foundry server stop
 ```
 
-**功能說明：**
-- `@SpringBootApplication` 啟用 Spring Boot 自動配置
-- `WebApplicationType.NONE` 表示此應用為命令行程式，而非網頁伺服器
-- main 方法啟動 Spring 應用程式
+## 運行 Java 應用程式
 
-**示範執行器：**
-```java
-@Bean
-public CommandLineRunner foundryLocalRunner(FoundryLocalService foundryLocalService) {
-    return args -> {
-        System.out.println("=== Foundry Local Demo ===");
-        System.out.println("Calling Foundry Local service...");
-        
-        String testMessage = "Hello! Can you tell me what you are and what model you're running?";
-        System.out.println("Sending message: " + testMessage);
-        
-        String response = foundryLocalService.chat(testMessage);
-        System.out.println("Response from Foundry Local:");
-        System.out.println(response);
-        System.out.println("=========================");
-    };
-}
-```
+在第二個終端，設置伺服器列印的端點和精確模型 ID：
 
-**功能說明：**
-- `@Bean` 建立一個由 Spring 管理的元件
-- `CommandLineRunner` 在 Spring Boot 啟動後執行程式碼
-- `foundryLocalService` 由 Spring 自動注入（依賴注入）
-- 傳送測試訊息到 AI，顯示回應結果
-
-### 3. AI 服務層 (FoundryLocalService.java)
-
-**檔案：** `src/main/java/com/example/FoundryLocalService.java`
-
-#### 設定注入：
-```java
-@Service
-public class FoundryLocalService {
-    
-    @Value("${foundry.local.base-url:http://localhost:5273/v1}")
-    private String baseUrl;
-    
-    @Value("${foundry.local.model:}")
-    private String model;    // 若為空則自動檢測
-```
-
-**功能說明：**
-- `@Service` 告訴 Spring 此類別提供業務邏輯
-- `@Value` 從 application.properties 注入設定值
-- 模型預設為空字串，觸發啟動時從 Foundry Local 自動偵測模型。這表示搭配任何已載入的模型時，均無需手動設定。
-
-#### 客戶端初始化：
-```java
-@PostConstruct
-public void init() {
-    // 如果未明確配置，則自動從Foundry Local檢測模型
-    if (model == null || model.isBlank()) {
-        model = detectModel();
-    }
-
-    this.openAIClient = OpenAIOkHttpClient.builder()
-            .baseUrl(baseUrl)                // 基本URL已包含配置中的/v1
-            .apiKey("not-needed")            // 本地服務器不需要真實的API密鑰
-            .build();
-}
-```
-
-**功能說明：**
-- `@PostConstruct` 於 Spring 建立服務後執行此方法
-- 若未設定模型，則查詢 Foundry Local 的 `/v1/models`，並選取第一個已載入模型
-- 建立指向本地 Foundry Local 實例的 OpenAI 客戶端
-- `application.properties` 所指定的 base URL 已包含 `/v1`，相容 OpenAI API
-- API 密鑰設定為 "not-needed"，本地開發不需認證
-
-#### 聊天方法：
-```java
-public String chat(String message) {
-    try {
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(model)                    // 使用哪個人工智能模型
-                .addUserMessage(message)         // 你的問題／提示
-                .maxCompletionTokens(150)        // 限制回應長度
-                .temperature(0.7)                // 控制創意程度（0.0-1.0）
-                .build();
-        
-        ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
-        
-        // 從API結果中提取人工智能回應
-        if (chatCompletion.choices() != null && !chatCompletion.choices().isEmpty()) {
-            return chatCompletion.choices().get(0).message().content().orElse("No response found");
-        }
-        
-        return "No response content found";
-    } catch (Exception e) {
-        throw new RuntimeException("Error calling chat completion: " + e.getMessage(), e);
-    }
-}
-```
-
-**功能說明：**
-- **ChatCompletionCreateParams**：配置 AI 請求
-  - `model`：指定使用的 AI 模型（必須精確匹配 `foundry model list` 中的 ID）
-  - `addUserMessage`：加入您的訊息至對話
-  - `maxCompletionTokens`：限制回應字元長度（節省資源）
-  - `temperature`：調節隨機性（0.0 = 決定性，1.0 = 創意）
-- **API 呼叫**：發送請求至 Foundry Local
-- <strong>回應處理</strong>：安全地擷取 AI 回覆文字
-- <strong>錯誤處理</strong>：包裝例外並提供有用錯誤訊息
-
-### 4. 專案相依性 (pom.xml)
-
-**主要相依性：**
-
-```xml
-<!-- Spring Boot - Application framework -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter</artifactId>
-    <version>${spring-boot.version}</version>
-</dependency>
-
-<!-- OpenAI Java SDK - For AI API calls -->
-<dependency>
-    <groupId>com.openai</groupId>
-    <artifactId>openai-java</artifactId>
-    <version>2.12.0</version>
-</dependency>
-
-<!-- Jackson - JSON processing -->
-<dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-    <version>2.17.0</version>
-</dependency>
-```
-
-**功能說明：**
-- **spring-boot-starter**：提供 Spring Boot 核心功能
-- **openai-java**：官方 OpenAI Java SDK 供 API 通訊使用
-- **jackson-databind**：用於 API JSON 序列化及反序列化
-
-## 整體運作流程
-
-以下為執行應用程式時的完整流程：
-
-1. <strong>啟動</strong>：Spring Boot 啟動並讀取 `application.properties`
-2. <strong>服務建立</strong>：Spring 建立 `FoundryLocalService`，注入設定值
-3. <strong>模型偵測</strong>：若未設定模型，服務查詢 Foundry Local `/v1/models`，自動使用第一個可用模型
-4. <strong>客戶端設定</strong>：`@PostConstruct` 初始化連接 Foundry Local 的 OpenAI 客戶端
-5. <strong>示範執行</strong>：Spring 啟動後，`CommandLineRunner` 執行
-6. **AI 呼叫**：示範呼叫 `foundryLocalService.chat()` 傳送測試訊息
-7. **API 請求**：服務建立並發送符合 OpenAI API 的請求至 Foundry Local
-8. <strong>回應處理</strong>：服務擷取並回傳 AI 回覆
-9. <strong>顯示</strong>：應用程式列印回覆後結束
-
-## 設定 Foundry Local
-
-1. 依照 [先決條件](#先決條件) 節安裝 Foundry Local。
-
-2. 啟動服務（若未執行）：
-   ```bash
-   foundry service start
-   ```
-
-3. 確認服務狀態與埠號：
-   ```bash
-   foundry service status
-   ```
-
-4. 下載並執行模型（首次執行時會下載，後續執行會快取）：
-   ```bash
-   foundry model run phi-4-mini
-   ```
-   此指令開啟互動聊天會話，使用 `Ctrl+C` 離開，模型將持續載入於服務中。
-
-   > **提示：** 執行 `foundry model list` 查看所有可用模型。可依目錄替換 `phi-4-mini`，例如更小更快的 `qwen2.5-0.5b`。
-
-5. 確認模型已載入：
-   ```bash
-   foundry service ps
-   ```
-
-6. 如有需要，更新 `application.properties`：
-   - 預設 `base-url` (`http://localhost:5273/v1`) 與 CLI 預設埠號一致。只在 `foundry service status` 顯示不同埠號時修改。
-   - 模型於啟動時 <strong>自動偵測</strong>，無須設定。
-
-   ```properties
-   foundry.local.base-url=http://localhost:5273/v1
-   # Model is auto-detected. Uncomment below to override:
-   # foundry.local.model=Phi-4-mini-instruct-cuda-gpu:5
-   ```
-
-## 執行應用程式
-
-### 第一步：確認 Foundry Local 已載入模型
-```bash
-foundry service ps
-```
-若無列出模型，請載入一個：
-```bash
-foundry model run phi-4-mini
-```
-
-### 第二步：建置並執行應用程式
-在另一個終端機視窗：
-```bash
-cd 04-PracticalSamples/foundrylocal
+```powershell
+$env:FOUNDRY_LOCAL_BASE_URL = "http://127.0.0.1:5273/v1"
+$env:FOUNDRY_LOCAL_MODEL = "qwen2.5-0.5b-instruct-generic-cpu:4"
 mvn spring-boot:run
 ```
 
-或以 JAR 方式建置與執行：
-```bash
-mvn clean package
+或運行打包後的應用程式：
+
+```powershell
 java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
 ```
 
-## 預期輸出
+唯一的 Java 進入點是 `com.example.Application`。它會列印所選
+端點、實際模型 ID、提示和生成的回應，然後關閉其 Spring
+內容和 HTTP 用戶端。推理失敗或缺失回應文本會導致
+失敗退出，而非成功形態的佔位符。
 
+### 配置
+
+| 環境變數 | 預設值 | 目的 |
+| --- | --- | --- |
+| `FOUNDRY_LOCAL_BASE_URL` | `http://127.0.0.1:5273/v1` | 回環 HTTP 端點，包含 `/v1` |
+| `FOUNDRY_LOCAL_MODEL` | 空 | 精確模型 ID；否則選擇唯一廣告模型 |
+| `FOUNDRY_LOCAL_PROMPT` | 一句關於本地模型的問題 | 控制台運行器發送的提示 |
+
+等價的 Spring 參數是 `--foundry.local.base-url=...`、
+`--foundry.local.model=...` 和 `--foundry.local.prompt=...`。
+僅接受回環 HTTP 端點。遠端／雲端端點、內嵌
+憑證、查詢字串及無 `/v1` 的路徑皆被拒絕。
+
+空模型設定僅在 `/v1/models` 廣告恰好一個模型時可用。
+廣告的模型未必已載入。如多模型廣告，
+請設定精確載入 ID，而非依賴目錄排序。
+
+請求使用 `temperature=0`、150 代幣輸出限制、120 秒超時，且
+不自動重試。`max_tokens` 請求欄位是故意設計：它
+被 Foundry 本地 REST 合約支持，儘管 OpenAI Java 已棄用
+針對較新的雲端模型該欄位。模型身份來自配置或
+探測，而非模型自身的聲稱。
+
+## 即時驗證
+
+啟動本地伺服器後，執行所有測試，包括選擇性的即時測試。
+將端點的埠號替換為伺服器打印的值。在 PowerShell 中引用點狀
+Maven 屬性：
+
+```powershell
+mvn "-Dfoundry.local.live=true" "-Dfoundry.local.base-url=http://127.0.0.1:5273/v1" "-Dfoundry.local.model=qwen2.5-0.5b-instruct-generic-cpu:4" verify
 ```
-=== Foundry Local Demo ===
-Calling Foundry Local service...
-Sending message: Hello! Can you tell me what you are and what model you're running?
-Response from Foundry Local:
-Hello! I'm Phi, an AI developed by Microsoft. I can assist with a wide variety of 
-tasks including answering questions, helping with analysis, creative writing, coding, 
-and general conversation. How can I help you today?
-=========================
-```
 
-## 下一步
+即時測試調用 `Application.main`，提供事實「法國的首都是巴黎」，詢問城市，並斷言實際生成的文本為
+`Paris`。它檢查語意結果，而不僅是成功的 HTTP 狀態。
 
-更多範例請參考 [第04章：實用範例](../README.md)
 
-## 故障排除
+0.5B 模型對另一個「2 + 2」提示，通過 Java 和直接
+REST 回答為 `3`。未經獨立
+驗證，不要依賴其算術或事實準確性；計算請使用確定性工具。
 
-### 常見問題
 
-**「連線被拒絕」或「服務無法使用」**
-- 檢查服務狀態：`foundry service status`
-- 需要時重新啟動：`foundry service restart`
-- 確認 `application.properties` 中的埠號與 `foundry service status` 相符
-- 確認 URL 以 `/v1` 結尾： `http://localhost:5273/v1`
+## 疑難排解
 
-**啟動時顯示「找不到模型」**
-- 應用自動偵測模型。請確定至少載入一個模型：`foundry service ps`
-- 若無模型載入：`foundry model run phi-4-mini`
-- 若在 `application.properties` 指定模型名稱，請與 `foundry model list` 相符
+| 症狀 | 檢查 |
+| --- | --- |
+| 連線被拒絕 | 等待 Ready 訊息；使用列印出的埠號和 `/v1` 路徑。 |
+| 宣告多重模型 | 將 `FOUNDRY_LOCAL_MODEL` 設為已載入模型的精確 ID。 |
+| 找不到模型 | 使用 `--list`，或明確允許以 `--download` 下載。 |
+| GPU 提供者失敗或停滯 | 使用小型 CPU 模型。已快取的 GPU 模型仍需其提供者。 |
+| CLI 保持 `initializing` | 查看 `foundry server logs --lines 80`；停止 daemon 並使用 SDK 助手。 |
+| NuGet TLS/下載故障 | 修復網絡存取或使用上述驗證過的 Windows x64 備用方式。切勿關閉 TLS。 |
+| 埠號被佔用 | 使用 `--port 0` 並以所列端點配置 Java。 |
+| 無選擇或空白文本 | 應用程式故意失敗；檢查模型與執行時日誌。 |
 
-**「400 Bad Request」錯誤**
-- 確認 base URL 包含 `/v1`：`http://localhost:5273/v1`
-- 確保代碼中使用 `maxCompletionTokens()`，而非舊版已棄用的 `maxTokens()`
+## 來源與參考資料
 
-**Maven 編譯錯誤**
-- 確認 Java 版本 21 或更高：`java -version`
-- 清理並重建專案：`mvn clean compile`
-- 確認有網路連線下載相依性
-
-<strong>服務連線問題</strong>
-- 若看到 `Request to local service failed`，請執行：`foundry service restart`
-- 檢查已載入模型：`foundry service ps`
-- 查看服務日誌：`foundry service diag`
+- [Application.java](../../../../04-PracticalSamples/foundrylocal/src/main/java/com/example/Application.java): 一次性 Spring Boot 運行器。
+- [FoundryLocalService.java](../../../../04-PracticalSamples/foundrylocal/src/main/java/com/example/FoundryLocalService.java): 類型化探測與本地聊天完成。
+- [FoundryLocalServiceTest.java](../../../../04-PracticalSamples/foundrylocal/src/test/java/com/example/FoundryLocalServiceTest.java): HTTP 合約、運行器與即時測試。
+- [start-foundry.mjs](../../../../04-PracticalSamples/foundrylocal/scripts/start-foundry.mjs): 官方 SDK REST 伺服器，具快取模型選擇與清理功能。
+- [install-foundry-runtime.ps1](../../../../04-PracticalSamples/foundrylocal/scripts/install-foundry-runtime.ps1): 驗證過的 Windows x64 原生執行時備用。
+- [application.properties](../../../../04-PracticalSamples/foundrylocal/src/main/resources/application.properties), [pom.xml](../../../../04-PracticalSamples/foundrylocal/pom.xml), 與 [package.json](../../../../04-PracticalSamples/foundrylocal/package.json): 配置與依賴。
+- [Foundry Local REST integration](https://learn.microsoft.com/azure/foundry-local/how-to/how-to-integrate-with-inference-sdks).
+- [Foundry Local 2.0.1 release and migration notes](https://github.com/microsoft/Foundry-Local/releases/tag/v2.0.1).
+- [Chapter 04: Practical samples](../README.md).
 
 ---
 
 <!-- CO-OP TRANSLATOR DISCLAIMER START -->
-**免責聲明**：  
-本文件已使用 AI 翻譯服務 [Co-op Translator](https://github.com/Azure/co-op-translator) 進行翻譯。雖然我們致力於確保準確性，但請注意，自動翻譯可能包含錯誤或不準確之處。文件的原文版本應被視為權威來源。對於重要資訊，建議採用專業人工翻譯。如因使用本翻譯而導致任何誤解或誤譯，我們概不負責。
+**免責聲明**：
+本文件使用 AI 翻譯服務 [Co-op Translator](https://github.com/Azure/co-op-translator) 進行翻譯。雖然我們力求準確，但請注意，自動翻譯可能包含錯誤或不準確之處。原始文件的母語版本應被視為權威來源。對於重要資訊，建議尋求專業人工翻譯。我們不對因使用本翻譯而引起的任何誤解或曲解承擔責任。
 <!-- CO-OP TRANSLATOR DISCLAIMER END -->

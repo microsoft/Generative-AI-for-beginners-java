@@ -1,17 +1,17 @@
-# Generative AI per Principianti - Edizione Java
+# Intelligenza Artificiale Generativa per Principianti - Edizione Java
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-![Generative AI per Principianti - Edizione Java](../../translated_images/it/beg-genai-series.8b48be9951cc574c.webp)
+![Intelligenza Artificiale Generativa per Principianti - Edizione Java](../../translated_images/it/beg-genai-series.8b48be9951cc574c.webp)
 
-**Impegno di tempo**: L'intero workshop può essere completato online senza configurazioni locali. L'installazione dell'ambiente richiede 2 minuti, con l'esplorazione degli esempi che richiede da 1 a 3 ore a seconda della profondità di esplorazione.
+**Tempo richiesto**: L'intero workshop può essere completato online senza configurazione locale. L'installazione dell'ambiente richiede 2 minuti, mentre esplorare gli esempi richiede da 1 a 3 ore a seconda della profondità dell'esplorazione.
 
-> **Avvio rapido**
+> **Avvio rapido** 
 
-1. Fai un fork di questo repository nel tuo account GitHub
-2. Clicca su **Code** → scheda **Codespaces** → **...** → **Nuovo con opzioni...**
-3. Usa le impostazioni predefinite – questo selezionerà il contenitore di sviluppo creato per questo corso
-4. Clicca su **Crea codespace**
-5. Attendi circa 2 minuti che l'ambiente sia pronto
+1. Fai fork di questo repository nel tuo account GitHub
+2. Clicca su **Code** → scheda **Codespaces** → **...** → **New with options...**
+3. Usa le impostazioni predefinite – questo selezionerà il container di sviluppo creato per questo corso
+4. Clicca su **Create codespace**
+5. Attendi ~2 minuti affinché l'ambiente sia pronto
 6. Vai direttamente a [Capitolo 2: Provision Azure AI Foundry](./02-SetupDevEnvironment/README.md#step-2-provision-azure-ai-foundry)
 
 ## Supporto Multilingue
@@ -23,7 +23,7 @@
 
 > **Preferisci clonare localmente?**
 >
-> Questo repository include oltre 50 traduzioni, il che aumenta notevolmente la dimensione del download. Per clonare senza traduzioni, usa sparse checkout:
+> Questo repository include oltre 50 traduzioni linguistiche che aumentano significativamente la dimensione del download. Per clonare senza traduzioni, usa il sparse checkout:
 >
 > **Bash / macOS / Linux:**
 > ```bash
@@ -42,39 +42,40 @@
 > Questo ti fornisce tutto il necessario per completare il corso con un download molto più veloce.
 <!-- CO-OP TRANSLATOR LANGUAGES TABLE END -->
 
-## Struttura del Corso & Percorso di Apprendimento
+## Struttura del Corso e Percorso di Apprendimento
 
-### **Capitolo 1: Introduzione a Generative AI**
-- **Concetti di base**: Comprendere i Large Language Models, i token, gli embeddings e le capacità dell'AI
-- **Ecosistema AI in Java**: Panoramica di Spring AI e degli SDK OpenAI
-- **Protocollo Contesto Modello**: Introduzione al MCP e al suo ruolo nella comunicazione tra agenti AI
-- **Applicazioni Pratiche**: Scenari reali inclusi chatbot e generazione di contenuti
+### **Capitolo 1: Introduzione all'Intelligenza Artificiale Generativa**
+- **Concetti Base**: Comprendere i Large Language Models, i token, gli embeddings e le capacità dell'IA
+- **Ecosistema Java AI**: Panoramica di Spring AI e degli SDK OpenAI
+- **Protocollo Model Context**: Introduzione a MCP e al suo ruolo nella comunicazione degli agenti IA
+- **Applicazioni Pratiche**: Scenari reali tra cui chatbot e generazione di contenuti
 - **[→ Inizia Capitolo 1](./01-IntroToGenAI/README.md)**
 
 ### **Capitolo 2: Configurazione dell'Ambiente di Sviluppo**
-- **Azure AI Foundry**: Provisioning di distribuzioni modello come codice con Bicep e Azure Developer CLI (azd)
-- **Spring Boot + Spring AI**: Best practice per lo sviluppo di applicazioni AI enterprise
-- **Autenticazione senza chiavi**: Connettersi in modo sicuro con Microsoft Entra ID — nessuna chiave API da gestire
-- **Strumenti di Sviluppo**: Contenitori Docker, VS Code e configurazione GitHub Codespaces
+- **Azure AI Foundry**: Provision di chat GPT-5.6 Luna e embeddings text-embedding-3-small con Bicep e Azure Developer CLI (azd)
+- **Spring Boot 4.1.1 + Spring AI 2.0.1**: Impara con `ChatClient`, basato sull'SDK ufficiale OpenAI Java e Azure OpenAI v1
+- **Autenticazione senza chiave**: Connetti in modo sicuro con Microsoft Entra ID — nessuna gestione di chiavi API
+- **Strumenti di sviluppo**: Contenitori Docker, VS Code e configurazione GitHub Codespaces
 - **[→ Inizia Capitolo 2](./02-SetupDevEnvironment/README.md)**
 
-### **Capitolo 3: Tecniche Core di Generative AI**
-- **Prompt Engineering**: Tecniche per risposte ottimali dai modelli AI
-- **Embeddings & Operazioni su Vettori**: Implementare ricerche semantiche e matching di similarità
-- **Retrieval-Augmented Generation (RAG)**: Integrare l'AI con le tue fonti dati
-- **Funzioni di Chiamata**: Estendi le capacità AI con strumenti e plugin personalizzati
+### **Capitolo 3: Tecniche Fondamentali di Intelligenza Artificiale Generativa**
+- **SDK ufficiale OpenAI Java**: Chiamata diretta ad Azure OpenAI v1 con autenticazione senza chiave
+- **Prompt Engineering**: Tecniche per risposte ottimali del modello IA
+- **Embeddings & Operazioni vettoriali**: Implementa ricerca semantica e confronto di similarità
+- **Retrieval-Augmented Generation (RAG)**: Combina IA con le tue fonti di dati
+- **Function Calling**: Estendi le capacità IA con strumenti personalizzati e plugin
 - **[→ Inizia Capitolo 3](./03-CoreGenerativeAITechniques/README.md)**
 
-### **Capitolo 4: Applicazioni Pratiche & Progetti**
-- **Generatore di Storie su Animali Domestici** (`petstory/`): Generazione creativa di contenuti con Azure AI Foundry
-- **Demo Locale Foundry** (`foundrylocal/`): Integrazione modello AI locale con OpenAI Java SDK
+### **Capitolo 4: Applicazioni pratiche e progetti**
+- **Generatore di storie per animali** (`petstory/`): Generazione creativa di contenuti con Azure AI Foundry
+- **Demo Foundry Locale** (`foundrylocal/`): Integrazione locale di modelli IA con OpenAI Java SDK
 - **Servizio Calcolatore MCP** (`calculator/`): Implementazione base del Model Context Protocol con Spring AI
 - **[→ Inizia Capitolo 4](./04-PracticalSamples/README.md)**
 
-### **Capitolo 5: Sviluppo Responsabile dell'AI**
-- **Sicurezza contenuti Azure AI Foundry**: Testa il filtro contenuti e i meccanismi di sicurezza integrati (blocchi rigidi e rifiuti soft)
-- **Demo AI Responsabile**: Esempio pratico che mostra come funzionano i moderni sistemi di sicurezza AI
-- **Best Practice**: Linee guida essenziali per uno sviluppo e distribuzione etici dell'AI
+### **Capitolo 5: Sviluppo Responsabile dell'IA**
+- **Sicurezza dei contenuti Azure AI Foundry**: Prova i filtri integrati per contenuti e i meccanismi di sicurezza (blocchi rigidi e rifiuti soft)
+- **Demo AI responsabile**: Esempio pratico che mostra come funzionano i moderni sistemi di sicurezza IA
+- **Best Practices**: Linee guida essenziali per uno sviluppo e un deploy etici dell'IA
 - **[→ Inizia Capitolo 5](./05-ResponsibleGenAI/README.md)**
 
 ## Risorse Aggiuntive
@@ -86,47 +87,46 @@
 [![LangChain per Principianti](https://img.shields.io/badge/LangChain%20for%20Beginners-22C55E?style=for-the-badge&labelColor=E5E7EB&color=0553D6)](https://github.com/microsoft/langchain-for-beginners?WT.mc_id=m365-94501-dwahlin)
 ---
 
-### Azure / Edge / MCP / Agents
+### Azure / Edge / MCP / Agenti
 [![AZD per Principianti](https://img.shields.io/badge/AZD%20for%20Beginners-0078D4?style=for-the-badge&labelColor=E5E7EB&color=0078D4)](https://github.com/microsoft/AZD-for-beginners?WT.mc_id=academic-105485-koreyst)
 [![Edge AI per Principianti](https://img.shields.io/badge/Edge%20AI%20for%20Beginners-00B8E4?style=for-the-badge&labelColor=E5E7EB&color=00B8E4)](https://github.com/microsoft/edgeai-for-beginners?WT.mc_id=academic-105485-koreyst)
 [![MCP per Principianti](https://img.shields.io/badge/MCP%20for%20Beginners-009688?style=for-the-badge&labelColor=E5E7EB&color=009688)](https://github.com/microsoft/mcp-for-beginners?WT.mc_id=academic-105485-koreyst)
-[![Agent AI per Principianti](https://img.shields.io/badge/AI%20Agents%20for%20Beginners-00C49A?style=for-the-badge&labelColor=E5E7EB&color=00C49A)](https://github.com/microsoft/ai-agents-for-beginners?WT.mc_id=academic-105485-koreyst)
+[![Agenti AI per Principianti](https://img.shields.io/badge/AI%20Agents%20for%20Beginners-00C49A?style=for-the-badge&labelColor=E5E7EB&color=00C49A)](https://github.com/microsoft/ai-agents-for-beginners?WT.mc_id=academic-105485-koreyst)
 
 ---
  
-### Serie Generative AI
-[![Generative AI per Principianti](https://img.shields.io/badge/Generative%20AI%20for%20Beginners-8B5CF6?style=for-the-badge&labelColor=E5E7EB&color=8B5CF6)](https://github.com/microsoft/generative-ai-for-beginners?WT.mc_id=academic-105485-koreyst)
-[![Generative AI (.NET)](https://img.shields.io/badge/Generative%20AI%20(.NET)-9333EA?style=for-the-badge&labelColor=E5E7EB&color=9333EA)](https://github.com/microsoft/Generative-AI-for-beginners-dotnet?WT.mc_id=academic-105485-koreyst)
-[![Generative AI (Java)](https://img.shields.io/badge/Generative%20AI%20(Java)-C084FC?style=for-the-badge&labelColor=E5E7EB&color=C084FC)](https://github.com/microsoft/generative-ai-for-beginners-java?WT.mc_id=academic-105485-koreyst)
-[![Generative AI (JavaScript)](https://img.shields.io/badge/Generative%20AI%20(JavaScript)-E879F9?style=for-the-badge&labelColor=E5E7EB&color=E879F9)](https://github.com/microsoft/generative-ai-with-javascript?WT.mc_id=academic-105485-koreyst)
+### Serie Intelligenza Artificiale Generativa
+[![Intelligenza Artificiale Generativa per Principianti](https://img.shields.io/badge/Generative%20AI%20for%20Beginners-8B5CF6?style=for-the-badge&labelColor=E5E7EB&color=8B5CF6)](https://github.com/microsoft/generative-ai-for-beginners?WT.mc_id=academic-105485-koreyst)
+[![Intelligenza Artificiale Generativa (.NET)](https://img.shields.io/badge/Generative%20AI%20(.NET)-9333EA?style=for-the-badge&labelColor=E5E7EB&color=9333EA)](https://github.com/microsoft/Generative-AI-for-beginners-dotnet?WT.mc_id=academic-105485-koreyst)
+[![Intelligenza Artificiale Generativa (Java)](https://img.shields.io/badge/Generative%20AI%20(Java)-C084FC?style=for-the-badge&labelColor=E5E7EB&color=C084FC)](https://github.com/microsoft/generative-ai-for-beginners-java?WT.mc_id=academic-105485-koreyst)
+[![Intelligenza Artificiale Generativa (JavaScript)](https://img.shields.io/badge/Generative%20AI%20(JavaScript)-E879F9?style=for-the-badge&labelColor=E5E7EB&color=E879F9)](https://github.com/microsoft/generative-ai-with-javascript?WT.mc_id=academic-105485-koreyst)
 
 ---
  
-### Apprendimento Core
+### Apprendimento Fondamentale
 [![ML per Principianti](https://img.shields.io/badge/ML%20for%20Beginners-22C55E?style=for-the-badge&labelColor=E5E7EB&color=22C55E)](https://aka.ms/ml-beginners?WT.mc_id=academic-105485-koreyst)
 [![Data Science per Principianti](https://img.shields.io/badge/Data%20Science%20for%20Beginners-84CC16?style=for-the-badge&labelColor=E5E7EB&color=84CC16)](https://aka.ms/datascience-beginners?WT.mc_id=academic-105485-koreyst)
-[![AI per Principianti](https://img.shields.io/badge/AI%20for%20Beginners-A3E635?style=for-the-badge&labelColor=E5E7EB&color=A3E635)](https://aka.ms/ai-beginners?WT.mc_id=academic-105485-koreyst)
+[![IA per Principianti](https://img.shields.io/badge/AI%20for%20Beginners-A3E635?style=for-the-badge&labelColor=E5E7EB&color=A3E635)](https://aka.ms/ai-beginners?WT.mc_id=academic-105485-koreyst)
 [![Cybersecurity per Principianti](https://img.shields.io/badge/Cybersecurity%20for%20Beginners-F97316?style=for-the-badge&labelColor=E5E7EB&color=F97316)](https://github.com/microsoft/Security-101?WT.mc_id=academic-96948-sayoung)
-
-[![Web Dev for Beginners](https://img.shields.io/badge/Web%20Dev%20for%20Beginners-EC4899?style=for-the-badge&labelColor=E5E7EB&color=EC4899)](https://aka.ms/webdev-beginners?WT.mc_id=academic-105485-koreyst)
-[![IoT for Beginners](https://img.shields.io/badge/IoT%20for%20Beginners-14B8A6?style=for-the-badge&labelColor=E5E7EB&color=14B8A6)](https://aka.ms/iot-beginners?WT.mc_id=academic-105485-koreyst)
-[![XR Development for Beginners](https://img.shields.io/badge/XR%20Development%20for%20Beginners-38BDF8?style=for-the-badge&labelColor=E5E7EB&color=38BDF8)](https://github.com/microsoft/xr-development-for-beginners?WT.mc_id=academic-105485-koreyst)
+[![Sviluppo Web per Principianti](https://img.shields.io/badge/Web%20Dev%20for%20Beginners-EC4899?style=for-the-badge&labelColor=E5E7EB&color=EC4899)](https://aka.ms/webdev-beginners?WT.mc_id=academic-105485-koreyst)
+[![IoT per Principianti](https://img.shields.io/badge/IoT%20for%20Beginners-14B8A6?style=for-the-badge&labelColor=E5E7EB&color=14B8A6)](https://aka.ms/iot-beginners?WT.mc_id=academic-105485-koreyst)
+[![Sviluppo XR per Principianti](https://img.shields.io/badge/XR%20Development%20for%20Beginners-38BDF8?style=for-the-badge&labelColor=E5E7EB&color=38BDF8)](https://github.com/microsoft/xr-development-for-beginners?WT.mc_id=academic-105485-koreyst)
 
 ---
  
 ### Serie Copilot
-[![Copilot for AI Paired Programming](https://img.shields.io/badge/Copilot%20for%20AI%20Paired%20Programming-FACC15?style=for-the-badge&labelColor=E5E7EB&color=FACC15)](https://aka.ms/GitHubCopilotAI?WT.mc_id=academic-105485-koreyst)
-[![Copilot for C#/.NET](https://img.shields.io/badge/Copilot%20for%20C%23/.NET-FBBF24?style=for-the-badge&labelColor=E5E7EB&color=FBBF24)](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers?WT.mc_id=academic-105485-koreyst)
-[![Copilot Adventure](https://img.shields.io/badge/Copilot%20Adventure-FDE68A?style=for-the-badge&labelColor=E5E7EB&color=FDE68A)](https://github.com/microsoft/CopilotAdventures?WT.mc_id=academic-105485-koreyst)
+[![Copilot per Programmazione Affiancata da IA](https://img.shields.io/badge/Copilot%20for%20AI%20Paired%20Programming-FACC15?style=for-the-badge&labelColor=E5E7EB&color=FACC15)](https://aka.ms/GitHubCopilotAI?WT.mc_id=academic-105485-koreyst)
+[![Copilot per C#/.NET](https://img.shields.io/badge/Copilot%20for%20C%23/.NET-FBBF24?style=for-the-badge&labelColor=E5E7EB&color=FBBF24)](https://github.com/microsoft/mastering-github-copilot-for-dotnet-csharp-developers?WT.mc_id=academic-105485-koreyst)
+[![Avventura con Copilot](https://img.shields.io/badge/Copilot%20Adventure-FDE68A?style=for-the-badge&labelColor=E5E7EB&color=FDE68A)](https://github.com/microsoft/CopilotAdventures?WT.mc_id=academic-105485-koreyst)
 <!-- CO-OP TRANSLATOR OTHER COURSES END -->
 
 ## Ottenere Aiuto
 
-Se rimani bloccato o hai domande sulla creazione di app AI, unisciti ad altri studenti e sviluppatori esperti nelle discussioni su MCP. È una comunità di supporto dove le domande sono benvenute e la conoscenza viene condivisa liberamente.
+Se rimani bloccato o hai domande sulla creazione di app IA. Unisciti ad altri studenti e sviluppatori esperti nelle discussioni su MCP. È una comunità di supporto dove le domande sono benvenute e la conoscenza è condivisa liberamente.
 
 [![Microsoft Foundry Discord](https://dcbadge.limes.pink/api/server/nTYy5BXMWG)](https://discord.gg/nTYy5BXMWG)
 
-Se hai feedback sul prodotto o riscontri errori durante lo sviluppo visita:
+Se hai feedback sul prodotto o errori durante lo sviluppo visita:
 
 [![Microsoft Foundry Developer Forum](https://img.shields.io/badge/GitHub-Microsoft_Foundry_Developer_Forum-blue?style=for-the-badge&logo=github&color=000000&logoColor=fff)](https://aka.ms/foundry/forum)
 

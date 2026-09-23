@@ -1,147 +1,148 @@
-# Azure AI Foundry အတွက် ဖွံ့ဖြိုးရေးပတ်ဝန်းကျင် တပ်ဆင်ခြင်း
+# Azure AI Foundry အတွက် ဖွံ့ဖြိုးရေးပတ်ဝန်းကျင်ကို စတင်ပြင်ဆင်ခြင်း
 
-> ဒီလမ်းညွှန်က ဒီသင်ခန်းစာရှိ Java AI apps တွေအတွက် **Azure AI Foundry** မော်ဒယ်တွေကို **keyless** authentication (Microsoft Entra ID) ကို အသုံးပြုပြီး တပ်ဆင်ပေးမှာဖြစ်ပါတယ် — API key မလိုအပ်ပါဘူး။ အသစ်စတင်အသုံးပြုသူလား? [ဖွံ့ဖြိုးမှုပတ်ဝန်းကျင်လမ်းညွှန်](./README.md) ကနေ စတင်ပါ။
+> ဒီလမ်းပြမှာ ဒီသင်ရိုးကိုယ်တိုင် Java AI အက်ပ်များအတွက် **Azure AI Foundry** မော်ဒယ်များကို **keyless** authentication (Microsoft Entra ID) အသုံးပြု၍ တပ်ဆင်ပေးသည် — API key မလိုအပ်ပါ။ သက်ဆိုင်ရာ ကိရိယာအသစ်တွေ သုံးခွင့်မရှိလား? [ဖွံ့ဖြိုးရေးပတ်ဝန်းကျင် လမ်းညွှန်](./README.md) ဖြင့် စတင်ပါ။
 
-ဒီလမ်းညွှန်က ဒီသင်ခန်းစာရှိ Java AI apps အတွက် **Azure AI Foundry** မော်ဒယ်တွေကို တပ်ဆင်ပေးမှာဖြစ်ပါတယ်။ သင်မှာ နှစ်ခုရွေးချယ်စရာရှိပါတယ်-
+ဒီလမ်းပြက ဒီသင်ရိုး Java AI အက်ပ်အတွက် **Azure AI Foundry** မော်ဒယ်များကို တပ်ဆင်ပေးပါသည်။ သင်တွင် နှစ်မျိုးသောရွေးချယ်စရာတွေရှိသည်။
 
-- **အဆင့် A — `azd` + Bicep ဖြင့် Provision ပေးခြင်း (အကြံပြုချက်):** တစ်ချက် Command ဖြင့် Foundry အကောင့်နှင့် မော်ဒယ်များကို code အနေဖြင့် deploy ပေးသည်။ Portal တွင် နစ်နာစရာမလိုပါ။
-- **အဆင့် B — Azure AI Foundry portal မှ resource များကို လက်ဖြင့် ဖန်တီးခြင်း။
+- **ရွေးချယ်မှု A — `azd` + Bicep ဖြင့် Provision လုပ်ခြင်း (အကြံပြု):** တစ်ချက်ဇယားတည်းက လုပ်ဆောင်မှုတစ်ခုဖြင့် Foundry အကောင့်နှင့် မော်ဒယ်များအား ကိုဒ်ပုံစံဖြင့် တပ်ဆင်ပေးသည်။ Portal တွင် နှိပ်ရန်မလို။
+- **ရွေးချယ်မှု B — Azure AI Foundry portal တွင် လက်ဖြင့် အရင်းအမြစ်များ ဖန်တီးခြင်း**
 
-နှစ်ခုလုံးအသုံးပြုရာတွင် **keyless authentication** (Microsoft Entra ID) ကိုသာ အသုံးပြုသည်။ API key မကူးယူခြင်း သို့မဟုတ် ဖျက်ဖျက်ခြင်းမရှိပါ။
+နှစ်ခုစလုံးသည် **keyless authentication** (Microsoft Entra ID) ဖြင့် အသုံးပြုသည် — API key များကူးယူခြင်း သို့မဟုတ် ဖော်ပြခြင်း မရှိပါ။
 
-## အကြောင်းအရာသီးခြား
+## စာရင်းဇယား
 
-- [ဘာတွေ ဖန်တီးမလဲ](#ဘာတွေ-ဖန်တီးမလဲ)
+- [ဘာတွေဖန်တီးမလဲ](#ဘာတွေ-ဖန်တီးမလဲ)
 - [လိုအပ်ချက်များ](#လိုအပ်ချက်များ)
-- [အဆင့် A: azd + Bicep ဖြင့် Provision ပေးခြင်း (အကြံပြုချက်)](#option-a-provision-with-azd--bicep-recommended)
-- [အဆင့် B: Resource များကို လက်ဖြင့် ဖန်တီးခြင်း](#အဆင့်-b-resource-များကို-လက်ဖြင့်-ဖန်တီးခြင်း)
-- [သင့်ပတ်ဝန်းကျင်ကို အသင့်ဖြစ်အောင် ပြင်ဆင်ခြင်း](#သင့်ပတ်ဝန်းကျင်ကို-အသင့်ဖြစ်အောင်-ပြင်ဆင်ခြင်း)
-- [သင့်တပ်ဆင်မှုကို စမ်းသပ်ပါ](#သင့်တပ်ဆင်မှုကို-စမ်းသပ်ပါ)
-- [နောက်တစ်ဆင့်မှာ ဘာတွေရှိမလဲ?](#နောက်တစ်ဆင့်မှာ-ဘာတွေရှိမလဲ)
+- [ရွေးချယ်မှု A: azd + Bicep ဖြင့် Provision လုပ်ခြင်း (အကြံပြု)](#option-a-provision-with-azd--bicep-recommended)
+- [ရွေးချယ်မှု B: လက်ဖြင့် အရင်းအမြစ်များ ဖန်တီးခြင်း](#ရွေးချယ်မှု-b-လက်ဖြင့်-အရင်းအမြစ်များ-ဖန်တီးခြင်း)
+- [ပတ်ဝန်းကျင်ကို ပြင်ဆင်ခြင်း](#ပတ်ဝန်းကျင်ကို-ပြင်ဆင်ခြင်း)
+- [ပြင်ဆင်မှု စစ်ဆေးခြင်း](#ပြင်ဆင်မှု-စစ်ဆေးရန်)
+- [နောက်တစ်ဆင့်?](#နောက်တစ်ဆင့်)
 - [အရင်းအမြစ်များ](#အရင်းအမြစ်များ)
-- [အပိုအရင်းအမြစ်များ](#အပိုအရင်းအမြစ်များ)
+- [ထပ်ဆောင်း အရင်းအမြစ်များ](#ထပ်ဆောင်း-အရင်းအမြစ်များ)
 
 ## ဘာတွေ ဖန်တီးမလဲ
 
-[`infra/`](../../../02-SetupDevEnvironment/infra) ထဲရှိ Bicep templates တွေက:
+[`infra/`](../../../02-SetupDevEnvironment/infra) တွင်ရှိသော Bicep တမ်းပလိတ်များက အောက်ပါအရာများကို provision လုပ်ပေးသည်။
 
-- **Azure AI Foundry** အကောင့် (`Microsoft.CognitiveServices/accounts`, kind `AIServices`) တစ်ခုနဲ့ project တစ်ခုကို ဖန်တီးပေးသည်
-- **chat** deployment တစ်ခု — `gpt-4o-mini`
-- **embedding** deployment တစ်ခု — `text-embedding-3-small` (နောက်ပိုင်းအခန်းများတွင် အသုံးပြုမည်)
-- **keyless လုပ်ထုံးလုပ်နည်း** (`Cognitive Services OpenAI User`) တစ်ခု ပေးပြီး `az login` ဖြင့် login ဝင်နိုင်ပြီး key မပြီးလုပ်နှိပ်ရန် မလိုပါ
+- **Azure AI Foundry** အကောင့် (`Microsoft.CognitiveServices/accounts`, kind `AIServices`) နှင့် project တစ်ခု
+- **chat** deployment - GPT-5.6 Luna (`gpt-5.6-luna`), version `2026-07-09`, `GlobalStandard` စွမ်းဆောင်ရည် `10` (ဒီမော်ဒယ်အတွက် တစ်မိနစ်လျှင် မေးခွန်း 10 ခုနှင့် တိုးကင် 10,000 ကျော်)
+- **embedding** deployment - `text-embedding-3-small`, version `1` (နောက်ပိုင်းအခန်းများတွင် အသုံးပြုမည့်)
+- **keyless role assignment** (`Cognitive Services OpenAI User`) ကသာ သင် `az login` ဖြင့် လက်မှတ်ထိုးဝင်ရန် မျက်နှာစာများကို စီမံခန့်ခွဲရန်မလို
 
 ## လိုအပ်ချက်များ
 
 - [Azure subscription](https://azure.microsoft.com/free/)
 - [Azure Developer CLI (`azd`)](https://aka.ms/azure-dev/install)
 - [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli)
-- [Java 21+](https://learn.microsoft.com/java/openjdk/download) နှင့် [Maven 3.9+](https://maven.apache.org/download.cgi)
+- [Java 21+](https://learn.microsoft.com/java/openjdk/download) နဲ့ [Maven 3.9+](https://maven.apache.org/download.cgi)
 
-## အဆင့် A: azd + Bicep ဖြင့် Provision ပေးခြင်း (အကြံပြုချက်)
+## ရွေးချယ်မှု A: azd + Bicep ဖြင့် Provision လုပ်ခြင်း (အကြံပြု)
 
-`02-SetupDevEnvironment` ဖိုဒါထဲကနေ:
+`02-SetupDevEnvironment` ဖိုလ်ဒါမှ:
 
 ```bash
 cd 02-SetupDevEnvironment
 
-# အကောင့်ဝင်ပါ (ကိရိယာနှစ်ခုလုံး)
+# အကောင့်ဝင်ပါ (ကိရိယာနှစ်ခု)
 azd auth login
 az login
 
-# Foundry အကောင့်နှင့် မော်ဒယ်ဖြန့်ချိမှုများကို သတ်မှတ်ပါ
+# Foundry အကောင့်နှင့် မော်ဒယ် တပ်ဆင်မှုများ ထုတ်ပေးပါ
 azd up
 ```
 
-`azd` က **environment name** (ဥပမာ `genai-java`) နဲ့ **region** ကို မေးတယ်။ `gpt-4o-mini` နဲ့ `text-embedding-3-small` ရနိုင်တဲ့ region ကို ရွေးပါ — ဥပမာ `eastus2` သို့မဟုတ် `swedencentral` ဖွင့်နိင်သည့် နေရာ။
+`azd` က **environment name** (ဥပမာ `genai-java`), **subscription** နဲ့ **ဒေသ** ရွေးဖို့ မေးပါမယ်။ သင့် subscription ကို နှင့် `gpt-5.6-luna` နဲ့ `text-embedding-3-small` တွေ ရနိုင်တဲ့ဒေသတစ်ခု (ဥပမာ `eastus2`) ရွေးချယ်ပါ။ subscription တွင် မော်ဒယ်အမျိုးအစား နဲ့ deployment အမျိုးအစားအတွက် လုံလောက်သော quota ရှိသည်ဟု အတည်ပြုပါ; ရရှိနိုင်မှုနဲ့ quota ကို subscription အလိုက် မတူကြပါ။
 
-Provision ပြီးဆုံးတဲ့အခါ azd က -
+Provision ပြီးဆုံးသောအခါ azd သည်
 
-1. [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep) ထဲမှာသတ်မှတ်ထားတာအားလုံးကို deploy လုပ်ပေးပါလိမ့်မည်။
-2. postprovision hook ကို run လုပ်ပြီး [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) ကို သင့် endpoint နဲ့ deployment နာမည်တွေနဲ့ ရေးထုတ်ပေးပါလိမ့်မယ် (secret မပါပါ).
+1. [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep) တွင် သတ်မှတ်ထားသော အရာအားလုံးကို တပ်ဆင်ပေးသည်။
+2. စီမံဆောင်ရွက်ပြီးနောက်  hook တစ်ခုကို Run လုပ်ပြီး [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) တွင် သင်၏ endpoint နဲ့ deployment အမည်များ (လျှို့ဝှက်ချက်မရှိ) ကို ရေးသားပေးသည်။
 
-> **အကြံပြုချက်။** ပြင်ဆင်မှုများကို ဖော်ပြရန် အချိန်တိုင်း `azd up` ကို ပြန်လည် run ပါ။ အားလုံး ဖျက်ရန်နှင့် ကုန်ကျစရိတ် မရှိအောင်ရပ်ရန် `azd down` ကို run ပါ။
+> **အကြံပြုချက်**: ပြောင်းလဲမှုတွေကို ပြန်လည်အသုံးပြုရန်အတွက် `azd up` ကို မည်သည့်အခါမဆို ပြန်လည်အတည်ပြုနိုင်သည်။ စုစုပေါင်းအရာများကိုဖျက်ရန် နဲ့ ကုန်ကျစရိတ် ရပ်တန့်ရန် `azd down` ကို အသုံးပြုပါ။
 
-ဖန်တီးပေးပြီးသော settings များကို ကြည့်ရန်:
+ဖန်တီးထားသော တပ်ဆင်မှု အချက်အလက်များကို ကြည့်ရန်:
 
 ```bash
 azd env get-values
 ```
 
-အခု [သင့်တပ်ဆင်မှုကို စမ်းသပ်ပါ](#သင့်တပ်ဆင်မှုကို-စမ်းသပ်ပါ) ကိုဆက်သွားပါ။
+ယခု [ပြင်ဆင်မှု စစ်ဆေးရန်](#ပြင်ဆင်မှု-စစ်ဆေးရန်) သို့ လွတ်လပ်စွာ ပြေးပါ။
 
-## အဆင့် B: Resource များကို လက်ဖြင့် ဖန်တီးခြင်း
+## ရွေးချယ်မှု B: လက်ဖြင့် အရင်းအမြစ်များ ဖန်တီးခြင်း
 
-Portal ကို မိမိကြိုက်လား? resource များကို လက်တွေ့ဖန်တီးပါ-
+Portal ကို ပိုနှစ်သက်တယ်ဆိုရင် အရင်းအမြစ်တွေကို လက်ဖြင့်ဖန်တီးပါ။
 
-1. [Azure AI Foundry portal](https://ai.azure.com/) သို့ ဝင်ပြီး login ဝင်ပါ။
-2. **Project တစ်ခု ဖန်တီးပါ** (ဒါက AI Foundry resource ကိုပါ ဖန်တီးပေးပါလိမ့်မယ်)။ နာမည် `GenAIJava` လိုပေးပါ။
-3. သင့် project ထဲမှာ **Models + endpoints** → **Deploy model** → **Deploy base model** ကိုဖွင့်ပါ။
-4. **gpt-4o-mini** ကို deploy လုပ်ပါ (deployment name `gpt-4o-mini`)။ embedding ဥပမာများအတွက် **text-embedding-3-small** ကိုလည်း ပြန်လုပ်ပါ။
-5. **Overview** ထဲကနေ **endpoint** ကို ကူးယူပါ (ဥပမာ `https://<resource>.openai.azure.com/`)။
-6. အကောင့်ကို keyless access ပေးရန် resource အပေါ် **Access control (IAM)** → **Add role assignment** → **Cognitive Services OpenAI User** ကို သတင်းအချက်အလက်ပေးထားသော အကောင့်၌ ချိန်းသတ်ပါ။
+1. [Azure AI Foundry portal](https://ai.azure.com/) သို့ သွားပြီး လက်မှတ်ထိုးဝင်ပါ။
+2. **Project အသစ်ဖန်တီးပါ** (ဒါကို ဖန်တီးရာမှာ AI Foundry အရင်းအမြစ်တစ်ခုလည်း ဖန်တီးပါသည်)။ `GenAIJava` ဆိုတဲ့နာမည်ပေးပါ။
+3. သင့် project တွင် **Models + endpoints** → **Deploy model** → **Deploy base model** ကို ဖွင့်ပါ။
+4. **GPT-5.6 Luna** (မော်ဒယ်နဲ့ deployment နာမည် `gpt-5.6-luna`, version `2026-07-09`) ကို **Global Standard** စွမ်းဆောင်ရည် `10` နဲ့ တပ်ဆင်ပါ။ အကယ်၍ embedding နမူနာများလိုတယ်ဆိုရင် **text-embedding-3-small**, version `1` ကိုလည်း ထပ်မံ တပ်ဆင်ပါ။
+5. **Overview** မှာရှိတဲ့ **endpoint** ကို ကူးယူပါ (ဥပမာ `https://<resource>.openai.azure.com/`)
+6. Keyless access ခွင့်ပြုပါ: အရင်းအမြစ်တွင် **Access control (IAM)** → **Add role assignment** → သင့်အကောင့်အား **Cognitive Services OpenAI User** အဖြစ်စာရင်းသွင်းပါ။
 
-> **အကူအညီလိုရင်** [Azure AI Foundry စာရွက်စာတမ်း](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects) ကို ကြည့်ပါ။
+> **အခက်အခဲရှိသေးလား?** [Azure AI Foundry စာတမ်းများ](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects) ကို ကြည့်ရှုပါ။
 
-## သင့်ပတ်ဝန်းကျင်ကို အသင့်ဖြစ်အောင် ပြင်ဆင်ခြင်း
+## ပတ်ဝန်းကျင်ကို ပြင်ဆင်ခြင်း
 
-**Option A (`azd up`) သုံးထားရင်** သင့် settings ဖိုင်ကို အကြောင်းတည်ပြီး ရေးထုတ်ပေးထားပါတယ် — ပြင်ဆင်ရန် မလိုပါ။ [သင့်တပ်ဆင်မှုကို စမ်းသပ်ပါ](#သင့်တပ်ဆင်မှုကို-စမ်းသပ်ပါ) ကို ဆက်သွားပါ။
+**Option A (`azd up`) ကို သုံးခဲ့ပါက** သင်တို့၏ အချက်အလက်ဖိုင် ပြီးပြည့်စုံပြီးဖြစ်သည် — ပြင်ဆင်ရန် မလိုပါ။ [ပြင်ဆင်မှု စစ်ဆေးရန်](#ပြင်ဆင်မှု-စစ်ဆေးရန်) သို့ တိုက်ရိုက်သွားပါ။
 
-**Option B (manual) သုံးထားရင်** ဥပမာ `.env` ဖိုင်ကို မိမိကိုယ်တိုင် ဖန်တီးပါ-
+**Option B (လက်ဖြင့်) ကို သုံးခဲ့ပါက** နမူနာ `.env` ဖိုင်ကို ကိုယ့်အရ ချမှတ်ပါ။
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 cp .env.example .env
 ```
 
-သင့် endpoint နဲ့ `.env` ကို ပြင်ဆင်ပါ (key မလို — auth က keyless ဖြစ်ပါတယ်) -
+`.env` ကို သင်၏ endpoint ဖြင့် တည်းဖြတ်ပါ (key မပါ — authentication သည် keyless ဖြစ်သည်)။
 
 ```bash
 AZURE_OPENAI_ENDPOINT=https://<your-resource>.openai.azure.com/
-AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
+AZURE_OPENAI_DEPLOYMENT=gpt-5.6-luna
 ```
 
-> **လုံခြုံရေးမှတ်ချက်။** API key ကို သိမ်းဆည်းထားရန် မလိုပါ။ Microsoft Entra ID ဖြင့် `az login` (ကိုယ်ရုံး) သို့မဟုတ် managed identity (Azure တွင်) တို့ အသုံးပြုကာ authenticate လုပ်သည်။ `.env` ဖိုင်မှာ secret မပါဝင်ဘဲ သာ သတ်မှတ်ချက်များကိုသာ ထည့်ထားပြီး `.gitignore` ဖြင့်ကာကွယ်ထားသည်။
+Resource ၏ Azure OpenAI endpoint ကို သုံးပါ၊ project URL မဟုတ်ပါ။ basic-chat app သည် `/openai/v1` သို့ အလိုအလျောက် သွားရောက်ပြီး ဂျက်ဆက်ရှင်းပြုလုပ်ထားသော bearer-token client ဖြင့် ဆက်သွယ်သည်; API key မလိုပါ။
 
-## သင့်တပ်ဆင်မှုကို စမ်းသပ်ပါ
+> **လုံခြုံရေး အချက်အလက်**: သိမ်းဆည်းရမည့် API key မရှိပါ။ သင့်ရဲ့ authentication ကို Microsoft Entra ID အသုံးပြု၍ `az login` (ကိုယ်တိုင်မှ) သို့မဟုတ် managed identity (Azure တွင်) ဖြင့် ဆောင်ရွက်ပါသည်။ `.env` ဖိုင်တွင် လျှို့ဝှက်ချက်မပါတဲ့ ပြင်ဆင်ချက်များသာ ပါဝင်ပြီး `.gitignore` မှာလည်းကောင်းစွာ ထည့်ထားသည်။
 
-Keyless auth ကို token ရရှိစေရန် သင့်အကောင့်ကို login ဝင်ထားသည်ကို သေချာပါစေ၊ ထို့နောက် ဥပမာကို run ပါ -
+## ပြင်ဆင်မှု စစ်ဆေးရန်
+
+Keyless authentication အတွက် token ရနိုင်ဖို့ သင်ဝင်ထားခြင်းကို သေချာစေပြီး နမူနာကို လုပ်ဆောင်ပါ-
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 
-az login          # သင်သည် အကောင့်သို့ မဝင်ထားသေးပါက
+az login          # သင်မပထမဆုံးကအကောင့်ဝင်ထားခြင်းမရှိသေးပါက
 mvn clean spring-boot:run
 ```
 
-`gpt-4o-mini` မော်ဒယ်က စကားပြန် တုံ့ပြန်မှုကို မြင်ရပါလိမ့်မယ်!
+သင်သည် `gpt-5.6-luna` မော်ဒယ်မှ ပြန်ကြားချက်ကို မြင်ရမည်။ နမူနာတွေကို ဆက်တိုက်ပြေးပါက မူရင်း အသေးစား quota ထဲမှာသာ နေပါမယ်။ HTTP 429 တက်လာလျှင် retry အချိန်ကို စောင့်ပြီး ထပ်မံကြိုးစားပါ။
 
-> **VS Code အသုံးပြုသူများ။** `F5` ကို နှိပ်၍ run ကြည့်ပါ။ app က သင့် `.env` ကို အလိုအလျောက် load လုပ်ပါသည်။
+> **VS Code အသုံးပြုသူများ**: `F5` ကိုနှိပ်၍ ဆေးလာပါ။ app သည်သင်၏ `.env` ကို အလိုအလျောက်သက်ဆိုင်ရာဖြည့်ဆည်းပေးပါသည်။
 
-> **အပြည့်အစုံ ဥပမာ။** အသေးစိတ်နှင့် ပြသနာဖြေရှင်းမှုများအတွက် [Basic Chat with Azure AI Foundry example](./examples/basic-chat-azure/README.md) ကို ကြည့်ပါ။
+> **လုံးဝနမူနာ**: ပိုမို အသေးစိတ်နဲ့ ပြသနာဖြေရှင်းရေးအတွက် [Azure AI Foundry နှင့် Basic Chat ဥပမာ](./examples/basic-chat-azure/README.md) ကို ကြည့်ပါ။
 
-## နောက်တစ်ဆင့်မှာ ဘာတွေရှိမလဲ?
+## နောက်တစ်ဆင့်?
 
-**တပ်ဆင်ခြင်းပြီးဆုံးပါပြီ!** သင်မှာ
+Provision ပြီးနောက် နမူနာကို အောင်မြင်စွာ Run ပြီးသည့်အခါ သင်မှာဖြစ်ပါမယ်-
+- `gpt-5.6-luna` နဲ့ `text-embedding-3-small` နဲ့ Azure AI Foundry တပ်ဆင်ပြီး
+- Keyless authentication (Microsoft Entra ID) — စီမံခန့်ခွဲရန် key မလို
+- သင့် endpoint နဲ့ deployment အမည်များပါရှိသော ဒေသခံ `.env`
+- Java ဖွံ့ဖြိုးရေး ပတ်ဝန်းကျင် ပြင်ဆင်ပြီး စတင်အသုံးပြုနိုင်ပြီ
 
-- Azure AI Foundry ဖြင့် `gpt-4o-mini` နှင့် `text-embedding-3-small` ကို deploy ပြီး
-- Keyless authentication (Microsoft Entra ID) — key မထိန်းချုပ်ရ
-- သင့် endpoint နဲ့ deployment နာမည်ပါ .env ဖိုင်တစ်ခုရှိပြီး
-- Java ဖွံ့ဖြိုးရေးပတ်ဝန်းကျင် ပြင်ဆင်ပြီးရှိသည်
-
-**ဆက်လုပ်ရန်** [အခန်း ၃: Core Generative AI Techniques](../03-CoreGenerativeAITechniques/README.md) ကို သွားပြီး AI applications တည်ဆောက်ခြင်း စတင်ပါ!
+**ဆက်လက်ပြုလုပ်ရန်** [အခန်း 3: Core Generative AI Techniques](../03-CoreGenerativeAITechniques/README.md) သို့ သွားပြီး AI အက်ပ်များ ဖန်တီးရန် စတင်လိုက်ပါ!
 
 ## အရင်းအမြစ်များ
 
 - [Azure Developer CLI (azd)](https://aka.ms/azure-dev/install)
-- [Microsoft Entra ID ဖြင့် Keyless authentication](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
-- [Azure AI Foundry စာရွက်စာတမ်း](https://learn.microsoft.com/azure/ai-foundry/)
-- [Spring AI Azure OpenAI စာရွက်စာတမ်း](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
-- [Azure OpenAI Java SDK](https://learn.microsoft.com/java/api/overview/azure/ai-openai-readme)
+- [Microsoft Entra ID ဖြင့် keyless authentication](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
+- [Azure AI Foundry စာတမ်းများ](https://learn.microsoft.com/azure/ai-foundry/)
+- [Spring AI 2 OpenAI Java SDK ပြောင်းရွှေ့ခြင်း](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [Azure OpenAI v1 နှင့်အတူ တရားဝင် OpenAI Java SDK](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
 
-## အပိုအရင်းအမြစ်များ
+## ထပ်ဆောင်း အရင်းအမြစ်များ
 
-- [VS Code အပ္ဒေါင်းလုပ်ပါ](https://code.visualstudio.com/Download)
-- [Docker Desktop ရယူပါ](https://www.docker.com/products/docker-desktop)
+- [VS Code ဒေါင်းလုပ်](https://code.visualstudio.com/Download)
+- [Docker Desktop ကို ရယူပါ](https://www.docker.com/products/docker-desktop)
 - [Dev Container ဖွဲ့စည်းမှု](../../../.devcontainer/devcontainer.json)
 
 ---

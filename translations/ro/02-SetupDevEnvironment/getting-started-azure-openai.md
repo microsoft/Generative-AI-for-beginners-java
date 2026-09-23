@@ -1,36 +1,36 @@
-# Configurarea Mediului de Dezvoltare pentru Azure AI Foundry
+# Configurarea mediului de dezvoltare pentru Azure AI Foundry
 
-> Acest ghid configurează modelele **Azure AI Foundry** pentru aplicațiile Java AI din acest curs, folosind autentificare **fără chei** (Microsoft Entra ID) — fără chei API de gestionat. Ești nou cu această unealtă? Începe cu [ghidul mediului de dezvoltare](./README.md).
+> Acest ghid configurează modelele **Azure AI Foundry** pentru aplicațiile Java AI din acest curs, folosind autentificare **fără cheie** (Microsoft Entra ID) — fără chei API de gestionat. Ești nou în acestel instrumente? Începe cu [ghidul mediului de dezvoltare](./README.md).
 
-Acest ghid configurează modelele **Azure AI Foundry** pentru aplicațiile Java AI din acest curs. Ai două opțiuni:
+Acest ghid configurează modelele **Azure AI Foundry** pentru aplicațiile Java AI din acest curs. Ai două variante:
 
-- **Opțiunea A — Provisionare cu `azd` + Bicep (recomandat):** o singură comandă implementează contul Foundry și modelele ca cod. Fără clicuri în portal.
-- **Opțiunea B — Creează resursele manual** în portalul Azure AI Foundry.
+- **Opțiunea A — Provisionare cu `azd` + Bicep (recomandat):** o singură comandă deployează contul Foundry și modelele ca cod. Fără click-uri în portal.
+- **Opțiunea B — Creează resursele manual** din portalul Azure AI Foundry.
 
-Ambele opțiuni folosesc **autentificare fără chei** (Microsoft Entra ID) — nu există chei API de copiat sau scurs accidental.
+Ambele opțiuni folosesc **autentificare fără cheie** (Microsoft Entra ID) — nu există chei API de copiat sau scurs.
 
 ## Cuprins
 
 - [Ce se creează](#ce-se-creează)
-- [Precondiții](#precondiții)
+- [Prerechizite](#prerechizite)
 - [Opțiunea A: Provisionare cu azd + Bicep (Recomandat)](#option-a-provision-with-azd--bicep-recommended)
-- [Opțiunea B: Creare resurse manual](#opțiunea-b-creare-resurse-manual)
-- [Configurarea mediului](#configurarea-mediului)
-- [Testarea configurației](#testarea-configurației)
+- [Opțiunea B: Creează resurse manual](#opțiunea-b-creează-resurse-manual)
+- [Configurează-ți mediul](#configurează-ți-mediul)
+- [Testează configurația](#testează-configurația)
 - [Ce urmează?](#ce-urmează)
 - [Resurse](#resurse)
 - [Resurse suplimentare](#resurse-suplimentare)
 
 ## Ce se creează
 
-Șabloanele Bicep din [`infra/`](../../../02-SetupDevEnvironment/infra) creează:
+Șabloanele Bicep din [`infra/`](../../../02-SetupDevEnvironment/infra) fac provision pentru:
 
 - Un cont **Azure AI Foundry** (`Microsoft.CognitiveServices/accounts`, tip `AIServices`) cu un proiect
-- O implementare **chat** — `gpt-4o-mini`
-- O implementare **embedding** — `text-embedding-3-small` (folosită în capitolele ulterioare)
-- O **atribuire de rol fără cheie** (`Cognitive Services OpenAI User`) astfel încât să te poți autentifica cu `az login` în loc să gestionezi chei
+- O implementare **chat** - GPT-5.6 Luna (`gpt-5.6-luna`), versiunea `2026-07-09`, cu capacitate `GlobalStandard` `10` (10 cereri/minut și 10.000 de tokeni/minut pentru acest model)
+- O implementare **embedding** - `text-embedding-3-small`, versiunea `1` (folosit în capitolele următoare)
+- O **atribuire de rol fără cheie** (`Cognitive Services OpenAI User`) astfel încât te conectezi cu `az login` în loc să gestionezi chei
 
-## Precondiții
+## Prerechizite
 
 - Un [abonament Azure](https://azure.microsoft.com/free/)
 - [Azure Developer CLI (`azd`)](https://aka.ms/azure-dev/install)
@@ -39,7 +39,7 @@ Ambele opțiuni folosesc **autentificare fără chei** (Microsoft Entra ID) — 
 
 ## Opțiunea A: Provisionare cu azd + Bicep (Recomandat)
 
-Din folderul `02-SetupDevEnvironment`:
+Din dosarul `02-SetupDevEnvironment`:
 
 ```bash
 cd 02-SetupDevEnvironment
@@ -48,18 +48,18 @@ cd 02-SetupDevEnvironment
 azd auth login
 az login
 
-# Asigură contul Foundry + implementările modelelor
+# Provisionare cont Foundry + implementări modele
 azd up
 ```
 
-`azd` solicită un **nume de mediu** (de exemplu `genai-java`) și o **regiune**. Alege o regiune unde `gpt-4o-mini` și `text-embedding-3-small` sunt disponibile — de exemplu `eastus2` sau `swedencentral`.
+`azd` îți cere un **nume de mediu** (de exemplu `genai-java`), **abonament** și **regiune**. Alege abonamentul tău și o regiune unde `gpt-5.6-luna` și `text-embedding-3-small` sunt disponibile, de exemplu `eastus2`. Confirmă că abonamentul are cotă suficientă pentru model și tipul implementării în acea regiune; disponibilitatea și cota variază în funcție de abonament.
 
-Când provisioning-ul se termină, azd:
+Când provisionarea se termină, azd:
 
-1. Implementează tot ce este definit în [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep).
-2. Rulează un hook post-provisionare care scrie [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) cu endpoint-ul tău și numele implementărilor (fără secrete).
+1. Deployează tot ce este definit în [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep).
+2. Rulează un hook post-provisionare care scrie [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) cu endpoint-ul și numele implementărilor tale (fără secrete).
 
-> **Sfat:** Rulează din nou `azd up` oricând pentru a aplica modificări. Rulează `azd down` pentru a șterge totul și a opri acumularea costurilor.
+> **Sfat:** Rulează din nou `azd up` oricând pentru a aplica modificări. Rulează `azd down` pentru a șterge tot și a opri costurile.
 
 Pentru a vedea setările generate:
 
@@ -67,44 +67,46 @@ Pentru a vedea setările generate:
 azd env get-values
 ```
 
-Acum săriți la [Testarea configurației](#testarea-configurației).
+Acum sari la [Testează configurația](#testează-configurația).
 
-## Opțiunea B: Creare resurse manual
+## Opțiunea B: Creează resurse manual
 
 Preferi portalul? Creează resursele manual:
 
-1. Accesează [portalul Azure AI Foundry](https://ai.azure.com/) și autentifică-te.
-2. **Creează un proiect** (acesta creează și o resursă AI Foundry). Dă-i un nume, de exemplu `GenAIJava`.
+1. Accesează [portalul Azure AI Foundry](https://ai.azure.com/) și conectează-te.
+2. **Creează un proiect** (asta creează și o resursă AI Foundry). Dă-i un nume ca `GenAIJava`.
 3. În proiectul tău, deschide **Models + endpoints** → **Deploy model** → **Deploy base model**.
-4. Implementează **gpt-4o-mini** (numele implementării `gpt-4o-mini`). Repetă pentru **text-embedding-3-small** dacă dorești exemplele cu embedding.
+4. Deployează **GPT-5.6 Luna** (model și nume implementare `gpt-5.6-luna`, versiunea `2026-07-09`) cu capacitatea **Global Standard** `10`. Repetă pentru **text-embedding-3-small**, versiunea `1`, dacă vrei exemplele embedding.
 5. Din **Overview**, copiază **endpoint-ul** (de exemplu `https://<resource>.openai.azure.com/`).
 6. Acordă-ți acces fără cheie: pe resursă, deschide **Access control (IAM)** → **Add role assignment** → atribuie **Cognitive Services OpenAI User** contului tău.
 
 > **Încă ai probleme?** Vezi [documentația Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects).
 
-## Configurarea mediului
+## Configurează-ți mediul
 
-**Dacă ai folosit Opțiunea A (`azd up`)**, fișierul tău de setări este deja scris — nu mai ai nimic de configurat. Sari la [Testarea configurației](#testarea-configurației).
+**Dacă ai folosit Opțiunea A (`azd up`)**, fișierul tău de setări este deja scris — nu ai nevoie să configurezi nimic. Sari la [Testează configurația](#testează-configurația).
 
-**Dacă ai folosit Opțiunea B (manual)**, creează tu fișierul `.env` al exemplului:
+**Dacă ai folosit Opțiunea B (manual)**, creează singur fișierul `.env` pentru exemplu:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 cp .env.example .env
 ```
 
-Editează `.env` cu endpoint-ul tău (fără cheie — autentificarea este fără chei):
+Editează `.env` cu endpoint-ul tău (fără cheie — autentificarea e fără cheie):
 
 ```bash
 AZURE_OPENAI_ENDPOINT=https://<your-resource>.openai.azure.com/
-AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
+AZURE_OPENAI_DEPLOYMENT=gpt-5.6-luna
 ```
 
-> **Notă de securitate:** Nu există nici o cheie API de stocat. Te autentifici cu Microsoft Entra ID prin `az login` (local) sau o identitate gestionată (în Azure). Fișierul `.env` conține doar setări non-secrete și este deja inclus în `.gitignore`.
+Folosește endpoint-ul Azure OpenAI al resursei, nu un URL al proiectului. Aplicația basic-chat îl rezolvă ca `/openai/v1` și configurează un client explicit cu token bearer; o cheie API nu este necesară.
 
-## Testarea configurației
+> **Notă de securitate:** Nu există o cheie API de stocat. Te autentifici cu Microsoft Entra ID prin `az login` (local) sau identitate gestionată (în Azure). Fișierul `.env` conține doar setări ne-confidențiale și este deja exclus din `.gitignore`.
 
-Asigură-te că ești autentificat pentru ca autentificarea fără chei să poată obține un token, apoi rulează exemplul:
+## Testează configurația
+
+Asigură-te că ești conectat pentru ca autentificarea fără cheie să obțină un token, apoi rulează exemplul:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
@@ -113,35 +115,35 @@ az login          # dacă nu sunteți deja autentificat
 mvn clean spring-boot:run
 ```
 
-Ar trebui să vezi un răspuns de la modelul `gpt-4o-mini`!
+Ar trebui să vezi un răspuns de la modelul `gpt-5.6-luna`. Rulează exemplele în ordine pentru a rămâne în cota mică implicită; dacă primești HTTP 429, așteaptă intervalul de retry înainte să încerci din nou.
 
-> **Utilizatori VS Code:** Apasă `F5` pentru a rula. Aplicația încarcă automat fișierul tău `.env`.
+> **Utilizatori VS Code:** Apasă `F5` pentru a rula. Aplicația încarcă automat fișierul `.env`.
 
-> **Exemplu complet:** Vezi [exemplul Basic Chat cu Azure AI Foundry](./examples/basic-chat-azure/README.md) pentru detalii și depanare.
+> **Exemplu complet:** Vezi [Exemplul Basic Chat cu Azure AI Foundry](./examples/basic-chat-azure/README.md) pentru detalii și depanenare.
 
 ## Ce urmează?
 
-**Configurarea este completă!** Acum ai:
-- Azure AI Foundry cu `gpt-4o-mini` și `text-embedding-3-small` implementate
-- Autentificare fără chei (Microsoft Entra ID) — fără chei de gestionat
-- Un `.env` local cu endpoint-ul și numele implementărilor tale
-- Un mediu de dezvoltare Java gata de folosit
+După provisionare și rularea reușită a exemplului, vei avea:
+- Azure AI Foundry cu `gpt-5.6-luna` și `text-embedding-3-small` implementate
+- Autentificare fără cheie (Microsoft Entra ID) — fără chei de gestionat
+- Un `.env` local cu endpoint-ul și numele implementărilor
+- Un mediu de dezvoltare Java gata de utilizat
 
-**Continuă cu** [Capitolul 3: Tehnici de bază în AI generativ](../03-CoreGenerativeAITechniques/README.md) pentru a începe să construiești aplicații AI!
+**Continuă cu** [Capitolul 3: Tehnici Generative AI de bază](../03-CoreGenerativeAITechniques/README.md) pentru a începe să construiești aplicații AI!
 
 ## Resurse
 
 - [Azure Developer CLI (azd)](https://aka.ms/azure-dev/install)
-- [Autentificare fără chei cu Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
-- [Documentație Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/)
-- [Documentație Spring AI Azure OpenAI](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
-- [SDK Azure OpenAI pentru Java](https://learn.microsoft.com/java/api/overview/azure/ai-openai-readme)
+- [Autentificare fără cheie cu Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
+- [Documentația Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/)
+- [Tranziția Spring AI 2 OpenAI Java SDK](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [SDK OpenAI Java oficial cu Azure OpenAI v1](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
 
 ## Resurse suplimentare
 
 - [Descarcă VS Code](https://code.visualstudio.com/Download)
-- [Descarcă Docker Desktop](https://www.docker.com/products/docker-desktop)
-- [Configurare Dev Container](../../../.devcontainer/devcontainer.json)
+- [Obține Docker Desktop](https://www.docker.com/products/docker-desktop)
+- [Configurare container de dezvoltare](../../../.devcontainer/devcontainer.json)
 
 ---
 

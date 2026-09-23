@@ -118,7 +118,7 @@ az login
 azd up
 ```
 
-`azd` prompts for an environment name and region, provisions an Azure AI Foundry account with `gpt-4o-mini` and `text-embedding-3-small` deployments, and writes the endpoint into the example's `.env` — all with **keyless** authentication (no API keys).
+`azd` prompts for an environment name, subscription, and region, provisions an Azure AI Foundry account with `gpt-5.6-luna` and `text-embedding-3-small` deployments, and writes the endpoint into the example's `.env` - all with **keyless** authentication (no API keys).
 
 > **Full walkthrough:** See the [Azure AI Foundry Setup Guide](getting-started-azure-openai.md) for prerequisites, a manual (portal) alternative, region guidance, and cost/cleanup notes.
 
@@ -141,42 +141,57 @@ Once your Foundry models are provisioned, test the connection with the example a
    mvn clean spring-boot:run
    ```
 
-You should see a response from the `gpt-4o-mini` model.
+You should see a response from the `gpt-5.6-luna` model.
 
 ### Understanding the Example Code
 
-The example under `examples/basic-chat-azure` is a Spring Boot app that uses **Spring AI** to connect to Azure AI Foundry with keyless authentication.
+The [basic-chat example](./examples/basic-chat-azure/README.md) uses **Spring Boot 4.1.1** and **Spring AI 2.0.1**. Spring AI's `ChatClient` is backed by the official OpenAI Java SDK, connecting to the Azure OpenAI **v1** endpoint with keyless authentication.
 
 **What this code does:**
 - **Connects** to Azure AI Foundry using your Azure sign-in (Microsoft Entra ID) — no API key
-- **Sends** a prompt to the `gpt-4o-mini` model
+- **Sends** a prompt to the `gpt-5.6-luna` model
 - **Receives** and displays the AI's response
 - **Validates** your setup is working correctly
 
-**Key Dependency** (in `pom.xml`):
+**Key Dependencies** (excerpt from [pom.xml](../../../02-SetupDevEnvironment/examples/basic-chat-azure/pom.xml)):
 ```xml
 <dependency>
     <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-starter-model-azure-openai</artifactId>
+    <artifactId>spring-ai-starter-model-openai</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.openai</groupId>
+    <artifactId>openai-java</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.azure</groupId>
+    <artifactId>azure-identity</artifactId>
+    <version>${azure-identity.version}</version>
 </dependency>
 ```
 
-**Configuration** (`application.yml`):
+The POM manages OpenAI Java **4.63.1** and sets Azure Identity **1.18.6** explicitly. Spring AI 2 removed the Azure-specific starter; Azure Identity is still needed for the credential bean.
+
+**Configuration** ([application.yml](../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml)):
 ```yaml
 spring:
   ai:
-    azure:
-      openai:
-        # Endpoint only - no api-key. Spring AI uses DefaultAzureCredential (keyless).
-        endpoint: ${AZURE_OPENAI_ENDPOINT}
-        chat:
-          options:
-            deployment-name: ${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+    openai:
+      base-url: ${AZURE_OPENAI_ENDPOINT}
+      microsoft-foundry: true
+      chat:
+        model: ${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
+        reasoning-effort: none
+        max-completion-tokens: 500
 ```
+
+Keyless auth is configured explicitly in [BasicChatApplication.java](../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/java/com/example/BasicChatApplication.java), not inferred from an absent API key. Its bearer credential uses `DefaultAzureCredential` with the `https://ai.azure.com/.default` scope, and its `OpenAIClient` targets `/openai/v1`. The app supplies that client to Spring AI's chat model, so a global `OPENAI_API_KEY` cannot override Azure authentication.
+
+Chat settings are directly under `spring.ai.openai.chat`, without an `options` block. The lesson retains Chat Completions with `reasoning-effort: none` and a 500-token completion cap; it does not set `temperature` or `max-tokens`. See the [example's configuration reference](./examples/basic-chat-azure/README.md#spring-configuration) for the API choice and tool-calling guidance.
 
 ## Summary
 
-Great! You now have everything set up:
+After completing the steps above, you will have:
 
 - Provisioned Azure AI Foundry models as code with Bicep + `azd`
 - Got your Java development environment running (whether that's Codespaces, dev containers, or local)
@@ -203,7 +218,7 @@ Having issues? Here are common problems and solutions:
 
 - **`azd` not found or provisioning fails?** 
   - Install the [Azure Developer CLI](https://aka.ms/azure-dev/install) and run `azd auth login`
-  - Pick a region where `gpt-4o-mini` is available (e.g. `eastus2`)
+  - Pick a region where `gpt-5.6-luna` and `text-embedding-3-small` are available (e.g. `eastus2`), with sufficient quota in your selected subscription
   - See the [Azure AI Foundry setup guide](getting-started-azure-openai.md) for details
 
 - **Dev container not starting?** 

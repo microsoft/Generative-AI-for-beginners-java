@@ -1,38 +1,48 @@
-# စောင့်ရှောက်ရန်တိရစ္ဆာန် कहानी ဂျင်နရေးတာ သင်ခန်းစာ တ初心者向け
+# ပစ္စည်းဇာတ်လမ်း ထုတ်လုပ်ရေး လမ်းညွန် စတင် လေ့လာသူများအတွက်
 
-## အကြောင်းအရာ စာရင်း
+ပစ္စည်းဓာတ်ပုံတင်ပြီး၊ GPT-5.6 Luna ဖြင့် စိစစ်၍၊ ရလာသော ဖော်ပြချက်မှ ဇာတ်လမ်းတစ်ပုဒ် ထုတ်လုပ်ပါ။ မော်ဒယ် တောင်းဆိုမှု နှစ်ခုလုံးတွင် `reasoning_effort: none` ကို အသုံးပြုသည်။
+
+| အစိတ်အပိုင်း | ဗားရှင်း |
+| --- | --- |
+| Java | 21 သို့မဟုတ် အထက် |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
+
+## အညွှန်းဇယား
 
 - [လိုအပ်ချက်များ](#လိုအပ်ချက်များ)
-- [ပရောဂျက် ဖွဲ့စည်းမှု ကို နားလည်ခြင်း](#ပရောဂျက်-ဖွဲ့စည်းမှု-ကို-နားလည်ခြင်း)
-- [အဓိက အစိတ်အပိုင်းများ ရှင်းလင်းချက်](#အဓိက-အစိတ်အပိုင်းများ-ရှင်းလင်းချက်)
-  - [1. မိမိ အသုံးပြုနေသော အက်ပ်ပလီကေးရှင်း](#၁။-မိမိ-အသုံးပြုနေသော-အက်ပ်ပလီကေးရှင်း)
-  - [2. ဝက်ဘ် ထိန်းချုပ်ရေးသူ](#၂။-ဝက်ဘ်-ထိန်းချုပ်ရေးသူ)
-  - [3. ပုံပြင်ဝန်ဆောင်မှု](#၃။-ပုံပြင်-ဝန်ဆောင်မှု)
-  - [4. ဝက်ဘ် ပုံစံများ](#၄။-ဝက်ဘ်-ပုံစံများ)
-  - [5. ဖွဲ့စည်းတပ်ဆင်မှု](#၅။-ဖွဲ့စည်းတပ်ဆင်မှု)
-- [အက်ပ်ပလီကေးရှင်း စတင်လည်ပတ်ခြင်း](#အက်ပ်ပလီကေးရှင်း-စတင်လည်ပတ်ခြင်း)
-- [ဒါအားလုံး ဘယ်လိုပေါင်းစည်း လည်ပတ်သလဲ](#ဒါအားလုံး-ဘယ်လိုပေါင်းစည်း-လည်ပတ်သလဲ)
-- [AI ပေါင်းစည်းမှု ကို နားလည်မြင်သာခြင်း](#ai-ပေါင်းစည်းမှု-ကို-နားလည်မြင်သာခြင်း)
-- [နောက်တစ်ခုပြုလုပ်ရန် အဆင့်များ](#နောက်တစ်ခုပြုလုပ်ရန်-အဆင့်များ)
+- [ပရောဂျက် တည်ဆောက်ပုံ နားလည်ခြင်း](#ပရောဂျက်-တည်ဆောက်ပုံ-နားလည်ခြင်း)
+- [အဓိကအစိတ်အပိုင်းများ ရှင်းပြချက်](#အဓိကအစိတ်အပိုင်းများ-ရှင်းပြချက်)
+  - [1. အဓိက အက်ပလီကေးရှင်း](#1-အဓိက-အက်ပလီကေးရှင်း)
+  - [2. ဝက်ဘ် ထိန်းချုပ်သူ](#2-ဝက်ဘ်-ထိန်းချုပ်သူ)
+  - [3. ဇာတ်လမ်း ဝန်ဆောင်မှု](#3-ဇာတ်လမ်း-ဝန်ဆောင်မှု)
+  - [4. ဝက်ဘ် ပုံစံများ](#4-ဝက်ဘ်-ပုံစံများ)
+  - [5. ပြုပြင်ဆောင်ရွက်မှု](#5-ပြုပြင်ဆောင်ရွက်မှု)
+- [အက်ပလီကေးရှင်း လည်ပတ်ခြင်း](#အက်ပလီကေးရှင်း-လည်ပတ်ခြင်း)
+- [အော့ဖ်လိုင်း စမ်းသပ်မှုများ](#အော့ဖ်လိုင်း-စမ်းသပ်မှုများ)
+- [ဘယ်လိုအတူတကွ လည်ပတ်သလဲ](#ဘယ်လောက်အဆင်ပြေစွာ-လည်ပတ်သလဲ)
+- [AI ပေါင်းစည်းမှု နားလည်ခြင်း](#ai-ပေါင်းစည်းမှု-နားလည်ခြင်း)
+- [နောက်ထပ် အဆင့်များ](#နောက်ထပ်-အဆင့်များ)
 
 ## လိုအပ်ချက်များ
 
-စတင်ရန်အရင်မှာ သေချာစွာ သင်မှာရှိထားရမည့် အရာများ -
-- Java 21 သို့မဟုတ် ထို့အထက် ထည့်သွင်းထား
-- လိုအပ်သော dependencies များကို စီမံရန် Maven
-- Azure AI Foundry မော်ဒယ် ဖြန့်ကျက်မှု ( `azd up` ဖြင့် provision လုပ်ပါ — ကြည့်ရန် [အခန်း 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md))၊ `az login` ဖြင့် သွင်းပေးထားပြီး (keyless authentication)
-- Java, Spring Boot နှင့် ဝက်ဘ် ဖွံ့ဖြိုးရေး၏ မူလ အခြေခံ နားလည်မှု
+စတင်하기 မတိုင်မီ အောက်ပါအရာများရှိနေပါစေ-
+- Java 21 သို့အထက် တပ်ဆင်ထားပြီး
+- နည်းပညာ ဘာသာရပ် ရယူဖို့ Maven
+- Azure AI Foundry ထဲမှ GPT-5.6 Luna ဟုအမည်ပေးထားသော deployment, သို့မဟုတ် ဤ deployment ကိုညွှန်ပြသည့် `AZURE_OPENAI_DEPLOYMENT` override တစ်ခု။ provisioning အတွက် [ခန်းမ ၂](../../02-SetupDevEnvironment/getting-started-azure-openai.md) ကိုကြည့်ပြီး `az login` ဖြင့် keyless authentication ကို အသုံးပြုပါ။ Deployment သည် ပုံများအား input အဖြစ် ပေးပို့နိုင်ရမည်နှင့် `reasoning_effort: none` ကို ထောက်ပံ့ရမည်။
+- Java, Spring Boot, နှင့် ဝက်ဘ် ဖွံ့ဖြိုးတိုးတက်မှု အခြေခံနားလည်မှုရှိထားရန်။
 
-## ပရောဂျက် ဖွဲ့စည်းမှု ကို နားလည်ခြင်း
+## ပရောဂျက် တည်ဆောက်ပုံ နားလည်ခြင်း
 
-တိရစ္ဆာန် ပုံပြင် ပရောဂျက်တွင် အရေးပါသော ဖိုင် အချို့ပါရှိသည် -
+ပစ္စည်းဇာတ်လမ်းပရောဂျက်တွင် အရေးကြီးသော ဖိုင်များ အချို့ရှိသည်-
 
 ```
 petstory/
 ├── src/main/java/com/example/petstory/
 │   ├── PetStoryApplication.java       # Main Spring Boot application
 │   ├── PetController.java             # Web request handler
-│   ├── StoryService.java              # AI story generation service
+│   ├── StoryService.java              # AI image analysis and story generation
 │   └── SecurityConfig.java            # Security configuration
 ├── src/main/resources/
 │   ├── application.properties         # App configuration
@@ -42,14 +52,13 @@ petstory/
 └── pom.xml                           # Maven dependencies
 ```
 
+## အဓိကအစိတ်အပိုင်းများ ရှင်းပြချက်
 
-## အဓိက အစိတ်အပိုင်းများ ရှင်းလင်းချက်
-
-### ၁။ မိမိ အသုံးပြုနေသော အက်ပ်ပလီကေးရှင်း
+### 1. အဓိက အက်ပလီကေးရှင်း
 
 **ဖိုင်:** `PetStoryApplication.java`
 
-ဤသည်သည် ကျွန်ုပ်တို့၏ Spring Boot အက်ပ်ပလီကေးရှင်း၏ ဝင်ခွင့် နေရာဖြစ်သည် -
+၎င်းသည် ကျွန်ုပ်တို့၏ Spring Boot အက်ပလီကေးရှင်း၏ ဝင်ပေါက်ဖြစ်သည် –
 
 ```java
 @SpringBootApplication
@@ -60,213 +69,53 @@ public class PetStoryApplication {
 }
 ```
 
-**ဤအရာများ လုပ်ဆောင်ပုံ:**  
-- `@SpringBootApplication` annotation က auto-configuration နှင့် component scanning ကို ဖွင့်လှစ်ပေးသည်  
-- 8080 ပေါ့(Port) တွင် embedded web server (Tomcat) စတင်လည်ပတ်သည်  
-- အလိုအလျောက် လိုအပ်သော Spring beans နှင့် ဝန်ဆောင်မှုများကို ဖန်တီးပေးသည်  
+**လုပ်ဆောင်ချက်များ:**
+- `@SpringBootApplication` အတန်းအမှတ်အသားသည် auto-configuration နှင့် component scanning ကို ဖွင့်လှစ်သည်
+- Port 8080 တွင် embedded web server (Tomcat) တစ်ခုစတင်သည်
+- လိုအပ်သည့် Spring beans နှင့် ဝန်ဆောင်မှုများအားလုံးကို အလိုအလျောက် ဖန်တီးသည်
 
-### ၂။ ဝက်ဘ် ထိန်းချုပ်ရေးသူ
+### 2. ဝက်ဘ် ထိန်းချုပ်သူ
 
-**ဖိုင်:** `PetController.java`
+**ဖိုင်:** [PetController.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/PetController.java)
 
-တစ်ခုချင်းလုပ်ဆောင်ချက်များနှင့် အသုံးပြုသူ သက်ဆိုင်ရာ မေးခွန်းများကို အုပ်ချုပ်သည် -
+| Endpoint | တောင်းဆိုမှု | အောင်မြင်သော ပြန်ကြားချက် |
+| --- | --- | --- |
+| `GET /` | အကြောင်းအရာ မပါ | CSRF token ပါသော HTML တင်သွင်းပုံစံ |
+| `POST /analyze-image` | `multipart/form-data`, file field `image` | JSON: `{"description":"ကျယ်ပြန့်သော ပစ္စည်းတစ်ခု..."}` |
+| `POST /generate-story` | `application/x-www-form-urlencoded`, field `description` | ဖော်ပြချက်နှင့် ထုတ်လုပ်ထားသော ဇာတ်လမ်းပါသော HTML ရလဒ်စာမျက်နှာ |
 
-```java
-@Controller
-public class PetController {
-    
-    private final StoryService storyService;
-    
-    public PetController(StoryService storyService) {
-        this.storyService = storyService;
-    }
-    
-    @GetMapping("/")
-    public String index() {
-        return "index";  // index.html စာမျက်နှာပုံစံ ပြန်လည်ပေးပို့သည်
-    }
-    
-    @PostMapping("/generate-story")
-    public String generateStory(@RequestParam("description") String description, 
-                               Model model, 
-                               RedirectAttributes redirectAttributes) {
-        
-        // အချက်အလက် ထည့်သွင်းမှု စစ်ဆေးခြင်း
-        if (description.trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Please provide a description.");
-            return "redirect:/";
-        }
-        
-        // လုံခြုံမှုအတွက် အချက်အလက် သန့်စင်ခြင်း
-        String sanitizedDescription = sanitizeInput(description);
-        
-        // အမှားကို ကိုင်တွယ်၍ ပုံပြင် ဖန်တီးခြင်း
-        try {
-            String story = storyService.generateStory(sanitizedDescription);
-            model.addAttribute("caption", sanitizedDescription);
-            model.addAttribute("story", story);
-            return "result";  // result.html စာမျက်နှာပုံစံ ပြန်လည်ပေးပို့သည်
-            
-        } catch (Exception e) {
-            // AI မအောင်မြင်လျှင် အစားထိုး ပုံပြင် အသုံးပြုပါ
-            String fallbackStory = generateFallbackStory(sanitizedDescription);
-            model.addAttribute("story", fallbackStory);
-            return "result";
-        }
-    }
-    
-    private String sanitizeInput(String input) {
-        return input.replaceAll("[<>\"'&]", "")  // Remove dangerous characters
-                   .trim()
-                   .substring(0, Math.min(input.length(), 500));  // အရှည်ကို ကန့်သတ်ပါ
-    }
-}
-```
+POST endpoint နှစ်ခုလုံးသည် `GET /` မှ ရရှိသော session cookie နှင့် CSRF token ကို လိုအပ်သည်။ Upload script သည် ပြင်ပ `_csrf` တန်ဖိုးကို `X-CSRF-TOKEN` header တွင် ပို့သည်။ ဇာတ်လမ်းတင်သွင်းမှုမှာ `_csrf` form field အဖြစ် ပို့သည်။ API clients များသည် Cookie ကို တောင်းဆိုမှုများ အကြားထိန်းသိမ်းထားရမည်။ ဤ endpoint များသည် JSON request မဟုတ်၊ form endpoints ဖြစ်သည်။
 
-**အဓိက လက္ခဏာများ:**
+ဖော်ပြချက်များသည် မလွတ်လပ်ရပါနှင့် ၁၀၀၀ စာလုံးကျော် မဖြစ်ရပါ။ Controller သည် ဖော်ပြချက်ကို စစ်ထုတ်ပြီး `<`, `>`, နှစ်ဆဖြူ၊ `'`, နှင့် `&` ကို ဖယ်ရှား၍ ဝန်ဆောင်မှုသို့ ပေးပို့သည်။ ရလဒ်ပုံစံသည် `th:text` ဖြင့် မော်ဒယ် ထုတ်ဝေမှုကိုလည်း ကျွတ်ကာ ကာကွယ်သည်။
 
-1. **လမ်းကြောင်း ကိုင်တွယ်မှု**: `@GetMapping("/")` မှာ upload form ကိုပြသသည်၊ `@PostMapping("/generate-story")` မှာ ပုံပြင်ထုတ်လွှင့်ရန် စာတင်ပြုလုပ်ခြင်း  
-2. **ထည့်သွင်းချက် စစ်ဆေးမှု**: ဖော်ပြချက်များ မရှိခြင်း၊ အရှည် ကန့်သတ်မှု စစ်ဆေး  
-3. **လုံခြုံရေး**: အသုံးပြုသူ ထည့်သွင်းချက်များကို XSS ကျိုးပဲ့မှုမှ ကာကွယ်ရန် စနစ်တကျ သန့်ရှင်း  
-4. **အမှား ကင်းရှင်းမှု**: AI ဝန်ဆောင်မှု မအောင်မြင်သောအခါ ရှေ့ပြေး ပုံပြင်များ ပေးသွင်း  
-5. **မော်ဒယ် ချိတ်ဆက်မှု**: Spring ၏ `Model` ကို အသုံးပြု၍ ဒေတာများကို HTML ပုံစံများတွင် ပေးပို့
+ပုံအတူမမှန်ခြင်းအတွက် HTTP 400 မှာ `error` field ပါထုတ်ပြန်သည်။ မော်ဒယ် မအောင်မြင်ခြင်းသည် HTTP 502 နှင့် `error` field ပါ သို့မဟုတ် `description` မပါသော ပြန်ကြားချက်ဖြင့် ပြန်သွားသည်။ ဖော်ပြချက် မမှန်ကန်ခြင်း သို့မဟုတ် မော်ဒယ် မအောင်မြင်ပြန်ကြားချက်များသည် ပြန်လည် ဦးတည် `/` နှင့် error ပြထားသည်။ လိုအပ်သော အချက်အလက်များ မပါခြင်းသည် HTTP 400 ဖြစ်ကာ CSRF token မရှိ သို့မဟုတ် မမှန်ကန်ခြင်းတွင် HTTP 403 ပြန်လည် ပေးသည်။ AI အောင်မြင်မှုအဖြစ် fallback ဖော်ပြချက် သို့မဟုတ် ဇာတ်လမ်း မတင်ပြပါ။
 
-**ရှေ့ပြေး စနစ်:**
-controller တွင် AI ဝန်ဆောင်မှု မရရှိနိုင်သောအခါ အသုံးပြုသည့် ရေးသားပြီးသား ပုံပြင်ပုံစံများ ပါဝင်သည် -
+### 3. ဇာတ်လမ်း ဝန်ဆောင်မှု
 
-```java
-private String generateFallbackStory(String description) {
-    String[] storyTemplates = {
-        "Meet the most wonderful pet in the world – a furry ball of energy...",
-        "Once upon a time, there lived a remarkable pet whose heart was as big...",
-        "In a cozy home filled with love, there lived an extraordinary pet..."
-    };
-    
-    // တူညီသောတုံ့ပြန်မှုများအတွက် ဖော်ပြချက်ဟက်ကို အသုံးပြုပါ
-    int index = Math.abs(description.hashCode() % storyTemplates.length);
-    return storyTemplates[index];
-}
-```
+**ဖိုင်:** [StoryService.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/StoryService.java)
 
+OpenAI Java SDK 4.63.1 သည် Azure AI Foundry ၏ OpenAI နှင့်ကိုက်ညီသော Chat Completions API ကို ခေါ်ယူသည်။ Azure Identity 1.18.6 သည် `DefaultAzureCredential` ဖြင့် Microsoft Entra bearer token ကို ပေးဆောင်ပြီး API key မလိုအပ်ပါ။
 
-### ၃။ ပုံပြင် ဝန်ဆောင်မှု
+| လုပ်ဆောင်ချက် | input | `max_completion_tokens` |
+| --- | --- | --- |
+| `analyzeImage` | တင်သွင်းထားသော MIME type နှင့် base64 data URL အဖြစ် encode လုပ်ထားသော ပုံအချက်အလက် | 300 |
+| `generateStory` | အသုံးပြုသူ စာသားမှာ ပစ္စည်းဖော်ပြချက် | 800 |
 
-**ဖိုင်:** `StoryService.java`
+နှစ်ခုလုံးသည် `gpt-5.6-luna` ကို default deployment အဖြစ် သတ်မှတ်ထားပြီး `ReasoningEffort.NONE` (`reasoning_effort: none`) ကို အသုံးပြုပြီး စီစဉ်ထားသည်။ `temperature` သို့မဟုတ် legacy `max_tokens` parameter မပို့ပါ။
 
-ဤဝန်ဆောင်မှုသည် keyless authentication ဖြင့် Azure AI Foundry နှင့် ဆက်သွယ်ကာ ပုံပြင်များ ဖန်တီးပေးသည် -
+ပုံစစ်ခြင်းသည် JPEG, PNG, GIF, နှင့် WebP များအား လက်ခံကာ empty ပုံများနှင့် ၁၀MB ကျော် များကို ငြင်းဆန်သည်။ ဖော်ပြချက်သည် ၁၀၀၀ စာလုံးထက် မကျော်ရ။ ဇာတ်လမ်း request သည် မိသားစုနှင့် သင့်တော်သော ဇာတ်လမ်း အတိုကောက်တစ်ပုဒ် ဖြစ်သည်။ ရွေးချယ်မှုမရှိခြင်း သို့မဟုတ် မှန်ကန်သောမပါရှိခြင်းသည် အမှား ဖြစ်ပြေနိုင်ပြီး မော်ဒယ် မအောင်မြင်မှုများသည် server side သုံး စစ်ဆေးမှု အတွက် အကြောင်းရင်းကို ထိန်းသိမ်းထားသည်။ SDK client သည် အက်ပလီကေးရှင်း ရပ်တန့်စဉ် ပိတ်သိမ်းသည်။
 
-```java
-@Service
-public class StoryService {
-    
-    private final OpenAIClient openAIClient;
-    private final String modelName;
-    
-    public StoryService(@Value("${azure.openai.endpoint:}") String endpoint,
-                       @Value("${azure.openai.deployment:gpt-4o-mini}") String modelName) {
-        this.modelName = modelName;
-        if (endpoint == null || endpoint.isBlank()) {
-            endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        }
-        
-        // Foundry ၏ OpenAI ကိုသင့်တော်သော endpoint သည် /openai/v1/ အောက်တွင် တည်ရှိသည်
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1/";
-        
-        // Microsoft Entra ID ဖြင့် Key ဂုဏ်ပြုခြင်း (API key မလိုအပ်ပါ)
-        DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-        this.openAIClient = OpenAIOkHttpClient.builder()
-                .baseUrl(baseUrl)
-                .credential(BearerTokenCredential.create(
-                        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-                .build();
-    }
-    
-    public String generateStory(String description) {
-        String systemPrompt = "You are a creative storyteller who writes fun, " +
-                             "family-friendly short stories about pets. " +
-                             "Keep stories under 500 words and appropriate for all ages.";
-        
-        String userPrompt = "Write a fun short story about a pet described as: " + description;
-        
-        // AI အတွက် တောင်းဆိုမှုကို ဖွဲ့စည်းစီစဉ်ပါ
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(modelName)
-                .addSystemMessage(systemPrompt)
-                .addUserMessage(userPrompt)
-                .maxCompletionTokens(500)  // တုံ့ပြန်မှု အရှည်ကို ကန့်သတ်ပါ
-                .temperature(0.8)          // ဖန်တီးမှု ထိန်းချုပ်မှု (0.0-1.0)
-                .build();
-        
-        // တောင်းဆိုမှု ပေးပို့ပြီး တုံ့ပြန်မှု ရယူပါ
-        ChatCompletion response = openAIClient.chat().completions().create(params);
-        
-        return response.choices().get(0).message().content().orElse("");
-    }
-}
-```
+### 4. ဝက်ဘ် ပုံစံများ
 
-**အဓိက အစိတ်အပိုင်းများ:**
+**ဖိုင်:** [index.html](../../../../04-PracticalSamples/petstory/src/main/resources/templates/index.html) (တင်သွင်းဖောင်)
 
-1. **OpenAI Client**: Azure AI Foundry အတွက် official OpenAI Java SDK ကို (keyless) ကိုသုံး  
-2. **System Prompt**: AI ကို မိသားစုအတွက် သင့်တော်သော တိရစ္ဆာန် ပုံပြင်များ ရေးရန် အပြုသဘောသတ်မှတ်  
-3. **User Prompt**: ဖော်ပြချက်အတိုင်း AI ကိုပုံပြင် ရေးရန် တိတိကျကျ ပြောဆို  
-4. **ပမာဏများ**: ပုံပြင် အရှည်နှင့် ဖန်တီးမှု အဆင့်ကို ထိန်းချုပ်  
-5. **အမှား ကင်းရှင်းမှု**: controller ဖြင့် ဖမ်းဆီးစစ်ဆေးသည့် exceptions များကို ပေါက်ခတ်ပေး
+စာမျက်နှာတွင် ပုံရွေးစရာရှိပြီး ဖော်ပြချက်ရေးရာနေရာ မရှိပါ။ **Analyze Image** သည် ရွေးချယ်ထားသော ဓာတ်ပုံကို ကြည့်ရှုမည်၊ `/analyze-image` သို့ ဖော်ပြချက်ကို ပို့မည်။ အောင်မြင်သော ပြန်ကြားချက်သည် ဖော်ပြချက်ကို ပြသပြီး ဖော်ပြချက် field ကို ဖြည့်ပြီး **Generate Story** ကို ပြသသည်။ ခလုတ်သည် ရှိပြီးသားဖောင်ကို `/generate-story` သို့ ပို့သည်။
 
-### ၄။ ဝက်ဘ် ပုံစံများ
+ဘရောက်ဇာတွင် မော်ဒယ်ဒေါင်းလုပ် သို့မဟုတ် CDN တိုက်ရိုက် မလိုအပ်ပါ။ ပုံစစ်ခြင်းသည် ဆာဗာတွင် Azure deployment ဖြင့် လည်ပတ်သည်။ အမှားများ မြင်သာပြီး ဇာတ်လမ်း ဖန်တီးခြင်းကို ဖော်ပြချက်မမှန်ဘဲ ခွင့်ပြုမထားပါ။ မတူညီသောဖိုင်ရွေးချယ်ခြင်းသည် ယခင် ခွဲခြားချက်ကို ဖယ်ရှားသည်။
 
-**ဖိုင်:** `index.html` (Upload Form)
+**ဖိုင်:** `result.html` (ဇာတ်လမ်း ပြသမှု)
 
-အသုံးပြုသူများ ၌ သူတို့၏ တိရစ္ဆာန်ကို ဖော်ပြနိုင်သော မူလစာမျက်နှာ -
-
-```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Pet Story Generator</title>
-    <!-- CSS styling -->
-</head>
-<body>
-    <div class="container">
-        <h1>Pet Story Generator</h1>
-        <p>Describe your pet and we'll create a fun story about them!</p>
-        
-        <!-- Error message display -->
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-        
-        <!-- Story generation form -->
-        <form action="/generate-story" method="post">
-            <div class="form-group">
-                <label for="description">Describe your pet:</label>
-                <textarea id="description" name="description" 
-                         placeholder="Tell us about your pet - what they look like, their personality, favorite activities..."
-                         maxlength="1000" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Generate Story</button>
-        </form>
-        
-        <!-- Image upload section with client-side processing -->
-        <div class="upload-section">
-            <h2>Or Upload a Photo</h2>
-            <input type="file" id="imageInput" accept="image/*" />
-            <button onclick="analyzeImage()" class="upload-btn">Analyze Image</button>
-        </div>
-        
-        <script>
-            // Client-side image analysis using Transformers.js
-            async function analyzeImage() {
-                // Image processing code here
-                // Generates description automatically from uploaded image
-            }
-        </script>
-    </div>
-</body>
-</html>
-```
-
-**ဖိုင်:** `result.html` (ပုံပြင် ပြသမှု)
-
-ဖန်တီးပြီး ပုံပြင်ကိုပြသသည် -
+ထုတ်လုပ်ထားသောဇာတ်လမ်းကို ပြသသည် –
 
 ```html
 <!DOCTYPE html>
@@ -299,18 +148,18 @@ public class StoryService {
 </html>
 ```
 
-**ပုံစံ လက္ခဏာများ:**
+**ပုံစံ အင်အားများ:**
 
-1. **Thymeleaf ပေါင်းစည်းမှု**: dynamic content အတွက် `th:` attribute များကို အသုံးပြု  
-2. **တုံ့ပြန်ခြင်း ဒီဇိုင်း**: မိုဘိုင်း နှင့် ဒီစကတော့ နှစ်မျိုးစလုံးအတွက် CSS style  
-3. **အမှား ကင်းရှင်းမှု**: လက်ခံရိုက်ထည့်မှု အမှားများကို အသုံးပြုသူထံ ပြသ  
-4. **Client-side လုပ်ဆောင်မှု**: ဓာတ်ပုံ ခွဲခြမ်းစိတ်ဖြတ်မှုအတွက် JavaScript (Transformers.js သုံး)
+1. **Thymeleaf ပေါင်းစည်းမှု**: dynamic အကြောင်းအရာအတွက် `th:` attribute များ အသုံးပြုသည်
+2. **တုံ့ပြန်နိုင်မှု ဒီဇိုင်း**: မိုဘိုင်းနှင့် desktop အတွက် CSS ဖန်တီးမှု
+3. **အမှား ကိုင်တွယ်မှု**: အသုံးပြုသူများအား စစ်ဆေးမှု အမှားပြသမှု
+4. **တင်သွင်းမှု ကိုင်တွယ်မှု**: JavaScript ဖြင့် ဓာတ်ပုံ ကြည့်ရှု၊ CSRF ကာကွယ်ထားသော multipart တောင်းဆိုမှု ပို့ခြင်းနှင့် ပြန်ကြားချက် ဖော်ပြချက် စာသားပြသခြင်း
 
-### ၅။ ဖွဲ့စည်းတပ်ဆင်မှု
+### 5. ပြုပြင်ဆောင်ရွက်မှု
 
 **ဖိုင်:** `application.properties`
 
-အက်ပ်ပလီကေးရှင်း ဆက်တင်များ -
+အက်ပလီကေးရှင်းအတွက် ပြုပြင်ဆောင်ရွက်မှု ဆက်တင်များ -
 
 ```properties
 spring.application.name=pet-story-app
@@ -324,21 +173,21 @@ logging.level.com.example.petstory=INFO
 
 # Azure AI Foundry (keyless) configuration
 azure.openai.endpoint=${AZURE_OPENAI_ENDPOINT:}
-azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
 ```
 
-**ဖွဲ့စည်းတပ်ဆင်မှု ရှင်းလင်းချက်:**
+**ပြုပြင်ဆောင်ရွက်မှု ရှင်းပြချက်:**
 
-1. **ဖိုင် တင်ခြင်း**: ၁၀MB အထိ ဓာတ်ပုံများ ခွင့်ပြုမှု  
-2. **မှတ်တမ်းတင်ခြင်း (Logging)**: လည်ပတ်မှုအတွင်း မှတ်တမ်းတင်ချက် ကို ထိန်းချုပ်  
-3. **Azure AI Foundry**: အသုံးပြုမည့် endpoint နှင့် မော်ဒယ် ဖြန့်ချိမှုကို ဖော်ပြသည် (keyless auth)  
-4. **လုံခြုံရေး**: အမှား ကင်းရှင်းမှု ဆက်တင်များကို ဝင်ရောက်ရရှိနိုင်သော သတင်းအချက်အလက် မဖော်ပြရန် ထိန်းချုပ်
+1. **ဖိုင် တင်သွင်းမှု**: ဖိုင်နှင့် multipart request တို့သည် နှစ်ခုလုံး 10MB အထိ ကန့်သတ်ထားသည်၊ multipart header များအတွက် နေရာ ချန်ထားရန် ဓာတ်ပုံများကို ထိုအောက်တွင် ထားပါ။
+2. **မှတ်တမ်းတင်ခြင်း**: လည်ပတ်စဉ် မှတ်တမ်းတင်မှု ထိန်းချုပ်မှု။
+3. **Azure AI Foundry**: ခေါင်းစဉ်နှင့် မော်ဒယ် deployment အသုံးပြုမှုသတ်မှတ်ချက် (keyless auth)
+4. **လုံခြုံရေး**: CSRF ကာကွယ်မှု ဖြစ်နေဆဲ၊ မော်ဒယ် ထောက်လှမ်း စစ်ဆေးမှုများကို ဆာဗာတွင် မှတ်တမ်းတင်ပြီး controller တွင် မော်ဒယ် မအောင်မြင်မှု စာသားများ ပြသသည်
 
-## အက်ပ်ပလီကေးရှင်း စတင်လည်ပတ်ခြင်း
+## အက်ပလီကေးရှင်း လည်ပတ်ခြင်း
 
-### အဆင့် ၁: လက်မှတ်ထိုး လက်ရေးထိုးပြီး သင့် endpoint ကို သတ်မှတ်ပါ
+### အဆင့် ၁: အသုံးပြုသူ မှတ်ပုံတင်ခြင်းနှင့် endpoint သတ်မှတ်ခြင်း
 
-Authentication က keyless (Microsoft Entra ID) ဖြစ်သောကြောင့် API key မလိုပါ။ လက်မှတ်ထိုးပြီး သင့် Foundry endpoint ကို သတ်မှတ်ပါ -
+authentication သည် keyless (Microsoft Entra ID) ဖြစ်သောကြောင့် API key မလိုအပ်ပါ။ သင်၏ Foundry endpoint ကို သတ်မှတ်ရန် နှင့် အသုံးပြုရန် –
 
 **Windows (Command Prompt):**
 ```cmd
@@ -358,21 +207,23 @@ az login
 export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 ```
 
-**ဘာကြောင့် လိုအပ်သလဲ:**
-- Azure AI Foundry သည် Microsoft Entra ID ဖြင့် inference တောင်းဆိုမှုများကို အတည်ပြုသည့် API  
-- Keyless auth ဟူသည် သင့် စကားဝှက် မရှိဘဲ ပြန်လည် အသုံးပြုနိုင်မှု ဖြစ်သည်  
-- သင့် အကောင့်မှာ **Cognitive Services OpenAI User** အခန်းကဏ္ဍ ရရှိထား ရမည်
+**ဤအဆင့် လိုအပ်သော အကြောင်းပြချက်:**
+- Azure AI Foundry သည် Microsoft Entra ID ကို inference တောင်းဆိုမှုများ အတည်ပြုရန် အသုံးပြုသည်
+- Keyless auth ဆိုသည်မှာ သင့် source code သို့မဟုတ် ပတ်ဝန်းကျင်အတွင်းတွင် မှတ်စု မရှိပါ။
+- သင်၏ အကောင့်တွင် **Cognitive Services OpenAI User** အခန်းကဏ္ဍ ပါရှိရမည်။
 
-### အဆင့် ၂: တည်ဆောက်ပြီး လည်ပတ်ပါ
+default deployment အမည်မှာ `gpt-5.6-luna` ဖြစ်သည်။ သင်၏ GPT-5.6 Luna deployment ၌ အမည်တစ်ခုခြားလည်း၊ အက်ပလီကေးရှင်း စတင်မတိုင် မီ terminal ထဲတွင် `AZURE_OPENAI_DEPLOYMENT` ကို သတ်မှတ်ပါ။ ပုံစစ်ခြင်းနှင့် ဇာတ်လမ်း ထုတ်လုပ်မှု နှစ်ခုလုံးတွင် ဤဆက်တင်ကို အသုံးပြုသည်။
 
-ပရောဂျက် ဖိုဒားထဲ သို့ သွားပါ -
+### အဆင့် ၂: ဆောက်လုပ်၍ လည်ပတ်ခြင်း
+
+project လမ်းကြောင်းသို့ သွားပါ -
 ```bash
 cd 04-PracticalSamples/petstory
 ```
 
-အက်ပ် တည်ဆောက်ပါ -
+standalone executable JAR တည်ဆောက်ပြီး အော့ဖ်လိုင်း စမ်းသပ်မှုများအားလုံး လည်ပတ်ပါ-
 ```bash
-mvn clean compile
+mvn clean package
 ```
 
 ဆာဗာ စတင်ပါ -
@@ -380,72 +231,67 @@ mvn clean compile
 mvn spring-boot:run
 ```
 
-အက်ပ်ပလီကေးရှင်းသည် `http://localhost:8080` တွင် စတင် လည်ပတ်မည်။
+အက်ပလီကေးရှင်းသည် `http://localhost:8080` တွင် စတင်လည်ပတ်ပါမည်။
 
-### အဆင့် ၃: အက်ပ်ကို စမ်းသပ်ကြည့်ပါ
+အဲဒီအစားပြောင်းလဲ၍ free port တစ်ခုတွင် packaged JAR စတင်လည်ပတ်နိုင်သည်၊ ဥပမာ -
 
-1. **ဖွင့်ပါ** `http://localhost:8080` ကို browser တွင်  
-2. **သင့်တိရစ္ဆာန်ကို ဖော်ပြပါ** (ဥပမာ - "အရူးအမူးကစားရတာကြိုက်တဲ့ ရွှေရောင် ရထားရီဗာ")  
-3. **နှိပ်ပါ** "Generate Story" ခလုတ်ကို AI ဖန်တီးပုံပြင် ရရှိရန်  
-4. **အခြားနည်း** အဖြစ် တိရစ္ဆာန် ဓာတ်ပုံ တင်ပြီး အလိုအလျောက် ဖော်ပြချက် ရရှိစေပါ  
-5. **သင့်တိရစ္ဆာန် ဖော်ပြချက်အရ ဖန်တီးထားသော ကောင်းကင်ပုံပြင်ကို ကြည့်ရန်**
+```bash
+java -jar target/pet-story-app-0.0.1-SNAPSHOT.jar --server.port=8083
+```
 
-## ဒါအားလုံး ဘယ်လိုပေါင်းစည်း လည်ပတ်သလဲ
+ဤကိစ္စအတွက် `http://localhost:8083/` ကို ဖွင့်ပါ။ `/analyze-image` နှင့် `/generate-story` လမ်းကြောင်းများသည် ရွေးချယ်ထားသော port တွင် ရရှိနိုင်သည်။
 
-သင်တိရစ္ဆာန် ပုံပြင် တစ်ပုဒ် ဖန်တီးသော အပြည့်အစုံ စဉ်ဆက်ဖြစ်ပုံ -
+### အဆင့် ၃: အက်ပလီကေးရှင်း စမ်းသပ်ခြင်း
 
-1. **အသုံးပြုသူ ထည့်သွင်းချက်**: အသုံးပြုသူ မှ ဝက်ဘ်ပုံစံတွင် သူ့တိရစ္ဆာန်ကို ဖော်ပြသည်  
-2. **ပုံစံ တင်သွင်းခြင်း**: Browser မှ POST request ကို `/generate-story` သို့ ပေးပို့  
-3. **ထိန်းချုပ်ရေးသူ လုပ်ငန်းစဉ်**: `PetController` က ဖော်ပြချက်ကို စစ်ဆေး သန့်စင်  
-4. **AI ဝန်ဆောင်မှု ခေါ်ယူခြင်း**: `StoryService` မှ Azure AI Foundry မော်ဒယ် သို့ တောင်းဆို  
-5. **ပုံပြင် ဖန်တီးခြင်း**: AI မှ ဖန်တီးထားသော ဖန်တီးမှုအများဆုံးပုံပြင်  
-6. **တုံ့ပြန်မှု ကိုင်တွယ်မှု**: Controller က ပုံပြင်ကို လက်ခံပြီး Model ထဲ ထည့်  
-7. **ပုံစံ ဖော်ပြချက်**: Thymeleaf သည် `result.html` ကို ပုံပြင်နှင့် rendering ပြုလုပ်  
-8. **ပြသခြင်း**: မကြာခင် အဆိုပါ ဖန်တီးထားသော ပုံပြင်ကို အသုံးပြုသူ browser တွင် ပြသ   
+1. **ဖွင့်ပါ** `http://localhost:8080` ကို ဘရောက်ဇာတွင်
+2. **ရွေးချယ်ပါ** ပုံမှန် မှတ်သားရှင်းလင်းသော ပစ္စည်းဓာတ်ပုံကို JPEG, PNG, GIF, သို့မဟုတ် WebP ပုံစံဖြင့် ၁၀MB အောက်တွင်
+3. **နှိပ်ပါ** "Analyze Image" ကို နှင့် ပစ္စည်းဖော်ပြချက် စောင့်ဆိုင်းပါ
+4. **နှိပ်ပါ** "Generate Story" ကို အောင်မြင်စွာ စစ်ဆေးမှုပြီးနောက်
+5. **ကြည့်ပါ** ဇာတ်လမ်းကိုနှင့် ရလဒ် စာမျက်နှာရှိ လင့်ခ်အား အသုံးပြု၍ တင်သွင်းဖောင်သို့ ပြန်သွားပါ
 
-**အမှား ကိုင်တွယ်မှု လမ်းစဉ်:**
-AI ဝန်ဆောင်မှု မအောင်မြင်ပါက -
-1. Controller က exception ကို ဖမ်းဆီး  
-2. ရေးသားပြီးသား ရှေ့ပြေးပုံပြင်များဖြင့် fallback ပုံပြင် ဖန်တီး  
-3. AI ဝန်ဆောင်မှု မရရှိနိုင်ခြင်း နှင့် ပတ်သက်၍ အကြောင်းကြားချက် ထည့်သွင်း ပြသ  
-4. အသုံးပြုသူသည် ပုံပြင် တစ်ပုဒ် ရရှိပြီး ကောင်းမွန်သော အသုံးပြုသူ အတွေ့အကြုံ ရရှိ
+ပုံမှန် ပုံမှတဆင့် ဇာတ်လမ်းဇာတ်ညွှန်း ထုတ်လုပ်မှုသည် ခလုတ်နှစ်ချက်အလိုက် မော်ဒယ်နှစ်ကြိမ်ကို ခေါ်သည်။ Live inference သည် သင်၏ deployment ၏ အရင်းအနှီး ကို စားသုံးပြီး သင်္ကေတနှုန်း ကန့်သတ်ထားသော deployment သုံးစဉ်မှာ smoke tests များကို အဆက်မပြတ် လုပ်ဆောင်ပါ။ စာမျက်နှာ ပိတျခြင်းသည် မော်ဒယ် ခေါ်ဆိုမှု မလုပ်ပါ။
 
-## AI ပေါင်းစည်းမှု ကို နားလည်မြင်သာခြင်း
+## အော့ဖ်လိုင်း စမ်းသပ်မှုများ
+
+sample ဖိုလ်ဒါမှ ဆောင်ရွက်ပါ-
+
+```bash
+mvn test
+```
+
+[StoryServiceTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/StoryServiceTest.java) သည် အဖြစ်အပျက် OpenAI SDK ၏ တောင်းဆိုမှုများကို loopback HTTP fixture ဖြင့် ဖမ်းယူသည်။ နှစ်ခုလုံးတောင်းဆိုမှု၏ deployment, `reasoning_effort: none`, token ကန့်သတ်ချက်များ, ပုံအချက်အလက် စစ်ဆေးမှု, ဖျက်ဆီးမှုမရှိစေရန် စစ်ဆေးသည်။
+
+[PetControllerTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/PetControllerTest.java) သည် MockMvc နှင့် မော်ကွက်ထားသော မော်ဒယ် ဝန်ဆောင်မှုဖြင့် Thymeleaf စာမျက်နှာများကို စစ်ဆေးသည်၊ တင်သွင်းမှု ပြားစီ, CSRF, စစ်ဆေးမှု, ထုတ်လွှတ်ရာ လုံခြုံမှုနည်းလမ်းများနှင့် မြင်သာသော ပျက်စီးမှုများကို ကြည့်သည်။ ဤစမ်းသပ်မှုများသည် Azure လက်မှတ် မလိုအပ်ဘဲ မလုပ်ဖူး Azure inference ကိုခြေရာခံ မလုပ်။ Maven သည် Surefire reports ကို `target/surefire-reports` အတွင်းတွင် ရေးဖြည့်သည်။
+
+## ဘယ်လောက်အဆင်ပြေစွာ လည်ပတ်သလဲ
+
+ပစ္စည်းဇာတ်လမ်း ထုတ်လုပ်ရာ အပြည့်အစုံ လည်ပတ်မှုဖြစ်ရပ် –
+
+1. **ဓာတ်ပုံ ရွေးချယ်ခြင်း**: တင်သွင်းပုံစံတွင် ပစ္စည်းဓာတ်ပုံကို ရွေးချယ်သည်
+2. **ဓာတ်ပုံ တင်သွင်းခြင်း**: "Analyze Image" သည် CSRF header ပါနေသည့် multipart POST ကို `/analyze-image` သို့ ပို့သည်
+3. **ဓာတ်ပုံ စိစစ်ခြင်း**: `StoryService` သည် ပုံကို GPT-5.6 Luna သို့ reasoning ကို `none` အဖြစ် သတ်မှတ်ပို့သည်
+4. **ဖော်ပြချက် ပြသခြင်း**: ဘရောက်ဇာသည် ပြန်လာသော ဖော်ပြချက်ကို ပြသ၍ ဖောင်တွင် သိမ်းဆည်းသည်
+5. **ဇာတ်လမ်း တင်သွင်းခြင်း**: "Generate Story" သည် `description` နှင့် `_csrf` ကို `/generate-story` သို့ ပို့သည်
+6. **ဇာတ်လမ်း ထုတ်လုပ်ခြင်း**: Controller သည် ဖော်ပြချက်ကို စစ်ဆေးပြီး ထို deployment တူညီဖြင့် reasoning သတ်မှတ်မှု `none` ဖြင့် ခေါ်သည်
+7. **ပုံစံ အသုံးပြုမှု**: Thymeleaf သည် ဖော်ပြချက်နှင့် ဇာတ်လမ်းကို escape ပြုလုပ်ပြီး ရလဒ် စာမျက်နှာ၌ ပြသသည်
+
+**အမှား ကိုင်တွယ်မှု လည်ပတ်မှု:**
+မော်ဒယ် မအောင်မြင်လျှင် ဆာဗာတွင် အကြောင်းရင်းထောက်လှမ်းမှု ပြုလုပ်သည်။ ပုံစစ်ခြင်းသည် HTTP 502 ပြန်ပေးပြီး ဘရောက်ဇာတွင် အမှားကို "Generate Story" မပြသဘဲ ပြသသည်။ ဇာတ်လမ်း ထုတ်လုပ်မှုသည် ဖောင်သို့ အမှားစာပို့၍ ပြန်လည် ဦးတည်သည်။ တစ်ဘက်လမ်းမရှိဘဲ လောင်းမိုက်ထားသော ရလဒ်တစ်ခုကို မတပ်ဆင်ပါ။
+
+## AI ပေါင်းစည်းမှု နားလည်ခြင်း
 
 ### Azure AI Foundry (keyless)
-အက်ပ်သည် Azure AI Foundry ကို keyless authentication (Microsoft Entra ID) နည်းဖြင့် အသုံးပြု -
+ဝန်ဆောင်မှုသည် သင့်ရင်းမြစ် `/openai/v1/` endpoint ဖြင့် SDK ကို ဖော်ညွှန်းသည်။ `DefaultAzureCredential` နှင့် `AuthenticationUtil.getBearerTokenSupplier` သည် Microsoft Entra tokens ကို `https://ai.azure.com/.default` အတွက် ပေးဆောင်သည်။ ဒေသခံ ဖွံ့ဖြိုးမှုတွင် Azure CLI အကောင့်ဖြင့် မှတ်ပုံတင်နိုင်ပြီး Azure-hosted အက်ပလီကေးရှင်းသည် managed identity နှင့် လိုအပ်သည့် resource ခွင့်ပြုချက်များ ကို အသုံးပြုနိုင်သည်။
 
-```java
-// သော့မပါသောအတည်ပြုမှု - API သော့မရှိပါ။
-DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-this.openAIClient = OpenAIOkHttpClient.builder()
-    .baseUrl(endpoint + "openai/v1/")
-    .credential(BearerTokenCredential.create(
-        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-    .build();
-```
+### Prompt အင်ဂျင်နီယာ
+ပုံစစ်ခြင်းသည် အတ္ထိပစ္စည်း ဆန်းစစ်ဖော်ပြချက် ကောက်နုတ်ရန် အတိုချုံးစာပိုဒ်တစ်ခု တောင်းဆိုပြီး မော်ဒယ်အား ပုံအတွင်း စာသားကို အညွှန်းမဟုတ်ဘဲ ဒေတာအနေနှင့် ကိုင်တွယ်ရန် ပြောသည်။ ဇာတ်လမ်းထုတ်လုပ်မှု သည် ပြန်လာသော ဖော်ပြချက်ကို သီးခြား မိသားစု သင့်တော်သော စာရေးခြင်း တောင်းဆိုမှုငယ်နှင့် အသုံးပြုသည်။ တစ်ဖက်လုံးမှာ reasoning သို့ မတည်ဆောက်ထားဘဲ temperature override မသတ်မှတ်ပါ။
 
-### Prompt Engineering
-ဝန်ဆောင်မှုသည် ကောင်းမွန်သော တုံ့ပြန်ချက် ရရှိရန် အထူးပြု ပြင်ဆင်ထားသည့် prompts များ သုံး -
+### ပြန်ကြားချက် ကိုင်တွယ်ခြင်း
+မျှဝေထားသော ပြန်ကြားချက် ကိုင်တွယ်သူသည် မရွေးချယ်မှု မရှိမှု နှင့် အားလုံး ဖျောက်ထား၊ သို့မဟုတ် ဝါးသော အကြောင်းအရာများကို ငြင်းကြားသည်။ မွန်ကန်သော အကြောင်းအရာကို စစ်ထုတ်၍ အပ်ဒိတ်လုပ်ပြီး တောင်းဆိုမှုပင်မအမှားများကို ထိမ်းသိမ်းသည်။ ပုံဖော်ပြချက်များသည် ၁၀၀၀ စာလုံးထက် မကျော်အောင် ကန့်သတ်ထားပြီး နောက်ထပ် ဇာတ်လမ်းဖောင်သို့ ထည့်သွင်းရန် ဖြစ်သည်။ မော်ဒယ် မအောင်မြင်မှု ကို စစ်ဆေးရန် စတင်အကြောင်းရင်းအား ထိန်းသိမ်းထားသော်လည်း အသုံးပြုသူ မမြင်ဖို့ ဖော်ပြမထားပါ။
 
-```java
-String systemPrompt = "You are a creative storyteller who writes fun, " +
-                     "family-friendly short stories about pets. " +
-                     "Keep stories under 500 words and appropriate for all ages.";
-```
+## နောက်ထပ် အဆင့်များ
 
-### တုံ့ပြန်ချက် ကိုင်တွယ်ခြင်း
-AI အဖြေကို ထုတ်ယူစစ်ဆေး -
-
-```java
-ChatCompletion response = openAIClient.chat().completions().create(params);
-String story = response.choices().get(0).message().content().orElse("");
-```
-
-
-## နောက်တစ်ခုပြုလုပ်ရန် အဆင့်များ
-
-နမူနာများ ပိုမိုကြည့်ရှုရန်၊ [အခန်း 04: အသုံးဝင် နမူနာများ](../README.md) သို့ သွားကြည့်ပါ။
+နမူနာပိုများအတွက် [ခန်းမ ၀၄: လက်တွေ့ နမူနာများ](../README.md) ကို ကြည့်ပါ
 
 ---
 

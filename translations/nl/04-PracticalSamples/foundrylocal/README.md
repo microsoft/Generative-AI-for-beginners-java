@@ -1,354 +1,230 @@
 # Foundry Local Spring Boot Tutorial
 
-## Inhoudsopgave
-
-- [Vereisten](#vereisten)
-- [Projectoverzicht](#projectoverzicht)
-- [De code begrijpen](#de-code-begrijpen)
-  - [1. Applicatieconfiguratie (application.properties)](#1-applicatieconfiguratie-applicationproperties)
-  - [2. Hoofdapplicatieklasse (Application.java)](#2-hoofdapplicatieklasse-applicationjava)
-  - [3. AI-servicelaag (FoundryLocalService.java)](#3-ai-servicelaag-foundrylocalservicejava)
-  - [4. Projectafhankelijkheden (pom.xml)](#4-projectafhankelijkheden-pomxml)
-- [Hoe het allemaal samenwerkt](#hoe-het-allemaal-samenwerkt)
-- [Foundry Local instellen](#foundry-local-instellen)
-- [De applicatie uitvoeren](#de-applicatie-uitvoeren)
-- [Verwachte output](#verwachte-output)
-- [Volgende stappen](#volgende-stappen)
-- [Probleemoplossing](#probleemoplossing)
+Draai een klein taalmodel op je eigen machine en roep de OpenAI-compatibele
+REST-endpoint aan vanuit een Java-consoleapplicatie. Geen Azure-implementatie, Azure-aanmelding,
+cloud-API-sleutel of cloudinferencing wordt gebruikt. **GPT-5.6 Luna is alleen voor Azure; stel deze niet in als een Foundry Local-model.**
 
 
-## Vereisten
+## Versies en vereisten
 
-Voordat je aan deze tutorial begint, zorg dat je:
+| Component | Versie |
+| --- | --- |
+| Java | 21 of later |
+| Maven | 3.6.3 of later |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Foundry Local SDK (lokale REST-server) | 2.0.1 |
+| Node.js (lokale REST-server) | 20 of later |
+| Foundry Local CLI (optioneel, aparte release) | 0.10.3 preview |
 
-- **Java 21 of hoger** geïnstalleerd hebt op je systeem
-- **Maven 3.6+** voor het bouwen van het project
-- **Foundry Local** geïnstalleerd en draaiend hebt
+Spring Boot beheert Spring Framework-, Jackson-, JUnit- en Maven plugin-versies.
+Dit voorbeeld gebruikt de OpenAI Java SDK rechtstreeks, niet Spring AI. De oude ongebruikte
+Spring AI mijlpaal-eigenschap en repository zijn verwijderd.
 
-### **Foundry Local installeren:**
+Het aanbevolen startermodel is **Qwen 2.5 0.5B**, CPU-variant
+`qwen2.5-0.5b-instruct-generic-cpu:4` (ongeveer 822 MB in de catalogus).
+Het vermijdt het vereisen van GPU-uitvoeringsproviders. Andere ondersteunde, gecachte kleine modellen
+kunnen expliciet worden geselecteerd. Model- en runtime-installatie vereisen netwerktoegang;
+prompts en inferentie blijven lokaal. Foundry Local kan nog steeds minimale runtime-
+diagnostiek afgeven, zelfs met niet-essentiële telemetrie uitgeschakeld.
 
-> **Opmerking:** Foundry Local CLI is alleen beschikbaar op **Windows** en **macOS**. Linux wordt ondersteund via de [Foundry Local SDK's](https://github.com/microsoft/Foundry-Local) (Python, JavaScript, C#, Rust).
+Voer de volgende opdrachten uit vanuit deze voorbeeldmap.
 
-```bash
-# Windows
-winget install Microsoft.FoundryLocal
+## Bouw en test Java
 
-# macOS
-brew tap microsoft/foundrylocal
-brew install foundrylocal
+```powershell
+mvn clean verify
 ```
 
-Controleer de installatie:
-```bash
+De HTTP contracttests starten een tijdelijke loopback-server en testen de daadwerkelijke
+OpenAI Java SDK. Ze dekken verzoek-serialisatie, modelontdekking, expliciete model-
+selectie, ambigue of onjuiste modellenlijsten, HTTP-fouten, lege antwoorden,
+alleen-lokale URL's en commandoregelfoutpropagatie. Ze hebben geen model of
+netwerktoegang nodig anders dan Maven afhankelijkheidsinstallatie. De live test is opt-in.
+
+## Start het lokale model
+
+### Aanbevolen: vastgezette SDK-server
+
+Er is geen native Foundry Local Java SDK. De kleine Node.js helper host de
+officiële SDK's REST-server; de applicatie en chatverzoek blijven Java.
+
+Installeer de vastgezette runtime-afhankelijkheden:
+
+```powershell
+npm ci
+```
+
+Als Windows x64 tijdens de native SDK-installatie geen toegang heeft tot NuGet, gebruik dan de meegeleverde
+fallback. Deze downloadt het bijpassende officiële GitHub runtime-archief, controleert de
+SHA-256 digest van de release en plaatst de DLL's naast de native addon. Dit schakelt geen TLS-validatie uit,
+vereist geen verhoogde rechten en wijzigt de SDK-bron niet.
+
+```powershell
+npm ci --ignore-scripts
+pwsh -File ./scripts/install-foundry-runtime.ps1
+```
+
+Toon modellen die al gecached zijn op deze machine:
+
+```powershell
+npm run start:foundry -- --list
+```
+
+Sta bij de eerste keer expliciet het downloaden van het kleine CPU-model toe:
+
+```powershell
+npm run start:foundry -- --model qwen2.5-0.5b-instruct-generic-cpu:4 --download --port 5273
+```
+
+Bij volgende keren laat `--download` weg om een gecached model te vereisen:
+
+```powershell
+npm run start:foundry -- --model qwen2.5-0.5b-instruct-generic-cpu:4 --port 5273
+```
+
+De helper geeft de voorkeur aan een overeenkomend gecached model, accepteert een alias of exacte variant-ID
+en weigert een ontbrekend model tenzij `--download` wordt meegegeven. Hij registreert alleen de
+uitvoeringsprovider van het gekozen model als er een vereist is. Gecachte GPU-varianten kunnen
+nog steeds compatibele uitvoerings-provider pakketten en drivers nodig hebben.
+
+Als poort 5273 in gebruik is, geef dan `--port 0` op voor een beschikbare poort. De helper toont
+`FOUNDRY_LOCAL_BASE_URL`, de exacte `FOUNDRY_LOCAL_MODEL` ID en zijn PID wanneer klaar.
+Gebruik de getoonde endpoint in Java. Laat dit terminalvenster open tijdens het draaien van Java;
+**Ctrl+C** stopt de REST-server en geeft het model vrij.
+
+De standaardcache is `~/.foundry/cache/models`. Stel `FOUNDRY_LOCAL_CACHE_DIR` in voor een
+andere bestaande cache. Logs en helperstatus worden geschreven in de `target/foundry-local` directory
+van dit voorbeeld. Stop de helper voordat je `mvn clean` uitvoert.
+
+### Optioneel: Foundry Local CLI
+
+De CLI en SDK hebben onafhankelijke releases: CLI **0.10.3** bevat SDK **1.2.4**;
+de hierboven gebruikte helper gebruikt SDK **2.0.1**. Het installeren van de nieuwste CLI
+installeert niet de nieuwste taal-SDK. Zie de [CLI release notes](https://github.com/microsoft/Foundry-Local/releases/tag/cli-preview-0.10.3).
+
+Gebruik op Windows de per-gebruiker installatiestatus als de CLI ontbreekt:
+
+```powershell
+winget install --id Microsoft.FoundryLocal --exact --source winget --scope user --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
+```
+
+Of upgrade een bestaande installatie:
+
+```powershell
+winget upgrade --id Microsoft.FoundryLocal --exact --source winget --scope user --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
 foundry --version
 ```
 
-## Projectoverzicht
+CLI 0.10.x vervangt oude `foundry service` commando's door `foundry server`:
 
-Dit project bestaat uit vier hoofdcomponenten:
-
-1. **Application.java** - De hoofdentrypoint van de Spring Boot-applicatie
-2. **FoundryLocalService.java** - Servicelaag die AI-communicatie afhandelt
-3. **application.properties** - Configuratie voor de verbinding met Foundry Local
-4. **pom.xml** - Maven-afhankelijkheden en projectconfiguratie
-
-## De code begrijpen
-
-### 1. Applicatieconfiguratie (application.properties)
-
-**Bestand:** `src/main/resources/application.properties`
-
-```properties
-foundry.local.base-url=http://localhost:5273/v1
-# foundry.local.model is auto-detected from Foundry Local. Set it here to override:
-# foundry.local.model=Phi-4-mini-instruct-cuda-gpu:5
+```powershell
+foundry server start --port 5273
+foundry cache list
+foundry model load qwen2.5-0.5b-instruct-generic-cpu:4
+foundry server status --output json
 ```
 
-**Wat dit doet:**
-- **base-url**: Specificeert waar Foundry Local draait, inclusief het `/v1` pad voor OpenAI API-compatibiliteit. De standaardpoort is `5273`. Als de poort anders is, controleer deze met `foundry service status`.
-- **model** (optioneel): Geeft de naam van het AI-model op voor tekstgeneratie. **Standaard detecteert de applicatie het model automatisch** door bij opstarten de Foundry Local `/v1/models` endpoint te bevragen, dus handmatig instellen is niet nodig. Je kunt het nog steeds expliciet instellen om de autodetectie te overschrijven indien gewenst.
+`model load` vereist een reeds gedownload model. Controleer `foundry model --help` voor
+downloadcommando's. Gebruik altijd het daadwerkelijke endpoint uit de statusuitvoer; anders gebruikt de CLI
+standaard een automatisch toegewezen poort. Start de CLI en SDK helper niet op dezelfde poort.
+Wanneer klaar:
 
-**Belangrijk concept:** Spring Boot laadt deze eigenschappen automatisch en maakt ze beschikbaar voor je applicatie met de `@Value` annotatie.
-
-### 2. Hoofdapplicatieklasse (Application.java)
-
-**Bestand:** `src/main/java/com/example/Application.java`
-
-```java
-@SpringBootApplication
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(Application.class);
-        app.setWebApplicationType(WebApplicationType.NONE);  // Geen webserver nodig
-        app.run(args);
-    }
+```powershell
+foundry server stop
 ```
 
-**Wat dit doet:**
-- `@SpringBootApplication` zet Spring Boot auto-configuratie aan
-- `WebApplicationType.NONE` geeft aan dat dit een commandline-app is, geen webserver
-- De main-methode start de Spring applicatie
+## Draai de Java-applicatie
 
-**De Demo Runner:**
-```java
-@Bean
-public CommandLineRunner foundryLocalRunner(FoundryLocalService foundryLocalService) {
-    return args -> {
-        System.out.println("=== Foundry Local Demo ===");
-        System.out.println("Calling Foundry Local service...");
-        
-        String testMessage = "Hello! Can you tell me what you are and what model you're running?";
-        System.out.println("Sending message: " + testMessage);
-        
-        String response = foundryLocalService.chat(testMessage);
-        System.out.println("Response from Foundry Local:");
-        System.out.println(response);
-        System.out.println("=========================");
-    };
-}
-```
+Stel in een tweede terminal het endpoint en de exacte model-ID in die je server heeft uitgeprint:
 
-**Wat dit doet:**
-- `@Bean` maakt een component die door Spring wordt beheerd
-- `CommandLineRunner` voert code uit nadat Spring Boot is opgestart
-- `foundryLocalService` wordt automatisch geïnjecteerd door Spring (dependency injection)
-- Stuurt een testbericht naar de AI en toont de respons
-
-### 3. AI-servicelaag (FoundryLocalService.java)
-
-**Bestand:** `src/main/java/com/example/FoundryLocalService.java`
-
-#### Configuratie-injectie:
-```java
-@Service
-public class FoundryLocalService {
-    
-    @Value("${foundry.local.base-url:http://localhost:5273/v1}")
-    private String baseUrl;
-    
-    @Value("${foundry.local.model:}")
-    private String model;    // Automatisch gedetecteerd als leeg
-```
-
-**Wat dit doet:**
-- `@Service` zegt tegen Spring dat deze klasse bedrijfslogica levert
-- `@Value` injecteert configuratiewaardes uit application.properties
-- Het model staat standaard leeg, wat **autodetectie** vanuit Foundry Local bij opstart triggert. Dit betekent dat de app werkt met elk model dat in Foundry Local geladen is zonder handmatige configuratie.
-
-#### Client-initialisatie:
-```java
-@PostConstruct
-public void init() {
-    // Detecteer het model automatisch vanuit Foundry Local als het niet expliciet is geconfigureerd
-    if (model == null || model.isBlank()) {
-        model = detectModel();
-    }
-
-    this.openAIClient = OpenAIOkHttpClient.builder()
-            .baseUrl(baseUrl)                // Basis-URL bevat al /v1 vanuit de configuratie
-            .apiKey("not-needed")            // Lokale server heeft geen echte API-sleutel nodig
-            .build();
-}
-```
-
-**Wat dit doet:**
-- `@PostConstruct` voert deze methode uit nadat Spring de service heeft gemaakt
-- Als er geen model is geconfigureerd, vraagt het Foundry Local’s `/v1/models` endpoint en kiest het eerste geladen model
-- Maakt een OpenAI-client aan die verwijst naar je lokale Foundry Local instantie
-- De base URL vanuit `application.properties` bevat al `/v1` voor OpenAI API-compatibiliteit
-- API sleutel staat op "not-needed" omdat lokale ontwikkeling geen authenticatie vereist
-
-#### Chat-methode:
-```java
-public String chat(String message) {
-    try {
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(model)                    // Welk AI-model te gebruiken
-                .addUserMessage(message)         // Je vraag/aanwijzing
-                .maxCompletionTokens(150)        // Beperk de lengte van het antwoord
-                .temperature(0.7)                // Beheers creativiteit (0.0-1.0)
-                .build();
-        
-        ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
-        
-        // Haal het antwoord van de AI uit het API-resultaat
-        if (chatCompletion.choices() != null && !chatCompletion.choices().isEmpty()) {
-            return chatCompletion.choices().get(0).message().content().orElse("No response found");
-        }
-        
-        return "No response content found";
-    } catch (Exception e) {
-        throw new RuntimeException("Error calling chat completion: " + e.getMessage(), e);
-    }
-}
-```
-
-**Wat dit doet:**
-- **ChatCompletionCreateParams**: Configureert het AI-verzoek
-  - `model`: Specificeert welk AI-model gebruikt wordt (moet precies overeenkomen met het ID uit `foundry model list`)
-  - `addUserMessage`: Voegt jouw bericht toe aan het gesprek
-  - `maxCompletionTokens`: Beperkt hoe lang het antwoord mag zijn (bespaart resources)
-  - `temperature`: Bepaalt de willekeurigheid (0.0 = deterministisch, 1.0 = creatief)
-- **API-aanroep**: Verzendt het verzoek naar Foundry Local
-- **Response-afhandeling**: Haalt veilig de tekstrespons van de AI op
-- **Foutafhandeling**: Pakt uitzonderingen af met duidelijke foutmeldingen
-
-### 4. Projectafhankelijkheden (pom.xml)
-
-**Belangrijke afhankelijkheden:**
-
-```xml
-<!-- Spring Boot - Application framework -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter</artifactId>
-    <version>${spring-boot.version}</version>
-</dependency>
-
-<!-- OpenAI Java SDK - For AI API calls -->
-<dependency>
-    <groupId>com.openai</groupId>
-    <artifactId>openai-java</artifactId>
-    <version>2.12.0</version>
-</dependency>
-
-<!-- Jackson - JSON processing -->
-<dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-    <version>2.17.0</version>
-</dependency>
-```
-
-**Wat deze doen:**
-- **spring-boot-starter**: Biedt kernfunctionaliteit van Spring Boot
-- **openai-java**: Officiële OpenAI Java SDK voor API-communicatie
-- **jackson-databind**: Handelt JSON-serialisatie/deserialisatie voor API-aanroepen
-
-## Hoe het allemaal samenwerkt
-
-Hier is de volledige flow wanneer je de applicatie draait:
-
-1. **Opstarten:** Spring Boot start en leest `application.properties`
-2. **Service aanmaken:** Spring maakt `FoundryLocalService` en injecteert configuratiewaardes
-3. **Modeldetectie:** Als er geen model is geconfigureerd, vraagt de service Foundry Local's `/v1/models` endpoint en gebruikt het eerste beschikbare model automatisch
-4. **Client setup:** `@PostConstruct` initialiseert de OpenAI-client om verbinding te maken met Foundry Local
-5. **Demo uitvoeren:** `CommandLineRunner` voert uit na opstart
-6. **AI-aanroep:** De demo roept `foundryLocalService.chat()` aan met een testbericht
-7. **API-verzoek:** Service bouwt en verstuurt OpenAI-compatibel verzoek naar Foundry Local
-8. **Respons verwerken:** Service haalt het antwoord van de AI op en geeft dit terug
-9. **Weergave:** Applicatie print het antwoord en sluit af
-
-## Foundry Local instellen
-
-1. **Installeer Foundry Local** volgens de instructies in de sectie [Vereisten](#vereisten).
-
-2. **Start de service** (indien nog niet draaiend):
-   ```bash
-   foundry service start
-   ```
-
-3. **Controleer de servicestatus** om te bevestigen dat hij draait en noteer de poort:
-   ```bash
-   foundry service status
-   ```
-
-4. **Download en start een model** (wordt bij de eerste run gedownload, gecachet voor volgende keren):
-   ```bash
-   foundry model run phi-4-mini
-   ```
-   Dit opent een interactieve chatsessie. Je kunt afsluiten met `Ctrl+C`. Het model blijft geladen in de service.
-
-   > **Tip:** Voer `foundry model list` uit om alle beschikbare modellen te zien. Vervang `phi-4-mini` door een alias uit de catalogus (bijv. `qwen2.5-0.5b` voor een kleiner/sneller model).
-
-5. **Controleer dat het model geladen is:**
-   ```bash
-   foundry service ps
-   ```
-
-6. **Update `application.properties` indien nodig:**
-   - De standaard `base-url` (`http://localhost:5273/v1`) komt overeen met de standaardpoort van de CLI. Pas aan alleen als `foundry service status` een andere poort laat zien.
-   - Het model wordt **automatisch gedetecteerd** bij opstart — geen configuratie vereist.
-
-   ```properties
-   foundry.local.base-url=http://localhost:5273/v1
-   # Model is auto-detected. Uncomment below to override:
-   # foundry.local.model=Phi-4-mini-instruct-cuda-gpu:5
-   ```
-
-## De applicatie uitvoeren
-
-### Stap 1: Zorg dat er een model geladen is in Foundry Local
-```bash
-foundry service ps
-```
-Als er geen modellen worden getoond, laad er dan één:
-```bash
-foundry model run phi-4-mini
-```
-
-### Stap 2: Bouw en start de applicatie
-In een aparte terminal:
-```bash
-cd 04-PracticalSamples/foundrylocal
+```powershell
+$env:FOUNDRY_LOCAL_BASE_URL = "http://127.0.0.1:5273/v1"
+$env:FOUNDRY_LOCAL_MODEL = "qwen2.5-0.5b-instruct-generic-cpu:4"
 mvn spring-boot:run
 ```
 
-Of bouw en voer uit als JAR:
-```bash
-mvn clean package
+Of draai de verpakte applicatie:
+
+```powershell
 java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
 ```
 
-## Verwachte output
+Het enkele Java-entrypoint is `com.example.Application`. Het print het geselecteerde
+endpoint, de daadwerkelijke model-ID, prompt en gegenereerd antwoord, sluit dan zijn Spring
+context en HTTP-client. Mislukte inferentie of ontbrekende antwoordtekst resulteert in een
+foutcode in plaats van een succesvormige placeholder.
 
+### Configuratie
+
+| Omgevingsvariabele | Standaard | Doel |
+| --- | --- | --- |
+| `FOUNDRY_LOCAL_BASE_URL` | `http://127.0.0.1:5273/v1` | Loopback HTTP-endpoint, inclusief `/v1` |
+| `FOUNDRY_LOCAL_MODEL` | Leeg | Exacte model-ID; anders wordt het enige geadverteerde model gekozen |
+| `FOUNDRY_LOCAL_PROMPT` | Een één-zin vraag over lokale modellen | Prompt verzonden door de console-runner |
+
+Equivalente Spring-argumenten zijn `--foundry.local.base-url=...`,
+`--foundry.local.model=...` en `--foundry.local.prompt=...`.
+Alleen loopback HTTP-endpoints worden geaccepteerd. Remote/cloud endpoints, ingebedde
+referenties, query strings en paden zonder `/v1` worden geweigerd.
+
+Een lege modelinstelling werkt alleen als `/v1/models` precies één model adverteert.
+Een geadverteerd model is niet per se geladen. Als meerdere modellen geadverteerd worden,
+stel dan de exacte geladen ID in in plaats van te vertrouwen op catalogus volgorde.
+
+Verzoeken gebruiken `temperature=0`, een output-limiet van 150 tokens, een timeout van 120 seconden, en
+geen automatische retries. Het `max_tokens` aanvraagveld is bewust aanwezig: het wordt
+ondersteund door het Foundry Local REST-contract, hoewel OpenAI Java dat veld deprecated voor
+nieuwere cloudmodellen. Modelidentiteit komt uit configuratie of ontdekking,
+niet uit de claims van het model zelf.
+
+## Live validatie
+
+Met de lokale server draaiend, voer je alle tests uit inclusief de opt-in live test.
+Vervang de poort in het endpoint door de waarde die jouw server heeft uitgeprint. Quote scherpe
+Maven-eigenschappen in PowerShell:
+
+```powershell
+mvn "-Dfoundry.local.live=true" "-Dfoundry.local.base-url=http://127.0.0.1:5273/v1" "-Dfoundry.local.model=qwen2.5-0.5b-instruct-generic-cpu:4" verify
 ```
-=== Foundry Local Demo ===
-Calling Foundry Local service...
-Sending message: Hello! Can you tell me what you are and what model you're running?
-Response from Foundry Local:
-Hello! I'm Phi, an AI developed by Microsoft. I can assist with a wide variety of 
-tasks including answering questions, helping with analysis, creative writing, coding, 
-and general conversation. How can I help you today?
-=========================
-```
 
-## Volgende stappen
+De live test roept `Application.main` aan, geeft de feitelijke "De hoofdstad van Frankrijk is Parijs," als feit,
+vraagt om de stad en controleert of de daadwerkelijke gegenereerde tekst
+`Paris` is. Het controleert een semantisch resultaat, niet alleen een succesvolle HTTP-status.
 
-Voor meer voorbeelden, zie [Hoofdstuk 04: Praktische voorbeelden](../README.md)
+Dit is een integratiecontrole, geen nauwkeurigheidsbenchmark. Tijdens validatie gaf dit
+0.5B model een antwoord `3` op een aparte "2 + 2" prompt via zowel Java als directe
+REST. Vertrouw niet op het model voor rekenkundige of feitelijke nauwkeurigheid zonder onafhankelijke
+verificatie; gebruik deterministische tools voor berekeningen.
 
 ## Probleemoplossing
 
-### Veelvoorkomende problemen
+| Symptoom | Controleer |
+| --- | --- |
+| Verbinding geweigerd | Wacht op het gereed bericht; gebruik de opgegeven poort en `/v1` pad. |
+| Meerdere modellen geadverteerd | Stel `FOUNDRY_LOCAL_MODEL` in op de exacte ID van het geladen model. |
+| Model ontbreekt | Gebruik `--list`, of sta expliciet een download toe met `--download`. |
+| GPU-provider faalt of hapert | Gebruik het kleine CPU-model. Een gecached GPU-model heeft nog steeds de provider nodig. |
+| CLI blijft `initializing` | Lees `foundry server logs --lines 80`; stop de daemon en gebruik de SDK helper. |
+| NuGet TLS/download falen | Herstel netwerktoegang of gebruik de bovengenoemde geverifieerde Windows x64 fallback. Schakel TLS niet uit. |
+| Poort in gebruik | Gebruik `--port 0` en configureer Java met het getoonde endpoint. |
+| Geen keuzes of lege tekst | De app faalt bewust; inspecteer het model en runtime logs. |
 
-**"Connection refused" of "Service unavailable"**
-- Controleer de service: `foundry service status`
-- Herstart indien nodig: `foundry service restart`
-- Controleer dat de poort in `application.properties` overeenkomt met de output van `foundry service status`
-- Zorg dat de URL eindigt op `/v1`: `http://localhost:5273/v1`
+## Bron en referenties
 
-**"No model found" bij opstart**
-- De applicatie detecteert het model automatisch. Zorg dat er minstens één model is geladen: `foundry service ps`
-- Als er geen modellen geladen zijn: `foundry model run phi-4-mini`
-- Als je de modelnaam hebt aangepast in `application.properties`, controleer dat die overeenkomt met `foundry model list`
-
-**"400 Bad Request" fouten**
-- Controleer dat de base URL `/v1` bevat: `http://localhost:5273/v1`
-- Zorg dat je `maxCompletionTokens()` gebruikt in je code (gebruik niet de verouderde `maxTokens()`)
-
-**Maven compilatie fouten**
-- Zorg dat je Java 21 of hoger hebt: `java -version`
-- Schoon en bouw opnieuw: `mvn clean compile`
-- Controleer je internetverbinding voor het downloaden van afhankelijkheden
-
-**Problemen met serviceverbinding**
-- Als je `Request to local service failed` ziet, voer uit: `foundry service restart`
-- Controleer geladen modellen: `foundry service ps`
-- Bekijk servicelogs: `foundry service diag`
+- [Application.java](../../../../04-PracticalSamples/foundrylocal/src/main/java/com/example/Application.java): one-shot Spring Boot runner.
+- [FoundryLocalService.java](../../../../04-PracticalSamples/foundrylocal/src/main/java/com/example/FoundryLocalService.java): getypeerde ontdekking en lokale chatvoltooiingen.
+- [FoundryLocalServiceTest.java](../../../../04-PracticalSamples/foundrylocal/src/test/java/com/example/FoundryLocalServiceTest.java): HTTP contract-, runner- en live tests.
+- [start-foundry.mjs](../../../../04-PracticalSamples/foundrylocal/scripts/start-foundry.mjs): officiële SDK REST-server met gecachte modelselectie en opruiming.
+- [install-foundry-runtime.ps1](../../../../04-PracticalSamples/foundrylocal/scripts/install-foundry-runtime.ps1): geverifieerde Windows x64 native-runtime fallback.
+- [application.properties](../../../../04-PracticalSamples/foundrylocal/src/main/resources/application.properties), [pom.xml](../../../../04-PracticalSamples/foundrylocal/pom.xml), en [package.json](../../../../04-PracticalSamples/foundrylocal/package.json): configuratie en afhankelijkheden.
+- [Foundry Local REST integratie](https://learn.microsoft.com/azure/foundry-local/how-to/how-to-integrate-with-inference-sdks).
+- [Foundry Local 2.0.1 release en migratienotities](https://github.com/microsoft/Foundry-Local/releases/tag/v2.0.1).
+- [Hoofdstuk 04: Praktische voorbeelden](../README.md).
 
 ---
 
 <!-- CO-OP TRANSLATOR DISCLAIMER START -->
-**Disclaimer**:  
-Dit document is vertaald met behulp van de AI vertaaldienst [Co-op Translator](https://github.com/Azure/co-op-translator). Hoewel we streven naar nauwkeurigheid, dient u er rekening mee te houden dat automatische vertalingen fouten of onnauwkeurigheden kunnen bevatten. Het oorspronkelijke document in de oorspronkelijke taal dient als de gezaghebbende bron te worden beschouwd. Voor belangrijke informatie wordt professionele menselijke vertaling aanbevolen. Wij zijn niet aansprakelijk voor eventuele misverstanden of verkeerde interpretaties die voortvloeien uit het gebruik van deze vertaling.
+**Disclaimer**:
+Dit document is vertaald met behulp van de AI vertaaldienst [Co-op Translator](https://github.com/Azure/co-op-translator). Hoewel we streven naar nauwkeurigheid, dient u er rekening mee te houden dat geautomatiseerde vertalingen fouten of onnauwkeurigheden kunnen bevatten. Het originele document in de oorspronkelijke taal moet worden beschouwd als de gezaghebbende bron. Voor kritieke informatie wordt professionele menselijke vertaling aanbevolen. Wij zijn niet aansprakelijk voor eventuele misverstanden of verkeerde interpretaties die voortvloeien uit het gebruik van deze vertaling.
 <!-- CO-OP TRANSLATOR DISCLAIMER END -->

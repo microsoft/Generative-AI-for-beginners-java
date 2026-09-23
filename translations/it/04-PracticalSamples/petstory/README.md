@@ -1,16 +1,26 @@
-# Guida al Generatore di Storie di Animali Domestici per Principianti
+# Tutorial per Principianti Generatore di Storie di Animali Domestici
+
+Carica una foto di un animale domestico, analizzala con GPT-5.6 Luna e genera una storia dalla descrizione risultante. Entrambe le richieste al modello usano `reasoning_effort: none`.
+
+| Componente | Versione |
+| --- | --- |
+| Java | 21 o superiore |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
 
 ## Indice
 
 - [Prerequisiti](#prerequisiti)
 - [Comprendere la Struttura del Progetto](#comprendere-la-struttura-del-progetto)
-- [Componenti Principali Spiegati](#componenti-principali-spiegati)
+- [Spiegazione dei Componenti Principali](#spiegazione-dei-componenti-principali)
   - [1. Applicazione Principale](#1-applicazione-principale)
   - [2. Controller Web](#2-controller-web)
   - [3. Servizio Storie](#3-servizio-storie)
   - [4. Template Web](#4-template-web)
   - [5. Configurazione](#5-configurazione)
 - [Esecuzione dell'Applicazione](#esecuzione-dellapplicazione)
+- [Test Offline](#test-offline)
 - [Come Funziona Tutto Insieme](#come-funziona-tutto-insieme)
 - [Comprendere l'Integrazione AI](#comprendere-lintegrazione-ai)
 - [Passi Successivi](#passi-successivi)
@@ -18,21 +28,21 @@
 ## Prerequisiti
 
 Prima di iniziare, assicurati di avere:
-- Java 21 o versioni superiori installato
+- Java 21 o superiore installato
 - Maven per la gestione delle dipendenze
-- Un modello Azure AI Foundry distribuito (configuralo con `azd up` — vedi [Capitolo 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md)), autenticato con `az login` (autenticazione senza chiave)
-- Comprensione base di Java, Spring Boot e sviluppo web
+- Un deployment Azure AI Foundry di GPT-5.6 Luna chiamato `gpt-5.6-luna`, o un override `AZURE_OPENAI_DEPLOYMENT` che punta a quel deployment. Vedi [Capitolo 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md) per il provisioning e fai login con `az login` per l'autenticazione senza chiave. Il deployment deve supportare l'input delle immagini e `reasoning_effort: none`.
+- Conoscenze di base di Java, Spring Boot e sviluppo web
 
 ## Comprendere la Struttura del Progetto
 
-Il progetto per la storia sugli animali domestici ha diversi file importanti:
+Il progetto storia di animali domestici contiene diversi file importanti:
 
 ```
 petstory/
 ├── src/main/java/com/example/petstory/
 │   ├── PetStoryApplication.java       # Main Spring Boot application
 │   ├── PetController.java             # Web request handler
-│   ├── StoryService.java              # AI story generation service
+│   ├── StoryService.java              # AI image analysis and story generation
 │   └── SecurityConfig.java            # Security configuration
 ├── src/main/resources/
 │   ├── application.properties         # App configuration
@@ -42,7 +52,7 @@ petstory/
 └── pom.xml                           # Maven dependencies
 ```
 
-## Componenti Principali Spiegati
+## Spiegazione dei Componenti Principali
 
 ### 1. Applicazione Principale
 
@@ -60,209 +70,50 @@ public class PetStoryApplication {
 ```
 
 **Cosa fa:**
-- L'annotazione `@SpringBootApplication` abilita l'auto-configurazione e la scansione dei componenti
+- L'annotazione `@SpringBootApplication` abilita la configurazione automatica e la scansione dei componenti
 - Avvia un server web embedded (Tomcat) sulla porta 8080
-- Crea automaticamente tutti i bean e servizi necessari di Spring
+- Crea automaticamente tutti i bean e i servizi Spring necessari
 
 ### 2. Controller Web
 
-**File:** `PetController.java`
+**File:** [PetController.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/PetController.java)
 
-Gestisce tutte le richieste web e le interazioni utente:
+| Endpoint | Richiesta | Risposta di successo |
+| --- | --- | --- |
+| `GET /` | Nessun corpo | Modulo HTML di caricamento con token CSRF |
+| `POST /analyze-image` | `multipart/form-data`, campo file `image` | JSON: `{"description":"Un animale domestico giocherellone..."}` |
+| `POST /generate-story` | `application/x-www-form-urlencoded`, campo `description` | Pagina HTML con il risultato contenente la descrizione e la storia generata |
 
-```java
-@Controller
-public class PetController {
-    
-    private final StoryService storyService;
-    
-    public PetController(StoryService storyService) {
-        this.storyService = storyService;
-    }
-    
-    @GetMapping("/")
-    public String index() {
-        return "index";  // Restituisce il template index.html
-    }
-    
-    @PostMapping("/generate-story")
-    public String generateStory(@RequestParam("description") String description, 
-                               Model model, 
-                               RedirectAttributes redirectAttributes) {
-        
-        // Validazione dell'input
-        if (description.trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Please provide a description.");
-            return "redirect:/";
-        }
-        
-        // Sanitizza l'input per la sicurezza
-        String sanitizedDescription = sanitizeInput(description);
-        
-        // Genera la storia con gestione degli errori
-        try {
-            String story = storyService.generateStory(sanitizedDescription);
-            model.addAttribute("caption", sanitizedDescription);
-            model.addAttribute("story", story);
-            return "result";  // Restituisce il template result.html
-            
-        } catch (Exception e) {
-            // Usa una storia di riserva se l'IA fallisce
-            String fallbackStory = generateFallbackStory(sanitizedDescription);
-            model.addAttribute("story", fallbackStory);
-            return "result";
-        }
-    }
-    
-    private String sanitizeInput(String input) {
-        return input.replaceAll("[<>\"'&]", "")  // Remove dangerous characters
-                   .trim()
-                   .substring(0, Math.min(input.length(), 500));  // Limita la lunghezza
-    }
-}
-```
+Entrambi gli endpoint POST richiedono il cookie di sessione e il token CSRF ottenuti da `GET /`. Lo script di caricamento invia il valore nascosto `_csrf` nell'intestazione `X-CSRF-TOKEN`; l'invio della storia lo invia come campo del form `_csrf`. I client API devono preservare il cookie tra le richieste. Questi sono endpoint per form, non endpoint per richieste JSON.
 
-**Caratteristiche principali:**
+Le descrizioni devono essere non vuote e non più lunghe di 1000 caratteri. Il controller tronca la descrizione e rimuove `<`, `>`, virgolette doppie, apostrofi e `&` prima di passarla al servizio. Il template del risultato esegue anche l'escape dell'output del modello con `th:text`.
 
-1. **Gestione delle rotte**: `@GetMapping("/")` mostra il modulo di upload, `@PostMapping("/generate-story")` elabora le sottomissioni
-2. **Validazione Input**: Controlla descrizioni vuote e limiti di lunghezza
-3. **Sicurezza**: Sanifica l'input utente per prevenire attacchi XSS
-4. **Gestione Errori**: Fornisce storie alternative quando il servizio AI fallisce
-5. **Binding Modello**: Passa i dati ai template HTML usando il `Model` di Spring
-
-**Sistema di fallback:**
-Il controller include template di storie pre-scritte che vengono usate quando il servizio AI non è disponibile:
-
-```java
-private String generateFallbackStory(String description) {
-    String[] storyTemplates = {
-        "Meet the most wonderful pet in the world – a furry ball of energy...",
-        "Once upon a time, there lived a remarkable pet whose heart was as big...",
-        "In a cozy home filled with love, there lived an extraordinary pet..."
-    };
-    
-    // Usa l'hash della descrizione per risposte coerenti
-    int index = Math.abs(description.hashCode() % storyTemplates.length);
-    return storyTemplates[index];
-}
-```
+I fallimenti di validazione delle immagini ritornano HTTP 400 con un campo `error`; i fallimenti del modello ritornano HTTP 502 con un campo `error` e nessuna `description`. Descrizioni di storie invalide o fallimenti del modello reindirizzano a `/` con un errore visibile. I campi richiesti mancanti ritornano HTTP 400, e i token CSRF mancanti o invalidi ritornano HTTP 403. Non sono presentate descrizioni o storie di fallback come risultati AI di successo.
 
 ### 3. Servizio Storie
 
-**File:** `StoryService.java`
+**File:** [StoryService.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/StoryService.java)
 
-Questo servizio comunica con Azure AI Foundry per generare storie usando l'autenticazione senza chiave:
+L'SDK ufficiale OpenAI Java 4.63.1 chiama l'API Chat Completions compatibile OpenAI di Azure AI Foundry. Azure Identity 1.18.6 fornisce un bearer token Microsoft Entra tramite `DefaultAzureCredential`; non è richiesta alcuna chiave API.
 
-```java
-@Service
-public class StoryService {
-    
-    private final OpenAIClient openAIClient;
-    private final String modelName;
-    
-    public StoryService(@Value("${azure.openai.endpoint:}") String endpoint,
-                       @Value("${azure.openai.deployment:gpt-4o-mini}") String modelName) {
-        this.modelName = modelName;
-        if (endpoint == null || endpoint.isBlank()) {
-            endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        }
-        
-        // L'endpoint compatibile con OpenAI di Foundry si trova sotto /openai/v1/
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1/";
-        
-        // Autenticazione senza chiave con Microsoft Entra ID (nessuna chiave API)
-        DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-        this.openAIClient = OpenAIOkHttpClient.builder()
-                .baseUrl(baseUrl)
-                .credential(BearerTokenCredential.create(
-                        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-                .build();
-    }
-    
-    public String generateStory(String description) {
-        String systemPrompt = "You are a creative storyteller who writes fun, " +
-                             "family-friendly short stories about pets. " +
-                             "Keep stories under 500 words and appropriate for all ages.";
-        
-        String userPrompt = "Write a fun short story about a pet described as: " + description;
-        
-        // Configura la richiesta AI
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(modelName)
-                .addSystemMessage(systemPrompt)
-                .addUserMessage(userPrompt)
-                .maxCompletionTokens(500)  // Limita la lunghezza della risposta
-                .temperature(0.8)          // Controlla la creatività (0.0-1.0)
-                .build();
-        
-        // Invia la richiesta e ottieni la risposta
-        ChatCompletion response = openAIClient.chat().completions().create(params);
-        
-        return response.choices().get(0).message().content().orElse("");
-    }
-}
-```
+| Operazione | Input | `max_completion_tokens` |
+| --- | --- | --- |
+| `analyzeImage` | Byte dell'immagine codificati come URL dati base64 con il tipo MIME caricato | 300 |
+| `generateStory` | Una descrizione del pet in un messaggio utente | 800 |
 
-**Componenti chiave:**
+Entrambe le richieste usano il deployment configurato, predefinito a `gpt-5.6-luna`, e impostano esplicitamente `ReasoningEffort.NONE` (`reasoning_effort: none`). Nessuna richiesta invia `temperature` o il vecchio parametro `max_tokens`.
 
-1. **Client OpenAI**: Usa l'SDK ufficiale OpenAI Java configurato per Azure AI Foundry (keyless)
-2. **Prompt di sistema**: Imposta il comportamento dell'AI per scrivere storie di animali domestici adatte alle famiglie
-3. **Prompt utente**: Indica all'AI esattamente quale storia scrivere basandosi sulla descrizione
-4. **Parametri**: Controlla la lunghezza della storia e il livello di creatività
-5. **Gestione errori**: Lancia eccezioni che il controller cattura e gestisce
+L'analisi delle immagini accetta JPEG, PNG, GIF e WebP, rifiuta immagini vuote e file oltre 10MB, e limita la descrizione risultante a 1000 caratteri. Il prompt per la storia richiede una breve storia adatta a famiglie. Scelte vuote o contenuto del modello vuoto sono errori, e i fallimenti mantengono la causa originale per la diagnostica lato server. Il client SDK viene chiuso allo spegnimento dell'applicazione.
 
 ### 4. Template Web
 
-**File:** `index.html` (Modulo di caricamento)
+**File:** [index.html](../../../../04-PracticalSamples/petstory/src/main/resources/templates/index.html) (Modulo di Caricamento)
 
-La pagina principale dove gli utenti descrivono i loro animali:
+La pagina inizia con un selettore di foto, non un'area di testo per la descrizione. **Analizza Immagine** mostra l'anteprima della foto selezionata e la invia a `/analyze-image`. Una risposta di successo mostra la descrizione, compila il campo nascosto `description` e rivela **Genera Storia**. Quel pulsante invia il modulo esistente a `/generate-story`.
 
-```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Pet Story Generator</title>
-    <!-- CSS styling -->
-</head>
-<body>
-    <div class="container">
-        <h1>Pet Story Generator</h1>
-        <p>Describe your pet and we'll create a fun story about them!</p>
-        
-        <!-- Error message display -->
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-        
-        <!-- Story generation form -->
-        <form action="/generate-story" method="post">
-            <div class="form-group">
-                <label for="description">Describe your pet:</label>
-                <textarea id="description" name="description" 
-                         placeholder="Tell us about your pet - what they look like, their personality, favorite activities..."
-                         maxlength="1000" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Generate Story</button>
-        </form>
-        
-        <!-- Image upload section with client-side processing -->
-        <div class="upload-section">
-            <h2>Or Upload a Photo</h2>
-            <input type="file" id="imageInput" accept="image/*" />
-            <button onclick="analyzeImage()" class="upload-btn">Analyze Image</button>
-        </div>
-        
-        <script>
-            // Client-side image analysis using Transformers.js
-            async function analyzeImage() {
-                // Image processing code here
-                // Generates description automatically from uploaded image
-            }
-        </script>
-    </div>
-</body>
-</html>
-```
+Non c'è alcun modello browser da scaricare o dipendenza CDN. L'analisi delle immagini avviene sul server tramite il deployment Azure configurato. I fallimenti restano visibili e non abilitano la generazione di storie con una descrizione fabbricata. La selezione di un file diverso cancella l'analisi precedente.
 
-**File:** `result.html` (Visualizzazione della storia)
+**File:** `result.html` (Visualizzazione Storia)
 
 Mostra la storia generata:
 
@@ -299,10 +150,10 @@ Mostra la storia generata:
 
 **Caratteristiche del template:**
 
-1. **Integrazione Thymeleaf**: Usa attributi `th:` per contenuto dinamico
-2. **Design responsive**: Stile CSS per dispositivi mobili e desktop
-3. **Gestione errori**: Mostra agli utenti errori di validazione
-4. **Elaborazione client-side**: JavaScript per analisi immagini (con Transformers.js)
+1. **Integrazione Thymeleaf**: Usa attributi `th:` per contenuti dinamici
+2. **Design Responsive**: Styling CSS per mobile e desktop
+3. **Gestione Errori**: Visualizza errori di validazione agli utenti
+4. **Gestione Caricamento**: JavaScript mostra l’anteprima della foto, invia una richiesta multipart protetta CSRF e visualizza la descrizione restituita
 
 ### 5. Configurazione
 
@@ -322,21 +173,21 @@ logging.level.com.example.petstory=INFO
 
 # Azure AI Foundry (keyless) configuration
 azure.openai.endpoint=${AZURE_OPENAI_ENDPOINT:}
-azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
 ```
 
 **Spiegazione della configurazione:**
 
-1. **Upload file**: Consente immagini fino a 10MB
-2. **Logging**: Controlla quali informazioni vengono loggate durante l'esecuzione
-3. **Azure AI Foundry**: Specifica endpoint e modello da utilizzare (autenticazione senza chiave)
-4. **Sicurezza**: Configurazione per la gestione degli errori in modo da non esporre informazioni sensibili
+1. **Caricamento File**: Sia il file che la richiesta multipart completa sono limitati a 10MB; mantieni le foto sotto questo limite per lasciare spazio alle intestazioni multipart
+2. **Logging**: Controlla quali informazioni vengono registrate durante l'esecuzione
+3. **Azure AI Foundry**: Specifica l'endpoint e il deployment modello da usare (autenticazione senza chiave)
+4. **Sicurezza**: La protezione CSRF rimane abilitata; le diagnostiche del modello vengono registrate sul server, mentre il controller mostra messaggi generici di errore modello
 
 ## Esecuzione dell'Applicazione
 
 ### Passo 1: Accedi e Imposta il Tuo Endpoint
 
-L'autenticazione è senza chiave (Microsoft Entra ID), quindi non c'è nessuna chiave API. Accedi e imposta il tuo endpoint Foundry:
+L'autenticazione è senza chiave (Microsoft Entra ID), quindi non c'è una chiave API. Accedi e imposta il tuo endpoint Foundry:
 
 **Windows (Prompt dei comandi):**
 ```cmd
@@ -358,19 +209,21 @@ export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 
 **Perché è necessario:**
 - Azure AI Foundry usa Microsoft Entra ID per autenticare le richieste di inferenza
-- L'autenticazione keyless significa niente segreti nel codice sorgente o nell'ambiente
+- L'autenticazione senza chiave significa nessun segreto nel codice sorgente o nell'ambiente
 - Il tuo account deve avere il ruolo **Cognitive Services OpenAI User** sulla risorsa
 
-### Passo 2: Compila ed Esegui
+Il nome del deployment predefinito è `gpt-5.6-luna`. Se il tuo deployment GPT-5.6 Luna ha un altro nome, imposta `AZURE_OPENAI_DEPLOYMENT` nello stesso terminale prima di avviare l'applicazione. Sia l'analisi delle immagini che la generazione di storie usano questa impostazione.
 
-Spostati nella directory del progetto:
+### Passo 2: Compila e Avvia
+
+Naviga nella directory del progetto:
 ```bash
 cd 04-PracticalSamples/petstory
 ```
 
-Compila l'applicazione:
+Compila il JAR eseguibile standalone e avvia tutti i test offline:
 ```bash
-mvn clean compile
+mvn clean package
 ```
 
 Avvia il server:
@@ -380,69 +233,65 @@ mvn spring-boot:run
 
 L'applicazione partirà su `http://localhost:8080`.
 
+In alternativa, avvia il JAR impacchettato su una porta libera, per esempio:
+
+```bash
+java -jar target/pet-story-app-0.0.1-SNAPSHOT.jar --server.port=8083
+```
+
+Per quel comando, apri `http://localhost:8083/`. Le stesse rotte `/analyze-image` e `/generate-story` sono disponibili sulla porta selezionata.
+
 ### Passo 3: Testa l'Applicazione
 
 1. **Apri** `http://localhost:8080` nel browser
-2. **Descrivi** il tuo animale domestico nell'area di testo (es. "Un golden retriever giocoso che ama riportare la palla")
-3. **Clicca** su "Generate Story" per ottenere una storia generata dall'AI
-4. **In alternativa**, carica un'immagine del tuo animale per generare automaticamente una descrizione
-5. **Visualizza** la storia creativa generata basata sulla descrizione del tuo animale
+2. **Seleziona** una foto chiara di un animale domestico in formato JPEG, PNG, GIF o WebP, sotto i 10MB
+3. **Clicca** su "Analizza Immagine" e aspetta la descrizione dell'animale domestico
+4. **Clicca** su "Genera Storia" dopo l'analisi riuscita
+5. **Visualizza** la storia e usa il link nella pagina dei risultati per tornare al modulo di caricamento
+
+Il flusso riuscito da foto a storia effettua due chiamate al modello, una per pulsante. L'inferenza live consuma la tua quota di deployment e può comportare costi; esegui test a caldo in serie se condividi un deployment con limiti di velocità. Il caricamento della home page non chiama il modello.
+
+## Test Offline
+
+Dalla directory sample, esegui:
+
+```bash
+mvn test
+```
+
+[StoryServiceTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/StoryServiceTest.java) cattura vere richieste OpenAI SDK con un fixture HTTP in loopback. Controlla deployment su entrambe le richieste, `reasoning_effort: none`, limiti di token, payload dell'immagine, convalida input, risposte vuote e errori a monte.
+
+[PetControllerTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/PetControllerTest.java) usa MockMvc con un servizio modello simulato per testare le pagine Thymeleaf renderizzate, il contratto di caricamento, CSRF, validazione, escape output e fallimenti visibili. Questi test non necessitano credenziali Azure e non chiamano mai inferenza Azure a pagamento. Maven scrive rapporti Surefire sotto `target/surefire-reports`.
 
 ## Come Funziona Tutto Insieme
 
-Ecco il flusso completo quando generi una storia di animali:
+Ecco il flusso completo quando generi una storia di animali domestici:
 
-1. **Input Utente**: Descrivi il tuo animale nel modulo web
-2. **Invio Modulo**: Il browser invia una richiesta POST a `/generate-story`
-3. **Elaborazione dal Controller**: `PetController` valida e sanifica l'input
-4. **Chiamata al Servizio AI**: `StoryService` invia la richiesta al modello Azure AI Foundry
-5. **Generazione Storia**: L'AI genera una storia creativa basata sulla descrizione
-6. **Gestione Risposta**: Il controller riceve la storia e la aggiunge al modello
-7. **Rendering Template**: Thymeleaf rende `result.html` con la storia
-8. **Visualizzazione**: L'utente vede la storia generata nel browser
+1. **Selezione Foto**: Scegli un'immagine di un animale domestico nel modulo di caricamento
+2. **Caricamento Immagine**: "Analizza Immagine" invia un POST multipart a `/analyze-image` con l'intestazione CSRF
+3. **Analisi Immagine**: `StoryService` invia l'immagine a GPT-5.6 Luna con il ragionamento impostato su `none`
+4. **Visualizzazione Descrizione**: Il browser mostra la descrizione restituita e la memorizza nel modulo
+5. **Invio Storia**: "Genera Storia" invia `description` e `_csrf` a `/generate-story`
+6. **Generazione Storia**: Il controller valida la descrizione e chiama lo stesso deployment con ragionamento impostato su `none`
+7. **Rendering Template**: Thymeleaf effettua l'escape e visualizza descrizione e storia nella pagina dei risultati
 
 **Flusso di Gestione Errori:**
-Se il servizio AI fallisce:
-1. Il controller cattura l'eccezione
-2. Genera una storia di fallback usando template pre-scritti
-3. Mostra la storia di fallback con una nota sull'indisponibilità dell'AI
-4. L'utente riceve comunque una storia, garantendo una buona esperienza
+Se il modello fallisce, il server registra la causa. L'analisi delle immagini ritorna HTTP 502 e il browser mostra l'errore senza rivelare "Genera Storia". La generazione di storie reindirizza al modulo con un messaggio di errore. Nessun percorso sostituisce silenziosamente un risultato pre-scritto.
 
 ## Comprendere l'Integrazione AI
 
 ### Azure AI Foundry (senza chiave)
-L'applicazione usa Azure AI Foundry con autenticazione senza chiave (Microsoft Entra ID):
-
-```java
-// Autenticazione senza chiave - nessuna chiave API
-DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-this.openAIClient = OpenAIOkHttpClient.builder()
-    .baseUrl(endpoint + "openai/v1/")
-    .credential(BearerTokenCredential.create(
-        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-    .build();
-```
+Il servizio configura l'SDK con l'endpoint `/openai/v1/` della tua risorsa. `DefaultAzureCredential` e `AuthenticationUtil.getBearerTokenSupplier` forniscono token Microsoft Entra per `https://ai.azure.com/.default`. Lo sviluppo locale può usare il login Azure CLI; un'app ospitata in Azure può usare un'identità gestita con i permessi necessari sulla risorsa.
 
 ### Ingegneria del Prompt
-Il servizio usa prompt creati con cura per ottenere buoni risultati:
-
-```java
-String systemPrompt = "You are a creative storyteller who writes fun, " +
-                     "family-friendly short stories about pets. " +
-                     "Keep stories under 500 words and appropriate for all ages.";
-```
+L'analisi delle immagini richiede caratteristiche osservabili dell'animale domestico in un breve paragrafo e dice al modello di trattare il testo nell'immagine come dati, non istruzioni. La generazione della storia usa la descrizione restituita in una richiesta di scrittura separata, adatta a famiglie. Nessuna chiamata abilita il ragionamento o imposta una sovrascrittura della temperatura.
 
 ### Elaborazione della Risposta
-La risposta AI è estratta e validata:
-
-```java
-ChatCompletion response = openAIClient.chat().completions().create(params);
-String story = response.choices().get(0).message().content().orElse("");
-```
+Il gestore di risposta condiviso rifiuta scelte mancanti e contenuti vuoti o solo spazi, tronca i contenuti validi e preserva i fallimenti a monte. Le descrizioni delle immagini sono limitate a 1000 caratteri per adattarsi al modulo della storia successivo. Il fallimento originale del modello è mantenuto per la diagnostica ma non mostrato all'utente.
 
 ## Passi Successivi
 
-Per ulteriori esempi, vedi [Capitolo 04: Esempi pratici](../README.md)
+Per più esempi, vedi [Capitolo 04: Esempi pratici](../README.md)
 
 ---
 

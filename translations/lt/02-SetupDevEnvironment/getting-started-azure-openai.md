@@ -1,45 +1,45 @@
 # Azure AI Foundry kūrimo aplinkos nustatymas
 
-> Šiame vadove nustatomos **Azure AI Foundry** modeliai šio kurso Java AI programėlėms, naudojant **be rakto** autentifikavimą (Microsoft Entra ID) — nereikia tvarkyti API raktų. Naujas įrankių naudojime? Pradėkite nuo [kūrimo aplinkos vadovo](./README.md).
+> Šiame vadove nustatomi **Azure AI Foundry** modeliai šio kurso Java AI programėlėms, naudojant **be raktų** autentifikaciją (Microsoft Entra ID) — nereikia tvarkyti API raktų. Naujokas? Pradėkite nuo [kūrimo aplinkos vadovo](./README.md).
 
-Šiame vadove nustatomos **Azure AI Foundry** modeliai šio kurso Java AI programėlėms. Turite du kelius:
+Šis vadovas nustato **Azure AI Foundry** modelius šio kurso Java AI programėlėms. Jūs turite du kelius:
 
 - **A variantas — diegimas su `azd` + Bicep (rekomenduojama):** vienas komandos įvykdymas įdiegia Foundry paskyrą ir modelius kaip kodą. Nereikia naudoti portalo.
-- **B variantas — ištekliai sukuriami rankiniu būdu** Azure AI Foundry portale.
+- **B variantas — ištekliai kuriami rankiniu būdu** Azure AI Foundry portale.
 
-Abi parinktys naudoja **be rakto autentifikavimą** (Microsoft Entra ID) — nereikia kopijuoti ar saugoti API raktų.
+Abu keliai naudoja **be raktų autentifikavimą** (Microsoft Entra ID) — nėra API raktų, kuriuos reikėtų kopijuoti ar nutekinti.
 
 ## Turinys
 
-- [Kas sukuriama](#kas-sukuriama)
-- [Prieš pradedant](#prieš-pradedant)
-- [A variantas: diegimas su azd + Bicep (Rekomenduojama)](#option-a-provision-with-azd--bicep-recommended)
+- [Kas bus sukuriama](#kas-bus-sukuriama)
+- [Išankstiniai reikalavimai](#išankstiniai-reikalavimai)
+- [A variantas: diegimas su azd + Bicep (rekomenduojama)](#option-a-provision-with-azd--bicep-recommended)
 - [B variantas: išteklių kūrimas rankiniu būdu](#b-variantas-išteklių-kūrimas-rankiniu-būdu)
-- [Jūsų aplinkos konfigūravimas](#jūsų-aplinkos-konfigūravimas)
-- [Jūsų įrenginio testavimas](#jūsų-įrenginio-testavimas)
+- [Aplinkos konfigūravimas](#aplinkos-konfigūravimas)
+- [Patikrinkite savo nustatymus](#patikrinkite-savo-nustatymus)
 - [Kas toliau?](#kas-toliau)
 - [Ištekliai](#ištekliai)
 - [Papildomi ištekliai](#papildomi-ištekliai)
 
-## Kas sukuriama
+## Kas bus sukuriama
 
-Bicep šablonai esančiame [`infra/`](../../../02-SetupDevEnvironment/infra) faile sukuria:
+Bicep šablonai kataloge [`infra/`](../../../02-SetupDevEnvironment/infra) įdiegia:
 
-- **Azure AI Foundry** paskyrą (`Microsoft.CognitiveServices/accounts`, tipas `AIServices`) su projektu
-- **pokalbio** diegimą — `gpt-4o-mini`
-- **embedding** diegimą — `text-embedding-3-small` (naudojamas vėlesniuose skyriuose)
-- **be rakto rolės priskyrimą** (`Cognitive Services OpenAI User`), kad galėtumėte prisijungti su `az login` vietoj rakto valdymo
+- **Azure AI Foundry** paskyrą (`Microsoft.CognitiveServices/accounts`, tipo `AIServices`) su projektu
+- **Pokalbių** diegimą - GPT-5.6 Luna (`gpt-5.6-luna`), versija `2026-07-09`, su `GlobalStandard` talpa `10` (10 užklausų/ min. ir 10 000 žetonų/ min. šiam modeliui)
+- **Įterpimo** diegimą - `text-embedding-3-small`, versija `1` (naudojama vėlesniuose skyriuose)
+- **Be raktų rolės paskyrimą** (`Cognitive Services OpenAI User`), kad prisijungtumėte su `az login` vietoje raktų tvarkymo
 
-## Prieš pradedant
+## Išankstiniai reikalavimai
 
 - [Azure prenumerata](https://azure.microsoft.com/free/)
 - [Azure Developer CLI (`azd`)](https://aka.ms/azure-dev/install)
 - [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli)
 - [Java 21+](https://learn.microsoft.com/java/openjdk/download) ir [Maven 3.9+](https://maven.apache.org/download.cgi)
 
-## A variantas: diegimas su azd + Bicep (Rekomenduojama)
+## A variantas: diegimas su azd + Bicep (rekomenduojama)
 
-Iš `02-SetupDevEnvironment` aplanko:
+Iš katalogo `02-SetupDevEnvironment`:
 
 ```bash
 cd 02-SetupDevEnvironment
@@ -48,63 +48,65 @@ cd 02-SetupDevEnvironment
 azd auth login
 az login
 
-# Paruošti Foundry paskyrą + modelių diegimus
+# Sukonfigūruoti Foundry paskyrą ir modelių diegimus
 azd up
 ```
 
-`azd` paprašys įvesti **aplinkos pavadinimą** (pvz. `genai-java`) ir **regioną**. Pasirinkite regioną, kuriame yra `gpt-4o-mini` ir `text-embedding-3-small`, pavyzdžiui `eastus2` arba `swedencentral`.
+`azd` paprašo **aplinkos vardo** (pvz., `genai-java`), **prenumeratos** ir **regiono**. Pasirinkite savo prenumeratą ir regioną, kuriame yra `gpt-5.6-luna` ir `text-embedding-3-small`, pavyzdžiui, `eastus2`. Patikrinkite, ar prenumeratoje tame regione yra pakankamai kvotos modeliui ir diegimo tipui; prieinamumas ir kvota priklauso nuo prenumeratos.
 
-Baigus diegimą, azd:
+Kai diegimas baigtas, azd:
 
 1. Įdiegia viską, kas aprašyta faile [`infra/main.bicep`](../../../02-SetupDevEnvironment/infra/main.bicep).
-2. Vykdo po diegimo skriptą, kuris įrašo [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) su jūsų galiniu tašku ir diegimų pavadinimais (be slaptų duomenų).
+2. Vykdo post diegimo veiksmą, kuris sukuria failą [`examples/basic-chat-azure/.env`](../../../02-SetupDevEnvironment/examples/basic-chat-azure) su jūsų galiniu tašku ir diegimo pavadinimais (be slaptų duomenų).
 
-> **Patarimas:** Kartokite `azd up` bet kada, kai norite pritaikyti pakeitimus. Vykdykite `azd down`, kad ištrintumėte viską ir nutrauktumėte išlaidas.
+> **Patarimas:** bet kada paleiskite `azd up`, kad pritaikytumėte pakeitimus. Paleiskite `azd down`, kad pašalintumėte viską ir nustosite kurti išlaidas.
 
-Norėdami pamatyti sugeneruotus nustatymus:
+Norėdami peržiūrėti sugeneruotus nustatymus:
 
 ```bash
 azd env get-values
 ```
 
-Dabar pereikite prie [Jūsų įrenginio testavimo](#jūsų-įrenginio-testavimas).
+Dabar pereikite prie [Patikrinkite savo nustatymus](#patikrinkite-savo-nustatymus).
 
 ## B variantas: išteklių kūrimas rankiniu būdu
 
-Mėgstate portalą? Sukurkite išteklius rankiniu būdu:
+Norite naudoti portalą? Sukurkite išteklius rankiniu būdu:
 
-1. Nueikite į [Azure AI Foundry portalą](https://ai.azure.com/) ir prisijunkite.
-2. **Sukurkite projektą** (tai taip pat sukuria AI Foundry resursą). Duokite jam pavadinimą, pvz., `GenAIJava`.
-3. Projekto viduje atidarykite **Models + endpoints** → **Deploy model** → **Deploy base model**.
-4. Įdiekite **gpt-4o-mini** (diegimo pavadinimas `gpt-4o-mini`). Jei norite naudoti embedding pavyzdžius, pakartokite su **text-embedding-3-small**.
-5. Iš **Overview** nukopijuokite **endpoint** (pvz., `https://<resource>.openai.azure.com/`).
-6. Suteikite sau be rakto prieigą: resurse atidarykite **Access control (IAM)** → **Add role assignment** → priskirkite sau rolę **Cognitive Services OpenAI User**.
+1. Eikite į [Azure AI Foundry portalą](https://ai.azure.com/) ir prisijunkite.
+2. **Sukurkite projektą** (tai taip pat sukuria AI Foundry išteklių). Pavadinkite pvz., `GenAIJava`.
+3. Savo projekte atidarykite **Models + endpoints** → **Deploy model** → **Deploy base model**.
+4. Įdiekite **GPT-5.6 Luna** (modelio ir diegimo pavadinimas `gpt-5.6-luna`, versija `2026-07-09`) su **Global Standard** talpa `10`. Pakartokite su **text-embedding-3-small**, versija `1`, jei norite naudoti įterpimo pavyzdžius.
+5. Iš **Overview** nukopijuokite **galo tašką** (pvz., `https://<resource>.openai.azure.com/`).
+6. Suteikite sau be raktų prieigą: ištekliaus lange atidarykite **Access control (IAM)** → **Add role assignment** → priskirkite savo paskyrai rolę **Cognitive Services OpenAI User**.
 
-> **Vis dar kyla problemų?** Peržiūrėkite [Azure AI Foundry dokumentaciją](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects).
+> **Dar kyla problemų?** Žr. [Azure AI Foundry dokumentaciją](https://learn.microsoft.com/azure/ai-foundry/how-to/create-projects).
 
-## Jūsų aplinkos konfigūravimas
+## Aplinkos konfigūravimas
 
-**Jeigu naudojote A variantą (`azd up`)**, jūsų nustatymų failas jau sukurtas — nieko papildomai konfigūruoti nereikia. Pereikite prie [Jūsų įrenginio testavimo](#jūsų-įrenginio-testavimas).
+**Jei naudojote A variantą (`azd up`)**, jūsų nustatymų failas jau yra sukurtas — nieko papildomai konfigūruoti nereikia. Pereikite prie [Patikrinkite savo nustatymus](#patikrinkite-savo-nustatymus).
 
-**Jeigu naudojote B variantą (rankiniu būdu)**, sukurkite pavyzdžio `.env` failą patys:
+**Jei naudojote B variantą (ranka)**, sukurkite pavyzdžio `.env` failą patys:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 cp .env.example .env
 ```
 
-Redaguokite `.env`, įrašydami savo endpoint (be rakto — autentifikacija be rakto):
+Redaguokite `.env` su savo galiniu tašku (nereikia rakto — autentifikacija be raktų):
 
 ```bash
 AZURE_OPENAI_ENDPOINT=https://<your-resource>.openai.azure.com/
-AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
+AZURE_OPENAI_DEPLOYMENT=gpt-5.6-luna
 ```
 
-> **Saugumo pastaba:** API rakto saugoti nereikia. Autentifikacija vyksta per Microsoft Entra ID su `az login` (vietoje) arba valdomą identitetą (Azure). `.env` faile laikomi tik neslaptieji nustatymai ir jis jau įtrauktas į `.gitignore`.
+Naudokite Azure OpenAI ištekliaus galinio taško URL, ne projekto URL. Basic-chat programa nukreipia jį į `/openai/v1` ir naudoja aiškų bearer-token klientą; API raktas nėra reikalingas.
 
-## Jūsų įrenginio testavimas
+> **Saugumo pastaba:** Nėra jokio API rakto, kurį reikėtų saugoti. Autentifikacija vykdoma per Microsoft Entra ID su `az login` (vietoje) arba valdomą tapatybę (Azure). `.env` failas talpina tik neslaptus nustatymus ir jau yra įtrauktas į `.gitignore`.
 
-Įsitikinkite, kad esate prisijungę, kad be rakto autentifikacija gautų tokeną, tada paleiskite pavyzdį:
+## Patikrinkite savo nustatymus
+
+Įsitikinkite, kad esate prisijungę, kad be raktų autentifikacija galėtų gauti žetoną, ir paleiskite pavyzdį:
 
 ```bash
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
@@ -113,29 +115,29 @@ az login          # jei dar nesate prisijungę
 mvn clean spring-boot:run
 ```
 
-Turėtumėte pamatyti atsakymą iš `gpt-4o-mini` modelio!
+Turėtumėte matyti atsakymą iš `gpt-5.6-luna` modelio. Paleiskite pavyzdžius paeiliui, kad neviršytumėte numatytos mažos kvotos; jei gausite HTTP 429, palaukite kol praėjus pakartojimo intervalui pabandysite dar kartą.
 
-> **VS Code naudotojams:** Paspauskite `F5`, kad paleistumėte. Programėlė automatiškai užkraus `.env`.
+> **VS Code naudotojams:** paspauskite `F5`, kad paleistumėte programą. Ji automatiškai įkraus jūsų `.env`.
 
-> **Pilnas pavyzdys:** Žr. [Basic Chat su Azure AI Foundry pavyzdį](./examples/basic-chat-azure/README.md) su detaliais nurodymais ir trikčių šalinimu.
+> **Pilnas pavyzdys:** žr. [Basic Chat su Azure AI Foundry pavyzdį](./examples/basic-chat-azure/README.md) su detalėmis ir trikčių šalinimu.
 
 ## Kas toliau?
 
-**Nustatyta!** Dabar turite:
-- Azure AI Foundry su diegtais `gpt-4o-mini` ir `text-embedding-3-small`
-- Be rakto autentifikaciją (Microsoft Entra ID) — nereikia valdyti raktų
-- Vietinį `.env` su jūsų galiniu tašku ir diegimų pavadinimais
+Po diegimo ir sėkmingo pavyzdžio paleidimo turėsite:
+- Azure AI Foundry su įdiegtais `gpt-5.6-luna` ir `text-embedding-3-small`
+- Be raktų autentifikaciją (Microsoft Entra ID) — nereikia valdyti rakto
+- Vietinį `.env` failą su jūsų galiniu tašku ir diegimo pavadinimais
 - Paruoštą Java kūrimo aplinką
 
-**Toliau tęskite į** [3 skyrių: Pagrindines Generatyvios AI technikas](../03-CoreGenerativeAITechniques/README.md) ir pradėkite kurti AI programas!
+**Toliau tęskite** prie [3 skyriaus: Pagrindinės generatyvios AI technikos](../03-CoreGenerativeAITechniques/README.md) ir pradėkite kurti AI programas!
 
 ## Ištekliai
 
 - [Azure Developer CLI (azd)](https://aka.ms/azure-dev/install)
-- [Be rakto autentifikacija su Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
+- [Be raktų autentifikacija su Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
 - [Azure AI Foundry dokumentacija](https://learn.microsoft.com/azure/ai-foundry/)
-- [Spring AI Azure OpenAI dokumentacija](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
-- [Azure OpenAI Java SDK](https://learn.microsoft.com/java/api/overview/azure/ai-openai-readme)
+- [Spring AI 2 OpenAI Java SDK migracija](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [Oficialus OpenAI Java SDK su Azure OpenAI v1](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
 
 ## Papildomi ištekliai
 

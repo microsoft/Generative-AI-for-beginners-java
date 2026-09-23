@@ -1,6 +1,8 @@
 # Basic Chat with Azure AI Foundry - End-to-End Example
 
-This example is a simple Spring Boot application that connects to an **Azure AI Foundry** model using **keyless authentication** (Microsoft Entra ID) and tests your setup. It uses Spring AI's `ChatClient`.
+This example is a simple Spring Boot application that connects to an **Azure AI Foundry** model using **keyless authentication** (Microsoft Entra ID) and tests your setup. It keeps Spring AI's `ChatClient`, backed by the **official OpenAI Java SDK** and the **Azure OpenAI v1** endpoint.
+
+The versions in [pom.xml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/pom.xml) are Spring Boot **4.1.1**, Spring AI **2.0.1**, OpenAI Java **4.63.1**, Azure Identity **1.18.6**, and dotenv-java **3.2.0**. The sample uses `spring-ai-starter-model-openai` and explicitly declares `openai-java` and `azure-identity`; Spring AI 2 removed the old Azure OpenAI starter.
 
 ## Table of Contents
 
@@ -24,7 +26,7 @@ This example is a simple Spring Boot application that connects to an **Azure AI 
 
 Before running this example, ensure you have:
 
-- An Azure AI Foundry resource with a `gpt-4o-mini` deployment — provision it with `azd up` or manually via the [Azure AI Foundry setup guide](../../getting-started-azure-openai.md)
+- An Azure AI Foundry resource with a `gpt-5.6-luna` deployment - provision it with `azd up` or manually via the [Azure AI Foundry setup guide](../../getting-started-azure-openai.md)
 - The **Cognitive Services OpenAI User** role on that resource (the Bicep templates assign this for you)
 - The [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli), signed in with `az login`
 - Java 21+ and Maven 3.9+
@@ -53,7 +55,13 @@ mvn spring-boot:run
 
 This example authenticates with **Microsoft Entra ID** — there is no API key.
 
-When only `spring.ai.azure.openai.endpoint` is set (and no api-key), Spring AI builds the Azure OpenAI client with [`DefaultAzureCredential`](https://learn.microsoft.com/java/api/com.azure.identity.defaultazurecredential). That credential automatically finds a token from your `az login` session locally, or from a managed identity when running in Azure — so the same code works in both places with no changes.
+The application configures authentication explicitly in [BasicChatApplication.java](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/java/com/example/BasicChatApplication.java):
+
+1. `azureCredential()` creates a `BearerTokenCredential` using `AuthenticationUtil.getBearerTokenSupplier` with `DefaultAzureCredential` and the `https://ai.azure.com/.default` scope.
+2. `azureOpenAiClient()` builds an `OpenAIClient` with `OpenAIOkHttpClient.builder()`, resolves the resource endpoint to `/openai/v1`, and supplies the bearer credential with `.credential(...)`.
+3. `azureChatModel()` supplies that client to Spring AI's `OpenAiChatModel`, which backs the lesson's `ChatClient`.
+
+These explicit beans keep a global `OPENAI_API_KEY` from overriding Azure authentication. Omitting an API key from YAML alone is not the authentication setup. `DefaultAzureCredential` can use your `az login` session locally or a managed identity in Azure; whichever identity is selected must have the resource role listed above.
 
 ## Running the Application
 
@@ -69,13 +77,18 @@ mvn spring-boot:run
 2. Press `F5` or use the "Run and Debug" panel
 3. Select "Spring Boot-BasicChatApplication" configuration
 
-> **Note**: The VS Code configuration automatically loads your .env file
+> **Note**: The application loads `.env` from its working directory, including when launched from VS Code.
 
 ### Expected Output
 
-```
+Illustrative output after a successful run (startup logs omitted; response wording varies):
+
+```text
 Starting Basic Chat with Azure OpenAI...
-Environment variables loaded successfully
+Environment variables loaded from .env file
+Endpoint: https://your-resource.openai.azure.com/
+Deployment: gpt-5.6-luna
+Auth: keyless (Microsoft Entra ID via DefaultAzureCredential)
 Connecting to Azure OpenAI...
 Sending prompt: What is AI in a short sentence? Max 100 words.
 
@@ -94,18 +107,29 @@ Success! Azure OpenAI connection is working correctly.
 | Variable | Description | Required | Example |
 |----------|-------------|----------|---------|
 | `AZURE_OPENAI_ENDPOINT` | Foundry (Azure OpenAI) endpoint URL | Yes | `https://my-resource.openai.azure.com/` |
-| `AZURE_OPENAI_DEPLOYMENT` | Chat model deployment name | No | `gpt-4o-mini` (default) |
+| `AZURE_OPENAI_DEPLOYMENT` | Chat model deployment name | No | `gpt-5.6-luna` (default) |
 
 > There is **no** API key variable — authentication is keyless (Microsoft Entra ID via `az login`).
 
 ### Spring Configuration
 
-The `application.yml` file configures:
-- **Endpoint**: `${AZURE_OPENAI_ENDPOINT}` - From environment variable
-- **Deployment**: `${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}` - From environment variable with fallback
-- **Auth**: keyless — no `api-key` is set, so Spring AI uses `DefaultAzureCredential`
-- **Temperature**: `0.7` - Controls creativity (0.0 = deterministic, 1.0 = creative)
-- **Max Tokens**: `500` - Maximum response length
+The [application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml) settings use the `spring.ai.openai` prefix and flattened chat properties (no `options` block):
+
+```yaml
+spring:
+  ai:
+    openai:
+      base-url: ${AZURE_OPENAI_ENDPOINT}
+      microsoft-foundry: true
+      chat:
+        model: ${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
+        reasoning-effort: none
+        max-completion-tokens: 500
+```
+
+`model` is the **Azure deployment name**. Authentication comes from the explicit beans described above, not an `api-key` setting. The lesson disables reasoning and caps completion tokens at 500; it leaves `temperature` and the legacy `max-tokens` unset.
+
+Microsoft recommends the [official OpenAI SDK with Azure OpenAI v1 and the Responses API for new applications](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java). Chat Completions remains supported for this existing message-based lesson. For GPT-5.6, requests that include tools on Chat Completions must set `reasoning_effort` to `none`; use Responses when combining reasoning with tools. See [tool calling with reasoning models](https://learn.microsoft.com/azure/foundry/openai/how-to/reasoning#tool-calling-with-reasoning-models).
 
 ## Troubleshooting
 
@@ -133,7 +157,15 @@ The `application.yml` file configures:
 
 - Verify `AZURE_OPENAI_DEPLOYMENT` matches a deployment name in Azure
 - Check that the model is successfully deployed and active
-- The default deployment name is `gpt-4o-mini`
+- The default deployment name is `gpt-5.6-luna`
+</details>
+
+<details>
+<summary><strong>Error: 429 / rate limit exceeded</strong></summary>
+
+- The default GPT-5.6 Luna deployment has Global Standard capacity 10: 10 requests/minute and 10,000 tokens/minute
+- Run examples sequentially and wait for the service's retry interval before retrying
+- This basic example disables automatic SDK retries, so a failed request is reported directly
 </details>
 
 <details>
@@ -146,13 +178,13 @@ The `application.yml` file configures:
 
 ### Debug Mode
 
-To enable detailed logging, uncomment these lines in `application.yml`:
+To enable detailed logging, uncomment these lines in [application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml):
 
 ```yaml
 logging:
   level:
-    org.springframework.ai: DEBUG
-    com.azure: DEBUG
+    "[org.springframework.ai]": DEBUG
+    "[com.azure]": DEBUG
 ```
 
 ## Next Steps
@@ -163,7 +195,8 @@ logging:
 
 ## Resources
 
-- [Spring AI Azure OpenAI Documentation](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
+- [Spring AI 2 OpenAI Java SDK transition](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [Official OpenAI Java SDK with Azure OpenAI v1](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
 - [Keyless authentication with Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
 - [Azure AI Foundry Portal](https://ai.azure.com/)
 - [Azure AI Foundry Documentation](https://learn.microsoft.com/azure/ai-foundry/)

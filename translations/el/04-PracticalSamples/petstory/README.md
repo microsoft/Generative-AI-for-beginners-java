@@ -1,38 +1,48 @@
-# Οδηγός Δημιουργίας Ιστορίας Κατοικιδίων για Αρχάριους
+# Οδηγός Δημιουργίας Ιστορίας Κατοικιδίου για Αρχάριους
 
-## Πίνακας Περιεχομένων
+Μεταφορτώστε μια φωτογραφία κατοικιδίου, αναλύστε την με το GPT-5.6 Luna και δημιουργήστε μια ιστορία από την προκύπτουσα περιγραφή. Και τα δύο αιτήματα του μοντέλου χρησιμοποιούν `reasoning_effort: none`.
 
-- [Προαπαιτούμενα](#προαπαιτούμενα)
+| Συστατικό | Έκδοση |
+| --- | --- |
+| Java | 21 ή νεότερη |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
+
+## Περιεχόμενα
+
+- [Προϋποθέσεις](#προϋποθέσεις)
 - [Κατανόηση της Δομής του Έργου](#κατανόηση-της-δομής-του-έργου)
-- [Επεξήγηση Βασικών Στοιχείων](#επεξήγηση-βασικών-στοιχείων)
+- [Επεξήγηση Βασικών Συστατικών](#επεξήγηση-βασικών-συστατικών)
   - [1. Κύρια Εφαρμογή](#1-κύρια-εφαρμογή)
-  - [2. Ελεγκτής Ιστού](#2-ελεγκτής-ιστού)
+  - [2. Διαχειριστής Web](#2-διαχειριστής-web)
   - [3. Υπηρεσία Ιστορίας](#3-υπηρεσία-ιστορίας)
-  - [4. Πρότυπα Ιστού](#4-πρότυπα-ιστού)
-  - [5. Διαμόρφωση](#5-διαμόρφωση)
+  - [4. Πρότυπα Web](#4-πρότυπα-web)
+  - [5. Ρυθμίσεις](#5-ρυθμίσεις)
 - [Εκτέλεση της Εφαρμογής](#εκτέλεση-της-εφαρμογής)
-- [Πώς Λειτουργούν Όλα Μαζί](#πώς-λειτουργούν-όλα-μαζί)
-- [Κατανόηση της Ενσωμάτωσης Τεχνητής Νοημοσύνης](#κατανόηση-της-ενσωμάτωσης-τεχνητής-νοημοσύνης)
+- [Δοκιμές Offline](#offline-δοκιμές)
+- [Πώς Λειτουργούν Όλα Μαζί](#πώς-λειτουργεί-όλο-μαζί)
+- [Κατανόηση της Ενσωμάτωσης AI](#κατανόηση-της-ενσωμάτωσης-ai)
 - [Επόμενα Βήματα](#επόμενα-βήματα)
 
-## Προαπαιτούμενα
+## Προϋποθέσεις
 
 Πριν ξεκινήσετε, βεβαιωθείτε ότι έχετε:
 - Εγκατεστημένη την Java 21 ή νεότερη
-- Το Maven για διαχείριση εξαρτήσεων
-- Αναπτύξει μοντέλο Azure AI Foundry (προμηθευτείτε το με `azd up` — δείτε το [Κεφάλαιο 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md)), συνδεδεμένοι με `az login` (αυθεντικοποίηση χωρίς κλειδί)
-- Βασική κατανόηση της Java, Spring Boot και ανάπτυξης ιστοσελίδων
+- Maven για τη διαχείριση εξαρτήσεων
+- Μια ανάπτυξη Azure AI Foundry του GPT-5.6 Luna με όνομα `gpt-5.6-luna`, ή μια παράκαμψη `AZURE_OPENAI_DEPLOYMENT` που δείχνει σε αυτή την ανάπτυξη. Δείτε [Κεφάλαιο 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md) για την προμήθεια και συνδεθείτε με `az login` για αυθεντικοποίηση χωρίς κλειδί. Η ανάπτυξη πρέπει να υποστηρίζει την εισαγωγή εικόνας και `reasoning_effort: none`.
+- Βασική κατανόηση Java, Spring Boot και ανάπτυξης ιστού
 
 ## Κατανόηση της Δομής του Έργου
 
-Το έργο ιστορίας κατοικιδίων περιέχει αρκετά σημαντικά αρχεία:
+Το έργο ιστορίας κατοικιδίου περιλαμβάνει αρκετά σημαντικά αρχεία:
 
 ```
 petstory/
 ├── src/main/java/com/example/petstory/
 │   ├── PetStoryApplication.java       # Main Spring Boot application
 │   ├── PetController.java             # Web request handler
-│   ├── StoryService.java              # AI story generation service
+│   ├── StoryService.java              # AI image analysis and story generation
 │   └── SecurityConfig.java            # Security configuration
 ├── src/main/resources/
 │   ├── application.properties         # App configuration
@@ -42,13 +52,13 @@ petstory/
 └── pom.xml                           # Maven dependencies
 ```
 
-## Επεξήγηση Βασικών Στοιχείων
+## Επεξήγηση Βασικών Συστατικών
 
 ### 1. Κύρια Εφαρμογή
 
 **Αρχείο:** `PetStoryApplication.java`
 
-Αυτή είναι η είσοδος για την εφαρμογή Spring Boot μας:
+Αυτή είναι η είσοδος για την εφαρμογή Spring Boot:
 
 ```java
 @SpringBootApplication
@@ -60,207 +70,48 @@ public class PetStoryApplication {
 ```
 
 **Τι κάνει:**
-- Η ανάλυση `@SpringBootApplication` ενεργοποιεί αυτόματη διαμόρφωση και σάρωση συστατικών
-- Εκκινεί έναν ενσωματωμένο διακομιστή ιστού (Tomcat) στην θύρα 8080
+- Το σχόλιο `@SpringBootApplication` ενεργοποιεί την αυτόματη διαμόρφωση και την σάρωση συστατικών
+- Ξεκινά ενσωματωμένο web server (Tomcat) στην θύρα 8080
 - Δημιουργεί αυτόματα όλα τα απαραίτητα Spring beans και υπηρεσίες
 
-### 2. Ελεγκτής Ιστού
+### 2. Διαχειριστής Web
 
-**Αρχείο:** `PetController.java`
+**Αρχείο:** [PetController.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/PetController.java)
 
-Αυτός διαχειρίζεται όλα τα αιτήματα ιστού και τις αλληλεπιδράσεις των χρηστών:
+| Σημείο πρόσβασης | Αίτημα | Επιτυχημένη απάντηση |
+| --- | --- | --- |
+| `GET /` | Χωρίς σώμα | Φόρμα μεταφόρτωσης HTML με CSRF token |
+| `POST /analyze-image` | `multipart/form-data`, πεδίο αρχείου `image` | JSON: `{"description":"Ένα παιχνιδιάρικο κατοικίδιο..."}` |
+| `POST /generate-story` | `application/x-www-form-urlencoded`, πεδίο `description` | Σελίδα αποτελεσμάτων HTML με την περιγραφή και την παραγόμενη ιστορία |
 
-```java
-@Controller
-public class PetController {
-    
-    private final StoryService storyService;
-    
-    public PetController(StoryService storyService) {
-        this.storyService = storyService;
-    }
-    
-    @GetMapping("/")
-    public String index() {
-        return "index";  // Επιστρέφει το πρότυπο index.html
-    }
-    
-    @PostMapping("/generate-story")
-    public String generateStory(@RequestParam("description") String description, 
-                               Model model, 
-                               RedirectAttributes redirectAttributes) {
-        
-        // Επαλήθευση εισόδου
-        if (description.trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Please provide a description.");
-            return "redirect:/";
-        }
-        
-        // Καθαρισμός εισόδου για ασφάλεια
-        String sanitizedDescription = sanitizeInput(description);
-        
-        // Δημιουργία ιστορίας με διαχείριση σφαλμάτων
-        try {
-            String story = storyService.generateStory(sanitizedDescription);
-            model.addAttribute("caption", sanitizedDescription);
-            model.addAttribute("story", story);
-            return "result";  // Επιστρέφει το πρότυπο result.html
-            
-        } catch (Exception e) {
-            // Χρήση εναλλακτικής ιστορίας αν αποτύχει η AI
-            String fallbackStory = generateFallbackStory(sanitizedDescription);
-            model.addAttribute("story", fallbackStory);
-            return "result";
-        }
-    }
-    
-    private String sanitizeInput(String input) {
-        return input.replaceAll("[<>\"'&]", "")  // Remove dangerous characters
-                   .trim()
-                   .substring(0, Math.min(input.length(), 500));  // Περιορισμός μήκους
-    }
-}
-```
+Και τα δύο endpoints `POST` απαιτούν το cookie συνεδρίας και το CSRF token που αποκτήθηκαν από το `GET /`. Το script μεταφόρτωσης στέλνει την κρυφή τιμή `_csrf` στην κεφαλίδα `X-CSRF-TOKEN`; η υποβολή ιστορίας το στέλνει ως πεδίο φόρμας `_csrf`. Οι πελάτες API πρέπει να διατηρούν το cookie μεταξύ αιτημάτων. Αυτά είναι endpoints φόρμας, όχι αιτήματα JSON.
 
-**Κύρια χαρακτηριστικά:**
+Οι περιγραφές πρέπει να είναι μη κενές και όχι μεγαλύτερες από 1000 χαρακτήρες. Ο ελεγκτής περικόπτει την περιγραφή και αφαιρεί τα `<`, `>`, διπλά εισαγωγικά, απόστροφους, και `&` πριν το περάσει στην υπηρεσία. Το πρότυπο αποτελέσματος επίσης αποφεύγει την έξοδο του μοντέλου με `th:text`.
 
-1. **Διαχείριση Διαδρομών**: Το `@GetMapping("/")` εμφανίζει τη φόρμα αποστολής, το `@PostMapping("/generate-story")` επεξεργάζεται υποβολές
-2. **Επικύρωση Εισόδου**: Ελέγχει για κενές περιγραφές και όρια μήκους
-3. **Ασφάλεια**: Καθαρίζει την είσοδο χρήστη για αποφυγή επιθέσεων XSS
-4. **Διαχείριση Σφαλμάτων**: Παρέχει εναλλακτικές ιστορίες όταν η υπηρεσία AI αποτυγχάνει
-5. **Δέσμευση Μοντέλου**: Μεταφέρει δεδομένα στα HTML πρότυπα χρησιμοποιώντας το Spring `Model`
-
-**Σύστημα Εναλλακτικής Επιλογής:**
-Ο ελεγκτής περιλαμβάνει προεγγραμμένα πρότυπα ιστοριών που χρησιμοποιούνται όταν η υπηρεσία AI δεν είναι διαθέσιμη:
-
-```java
-private String generateFallbackStory(String description) {
-    String[] storyTemplates = {
-        "Meet the most wonderful pet in the world – a furry ball of energy...",
-        "Once upon a time, there lived a remarkable pet whose heart was as big...",
-        "In a cozy home filled with love, there lived an extraordinary pet..."
-    };
-    
-    // Χρησιμοποιήστε το hash περιγραφής για συνεπείς απαντήσεις
-    int index = Math.abs(description.hashCode() % storyTemplates.length);
-    return storyTemplates[index];
-}
-```
+Αποτυχίες επικύρωσης εικόνας επιστρέφουν HTTP 400 με πεδίο `error`; αποτυχίες μοντέλου επιστρέφουν HTTP 502 με πεδίο `error` και χωρίς `description`. Άκυρες περιγραφές ιστοριών ή αποτυχίες μοντέλου ανακατευθύνουν στο `/` με εμφανές σφάλμα. Λείπουν απαιτούμενα πεδία επιστρέφουν HTTP 400, και λείπει ή άκυρο CSRF token επιστρέφει HTTP 403. Δεν παρουσιάζονται εναλλακτικές περιγραφές ή ιστορίες ως επιτυχημένα αποτελέσματα AI.
 
 ### 3. Υπηρεσία Ιστορίας
 
-**Αρχείο:** `StoryService.java`
+**Αρχείο:** [StoryService.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/StoryService.java)
 
-Αυτή η υπηρεσία επικοινωνεί με το Azure AI Foundry για να δημιουργεί ιστορίες χρησιμοποιώντας αυθεντικοποίηση χωρίς κλειδί:
+Ο επίσημος OpenAI Java SDK 4.63.1 καλεί το API Chat Completions συμβατό με OpenAI του Azure AI Foundry. Το Azure Identity 1.18.6 παρέχει token Microsoft Entra μέσω `DefaultAzureCredential`; δεν απαιτείται κλειδί API.
 
-```java
-@Service
-public class StoryService {
-    
-    private final OpenAIClient openAIClient;
-    private final String modelName;
-    
-    public StoryService(@Value("${azure.openai.endpoint:}") String endpoint,
-                       @Value("${azure.openai.deployment:gpt-4o-mini}") String modelName) {
-        this.modelName = modelName;
-        if (endpoint == null || endpoint.isBlank()) {
-            endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        }
-        
-        // Το συμβατό με OpenAI τελικό σημείο του Foundry βρίσκεται κάτω από /openai/v1/
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1/";
-        
-        // Αυθεντικοποίηση χωρίς κλειδί με Microsoft Entra ID (χωρίς κλειδί API)
-        DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-        this.openAIClient = OpenAIOkHttpClient.builder()
-                .baseUrl(baseUrl)
-                .credential(BearerTokenCredential.create(
-                        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-                .build();
-    }
-    
-    public String generateStory(String description) {
-        String systemPrompt = "You are a creative storyteller who writes fun, " +
-                             "family-friendly short stories about pets. " +
-                             "Keep stories under 500 words and appropriate for all ages.";
-        
-        String userPrompt = "Write a fun short story about a pet described as: " + description;
-        
-        // Διαμορφώστε το αίτημα AI
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(modelName)
-                .addSystemMessage(systemPrompt)
-                .addUserMessage(userPrompt)
-                .maxCompletionTokens(500)  // Περιορίστε το μήκος της απόκρισης
-                .temperature(0.8)          // Ελέγξτε τη δημιουργικότητα (0.0-1.0)
-                .build();
-        
-        // Αποστολή αιτήματος και λήψη απόκρισης
-        ChatCompletion response = openAIClient.chat().completions().create(params);
-        
-        return response.choices().get(0).message().content().orElse("");
-    }
-}
-```
+| Λειτουργία | Είσοδος | `max_completion_tokens` |
+| --- | --- | --- |
+| `analyzeImage` | bytes εικόνας κωδικοποιημένα ως base64 data URL με τον μεταφορτωμένο τύπο MIME | 300 |
+| `generateStory` | Περιγραφή κατοικιδίου σε μήνυμα χρήστη | 800 |
 
-**Κύρια στοιχεία:**
+Και τα δύο αιτήματα χρησιμοποιούν την ρυθμισμένη ανάπτυξη, προεπιλογή `gpt-5.6-luna`, και ορίζουν ρητά το `ReasoningEffort.NONE` (`reasoning_effort: none`). Κανένα αίτημα δεν στέλνει `temperature` ή την παλαιά παράμετρο `max_tokens`.
 
-1. **OpenAI Client**: Χρησιμοποιεί το επίσημο OpenAI Java SDK ρυθμισμένο για Azure AI Foundry (χωρίς κλειδί)
-2. **Σύστημα Οδηγίας**: Καθορίζει τη συμπεριφορά του AI για να γράφει οικογενειακές ιστορίες κατοικιδίων
-3. **Οδηγία Χρήστη**: Παροτρύνει το AI τι ακριβώς ιστορία να γράψει βάσει της περιγραφής
-4. **Παράμετροι**: Ελέγχουν το μήκος και τη δημιουργικότητα της ιστορίας
-5. **Διαχείριση Σφαλμάτων**: Πετάει εξαιρέσεις που το controller αναλαμβάνει και διαχειρίζεται
+Η ανάλυση εικόνας δέχεται JPEG, PNG, GIF, και WebP, απορρίπτει κενές εικόνες και αρχεία άνω των 10MB, και περιορίζει την προκύπτουσα περιγραφή σε 1000 χαρακτήρες. Η προτροπή ιστορίας ζητά οικογενειακή σύντομη ιστορία. Κενές επιλογές ή κενό περιεχόμενο μοντέλου είναι σφάλματα, και οι αποτυχίες διατηρούν την αρχική αιτία για διαγνωστικά στον διακομιστή. Ο πελάτης SDK κλείνει όταν η εφαρμογή τερματίζει.
 
-### 4. Πρότυπα Ιστού
+### 4. Πρότυπα Web
 
-**Αρχείο:** `index.html` (Φόρμα Αποστολής)
+**Αρχείο:** [index.html](../../../../04-PracticalSamples/petstory/src/main/resources/templates/index.html) (Φόρμα μεταφόρτωσης)
 
-Η κύρια σελίδα όπου οι χρήστες περιγράφουν τα κατοικίδιά τους:
+Η σελίδα ξεκινά με επιλογέα φωτογραφίας, όχι περιοχή κειμένου περιγραφής. Το **Analyze Image** προεπισκοπεί τη επιλεγμένη φωτογραφία και τη στέλνει στο `/analyze-image`. Επιτυχής απάντηση εμφανίζει την περιγραφή, συμπληρώνει το κρυφό πεδίο `description`, και αποκαλύπτει το **Generate Story**. Αυτό το κουμπί υποβάλλει την υπάρχουσα φόρμα στο `/generate-story`.
 
-```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Pet Story Generator</title>
-    <!-- CSS styling -->
-</head>
-<body>
-    <div class="container">
-        <h1>Pet Story Generator</h1>
-        <p>Describe your pet and we'll create a fun story about them!</p>
-        
-        <!-- Error message display -->
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-        
-        <!-- Story generation form -->
-        <form action="/generate-story" method="post">
-            <div class="form-group">
-                <label for="description">Describe your pet:</label>
-                <textarea id="description" name="description" 
-                         placeholder="Tell us about your pet - what they look like, their personality, favorite activities..."
-                         maxlength="1000" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Generate Story</button>
-        </form>
-        
-        <!-- Image upload section with client-side processing -->
-        <div class="upload-section">
-            <h2>Or Upload a Photo</h2>
-            <input type="file" id="imageInput" accept="image/*" />
-            <button onclick="analyzeImage()" class="upload-btn">Analyze Image</button>
-        </div>
-        
-        <script>
-            // Client-side image analysis using Transformers.js
-            async function analyzeImage() {
-                // Image processing code here
-                // Generates description automatically from uploaded image
-            }
-        </script>
-    </div>
-</body>
-</html>
-```
+Δεν υπάρχει λήψη μοντέλου στον περιηγητή ή εξάρτηση CDN. Η ανάλυση εικόνας εκτελείται στον διακομιστή μέσω της ρυθμισμένης ανάπτυξης Azure. Οι αποτυχίες παραμένουν ορατές και δεν επιτρέπουν τη δημιουργία ιστορίας με κατασκευασμένη περιγραφή. Η επιλογή διαφορετικού αρχείου καθαρίζει την προηγούμενη ανάλυση.
 
 **Αρχείο:** `result.html` (Εμφάνιση Ιστορίας)
 
@@ -300,11 +151,11 @@ public class StoryService {
 **Χαρακτηριστικά προτύπου:**
 
 1. **Ενσωμάτωση Thymeleaf**: Χρησιμοποιεί χαρακτηριστικά `th:` για δυναμικό περιεχόμενο
-2. **Ανταποκρινόμενος Σχεδιασμός**: Στυλιζάρισμα CSS για κινητές και επιτραπέζιες συσκευές
-3. **Διαχείριση Σφαλμάτων**: Εμφανίζει μηνύματα επικύρωσης στους χρήστες
-4. **Επεξεργασία στην πλευρά του πελάτη**: JavaScript για ανάλυση εικόνας (χρησιμοποιώντας Transformers.js)
+2. **Ανταποκρινόμενο Σχέδιο**: Στυλιζάρισμα CSS για κινητά και υπολογιστές
+3. **Διαχείριση Σφαλμάτων**: Εμφανίζει σφάλματα επικύρωσης στους χρήστες
+4. **Διαχείριση Μεταφόρτωσης**: Το JavaScript προεπισκοπεί τη φωτογραφία, στέλνει αίτημα multipart με προστασία CSRF, και εμφανίζει την επιστρεφόμενη περιγραφή
 
-### 5. Διαμόρφωση
+### 5. Ρυθμίσεις
 
 **Αρχείο:** `application.properties`
 
@@ -322,21 +173,21 @@ logging.level.com.example.petstory=INFO
 
 # Azure AI Foundry (keyless) configuration
 azure.openai.endpoint=${AZURE_OPENAI_ENDPOINT:}
-azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
 ```
 
-**Επεξήγηση Διαμόρφωσης:**
+**Επεξήγηση διαμόρφωσης:**
 
-1. **Αποστολή Αρχείων**: Επιτρέπει εικόνες έως 10MB
-2. **Καταγραφή**: Ελέγχει τις πληροφορίες που καταγράφονται κατά την εκτέλεση
-3. **Azure AI Foundry**: Προσδιορίζει το endpoint και την ανάπτυξη μοντέλου που θα χρησιμοποιηθεί (χωρίς κλειδί)
-4. **Ασφάλεια**: Διαμόρφωση διαχείρισης σφαλμάτων για αποφυγή αποκάλυψης ευαίσθητων πληροφοριών
+1. **Μεταφόρτωση Αρχείου**: Τόσο το αρχείο όσο και το πλήρες αίτημα multipart περιορίζονται στα 10MB· διατηρήστε τις φωτογραφίες κάτω από αυτό το όριο για να αφήσετε χώρο για τις κεφαλίδες multipart
+2. **Καταγραφή**: Ελέγχει ποιες πληροφορίες καταγράφονται κατά την εκτέλεση
+3. **Azure AI Foundry**: Καθορίζει το endpoint και την εφαρμογή μοντέλου που θα χρησιμοποιηθεί (αυθεντικοποίηση χωρίς κλειδί)
+4. **Ασφάλεια**: Η προστασία CSRF παραμένει ενεργοποιημένη· οι διαγνωστικοί έλεγχοι του μοντέλου καταγράφονται στον διακομιστή, ενώ ο ελεγκτής εμφανίζει γενικά μηνύματα αποτυχίας μοντέλου
 
 ## Εκτέλεση της Εφαρμογής
 
-### Βήμα 1: Σύνδεση και Ρύθμιση του Endpoint
+### Βήμα 1: Σύνδεση και Ορισμός του Endpoint σας
 
-Η αυθεντικοποίηση είναι χωρίς κλειδί (Microsoft Entra ID), οπότε δεν απαιτείται API key. Συνδεθείτε και ορίστε το endpoint του Foundry:
+Η αυθεντικοποίηση είναι χωρίς κλειδί (Microsoft Entra ID), οπότε δεν υπάρχει API key. Συνδεθείτε και ορίστε το Foundry endpoint σας:
 
 **Windows (Command Prompt):**
 ```cmd
@@ -356,93 +207,91 @@ az login
 export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 ```
 
-**Γιατί είναι απαραίτητο:**
-- Το Azure AI Foundry χρησιμοποιεί το Microsoft Entra ID για την αυθεντικοποίηση αιτημάτων inference
-- Η αυθεντικοποίηση χωρίς κλειδί σημαίνει ότι δεν υπάρχουν μυστικά στον κώδικα ή στο περιβάλλον σας
-- Ο λογαριασμός σας πρέπει να έχει το ρόλο **Cognitive Services OpenAI User** στον πόρο
+**Γιατί χρειάζεται αυτό:**
+- Το Azure AI Foundry χρησιμοποιεί το Microsoft Entra ID για την αυθεντικοποίηση των αιτημάτων inference
+- Η αυθεντικοποίηση χωρίς κλειδί σημαίνει ότι δεν υπάρχουν μυστικά στον πηγαίο κώδικα ή στο περιβάλλον σας
+- Ο λογαριασμός σας χρειάζεται το ρόλο **Cognitive Services OpenAI User** στον πόρο
 
-### Βήμα 2: Δημιουργία και Εκτέλεση
+Το προεπιλεγμένο όνομα ανάπτυξης είναι `gpt-5.6-luna`. Αν η ανάπτυξη GPT-5.6 Luna σας έχει άλλο όνομα, ορίστε το `AZURE_OPENAI_DEPLOYMENT` στην ίδια κονσόλα πριν ξεκινήσετε την εφαρμογή. Τόσο η ανάλυση εικόνας όσο και η δημιουργία ιστορίας χρησιμοποιούν αυτή τη ρύθμιση.
 
-Πλοηγηθείτε στον φάκελο του έργου:
+### Βήμα 2: Σύνταξη και Εκτέλεση
+
+Μεταβείτε στον κατάλογο του έργου:
 ```bash
 cd 04-PracticalSamples/petstory
 ```
 
-Δημιουργήστε την εφαρμογή:
+Δημιουργήστε το αυτόνομο εκτελέσιμο JAR και εκτελέστε όλα τα offline tests:
 ```bash
-mvn clean compile
+mvn clean package
 ```
 
-Εκκινήστε τον διακομιστή:
+Ξεκινήστε τον διακομιστή:
 ```bash
 mvn spring-boot:run
 ```
 
-Η εφαρμογή θα ξεκινήσει στη διεύθυνση `http://localhost:8080`.
+Η εφαρμογή θα ξεκινήσει στο `http://localhost:8080`.
+
+Εναλλακτικά, ξεκινήστε το πακεταρισμένο JAR σε μια ελεύθερη θύρα, για παράδειγμα:
+
+```bash
+java -jar target/pet-story-app-0.0.1-SNAPSHOT.jar --server.port=8083
+```
+
+Για την εντολή αυτή, ανοίξτε `http://localhost:8083/`. Οι ίδιες διαδρομές `/analyze-image` και `/generate-story` είναι διαθέσιμες στη συγκεκριμένη θύρα.
 
 ### Βήμα 3: Δοκιμή της Εφαρμογής
 
-1. **Ανοίξτε** `http://localhost:8080` στον περιηγητή σας
-2. **Περιγράψτε** το κατοικίδιό σας στο πεδίο κειμένου (π.χ. "Ένας παιχνιδιάρης χρυσός ριτρίβερ που αγαπά να φέρνει αντικείμενα")
-3. **Κάντε κλικ** στο "Generate Story" για να λάβετε μια ιστορία που δημιούργησε το AI
-4. **Εναλλακτικά**, ανεβάστε μια εικόνα κατοικιδίου για αυτόματη δημιουργία περιγραφής
-5. **Δείτε** την δημιουργική ιστορία με βάση την περιγραφή του κατοικιδίου σας
+1. **Ανοίξτε** το `http://localhost:8080` στον περιηγητή σας
+2. **Επιλέξτε** μια καθαρή φωτογραφία κατοικίδιου σε μορφή JPEG, PNG, GIF ή WebP, κάτω των 10MB
+3. **Πατήστε** "Ανάλυση Εικόνας" και περιμένετε την περιγραφή του κατοικίδιου
+4. **Πατήστε** "Δημιουργία Ιστορίας" μετά την επιτυχή ανάλυση
+5. **Δείτε** την ιστορία και χρησιμοποιήστε το σύνδεσμο της σελίδας αποτελεσμάτων για να επιστρέψετε στη φόρμα ανέβασματος
 
-## Πώς Λειτουργούν Όλα Μαζί
+Η επιτυχημένη ροή από φωτογραφία σε ιστορία εκτελεί δύο κλήσεις μοντέλου, μία ανά κουμπί. Η ζωντανή inference καταναλώνει το όριο της ανάπτυξής σας και μπορεί να έχει κόστος· εκτελέστε δοκιμές καπνού σειριακά όταν μοιράζεστε μια ανάπτυξη με πεπερασμένο ρυθμό. Η φόρτωση της αρχικής σελίδας δεν καλεί το μοντέλο.
 
-Ακολουθεί η πλήρης ροή όταν δημιουργείτε μια ιστορία κατοικιδίου:
+## Offline Δοκιμές
 
-1. **Είσοδος Χρήστη**: Περιγράφετε το κατοικίδιό σας στη φόρμα ιστού
-2. **Υποβολή Φόρμας**: Ο περιηγητής στέλνει POST αίτημα στο `/generate-story`
-3. **Επεξεργασία από τον Ελεγκτή**: Ο `PetController` επικυρώνει και καθαρίζει την είσοδο
-4. **Κλήση Υπηρεσίας AI**: Ο `StoryService` στέλνει το αίτημα στο μοντέλο Azure AI Foundry
-5. **Δημιουργία Ιστορίας**: Το AI παράγει μια δημιουργική ιστορία βάσει της περιγραφής
-6. **Διαχείριση Απάντησης**: Ο ελεγκτής λαμβάνει την ιστορία και τη προσθέτει στο μοντέλο
-7. **Απόδοση Προτύπου**: Ο Thymeleaf αποδίδει το `result.html` με την ιστορία
-8. **Εμφάνιση**: Ο χρήστης βλέπει την ιστορία που δημιουργήθηκε στον περιηγητή του
+Από τον κατάλογο δειγμάτων, εκτελέστε:
+
+```bash
+mvn test
+```
+
+[StoryServiceTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/StoryServiceTest.java) καταγράφει πραγματικά αιτήματα OpenAI SDK με ένα HTTP fixture βρόχου επιστροφής. Ελέγχει την ανάπτυξη και των δύο αιτημάτων, το `reasoning_effort: none`, τα όρια token, το φορτίο εικόνας, την επικύρωση εισόδου, τις κενές απαντήσεις και τα σφάλματα ανάντη.
+
+[PetControllerTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/PetControllerTest.java) χρησιμοποιεί MockMvc με μια υπηρεσία μοντέλου προσομοιωμένη για να ελέγξει τις αποδιδόμενες σελίδες Thymeleaf, τη σύμβαση ανέβασματος, το CSRF, την επικύρωση, την απόδραση εξόδου και τις ορατές αποτυχίες. Αυτές οι δοκιμές δεν χρειάζονται διαπιστευτήρια Azure και δεν καλούν ποτέ πληρωμένη Azure inference. Το Maven γράφει αναφορές Surefire κάτω από `target/surefire-reports`.
+
+## Πώς Λειτουργεί Όλο Μαζί
+
+Ακολουθεί η πλήρης ροή όταν δημιουργείτε μια ιστορία κατοικίδιου:
+
+1. **Επιλογή Φωτογραφίας**: Επιλέγετε μια εικόνα κατοικίδιου στη φόρμα ανέβασματος
+2. **Ανέβασμα Εικόνας**: Το "Ανάλυση Εικόνας" στέλνει ένα multipart POST στο `/analyze-image` με την κεφαλίδα CSRF
+3. **Ανάλυση Εικόνας**: Το `StoryService` στέλνει την εικόνα στο GPT-5.6 Luna με ρύθμιση reasoning `none`
+4. **Εμφάνιση Περιγραφής**: Ο περιηγητής εμφανίζει την επιστρεφόμενη περιγραφή και τη διατηρεί στη φόρμα
+5. **Αποστολή Ιστορίας**: Το "Δημιουργία Ιστορίας" κάνει POST το `description` και το `_csrf` στο `/generate-story`
+6. **Δημιουργία Ιστορίας**: Ο ελεγκτής επικυρώνει την περιγραφή και καλεί την ίδια ανάπτυξη με ρύθμιση reasoning `none`
+7. **Απόδοση Προτύπου**: Το Thymeleaf αποδρά και εμφανίζει την περιγραφή και την ιστορία στη σελίδα αποτελεσμάτων
 
 **Ροή Διαχείρισης Σφαλμάτων:**
-Αν η υπηρεσία AI αποτύχει:
-1. Ο ελεγκτής πιάνει την εξαίρεση
-2. Δημιουργεί μια εναλλακτική ιστορία χρησιμοποιώντας προεγγραμμένα πρότυπα
-3. Εμφανίζει την εναλλακτική ιστορία με μια σημείωση για μη διαθεσιμότητα του AI
-4. Ο χρήστης λαμβάνει ακόμα μια ιστορία, εξασφαλίζοντας καλή εμπειρία χρήστη
+Εάν αποτύχει το μοντέλο, ο διακομιστής καταγράφει την αιτία. Η ανάλυση εικόνας επιστρέφει HTTP 502 και ο περιηγητής δείχνει το σφάλμα χωρίς να εμφανίσει το "Δημιουργία Ιστορίας". Η δημιουργία ιστορίας ανακατευθύνει στη φόρμα με μήνυμα σφάλματος. Κανένα μονοπάτι δεν αντικαθιστά σιωπηλά ένα προ-γραμμένο αποτέλεσμα.
 
-## Κατανόηση της Ενσωμάτωσης Τεχνητής Νοημοσύνης
+## Κατανόηση της Ενσωμάτωσης AI
 
 ### Azure AI Foundry (χωρίς κλειδί)
-Η εφαρμογή χρησιμοποιεί το Azure AI Foundry με αυθεντικοποίηση χωρίς κλειδί (Microsoft Entra ID):
+Η υπηρεσία ρυθμίζει το SDK με το endpoint `/openai/v1/` του πόρου σας. Το `DefaultAzureCredential` και το `AuthenticationUtil.getBearerTokenSupplier` παρέχουν διακριτικά Microsoft Entra για το `https://ai.azure.com/.default`. Η τοπική ανάπτυξη μπορεί να χρησιμοποιήσει το sign-in Azure CLI σας· μια εφαρμογή που φιλοξενείται στο Azure μπορεί να χρησιμοποιεί μια διαχειριζόμενη ταυτότητα με τα απαραίτητα δικαιώματα πόρου.
 
-```java
-// Αυθεντικοποίηση χωρίς κλειδί - χωρίς κλειδί API
-DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-this.openAIClient = OpenAIOkHttpClient.builder()
-    .baseUrl(endpoint + "openai/v1/")
-    .credential(BearerTokenCredential.create(
-        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-    .build();
-```
-
-### Μηχανική Οδηγιών (Prompt Engineering)
-Η υπηρεσία χρησιμοποιεί προσεκτικά κατασκευασμένες οδηγίες για καλύτερα αποτελέσματα:
-
-```java
-String systemPrompt = "You are a creative storyteller who writes fun, " +
-                     "family-friendly short stories about pets. " +
-                     "Keep stories under 500 words and appropriate for all ages.";
-```
+### Μηχανική Προτροπής
+Τα αιτήματα ανάλυσης εικόνας ζητούν παρατηρήσιμα χαρακτηριστικά κατοικίδιου σε σύντομη παράγραφο και λένε στο μοντέλο να αντιμετωπίζει το κείμενο στην εικόνα ως δεδομένα, όχι ως εντολές. Η δημιουργία ιστορίας χρησιμοποιεί την επιστρεφόμενη περιγραφή σε ξεχωριστό, οικογενειακό αίτημα συγγραφής. Κανένα από τα δύο δεν ενεργοποιεί reasoning ή ορίζει παράκαμψη θερμοκρασίας.
 
 ### Επεξεργασία Απάντησης
-Η απάντηση του AI εξάγεται και επικυρώνεται:
-
-```java
-ChatCompletion response = openAIClient.chat().completions().create(params);
-String story = response.choices().get(0).message().content().orElse("");
-```
+Ο κοινός χειριστής απάντησης απορρίπτει την έλλειψη επιλογών και το κενό ή μόνο κενό περιεχόμενο, περικόπτει το έγκυρο περιεχόμενο και διατηρεί τα σφάλματα ανάντη. Οι περιγραφές εικόνας περιορίζονται σε 1000 χαρακτήρες για να ταιριάξουν στη συνέχεια στη φόρμα ιστορίας. Η αρχική αποτυχία μοντέλου διατηρείται για διαγνωστικούς σκοπούς αλλά δεν εμφανίζεται στον χρήστη.
 
 ## Επόμενα Βήματα
 
-Για περισσότερα παραδείγματα, δείτε το [Κεφάλαιο 04: Πρακτικά παραδείγματα](../README.md)
+Για περισσότερα παραδείγματα, δείτε [Κεφάλαιο 04: Πρακτικά δείγματα](../README.md)
 
 ---
 

@@ -1,38 +1,48 @@
-# ਪੇਟ ਸਟੋਰੀ ਜੈਨਰੇਟਰ ਟਿਊਟੋਰੀਅਲ ਸ਼ੁਰੂਆਤੀ ਲਈ
+# ਸ਼ੁਰੂਆਤੀ ਲਈ ਪਾਲਤੂ ਕਹਾਣੀ ਜਨਰੇਟਰ ਟਿਊਟੋਰੀਅਲ
 
-## ਸੂਚੀ
+ਇਕ ਪਾਲਤੂ ਫੋਟੋ ਅਪਲੋਡ ਕਰੋ, ਇਸਦਾ GPT-5.6 Luna ਨਾਲ ਵਿਸ਼ਲੇਸ਼ਣ ਕਰੋ, ਅਤੇ ਪ੍ਰਾਪਤ ਵਰਣਨ ਤੋਂ ਇੱਕ ਕਹਾਣੀ ਬਣਾਓ। ਦੋਹਾਂ ਮਾਡਲ ਬੇਨਤੀ ਵਿੱਚ `reasoning_effort: none` ਵਰਤੀ ਜਾਂਦੀ ਹੈ।
 
-- [ਪੂਰਵ ਅਵਸ਼ਕਤਾ](#ਪੂਰਵ-ਅਵਸ਼ਕਤਾ)
-- [ਪ੍ਰੋਜੈਕਟ ਸਟ੍ਰੱਕਚਰ ਨੂੰ ਸਮਝਣਾ](#ਪ੍ਰੋਜੈਕਟ-ਸਟ੍ਰੱਕਚਰ-ਨੂੰ-ਸਮਝਣਾ)
+| ਕੰਪੋਨੈਂਟ | ਸੰਸਕਰਨ |
+| --- | --- |
+| ਜਾਵਾ | 21 ਜਾਂ ਵੱਧ |
+| ਸਪ੍ਰਿੰਗ ਬੂਟ | 4.1.1 |
+| OpenAI ਜਾਵਾ SDK | 4.63.1 |
+| ਐਜ਼ਯੂਰ ਆਈਡੈਂਟਿਟੀ | 1.18.6 |
+
+## ਸਮੱਗਰੀ ਦੀ ਸੂਚੀ
+
+- [ਪੂਰਵ-ਆਵਸ਼ਯਕਤਾਵਾਂ](#ਪੂਰਵ-ਆਵਸ਼ਯਕਤਾਵਾਂ)
+- [ਪ੍ਰੋਜੈਕਟ ਸਟ੍ਰੱਕਚਰ ਦੀ ਸਮਝ](#ਪ੍ਰੋਜੈਕਟ-ਸਟ੍ਰੱਕਚਰ-ਦੀ-ਸਮਝ)
 - [ਮੁੱਖ ਘਟਕਾਂ ਦੀ ਵਿਆਖਿਆ](#ਮੁੱਖ-ਘਟਕਾਂ-ਦੀ-ਵਿਆਖਿਆ)
   - [1. ਮੁੱਖ ਐਪਲੀਕੇਸ਼ਨ](#1-ਮੁੱਖ-ਐਪਲੀਕੇਸ਼ਨ)
   - [2. ਵੈੱਬ ਕੰਟਰੋਲਰ](#2-ਵੈੱਬ-ਕੰਟਰੋਲਰ)
-  - [3. ਸਟੋਰੀ ਸਰਵਿਸ](#3-ਸਟੋਰੀ-ਸਰਵਿਸ)
-  - [4. ਵੈੱਬ ਟੈਂਪਲੇਟਸ](#4-ਵੈੱਬ-ਟੈਂਪਲੇਟਸ)
-  - [5. ਕਾਂਫਿਗਰੇਸ਼ਨ](#5-ਕਾਂਫਿਗਰੇਸ਼ਨ)
+  - [3. ਕਹਾਣੀ ਸੇਵਾ](#3-ਕਹਾਣੀ-ਸੇਵਾ)
+  - [4. ਵੈੱਬ ਟੈਮਪਲੇਟ](#4-ਵੈੱਬ-ਟੈਮਪਲੇਟ)
+  - [5. ਸੰਰਚਨਾ](#5-ਸੰਰਚਨਾ)
 - [ਐਪਲੀਕੇਸ਼ਨ ਚਲਾਉਣਾ](#ਐਪਲੀਕੇਸ਼ਨ-ਚਲਾਉਣਾ)
-- [ਇਹ ਸਾਰਾ ਕੰਮ ਕਿਵੇਂ ਕਰਦਾ ਹੈ](#ਇਹ-ਸਾਰਾ-ਕੰਮ-ਕਿਵੇਂ-ਕਰਦਾ-ਹੈ)
-- [AI ਇੰਟਿਗ੍ਰੇਸ਼ਨ ਨੂੰ ਸਮਝਣਾ](#ai-ਇੰਟਿਗ੍ਰੇਸ਼ਨ-ਨੂੰ-ਸਮਝਣਾ)
+- [ਆਫਲਾਈਨ ਟੈਸਟ](#ਆਫਲਾਈਨ-ਟੈਸਟ)
+- [ਇਹ ਸਾਰਾ ਕਿਵੇਂ ਕੰਮ ਕਰਦਾ ਹੈ](#ਇਹ-ਸਾਰਾ-ਕਿਵੇਂ-ਕੰਮ-ਕਰਦਾ-ਹੈ)
+- [AI ਇੰਟਿਗ੍ਰੇਸ਼ਨ ਦੀ ਸਮਝ](#ai-ਇੰਟਿਗ੍ਰੇਸ਼ਨ-ਦੀ-ਸਮਝ)
 - [ਅਗਲੇ ਕਦਮ](#ਅਗਲੇ-ਕਦਮ)
 
-## ਪੂਰਵ ਅਵਸ਼ਕਤਾ
+## ਪੂਰਵ-ਆਵਸ਼ਯਕਤਾਵਾਂ
 
 ਸ਼ੁਰੂ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ, ਇਹ ਯਕੀਨੀ ਬਣਾਓ ਕਿ ਤੁਹਾਡੇ ਕੋਲ ਹੈ:
-- ਜਾਵਾ 21 ਜਾਂ ਉੱਪਰ ਇੰਸਟਾਲਡ
-- ਡਿਪੈਂਡੇਨਸੀ ਪ੍ਰਬੰਧਨ ਲਈ ਮਾਵੇਨ
-- ਏਜ਼ੂਰ AI ਫਾਊਂਡਰੀ ਮਾਡਲ ਡਿਪਲੋਇਮੈਂਟ (ਉਦਾਹਰਨ ਲਈ `azd up` ਨਾਲ ਪ੍ਰੋਵਿਜ਼ਨ ਕਰੋ — ਦੇਖੋ [ਚੈਪਟਰ 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md)), `az login` (ਕੀਲੈੱਸ ਅਥੈਂਟੀਕੇਸ਼ਨ) ਨਾਲ ਸਾਇਨ ਇਨ
-- ਜਾਵਾ, ਸਪ੍ਰਿੰਗ ਬੂਟ ਅਤੇ ਵੈੱਬ ਡਿਵੈਲਪਮੈਂਟ ਦੀ ਬੁਨਿਆਦੀ ਸਮਝ
+- ਜਾਵਾ 21 ਜਾਂ ਵੱਧ ਸੰਸਕਰਨ ਇੰਸਟਾਲ ਹੈ
+- Maven ਡਿਪੈਂਡੈਂਸੀ ਪ੍ਰਬੰਧਨ ਲਈ
+- GPT-5.6 Luna ਦਾ ਇੱਕ ਐਜ਼ਯੂਰ AI Foundry ਡਿਪਲੋਇਮੈਂਟ ਜਿਸ ਦਾ ਨਾਮ `gpt-5.6-luna` ਹੈ, ਜਾਂ ਇੱਕ `AZURE_OPENAI_DEPLOYMENT` ਓਵਰਰਾਈਡ ਜੋ ਉਸ ਡਿਪਲੋਇਮੈਂਟ ਨੂੰ ਦਰਸਾਉਂਦਾ ਹੈ। ਪ੍ਰੌਵਿਜ਼ਨਿੰਗ ਲਈ [ਅਧਿਆਇ 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md) ਵੇਖੋ ਅਤੇ ਕੂੰਜੀ-ਰਹਿਤ ਪ੍ਰਮਾਣਿਕਤਾ ਲਈ `az login` ਨਾਲ ਸਾਈਨ ਇਨ ਕਰੋ। ਡਿਪਲੋਇਮੈਂਟ ਚਿੱਤਰ ਇਨਪੁੱਟ ਅਤੇ `reasoning_effort: none` ਨੂੰ ਸਮਰਥਿਤ ਕਰਨਾ ਜਰੂਰੀ ਹੈ।
+- ਜਾਵਾ, ਸਪ੍ਰਿੰਗ ਬੂਟ, ਅਤੇ ਵੈੱਬ ਵਿਕਾਸ ਦੀ ਬੁਨਿਆਦੀ ਸਮਝ
 
-## ਪ੍ਰੋਜੈਕਟ ਸਟ੍ਰੱਕਚਰ ਨੂੰ ਸਮਝਣਾ
+## ਪ੍ਰੋਜੈਕਟ ਸਟ੍ਰੱਕਚਰ ਦੀ ਸਮਝ
 
-ਪੇਟ ਸਟੋਰੀ ਪ੍ਰੋਜੈਕਟ ਵਿੱਚ ਕੁਝ ਮਹੱਤਵਪੂਰਣ ਫਾਇਲਾਂ ਹਨ:
+ਪਾਲਤੂ ਕਹਾਣੀ ਪ੍ਰੋਜੈਕਟ ਵਿੱਚ ਕਈ ਮੁੱਖ ਫਾਇਲਾਂ ਹਨ:
 
 ```
 petstory/
 ├── src/main/java/com/example/petstory/
 │   ├── PetStoryApplication.java       # Main Spring Boot application
 │   ├── PetController.java             # Web request handler
-│   ├── StoryService.java              # AI story generation service
+│   ├── StoryService.java              # AI image analysis and story generation
 │   └── SecurityConfig.java            # Security configuration
 ├── src/main/resources/
 │   ├── application.properties         # App configuration
@@ -48,7 +58,7 @@ petstory/
 
 **ਫਾਇਲ:** `PetStoryApplication.java`
 
-ਇਹ ਸਾਡੇ ਸਪ੍ਰਿੰਗ ਬੂਟ ਐਪਲੀਕੇਸ਼ਨ ਲਈ ਐਂਟ੍ਰੀ ਪੁਆਇੰਟ ਹੈ:
+ਇਹ ਸਾਡੀ ਸਪ੍ਰਿੰਗ ਬੂਟ ਐਪਲੀਕੇਸ਼ਨ ਦਾ ਏਨਟਰੀ ਪੁਆਇੰਟ ਹੈ:
 
 ```java
 @SpringBootApplication
@@ -60,211 +70,52 @@ public class PetStoryApplication {
 ```
 
 **ਇਹ ਕੀ ਕਰਦਾ ਹੈ:**
-- `@SpringBootApplication` ਐਨੋਟੇਸ਼ਨ ਆਟੋ-ਕਾਂਫਿਗਰੇਸ਼ਨ ਅਤੇ ਕੰਪੋਨੈਂਟ ਸਕੈਨਿੰਗ ਨੂੰ ਯੋਗ ਕਰਦਾ ਹੈ
-- ਪੋਰਟ 8080 'ਤੇ ਐੰਬੈਡਡ ਵੈੱਬ ਸਰਵਰ (ਟੋਮਕੈਟ) ਚਲਾਉਂਦਾ ਹੈ
-- ਸਾਰੀਆਂ ਲੋੜੀਂਦੀਆਂ ਸਪ੍ਰਿੰਗ ਬੀਨਜ਼ ਅਤੇ ਸਰਵਿਸਜ਼ ਆਪਣੇ ਆਪ ਬਣਾਂਦਾ ਹੈ
+- `@SpringBootApplication` ਐਨੋਟੇਸ਼ਨ ਆਟੋ-ਕਨਫਿਗਰੇਸ਼ਨ ਅਤੇ ਕੰਪੋਨੈਂਟ ਸਕੈਨਿੰਗ ਨੂੰ ਯੋਗ ਬਣਾਉਂਦਾ ਹੈ
+- ਪੋਰਟ 8080 'ਤੇ ਇੱਕ ਏਮਬੈੱਡਡ ਵੈੱਬ ਸਰਵਰ (ਟੋਮਕੈਟ) ਸ਼ੁਰੂ ਕਰਦਾ ਹੈ
+- ਆਟੋਮੈਟਿਕ ਤੌਰ 'ਤੇ ਸਾਰੇ ਜਰੂਰੀ ਸਪ੍ਰਿੰਗ ਬੀਨ ਅਤੇ ਸਰਵਿਸ ਬਣਾਉਂਦਾ ਹੈ
 
 ### 2. ਵੈੱਬ ਕੰਟਰੋਲਰ
 
-**ਫਾਇਲ:** `PetController.java`
+**ਫਾਇਲ:** [PetController.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/PetController.java)
 
-ਇਹ ਸਾਰੇ ਵੈੱਬ ਰਿਕਵੈਸਟਸ ਅਤੇ ਯੂਜ਼ਰ ਇੰਟਰੈਕਸ਼ਨ ਸੰਭਾਲਦਾ ਹੈ:
+| ਐਂਡਪੌਇੰਟ | ਬੇਨਤੀ | ਸਫ਼ਲ ਜਵਾਬ |
+| --- | --- | --- |
+| `GET /` | ਕੋਈ ਬਾਡੀ ਨਹੀਂ | CSRF ਟੋਕਨ ਨਾਲ HTML ਅਪਲੋਡ ਫਾਰਮ |
+| `POST /analyze-image` | `multipart/form-data`, ਫਾਇਲ ਫੀਲਡ `image` | JSON: `{"description":"ਇੱਕ ਖੇਡਣ ਵਾਲਾ ਪਾਲਤੂ..."}` |
+| `POST /generate-story` | `application/x-www-form-urlencoded`, ਫੀਲਡ `description` | ਵਰਣਨ ਅਤੇ ਬਣਾਈ ਗਈ ਕਹਾਣੀ ਵਾਲਾ HTML ਨਤੀਜਾ ਪੇਜ |
 
-```java
-@Controller
-public class PetController {
-    
-    private final StoryService storyService;
-    
-    public PetController(StoryService storyService) {
-        this.storyService = storyService;
-    }
-    
-    @GetMapping("/")
-    public String index() {
-        return "index";  // index.html ਟੈਮਪਲੇਟ ਵਾਪਸ ਕਰਦਾ ਹੈ
-    }
-    
-    @PostMapping("/generate-story")
-    public String generateStory(@RequestParam("description") String description, 
-                               Model model, 
-                               RedirectAttributes redirectAttributes) {
-        
-        // ਇਨਪੁੱਟ ਵੈਰੀਫਿਕੇਸ਼ਨ
-        if (description.trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Please provide a description.");
-            return "redirect:/";
-        }
-        
-        // ਸੁਰੱਖਿਆ ਲਈ ਇਨਪੁੱਟ ਸਾਫ਼ ਕਰੋ
-        String sanitizedDescription = sanitizeInput(description);
-        
-        // ਗਲਤੀ ਸੰਭਾਲ ਨਾਲ ਕਹਾਣੀ ਬਣਾਓ
-        try {
-            String story = storyService.generateStory(sanitizedDescription);
-            model.addAttribute("caption", sanitizedDescription);
-            model.addAttribute("story", story);
-            return "result";  // result.html ਟੈਮਪਲੇਟ ਵਾਪਸ ਕਰਦਾ ਹੈ
-            
-        } catch (Exception e) {
-            // ਜੇ AI ਅਸਫਲ ਰਹਿੰਦਾ ਹੈ ਤਾਂ ਬੈਕਅੱਪ ਕਹਾਣੀ ਵਰਤੋ
-            String fallbackStory = generateFallbackStory(sanitizedDescription);
-            model.addAttribute("story", fallbackStory);
-            return "result";
-        }
-    }
-    
-    private String sanitizeInput(String input) {
-        return input.replaceAll("[<>\"'&]", "")  // Remove dangerous characters
-                   .trim()
-                   .substring(0, Math.min(input.length(), 500));  // ਲੰਬਾਈ ਸੀਮਿਤ ਕਰੋ
-    }
-}
-```
+ਦੋਹਾਂ POST ਐਂਡਪੌਇੰਟਾਂ ਲਈ ਸੈਸ਼ਨ ਕੁਕੀ ਅਤੇ CSRF ਟੋਕਨ ਜ਼ਰੂਰੀ ਹਨ ਜੋ `GET /` ਤੋਂ ਪ੍ਰਾਪਤ ਹੁੰਦੇ ਹਨ। ਅਪਲੋਡ ਸਕ੍ਰਿਪਟ ਲੁਕਾਈ `_csrf` ਕੀਮਤ ਨੂੰ `X-CSRF-TOKEN` ਹੈਡਰ ਵਿੱਚ ਭੇਜਦਾ ਹੈ; ਕਹਾਣੀ ਜਮ੍ਹਾਂ ਕਰਨ ਲਈ ਇਹ `_csrf` ਫਾਰਮ ਫੀਲਡ ਵਜੋਂ ਭੇਜਦਾ ਹੈ। API ਕਲਾਇੰਟਾਂ ਨੂੰ ਬੇਨਤੀਵਾਂ ਵਿੱਚ ਕੁਕੀ ਦੀ ਸੰਭਾਲ ਕਰਨੀ ਚਾਹੀਦੀ ਹੈ। ਇਹ ਫਾਰਮ ਐਂਡਪੌਇੰਟ ਹਨ, JSON ਬੇਨਤੀਵਾਂ ਨਹੀਂ।
 
-**ਮੁੱਖ ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ:**
+ਵਰਣਨ ਖ਼ਾਲੀ ਨਾ ਹੋਣ ਅਤੇ 1000 ਅੱਖਰਾਂ ਤੋਂ ਵੱਧ ਨਾ ਹੋਣੇ ਚਾਹੀਦੇ ਹਨ। ਕੰਟਰੋਲਰ ਵਰਣਨ ਨੂੰ ਟ੍ਰਿਮ ਕਰਦਾ ਹੈ ਅਤੇ ਸੇਵਾ ਨੂੰ ਭੇਜਣ ਤੋਂ ਪਹਿਲਾਂ `<`, `>`, ਡਬਲ ਕੋਟ, ਐਪੋਸਟ੍ਰੋਫੀ, ਅਤੇ `&` ਨੂੰ ਹਟਾ ਦਿੰਦਾ ਹੈ। ਨਤੀਜਾ ਟੈਮਪਲੇਟ ਵੀ ਮਾਡਲ ਆਉਟਪੁੱਟ ਨੂੰ `th:text` ਨਾਲ ਏਸਕੇਪ ਕਰਦਾ ਹੈ।
 
-1. **ਰੂਟ ਹੈਂਡਲਿੰਗ**: `@GetMapping("/")` ਅਪਲੋਡ ਫਾਰਮ ਦਿਖਾਉਂਦਾ ਹੈ, `@PostMapping("/generate-story")` ਸਬਮੀਸ਼ਨਾਂ ਨੂੰ ਪ੍ਰੋਸੈਸ ਕਰਦਾ ਹੈ
-2. **ਇਨਪੁੱਟ ਵੈਰੀਫਿਕੇਸ਼ਨ**: ਖਾਲੀ ਡਿਸਕ੍ਰਿਪਸ਼ਨ ਅਤੇ ਲੰਬਾਈ ਸੀਮਾਵਾਂ ਦੀ ਜਾਂਚ ਕਰਦਾ ਹੈ
-3. **ਸੁਰੱਖਿਆ**: XSS ਹਮਲਿਆਂ ਨੂੰ ਰੋਕਣ ਲਈ ਯੂਜ਼ਰ ਇੰਪੁੱਟ ਨੂੰ ਸੈਨਿਟਾਈਜ਼ ਕਰਦਾ ਹੈ
-4. **ਏਰਰ ਹੈਂਡਲਿੰਗ**: ਜਦੋਂ AI ਸਰਵਿਸ ਨਾਕਾਮ ਰਹਿੰਦੀ ਹੈ ਤਾਂ ਫਾਲਬੈਕ ਕਹਾਣੀਆਂ ਪ੍ਰਦਾਨ ਕਰਦਾ ਹੈ
-5. **ਮਾਡਲ ਬਾਇੰਡਿੰਗ**: ਸਪ੍ਰਿੰਗ ਦੇ `Model` ਦੀ ਵਰਤੋਂ ਕਰਕੇ ਡੇਟਾ HTML ਟੈਂਪਲੇਟਸ ਨੂੰ ਭੇਜਦਾ ਹੈ
+ਇਮੇਜ ਵੈਲੀਡੇਸ਼ਨ ਅਸਫਲ ਹੋਣ 'ਤੇ HTTP 400 ਰਿਟਰਨ ਹੁੰਦਾ ਹੈ ਜਿਸ ਵਿੱਚ `error` ਫੀਲਡ ਹੁੰਦੀ ਹੈ; ਮਾਡਲ ਅਸਫਲਤਾ 'ਤੇ HTTP 502, `error` ਫੀਲਡ ਨਾਲ ਪਰ ਕੋਈ `description` ਨਹੀਂ। ਗਲਤ ਕਹਾਣੀ ਵਰਣਨ ਜਾਂ ਮਾਡਲ ਅਸਫਲਤਾ ਨੂੰ `/` ਤੇ ਦਿਸਣ ਵਾਲੇ ਗਲਤੀ ਸਨੇਹੇ ਨਾਲ ਰੀਡਾਇਰੈਕਟ ਕੀਤਾ ਜਾਂਦਾ ਹੈ। ਜਰੂਰੀ ਫੀਲਡ ਗੁੰਮ ਹੋਣ 'ਤੇ HTTP 400 ਅਤੇ ਗੁੰਮ ਜਾਂ ਗਲਤ CSRF ਟੋਕਨ ਹੋਣ 'ਤੇ HTTP 403 ਆ ਜਾਂਦਾ ਹੈ। ਕਿਸੇ ਵੀ ਫੌਲਬੈਕ ਵਰਣਨ ਜਾਂ ਕਹਾਣੀਆਂ ਨੂੰ ਸਫਲ AI ਨਤੀਜੇ ਵਜੋਂ ਨਹੀਂ ਦਰਸਾਇਆ ਜਾਂਦਾ।
 
-**ਫਾਲਬੈਕ ਸਿਸਟਮ:**
-ਕੰਟਰੋਲਰ ਵਿੱਚ ਪਹਿਲਾਂ ਲਿਖੀਆਂ ਕਹਾਣੀਆਂ ਦੇ ਟੈਂਪਲੇਟ ਸ਼ਾਮਲ ਹੁੰਦੇ ਹਨ ਜੋ AI ਸੇਵਾ ਦੇ ਅਣਉਪਲਬਧ ਹੋਣ 'ਤੇ ਵਰਤੇ ਜਾਂਦੇ ਹਨ:
+### 3. ਕਹਾਣੀ ਸੇਵਾ
 
-```java
-private String generateFallbackStory(String description) {
-    String[] storyTemplates = {
-        "Meet the most wonderful pet in the world – a furry ball of energy...",
-        "Once upon a time, there lived a remarkable pet whose heart was as big...",
-        "In a cozy home filled with love, there lived an extraordinary pet..."
-    };
-    
-    // ਲਗਾਤਾਰ ਜਵਾਬਾਂ ਲਈ ਵਰਣਨ ਹੈਸ਼ ਦੀ ਵਰਤੋਂ ਕਰੋ
-    int index = Math.abs(description.hashCode() % storyTemplates.length);
-    return storyTemplates[index];
-}
-```
+**ਫਾਇਲ:** [StoryService.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/StoryService.java)
 
-### 3. ਸਟੋਰੀ ਸਰਵਿਸ
+ਅਧਿਕਾਰਤ OpenAI ਜਾਵਾ SDK 4.63.1 ਐਜ਼ਯੂਰ AI Foundry ਦੇ OpenAI-ਅਨੁਕੂਲ Chat Completions API ਨੂੰ ਕਾਲ ਕਰਦਾ ਹੈ। ਐਜ਼ਯੂਰ ਆਈਡੈਂਟਿਟੀ 1.18.6 `DefaultAzureCredential` ਰਾਹੀਂ ਮਾਇਕ੍ਰੋਸੋਫਟ ਐਂਟਰਾ ਬੀਅਰਰ ਟੋਕਨ ਮੁਹੱਈਆ ਕਰਦਾ ਹੈ; ਕਿਸੇ API ਕੀ ਦੀ ਲੋੜ ਨਹੀਂ।
 
-**ਫਾਇਲ:** `StoryService.java`
+| ਓਪਰੇਸ਼ਨ | ਇਨਪੁੱਟ | `max_completion_tokens` |
+| --- | --- | --- |
+| `analyzeImage` | ਅੱਪਲੋਡ ਕੀਤੇ MIME ਕਿਸਮ ਦੇ ਨਾਲ ਬੇਸ64 ਡੇਟਾ URL ਦੇ ਰੂਪ ਵਿੱਚ ਇਮੇਜ ਬਾਈਟ | 300 |
+| `generateStory` | ਯੂਜ਼ਰ ਮੈਸੇਜ ਵਿੱਚ ਪਾਲਤੂ ਦਾ ਵਰਣਨ | 800 |
 
-ਇਹ ਸਰਵਿਸ Azure AI Foundry ਨਾਲ ਸੰਪਰਕ ਕਰਦਾ ਹੈ ਅਤੇ ਕੀ-ਲੈੱਸ ਅਥੈਂਟੀਕੇਸ਼ਨ ਦੀ ਵਰਤੋਂ ਕਰਕੇ ਕਹਾਣੀਆਂ ਬਣਾਉਂਦਾ ਹੈ:
+ਦੋਹਾਂ ਬੇਨਤੀਉਂ ਲਈ ਕੰਫਿਗਰਡ ਡਿਪਲੋਇਮੈਂਟ ਵਰਤੀ ਜਾਂਦੀ ਹੈ, ਜੋ ਡਿਫਾਲਟ `gpt-5.6-luna` ਹੈ, ਅਤੇ ਖੁਲਾਸਾ `ReasoningEffort.NONE` (`reasoning_effort: none`) ਸੈੱਟ ਕਰਦਾ ਹੈ। ਕੋਈ ਵੀ ਬੇਨਤੀ `temperature` ਜਾਂ ਪੁਰਾਣੇ `max_tokens` ਪੈਰामीਟਰ ਨਹੀਂ ਭੇਜਦੀ।
 
-```java
-@Service
-public class StoryService {
-    
-    private final OpenAIClient openAIClient;
-    private final String modelName;
-    
-    public StoryService(@Value("${azure.openai.endpoint:}") String endpoint,
-                       @Value("${azure.openai.deployment:gpt-4o-mini}") String modelName) {
-        this.modelName = modelName;
-        if (endpoint == null || endpoint.isBlank()) {
-            endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        }
-        
-        // Foundry ਦਾ OpenAI-ਅਨੁਰੂਪ ਐਂਡਪੌਇੰਟ /openai/v1/ ਦੇ ਹੇਠਾਂ ਹੈ
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1/";
-        
-        // Microsoft Entra ID ਨਾਲ ਬਿਨਾਂ ਕੁੰਜੀ ਦੇ ਪ੍ਰਮਾਣੀਕਰਨ (ਕੋਈ API ਕੁੰਜੀ ਨਹੀਂ)
-        DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-        this.openAIClient = OpenAIOkHttpClient.builder()
-                .baseUrl(baseUrl)
-                .credential(BearerTokenCredential.create(
-                        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-                .build();
-    }
-    
-    public String generateStory(String description) {
-        String systemPrompt = "You are a creative storyteller who writes fun, " +
-                             "family-friendly short stories about pets. " +
-                             "Keep stories under 500 words and appropriate for all ages.";
-        
-        String userPrompt = "Write a fun short story about a pet described as: " + description;
-        
-        // AI ਬੇਨਤੀ ਨੂੰ ਸੰਰਚਿਤ ਕਰੋ
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(modelName)
-                .addSystemMessage(systemPrompt)
-                .addUserMessage(userPrompt)
-                .maxCompletionTokens(500)  // ਜਵਾਬ ਦੀ ਲੰਬਾਈ ਸੀਮਤ ਕਰੋ
-                .temperature(0.8)          // ਰਚਨਾਤਮਕਤਾ ਨੂੰ ਨਿਯੰਤਰਿਤ ਕਰੋ (0.0-1.0)
-                .build();
-        
-        // ਬੇਨਤੀ ਭੇਜੋ ਅਤੇ ਜਵਾਬ ਪ੍ਰਾਪਤ ਕਰੋ
-        ChatCompletion response = openAIClient.chat().completions().create(params);
-        
-        return response.choices().get(0).message().content().orElse("");
-    }
-}
-```
+ਇਮੇਜ ਵਿਸ਼ਲੇਸ਼ਣ JPEG, PNG, GIF, ਅਤੇ WebP ਨੂੰ ਸਵੀਕਾਰ ਕਰਦਾ ਹੈ, ਖਾਲੀ ਚਿੱਤਰਾਂ ਅਤੇ 10MB ਤੋਂ ਵੱਧ ਫਾਇਲਾਂ ਨੂੰ ਰੱਦ ਕਰਦਾ ਹੈ, ਅਤੇ ਪ੍ਰਾਪਤ ਵਰਣਨ ਨੂੰ 1000 ਅੱਖਰਾਂ ਤੱਕ ਸੀਮਿਤ ਕਰਦਾ ਹੈ। ਕਹਾਣੀ ਪ੍ਰਾਰੰਭ ਪਰਿਵਾਰ-ਮਿਤ੍ਰ ਕਹਾਣੀ ਦਾ ਮੰਗ ਕਰਦਾ ਹੈ। ਖਾਲੀ ਚੋਣਾਂ ਜਾਂ ਖਾਲੀ ਮਾਡਲ ਸਮੱਗਰੀ ਗਲਤੀਆਂ ਹਨ, ਅਤੇ ਅਸਫਲਤਾਵਾਂ ਸਰਵਰ-ਪਾਸੇ ਨਿਦਾਨ ਲਈ ਮੂਲ ਕਾਰਨ ਬਚਾਈਆਂ ਜਾਂਦੀਆਂ ਹਨ। ਐਪਲੀਕੇਸ਼ਨ ਬੰਦ ਹੋਣ ਤੇ SDK ਕਲਾਇੰਟ ਬੰਦ ਕਰ ਦਿੱਤਾ ਜਾਂਦਾ ਹੈ।
 
-**ਮੁੱਖ ਘਟਕ:**
+### 4. ਵੈੱਬ ਟੈਮਪਲੇਟ
 
-1. **OpenAI ਕਲਾਇੰਟ**: ਅਧਿਕਾਰਿਤ OpenAI ਜਾਵਾ SDK ਜੋ Azure AI Foundry (ਕੀਲੈੱਸ) ਲਈ ਕੰਫਿਗਰ ਕੀਤਾ ਗਿਆ ਹੈ
-2. **ਸਿਸਟਮ ਪ੍ਰਾਂਪਟ**: AI ਦੇ ਵਿਵਹਾਰ ਨੂੰ ਪਰਿਵਾਰ-ਮੈਤਰ ਸਟੋਰੀਜ਼ ਲਿਖਣ ਲਈ ਸੈੱਟ ਕਰਦਾ ਹੈ
-3. **ਯੂਜ਼ਰ ਪ੍ਰਾਂਪਟ**: AI ਨੂੰ ਉਹ ਕਹਾਣੀ ਲਿਖਣ ਲਈ ਤਕਲੀਫ਼ ਦਿੰਦਾ ਹੈ ਜੋ ਵਰਣਨ 'ਤੇ ਅਧਾਰਿਤ ਹੈ
-4. **ਪੈਰਾਮੀਟਰਸ**: ਕਹਾਣੀ ਦੀ ਲੰਬਾਈ ਅਤੇ ਕ੍ਰੀਏਟਿਵਿਟੀ ਲੈਵਲ ਨੂੰ ਨਿਯੰਤਰਿਤ ਕਰਦਾ ਹੈ
-5. **ਏਰਰ ਹੈਂਡਲਿੰਗ**: ਐਸਪਸ਼ਨਾਂ ਨੂੰ ਥ੍ਰੋ ਕਰਦਾ ਹੈ ਜਿਨ੍ਹਾਂ ਨੂੰ ਕੰਟਰੋਲਰ ਫੜਦਾ ਅਤੇ ਸੰਭਾਲਦਾ ਹੈ
+**ਫਾਇਲ:** [index.html](../../../../04-PracticalSamples/petstory/src/main/resources/templates/index.html) (ਅਪਲੋਡ ਫਾਰਮ)
 
-### 4. ਵੈੱਬ ਟੈਂਪਲੇਟਸ
+ਪੰਨਾ ਫੋਟੋ ਚੁਣਨ ਵਾਲੇ ਨਾਲ ਸ਼ੁਰੂ ਹੁੰਦਾ ਹੈ, ਵਰਣਨ ਟੈਕਸਟ ਖੇਤਰ ਨਹੀਂ। **Analyze Image** ਚੁਣੀ ਗਈ ਫੋਟੋ ਦਾ ਪ੍ਰੀਵਿਊ ਦਿਖਾਉਂਦਾ ਹੈ ਅਤੇ `/analyze-image` ਨੂੰ ਪੋਸਟ ਕਰਦਾ ਹੈ। ਸਫਲ ਜਵਾਬ ਵਰਣਨ ਦਿਖਾਉਂਦਾ ਹੈ, ਛੁਪੇ ਹੋਏ `description` ਫੀਲਡ ਨੂੰ ਭਰਦਾ ਹੈ ਅਤੇ **Generate Story** ਨੂੰ ਵੇਖਾਉਂਦਾ ਹੈ। ਉਹ ਬਟਨ ਮੌਜੂਦਾ ਫਾਰਮ `/generate-story` ਨੂੰ ਪੋਸਟ ਕਰਦਾ ਹੈ।
 
-**ਫਾਇਲ:** `index.html` (ਅਪਲੋਡ ਫਾਰਮ)
+ਕੋਈ ਬ੍ਰਾਊਜ਼ਰ ਮਾਡਲ ਡਾਊਨਲੋਡ ਜਾਂ CDN ਡਿਪੈਂਡੈਂਸੀ ਨਹੀਂ ਹੈ। ਇਮੇਜ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ ਸਰਵਰ ਤੇ ਸੰਰਚਿਤ ਐਜ਼ਯੂਰ ਡਿਪਲੋਇਮੈਂਟ ਰਾਹੀਂ ਚਲਦਾ ਹੈ। ਅਸਫਲਤਾਵਾਂ ਦਿਖਾਈ ਦਿੰਦੀ ਹਨ ਅਤੇ ਕਹਾਣੀ ਬਣਾਉਣ ਨੂੰ ਸਹਾਇਤਾ ਨਹੀਂ ਦਿਤੀ ਜਾਂਦੀ। ਵੱਖਰਾ ਫਾਇਲ ਚੁਣਨ ਨਾਲ ਪਿਛਲੀ ਵਿਸ਼ਲੇਸ਼ਣ ਸਾਫ਼ ਹੋ ਜਾਂਦੀ ਹੈ।
 
-ਮੁੱਖ ਸਫ਼ਾ ਇੱਥੇ ਯੂਜ਼ਰ ਆਪਣੇ ਪੈਟ ਦਾ ਵੇਰਵਾ ਦਿੰਦੇ ਹਨ:
+**ਫਾਇਲ:** `result.html` (ਕਹਾਣੀ ਦਿਖਾਉਣਾ)
 
-```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Pet Story Generator</title>
-    <!-- CSS styling -->
-</head>
-<body>
-    <div class="container">
-        <h1>Pet Story Generator</h1>
-        <p>Describe your pet and we'll create a fun story about them!</p>
-        
-        <!-- Error message display -->
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-        
-        <!-- Story generation form -->
-        <form action="/generate-story" method="post">
-            <div class="form-group">
-                <label for="description">Describe your pet:</label>
-                <textarea id="description" name="description" 
-                         placeholder="Tell us about your pet - what they look like, their personality, favorite activities..."
-                         maxlength="1000" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Generate Story</button>
-        </form>
-        
-        <!-- Image upload section with client-side processing -->
-        <div class="upload-section">
-            <h2>Or Upload a Photo</h2>
-            <input type="file" id="imageInput" accept="image/*" />
-            <button onclick="analyzeImage()" class="upload-btn">Analyze Image</button>
-        </div>
-        
-        <script>
-            // Client-side image analysis using Transformers.js
-            async function analyzeImage() {
-                // Image processing code here
-                // Generates description automatically from uploaded image
-            }
-        </script>
-    </div>
-</body>
-</html>
-```
-
-**ਫਾਇਲ:** `result.html` (ਸਟੋਰੀ ਦਿਖਾਉਣਾ)
-
-ਉਤਪੰਨ ਕਹਾਣੀ ਦਿਖਾਉਂਦਾ ਹੈ:
+ਬਣਾਈ ਗਈ ਕਹਾਣੀ ਦਿਖਾਉਂਦਾ ਹੈ:
 
 ```html
 <!DOCTYPE html>
@@ -297,18 +148,18 @@ public class StoryService {
 </html>
 ```
 
-**ਟੈਂਪਲੇਟ ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ:**
+**ਟੈਮਪਲੇਟ ਫੀਚਰਜ਼:**
 
-1. **ਥਾਈਮਲੀਫ਼ ਇੰਟਿਗ੍ਰੇਸ਼ਨ**: ਡਾਇਨਾਮਿਕ ਸਮੱਗਰੀ ਲਈ `th:` ਐਟਰਿਬਿਊਟ ਦੀ ਵਰਤੋਂ
-2. **ਰੈਸਪਾਂਸਿਵ ਡਿਜ਼ਾਈਨ**: ਮੋਬਾਈਲ ਅਤੇ ਡੈਸਕਟਾਪ ਲਈ CSS ਸਟਾਈਲਿੰਗ
-3. **ਏਰਰ ਹੈਂਡਲਿੰਗ**: ਯੂਜ਼ਰਾਂ ਨੂੰ ਵੈਰੀਫਿਕੇਸ਼ਨ ਦੇ ਤ੍ਰੁੱਟੀਆਂ ਦਿਖਾਉਂਦਾ ਹੈ
-4. **ਕਲਾਇੰਟ-ਸਾਈਡ ਪ੍ਰੋਸੈਸਿੰਗ**: ਜਾਵਾਸਕ੍ਰਿਪਟ ਇਮੇਜ ਵਿਸ਼ਲੇਸ਼ਣ ਲਈ (Transformers.js ਦੀ ਵਰਤੋਂ ਨਾਲ)
+1. **ਥਾਈਮਲੀਫ਼ ਇੰਟਿਗ੍ਰੇਸ਼ਨ**: ਡਾਇਨਾਮਿਕ ਸਮੱਗਰੀ ਲਈ `th:` ਐਟਰੀਬਿਊਟ ਵਰਤਦਾ ਹੈ
+2. **ਰਿਸਪਾਂਸਿਵ ਡਿਜ਼ਾਇਨ**: ਮੋਬਾਈਲ ਅਤੇ ਡੈස්ਕਟਾਪ ਲਈ CSS ਸਟਾਈਲਿੰਗ
+3. **ਏਰਰ ਹੈਂਡਲਿੰਗ**: ਯੂਜ਼ਰਾਂ ਨੂੰ ਵੈਰੀਫਿਕੇਸ਼ਨ ਗਲਤੀਆਂ ਦਿਖਾਉਂਦਾ ਹੈ
+4. **ਅਪਲੋਡ ਹੈਂਡਲਿੰਗ**: ਜਾਵਾਸਕ੍ਰਿਪਟ ਫੋਟੋ ਦਾ ਪ੍ਰੀਵਿਊ ਦਿਖਾਉਂਦਾ ਹੈ, CSRF ਸੁਰੱਖਿਆ ਵਾਲੀ ਮਲਟੀਪਾਰਟ ਬੇਨਤੀ ਭੇਜਦਾ ਹੈ, ਅਤੇ ਪ੍ਰਾਪਤ ਵਰਣਨ ਦਿਖਾਉਂਦਾ ਹੈ
 
-### 5. ਕਾਂਫਿਗਰੇਸ਼ਨ
+### 5. ਸੰਰਚਨਾ
 
 **ਫਾਇਲ:** `application.properties`
 
-ਐਪਲੀਕੇਸ਼ਨ ਲਈ ਕਾਂਫਿਗਰੇਸ਼ਨ ਸੈਟਿੰਗਜ਼:
+ਐਪਲੀਕੇਸ਼ਨ ਦੀ ਸੰਰਚਨਾ ਸੈਟਿੰਗ:
 
 ```properties
 spring.application.name=pet-story-app
@@ -322,55 +173,57 @@ logging.level.com.example.petstory=INFO
 
 # Azure AI Foundry (keyless) configuration
 azure.openai.endpoint=${AZURE_OPENAI_ENDPOINT:}
-azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
 ```
 
-**ਕਾਂਫਿਗਰੇਸ਼ਨ ਦੀ ਵਿਆਖਿਆ:**
+**ਸੰਰਚਨਾ ਦੀ ਵਿਆਖਿਆ:**
 
-1. **ਫਾਇਲ ਅਪਲੋਡ**: 10MB ਤੱਕ ਦੀਆਂ ਇਮੇਜਾਂ ਦੀ ਆਗਿਆ
-2. **ਲਾਗਿੰਗ**: ਚਲਾਉਣ ਦੌਰਾਨ ਕਿੜ੍ਹਾ ਜਾਣਕਾਰੀ ਲਾਗ ਕੀਤੀ ਜਾਵੇ
-3. **Azure AI Foundry**: ਵਰਤਣ ਲਈ ਐਂਡਪੌਇੰਟ ਅਤੇ ਮਾਡਲ ਡਿਪਲੋਇਮੈਂਟ ਦਰਸਾਉਂਦਾ ਹੈ (ਕੀਲੈੱਸ ਅਥੈਂਟੀਕੇਸ਼ਨ)
-4. **ਸੁਰੱਖਿਆ**: ਸੈਂਸੀਟਿਵ ਜਾਣਕਾਰੀ ਪ੍ਰਗਟ ਨਾ ਹੋਣ ਨਾਲ ਸਮੰਬੰਧਤ ਏਰਰ ਹੈਂਡਲਿੰਗ
+1. **ਫਾਇਲ ਅਪਲੋਡ**: ਫਾਇਲ ਅਤੇ ਪੂਰੀ ਮਲਟੀਪਾਰਟ ਬੇਨਤੀ ਦੋਹਾਂ ਦੀ ਮੈਕਸਿਮਮ ਸੀਮਾ 10MB ਹੈ; ਮਲਟੀਪਾਰਟ ਹੈਡਰ ਲਈ ਜਗ੍ਹਾ ਛੱਡ ਕੇ ਤਸਵੀਰਾਂ ਨੂੰ ਇਸ ਹੱਦ ਦੇ ਹੇਠਾਂ ਰੱਖੋ
+2. **ਲਾਗਿੰਗ**: ਚਾਲੂ ਹੋਣ ਦੌਰਾਨ ਲਾਗ ਕੀ ਜਾਣ ਵਾਲੀ ਜਾਣਕਾਰੀ ਨੂੰ ਨਿਯੰਤ੍ਰਿਤ ਕਰਦਾ ਹੈ
+3. **ਐਜ਼ਯੂਰ AI Foundry**: ਵਰਤੋਂ ਲਈ ਐਂਡਪੌਇੰਟ ਅਤੇ ਮਾਡਲ ਡਿਪਲੋਇਮੈਂਟ ਨੂੰ ਦਰਸਾਉਂਦਾ ਹੈ (ਕੀਲੇਸ ਪ੍ਰਮਾਣਿਕਤਾ)
+4. **ਸੁਰੱਖਿਆ**: CSRF ਸੁਰੱਖਿਆ ਲਾਗੂ ਰਹਿੰਦੀ ਹੈ; ਸਰਵਰ ਤੇ ਮਾਡਲ ਨਿਦਾਨ ਲਾਗ ਹੁੰਦਾ ਹੈ, ਜਦਕਿ ਕੰਟਰੋਲਰ ਜਨਰਲ ਮਾਡਲ ਅਸਫਲਤਾ ਸੁਨੇਹੇ ਪ੍ਰਦਰਸ਼ਿਤ ਕਰਦਾ ਹੈ
 
 ## ਐਪਲੀਕੇਸ਼ਨ ਚਲਾਉਣਾ
 
-### ਕਦਮ 1: ਸਾਇਨ ਇਨ ਕਰੋ ਅਤੇ ਆਪਣਾ ਐਂਡਪੌਇੰਟ ਸੈੱਟ ਕਰੋ
+### ਕਦਮ 1: ਸਾਈਨ ਇਨ ਅਤੇ ਆਪਣਾ ਐਂਡਪੌਇੰਟ ਸੈੱਟ ਕਰੋ
 
-ਅਥੈਂਟੀਕੇਸ਼ਨ ਕੀਲੈੱਸ (Microsoft Entra ID) ਹੈ, ਇਸ ਲਈ ਕੋਈ API ਕੀ ਨਹੀਂ। ਸਾਇਨ ਇਨ ਕਰੋ ਅਤੇ ਆਪਣਾ Foundry ਐਂਡਪੌਇੰਟ ਸੈੱਟ ਕਰੋ:
+ਪ੍ਰਮਾਣਿਕਤਾ ਕੀ-ਮੁਕਤ (ਮਾਇਕ੍ਰੋਸੋਫਟ ਐਂਟਰਾ ID) ਹੈ, ਇਸ ਲਈ ਕੋਈ API ਕੁੰਜੀ ਨਹੀਂ। ਸਾਈਨ ਇਨ ਕਰੋ ਅਤੇ ਆਪਣਾ Foundry ਐਂਡਪੌਇੰਟ ਸੈੱਟ ਕਰੋ:
 
-**ਵਿੰਡੋਜ਼ (ਕਮਾਂਡ ਪ੍ਰੰਪਟ):**
+**ਵਿੰਡੋਜ਼ (ਕਮਾਂਡ ਪ੍ਰਾਂਪਟ):**
 ```cmd
 az login
 set AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 ```
 
-**ਵਿੰਡੋਜ਼ (ਪਾਵਰਸ਼ੈੱਲ):**
+**ਵਿੰਡੋਜ਼ (PowerShell):**
 ```powershell
 az login
 $env:AZURE_OPENAI_ENDPOINT="https://your-resource.openai.azure.com/"
 ```
 
-**ਲਿਨਕਸ/ਮੈਕਓਐਸ:**
+**Linux/macOS:**
 ```bash
 az login
 export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 ```
 
-**ਇਸ ਦੀ ਲੋੜ ਕਿਉਂ:**
-- Azure AI Foundry Microsoft Entra ID ਨਾਲ ਇਨਫਰੰਸ ਰਿਕਵੈਸਟਾਂ ਦੀ ਪ੍ਰਮਾਣਿਕਤਾ ਕਰਦਾ ਹੈ
-- ਕੀਲੈੱਸ ਅਥੈਂਟੀਕੇਸ਼ਨ ਦਾ ਅਰਥ ਹੈ ਕਿ ਤੁਹਾਡੇ ਸੋਰਸ ਕੋਡ ਜਾਂ ਵਾਤਾਵਰਨ ਵਿੱਚ ਕੋਈ ਗੁਪਤਚਰ ਨਹੀਂ ਹੁੰਦੇ
-- ਤੁਹਾਡੇ ਖਾਤੇ ਨੂੰ ਸਰੋਤ 'ਤੇ **Cognitive Services OpenAI User** ਰੋਲ ਦੀ ਲੋੜ ਹੁੰਦੀ ਹੈ
+**ਇਸ ਦੀ ਲੋੜ ਕਿਉਂ ਹੈ:**
+- ਐਜ਼ਯੂਰ AI Foundry ਮਾਇਕ੍ਰੋਸੋਫਟ ਐਂਟਰਾ ID ਨਾਲ ਇन्फਰੈਂਸ ਬੇਨਤੀ ਪ੍ਰਮਾਣਿਤ ਕਰਦਾ ਹੈ
+- ਕੀਲੇਸ ਪ੍ਰਮਾਣਿਕਤਾ ਮਤਲਬ ਤੁਹਾਡੇ ਸੋਸਟ ਕੋਡ ਜਾਂ ਵਾਤਾਵਰਣ ਵਿੱਚ ਕੋਈ ਗੁਪਤ ਜਾਣਕਾਰੀ ਨਹੀਂ
+- ਤੁਹਾਡੇ ਖਾਤੇ ਨੂੰ ਰਿਸੋਰਸ ਤੇ **Cognitive Services OpenAI User** ਭੂਮਿਕਾ ਦੀ ਲੋੜ ਹੈ
 
-### ਕਦਮ 2: ਬਿਲਡ ਕਰੋ ਅਤੇ ਚਲਾਓ
+ਡਿਫਾਲਟ ਡਿਪਲੋਇਮੈਂਟ ਨਾਮ `gpt-5.6-luna` ਹੈ। ਜੇ ਤੁਹਾਡੇ GPT-5.6 Luna ਡਿਪਲੋਇਮੈਂਟ ਦਾ ਕੋਈ ਹੋਰ ਨਾਮ ਹੈ, ਤਾਂ ਐਪਲੀਕੇਸ਼ਨ ਚਲਾਉਣ ਤੋਂ ਪਹਿਲਾਂ ਮਨੋੜੀ ਟਰਮੀਨਲ ਵਿੱਚ `AZURE_OPENAI_DEPLOYMENT` ਸੈੱਟ ਕਰੋ। ਦੋਹਾਂ ਇਮੇਜ ਵਿਸ਼ਲੇਸ਼ਣ ਅਤੇ ਕਹਾਣੀ ਜਨਰੇਸ਼ਨ ਲਈ ਇਹ ਸੈਟਿੰਗ ਵਰਤੀ ਜਾਂਦੀ ਹੈ।
+
+### ਕਦਮ 2: ਬਿਲਡ ਅਤੇ ਚਲਾਓ
 
 ਪ੍ਰੋਜੈਕਟ ਡਾਇਰੈਕਟਰੀ ਵਿੱਚ ਜਾਓ:
 ```bash
 cd 04-PracticalSamples/petstory
 ```
 
-ਐਪਲੀਕੇਸ਼ਨ ਬਣਾਓ:
+ਖੁਦਮੁੱਖ ਐਕਜ਼ਿਕਿਊਟੇਬਲ JAR ਬਿਲਡ ਕਰੋ ਅਤੇ ਸਾਰੇ ਆਫਲਾਈਨ ਟੈਸਟ ਚਲਾਓ:
 ```bash
-mvn clean compile
+mvn clean package
 ```
 
 ਸਰਵਰ ਸ਼ੁਰੂ ਕਰੋ:
@@ -378,71 +231,67 @@ mvn clean compile
 mvn spring-boot:run
 ```
 
-ਐਪਲੀਕੇਸ਼ਨ `http://localhost:8080` 'ਤੇ ਚਲ਼ੇਗਾ।
+ਐਪਲੀਕੇਸ਼ਨ `http://localhost:8080` 'ਤੇ ਸ਼ੁਰੂ ਹੋਵੇਗਾ।
+
+ਵਿਕਲਪ ਵਜੋਂ, ਰਹਤ ਵਾਲੇ ਪੋਰਟ 'ਤੇ ਪੈਕੇਜਡ JAR ਸ਼ੁਰੂ ਕਰੋ, ਉਦਾਹਰਨ ਲਈ:
+
+```bash
+java -jar target/pet-story-app-0.0.1-SNAPSHOT.jar --server.port=8083
+```
+
+ਇਸ ਕਮਾਂਡ ਲਈ, `http://localhost:8083/` ਖੋਲ੍ਹੋ। ਚੁਣੇ ਹੋਏ ਪੋਰਟ 'ਤੇ ਇੱਕੋ ਜਿਹੇ `/analyze-image` ਅਤੇ `/generate-story` ਰੂਟ ਉਪਲਬਧ ਹਨ।
 
 ### ਕਦਮ 3: ਐਪਲੀਕੇਸ਼ਨ ਟੈਸਟ ਕਰੋ
 
-1. ਆਪਣੇ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ `http://localhost:8080` ਖੋਲ੍ਹੋ
-2. ਟੈਕਸਟ ਏਰੀਆ ਵਿੱਚ ਆਪਣੇ ਪੈਟ ਦਾ ਵੇਰਵਾ ਦਿਓ (ਜਿਵੇਂ, "ਇੱਕ ਖੇਡਾਂ ਵਾਲਾ ਗੋਲਡਨ ਰੀਟਰੀਵਰ ਜੋ ਲੈ ਜਾਨਾ ਪਸੰਦ ਕਰਦਾ ਹੈ")
-3. "Generate Story" 'ਤੇ ਕਲਿਕ ਕਰੋ ਤਾਂ ਜੋ AI ਵੱਲੋਂ ਕਹਾਣੀ ਬਣਾਈ ਜਾਵੇ
-4. ਅਲਟਰਨੇਟਿਵ ਤੌਰ 'ਤੇ, ਆਪਣੇ ਪੈਟ ਦੀ ਇਮੇਜ ਅਪਲੋਡ ਕਰੋ ਤਾਂ ਜੋ ਆਪਣੇ ਆਪ ਡਿਸਕ੍ਰਿਪਸ਼ਨ ਬਣ ਜਾਵੇ
-5. ਆਪਣੇ ਪੈਟ ਦੇ ਵੇਰਵੇ ਬਿਨਾ ਕ੍ਰੀਏਟਿਵ ਕਹਾਣੀ ਵੇਖੋ
+1. **ਖੋਲ੍ਹੋ** `http://localhost:8080` ਤੁਹਾਡੇ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ
+2. **ਚੁਣੋ** ਇੱਕ ਸਾਫ਼ ਪਾਲਤੂ ਫੋਟੋ JPEG, PNG, GIF ਜਾਂ WebP ਫਾਰਮੈਟ ਵਿੱਚ, 10MB ਤੋਂ ਘੱਟ
+3. **ਕਲਿੱਕ ਕਰੋ** "Analyze Image" ਤੇ ਅਤੇ ਪਾਲਤੂ ਵਰਣਨ ਦੀ ਉਡੀਕ ਕਰੋ
+4. **ਕਲਿੱਕ ਕਰੋ** "Generate Story" ਸਫਲ ਵਿਸ਼ਲੇਸ਼ਣ ਤੋਂ ਬਾਅਦ
+5. **ਵੇਖੋ** ਕਹਾਣੀ ਅਤੇ ਨਤੀਜਾ ਪੇਜ ਦੇ ਲਿੰਕ ਰਾਹੀਂ ਅਪਲੋਡ ਫਾਰਮ 'ਤੇ ਵਾਪਸ ਜਾਓ
 
-## ਇਹ ਸਾਰਾ ਕੰਮ ਕਿਵੇਂ ਕਰਦਾ ਹੈ
+ਸਫਲ ਫੋਟੋ-ਤੋਂ-ਕਹਾਣੀ ਪ੍ਰਕਿਰਿਆ ਦੋ ਮਾਡਲ ਕਾਲ ਕਰਦੀ ਹੈ, ਹਰ ਬਟਨ ਲਈ ਇੱਕ। ਲਾਈਵ ਇੰਫਰੈਂਸ ਤੁਹਾਡੇ ਡਿਪਲੋਇਮੈਂਟ ਸਿਮਿਤਾ ਦਾ ਖਪਤ ਕਰਦਾ ਹੈ ਅਤੇ ਖਰਚੇ ਹੋ ਸਕਦੇ ਹਨ; ਦਰ-ਹੱਦ ਵਾਲਾ ਡਿਪਲੋਇਮੈਂਟ ਸਾਂਝਾ ਕਰਨ ਵੇਲੇ ਸਮੈਤਿਕ ਟੈਸਟ ਚਲਾਓ। ਹੋਮ ਪੇਜ ਲੋਡ ਕਰਨ ਨਾਲ ਮਾਡਲ ਨੂੰ ਕਾਲ ਨਹੀਂ ਕੀਤਾ ਜਾਂਦਾ।
 
-ਇਹ ਰਹੀ ਪੂਰੀ ਪ੍ਰਕਿਰਿਆ ਜਦੋਂ ਤੁਸੀਂ ਪੈਟ ਦੀ ਕਹਾਣੀ ਬਣਾਉਂਦੇ ਹੋ:
+## ਆਫਲਾਈਨ ਟੈਸਟ
 
-1. **ਯੂਜ਼ਰ ਇਨਪੁੱਟ**: ਤੁਸੀਂ ਵੈੱਬ ਫਾਰਮ ਤੇ ਆਪਣੇ ਪੈਟ ਦਾ ਵੇਰਵਾ ਦਿੰਦੇ ਹੋ
-2. **ਫਾਰਮ ਸਬਮੀਸ਼ਨ**: ਬ੍ਰਾਊਜ਼ਰ `/generate-story` ਨੂੰ POST ਬੇਨਤੀ ਭੇਜਦਾ ਹੈ
-3. **ਕੰਟਰੋਲਰ ਪ੍ਰੋਸੈਸਿੰਗ**: `PetController` ਇਨਪੁੱਟ ਨੂੰ ਵੈਲੀਡੇਟ ਅਤੇ ਸੈਨਿਟਾਈਜ਼ ਕਰਦਾ ਹੈ
-4. **AI ਸਰਵਿਸ ਕਾਲ**: `StoryService` Azure AI Foundry ਮਾਡਲ ਨੂੰ ਬੇਨਤੀ ਭੇਜਦਾ ਹੈ
-5. **ਸਟੋਰੀ ਜੈਨਰੇਸ਼ਨ**: AI ਵੇਰਵੇ ਦੇ ਅਧਾਰ 'ਤੇ ਇੱਕ ਕ੍ਰੀਏਟਿਵ ਕਹਾਣੀ ਬਣਾਉਂਦਾ ਹੈ
-6. **ਰਿਸਪਾਂਸ ਹੈਂਡਲਿੰਗ**: ਕੰਟਰੋਲਰ ਕਹਾਣੀ ਪ੍ਰਾਪਤ ਕਰਕੇ ਇਸ ਨੂੰ ਮਾਡਲ ਵਿੱਚ ਸ਼ਾਮਲ ਕਰਦਾ ਹੈ
-7. **ਟੈਂਪਲੇਟ ਰੈਂਡਰਿੰਗ**: ਥਾਈਮਲੀਫ਼ `result.html` ਨੂੰ ਕਹਾਣੀ ਨਾਲ ਰੇਂਡਰ ਕਰਦਾ ਹੈ
-8. **ਦਿਖਾਈ ਦੇਣਾ**: ਯੂਜ਼ਰ ਆਪਣੇ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਬਣਾਈ ਗਈ ਕਹਾਣੀ ਵੇਖਦਾ ਹੈ
+ਸੈਂਪਲ ਡਾਇਰੈਕਟਰੀ ਤੋਂ, ਚਲਾਓ:
 
-**ਏਰਰ ਹੈਂਡਲਿੰਗ ਫਲੋ:**
-ਜੇ AI ਸਰਵਿਸ ਫੇਲ ਹੁੰਦੀ ਹੈ:
-1. ਕੰਟਰੋਲਰ ਐਕਸਪਸ਼ਨ ਫੜਦਾ ਹੈ
-2. ਪਹਿਲਾਂ ਲਿਖੇ ਟੈਂਪਲੇਟਾਂ ਨਾਲ ਫਾਲਬੈਕ ਕਹਾਣੀ ਬਣਾਉਂਦਾ ਹੈ
-3. AI ਅਣਉਪਲਬਧਤਾ ਬਾਰੇ ਨੋਟ ਦੇ ਨਾਲ ਫਾਲਬੈਕ ਕਹਾਣੀ ਦਿਖਾਉਂਦਾ ਹੈ
-4. ਯੂਜ਼ਰ ਨੂੰ ਫਿਰ ਵੀ ਕਹਾਣੀ ਮਿਲਦੀ ਹੈ, ਜਿਸ ਨਾਲ ਉਨ੍ਹਾਂ ਦਾ ਬਿਹਤਰ ਅਨੁਭਵ ਯਕੀਨੀ ਬਣਦਾ ਹੈ
-
-## AI ਇੰਟਿਗ੍ਰੇਸ਼ਨ ਨੂੰ ਸਮਝਣਾ
-
-### Azure AI Foundry (ਕੀਲੈੱਸ)
-ਐਪਲੀਕੇਸ਼ਨ Microsoft Entra ID ਦੇ ਨਾਲ ਕੀਲੈੱਸ ਅਥੈਂਟੀਕੇਸ਼ਨ ਵਰਤਦਾ Azure AI Foundry ਵਰਤਦਾ ਹੈ:
-
-```java
-// ਕੀਲ ਰਹਿਤ ਪ੍ਰਮਾਣਿਕਤਾ - ਕੋਈ API ਕੀ ਨਹੀਂ
-DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-this.openAIClient = OpenAIOkHttpClient.builder()
-    .baseUrl(endpoint + "openai/v1/")
-    .credential(BearerTokenCredential.create(
-        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-    .build();
+```bash
+mvn test
 ```
 
-### ਪ੍ਰਾਂਪਟ ਇੰਜੀਨੀਅਰਿੰਗ
-ਸਰਵਿਸ ਚੰਗੇ ਨਤੀਜੇ ਲਈ ਧਿਆਨ ਸਹਿਤ ਪ੍ਰਾਂਪਟ ਵਰਤਦੀ ਹੈ:
+[StoryServiceTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/StoryServiceTest.java) ਅਸਲ OpenAI SDK ਬੇਨਤੀਓਂ ਨੂੰ ਲੂਪਬੈਕ HTTP ਫਿਕਸਚਰ ਨਾਲ ਕੈਪਚਰ ਕਰਦਾ ਹੈ। ਇਹ ਦੋਹਾਂ ਬੇਨਤੀਵਾਂ ਦੀ ਡਿਪਲੋਇਮੈਂਟ, `reasoning_effort: none`, ਟੋਕਨ ਸੀਮਾ, ਇਮੇਜ ਪੇਲੋਡ, ਇਨਪੁੱਟ ਜਾਂਚ, ਖਾਲੀ ਜਵਾਬ ਅਤੇ ਅਗਲੇ ਸੁਤਰ ਦੇ ਗਲਤੀਆਂ ਨੂੰ ਜਾਂਚਦਾ ਹੈ।
 
-```java
-String systemPrompt = "You are a creative storyteller who writes fun, " +
-                     "family-friendly short stories about pets. " +
-                     "Keep stories under 500 words and appropriate for all ages.";
-```
+[PetControllerTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/PetControllerTest.java) MockMvc ਨਾਲ ਮਾਡਲ ਸਰਵਿਸ ਨੂੰ ਮੌਕ ਕਰਕੇ ਥਾਈਮਲੀਫ਼ ਪੇਜਾਂ, ਅਪਲੋਡ ਠੇਕਾ, CSRF, ਵੈਰੀਫਿਕੇਸ਼ਨ, ਆਉਟਪੁੱਟ ਏਸਕੇਪਿੰਗ ਅਤੇ ਦਿੱਖਣ ਵਾਲੀਆਂ ਅਸਫਲਤਾਵਾਂ ਦੀ ਪਰੀਖਿਆ ਕਰਦਾ ਹੈ। ਇਹ ਟੈਸਟ ਐਜ਼ਯੂਰ ਪ੍ਰਮਾਣ ਪੱਤਰਾਂ ਦੀ ਲੋੜ ਨਹੀਂ ਰੱਖਦੇ ਅਤੇ ਕਦੇ ਵੀ ਭੁਗਤਾਨਸ਼ੁਦਾ ਐਜ਼ਯੂਰ ਇੰਫਰੈਂਸ ਨੂੰ ਕਾਲ ਨਹੀਂ ਕਰਦੇ। Maven Surefire ਰਿਪੋਰਟਾਂ ਨੂੰ `target/surefire-reports` ਹੇਠ ਲਿਖਦਾ ਹੈ।
 
-### ਰਿਸਪਾਂਸ ਪ੍ਰੋਸੈਸਿੰਗ
-AI ਦਾ ਰਿਸਪਾਂਸ ਕੱਢਿਆ ਅਤੇ ਵੈਰੀਫਾਈ ਕੀਤਾ ਜਾਂਦਾ ਹੈ:
+## ਇਹ ਸਾਰਾ ਕਿਵੇਂ ਕੰਮ ਕਰਦਾ ਹੈ
 
-```java
-ChatCompletion response = openAIClient.chat().completions().create(params);
-String story = response.choices().get(0).message().content().orElse("");
-```
+ਪਾਲਤੂ ਕਹਾਣੀ ਬਣਾਉਂਦੇ ਸਮੇਂ ਪੂਰਾ ਪ੍ਰਕਿਰਿਆ ਇੰਝ ਹੈ:
+
+1. **ਫੋਟੋ ਚੋਣ**: ਤੁਸੀਂ ਅਪਲੋਡ ਫਾਰਮ ਵਿੱਚ ਪਾਲਤੂ ਚਿੱਤਰ ਚੁਣਦੇ ਹੋ
+2. **ਚਿੱਤਰ ਅਪਲੋਡ**: "Analyze Image" CSRF ਹੈਡਰ ਸਹਿਤ `/analyze-image` ਨੂੰ ਮਲਟੀਪਾਰਟ POST ਭੇਜਦਾ ਹੈ
+3. **ਚਿੱਤਰ ਵਿਸ਼ਲੇਸ਼ਣ**: `StoryService` ਇਮੇਜ ਨੂੰ GPT-5.6 Luna ਨੂੰ ਭੇਜਦਾ ਹੈ ਅਤੇ reasoning `none` ਸੈੱਟ ਹੁੰਦਾ ਹੈ
+4. **ਵਰਣਨ ਦਿਖਾਉਣਾ**: ਬ੍ਰਾਊਜ਼ਰ ਵਾਪਸੀ ਵਰਣਨ ਦਿਖਾਉਂਦਾ ਅਤੇ ਫਾਰਮ ਵਿੱਚ ਸੰਭਾਲਦਾ ਹੈ
+5. **ਕਹਾਣੀ ਜਮ੍ਹਾਂ ਕਰਨਾ**: "Generate Story" `description` ਅਤੇ `_csrf` `/generate-story` ਨੂੰ ਪੋਸਟ ਕਰਦਾ ਹੈ
+6. **ਕਹਾਣੀ ਬਣਾਉਣਾ**: ਕੰਟਰੋਲਰ ਵਰਣਨ ਨੂੰ ਵੈਲੀਡੇਟ ਕਰਦਾ ਹੈ ਅਤੇ reasoning `none` ਸੈੱਟ ਕਰਕੇ ਉਹੀ ਡਿਪਲੋਇਮੈਂਟ ਕਾਲ ਕਰਦਾ ਹੈ
+7. **ਟੈਮਪਲੇਟ ਰੇਂਡਰਿੰਗ**: ਥਾਈਮਲੀਫ਼ ਵਰਣਨ ਅਤੇ ਕਹਾਣੀ ਨੂੰ ਨਤੀਜਾ ਪੇਜ ਵਿੱਚ ਏਸਕੇਪ ਅਤੇ ਦਿਖਾਉਂਦਾ ਹੈ
+
+**ਏਰਰ ਹੈਂਡਲਿੰਗ ਪ੍ਰਕਿਰਿਆ:**
+ਜੇ ਮਾਡਲ ਅਸਫਲ ਰਹਿੰਦਾ ਹੈ, ਸਰਵਰ ਕਾਰਨ ਨੂੰ ਲਾਗ ਕਰਦਾ ਹੈ। ਚਿੱਤਰ ਵਿਸ਼ਲੇਸ਼ਣ HTTP 502 ਰਿਟਰਨ ਕਰਦਾ ਹੈ ਅਤੇ ਬ੍ਰਾਊਜ਼ਰ ਗਲਤੀ ਦਿਖਾਉਂਦਾ ਹੈ ਬਿਨਾਂ "Generate Story" ਦਿਖਾਏ। ਕਹਾਣੀ ਜਨਰੇਸ਼ਨ ਫਾਰਮ ਨੂੰ ਗਲਤੀ ਸੁਨੇਹੇ ਨਾਲ ਰੀਡਾਇਰੈਕਟ ਕਰਦਾ ਹੈ। ਕੋਈ ਵੀ ਰਸਤਾ ਚੁਪਕੇ ਨਾਲ ਪਹਿਲਾਂ ਤੋਂ ਲਿਖੇ ਨਤੀਜੇ ਨੂੰ ਨਵਾਂ ਨਹੀਂ ਕਰਦਾ।
+
+## AI ਇੰਟਿਗ੍ਰੇਸ਼ਨ ਦੀ ਸਮਝ
+
+### ਐਜ਼ਯੂਰ AI Foundry (ਕੀਲੇਸ)
+ਸਰਵਿਸ SDK ਨੂੰ ਤੁਹਾਡੇ ਰਿਸੋਰਸ ਦੇ `/openai/v1/` ਐਂਡਪੌਇੰਟ ਨਾਲ ਸੰਰਚਿਤ ਕਰਦੀ ਹੈ। `DefaultAzureCredential` ਅਤੇ `AuthenticationUtil.getBearerTokenSupplier` Microsoft Entra ਟੋਕਨ ਬਰਾਬਰ ਕਰਦੇ ਹਨ `https://ai.azure.com/.default` ਲਈ। ਲੋਕਲ ਵਿਕਾਸ ਤੁਹਾਡੇ ਐਜ਼ਯੂਰ CLI ਸਾਈਨ-ਇਨ ਦਾ ਇਸਤੇਮਾਲ ਕਰ ਸਕਦਾ ਹੈ; ਇੱਕ ਐਜ਼ਯੂਰ-ਹੋਸਟ ਕੀਤੀ ਐਪ ਮੈਨੇਜਡ ਆਈਡੈਂਟੀ ਨਾਲ ਜਰੂਰੀ ਅਧਿਕਾਰ ਵਰਤ ਸਕਦੀ ਹੈ।
+
+### ਪ੍ਰਾਰੰਭ ਜੰਜਾਲ (ਪ੍ਰਾਮਪਟ ਇੰਜੀਨੀਅਰਿੰਗ)
+ਚਿੱਤਰ ਵਿਸ਼ਲੇਸ਼ਣ ਲਘੂ ਪੈਰਾਗਰਾਫ ਵਿੱਚ ਦਿੱਤੇ ਪਾਲਤੂ ਦੇ ਵੇਖਣ ਯੋਗ ਗੁਣ ਖੋਜਦਾ ਹੈ ਅਤੇ ਮਾਡਲ ਨੂੰ ਕਹਿੰਦਾ ਹੈ ਕਿ ਚਿੱਤਰ ਵਿੱਚ ਲਿਖਤ ਨੂੰ ਸੂਚਨਾ ਨਹੀਂ, ਸਿਰਫ਼ ਡਾਟਾ ਸਮਝੋ। ਕਹਾਣੀ ਜਨਰੇਸ਼ਨ ਵਾਪਸੀ ਮਿਲੇ ਵਰਣਨ ਨੂੰ ਇੱਕ ਵੱਖਰੇ, ਪਰਿਵਾਰ-ਮਿਤ੍ਰ ਲੇਖਨ ਬੇਨਤੀ ਵਿੱਚ ਵਰਤਦਾ ਹੈ। ਦੋਹਾਂ ਕਾਲ reasoning ਯੋਗਤਾ ਜਾਂ ਤਾਪਮਾਨ ਓਵਰਰਾਈਡ ਨੂੰ ਯੋਗ ਨਹੀਂ ਕਰਦੇ।
+
+### ਜਵਾਬ ਪ੍ਰਕਿਰਿਆ
+ਸਾਂਝਾ ਜਵਾਬ ਹੈਂਡਲਰ ਗੁੰਮ ਚੋਣਾਂ ਅਤੇ ਖਾਲੀ ਜਾਂ ਸਿਰਫ਼ ਖਾਲੀ ਜਗ੍ਹਾ ਵਾਲੀ ਸਮੱਗਰੀ ਨੂੰ ਰੱਦ ਕਰਦਾ ਹੈ, ਸਕਾਰਾਤਮਕ ਸਮੱਗਰੀ ਨੂੰ ਟ੍ਰਿਮ ਕਰਦਾ ਹੈ ਅਤੇ ਅਸਫਲਤਾਵਾਂ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕਰਦਾ ਹੈ। ਚਿੱਤਰ ਵਰਣਨ 1000 ਅੱਖਰਾਂ ਤੱਕ ਸੀਮਤ ਹੈ ਤਾ ਜੋ ਅਗਲੀ ਕਹਾਣੀ ਫਾਰਮ ਵਿੱਚ ਫਿਟ ਹੋ ਸਕੇ। ਮੂਲ ਮਾਡਲ ਅਸਫਲਤਾ ਨਿਦਾਨ ਲਈ ਬਚਾਈ ਜਾਂਦੀ ਹੈ ਪਰ ਉਪਭੋਗਤਾ ਨੂੰ ਨਹੀਂ ਦਿਖਾਈ ਜਾਂਦੀ।
 
 ## ਅਗਲੇ ਕਦਮ
 
-ਹੋਰ ਉਦਾਹਰਨਾਂ ਲਈ, ਦੇਖੋ [ਚੈਪਟਰ 04: ਪ੍ਰੈਕਟਿਕਲ ਨਮੂਨੇ](../README.md)
+ਹੋਰ ਉਦਾਹਰਨਾਂ ਲਈ ਦੇਖੋ [ਅਧਿਆਇ 04: ਲਾਗੂ ਨਮੂਨੇ](../README.md)
 
 ---
 

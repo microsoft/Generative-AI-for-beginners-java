@@ -1,38 +1,63 @@
-# คู่มือการใช้เครื่องคิดเลข MCP สำหรับมือใหม่
+# คู่มือการใช้ MCP Calculator สำหรับผู้เริ่มต้น
 
 ## สารบัญ
 
 - [สิ่งที่คุณจะได้เรียนรู้](#สิ่งที่คุณจะได้เรียนรู้)
-- [ข้อกำหนดเบื้องต้น](#ข้อกำหนดเบื้องต้น)
-- [ทำความเข้าใจโครงสร้างโปรเจกต์](#ทำความเข้าใจโครงสร้างโปรเจกต์)
-- [อธิบายส่วนประกอบหลัก](#อธิบายส่วนประกอบหลัก)
+- [ความรู้พื้นฐานที่ต้องมี](#ความรู้พื้นฐานที่ต้องมี)
+- [เวอร์ชันของไลบรารีที่ใช้](#เวอร์ชันของไลบรารีที่ใช้)
+- [เข้าใจโครงสร้างโปรเจกต์](#เข้าใจโครงสร้างโปรเจกต์)
+- [อธิบายคอมโพเนนต์หลัก](#อธิบายคอมโพเนนต์หลัก)
   - [1. แอปพลิเคชันหลัก](#1-แอปพลิเคชันหลัก)
   - [2. บริการเครื่องคิดเลข](#2-บริการเครื่องคิดเลข)
-  - [3. ไคลเอนต์ MCP แบบตรง](#3-ไคลเอนต์-mcp-แบบตรง)
-  - [4. ไคลเอนต์ที่ใช้ AI](#4-ไคลเอนต์ที่ใช้-ai)
+  - [3. ลูกค้า MCP แบบตรง](#3-ลูกค้า-mcp-แบบตรง)
+  - [4. ลูกค้าที่ใช้ AI](#4-ลูกค้าที่ใช้-ai)
 - [การรันตัวอย่าง](#การรันตัวอย่าง)
+- [การทดสอบแบบออฟไลน์](#การทดสอบแบบออฟไลน์)
 - [การทำงานร่วมกันทั้งหมด](#การทำงานร่วมกันทั้งหมด)
 - [ขั้นตอนถัดไป](#ขั้นตอนถัดไป)
 
 ## สิ่งที่คุณจะได้เรียนรู้
 
-คำแนะนำนี้อธิบายวิธีสร้างบริการเครื่องคิดเลขโดยใช้ Model Context Protocol (MCP) คุณจะได้เข้าใจ:
+คู่มือนี้อธิบายวิธีสร้างบริการเครื่องคิดเลขโดยใช้ Model Context Protocol (MCP) คุณจะเข้าใจว่า:
 
 - วิธีสร้างบริการที่ AI สามารถใช้เป็นเครื่องมือ
-- วิธีตั้งค่าการสื่อสารโดยตรงกับบริการ MCP
-- วิธีที่โมเดล AI เลือกใช้เครื่องมือโดยอัตโนมัติ
-- ความแตกต่างระหว่างการเรียกโปรโตคอลโดยตรงกับการโต้ตอบที่มี AI ช่วยเหลือ
+- วิธีตั้งค่าการสื่อสารตรงกับบริการ MCP
+- วิธีที่โมเดล AI เลือกเครื่องมือใช้งานโดยอัตโนมัติ
+- ความแตกต่างระหว่างการเรียกโปรโตคอลโดยตรงและการโต้ตอบโดยใช้ AI ช่วย
 
-## ข้อกำหนดเบื้องต้น
+## ความรู้พื้นฐานที่ต้องมี
 
-ก่อนเริ่มต้น ตรวจสอบให้แน่ใจว่าคุณมี:
-- Java 21 หรือสูงกว่า ติดตั้งไว้
-- Maven สำหรับจัดการ dependencies
-- การปรับใช้โมเดล Azure AI Foundry (สร้างด้วยคำสั่ง `azd up` — ดู [บทที่ 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md))
-- [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) ลงชื่อเข้าใช้ด้วย `az login` (แก้ไขการพิสูจน์ตัวตนแบบไม่มีคีย์)
+ก่อนเริ่มต้น โปรดตรวจสอบว่าคุณมี:
+- ติดตั้ง Java 21 หรือสูงกว่า
+- Maven สำหรับการจัดการ dependencies
 - ความเข้าใจพื้นฐานเกี่ยวกับ Java และ Spring Boot
 
-## ทำความเข้าใจโครงสร้างโปรเจกต์
+เฉพาะลูกค้า AI เท่านั้นที่ต้องใช้การปรับใช้ Azure OpenAI และการยืนยันตัวตน `DefaultAzureCredential`
+เช่น ลงชื่อเข้าใช้ Azure CLI แบบโลคอล หรือ managed identity ใน Azure ตัวตนนี้ต้องมีบทบาท Cognitive Services OpenAI User บน resource ดูรายละเอียดใน [บทที่ 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md)
+เซิร์ฟเวอร์ ลูกค้า SDK แบบตรง และการทดสอบแบบอัตโนมัติทั้งหมดไม่จำเป็นต้องใช้บัญชี Azure หรือการเข้าถึงโมเดล
+
+
+## เวอร์ชันของไลบรารีที่ใช้
+
+ไลบรารีสำหรับ release ที่ตรวจสอบเมื่อ 14 กันยายน 2026:
+
+| ไลบรารี | เวอร์ชัน |
+| --- | --- |
+| Spring Boot | 4.1.1 |
+| Spring AI | 2.0.1 |
+| MCP Java SDK (จัดการโดย Spring AI) | 2.0.0 |
+| LangChain4j / core | 1.20.0 |
+| LangChain4j MCP | 1.20.0-beta30 |
+| ตัวเชื่อมต่อ OpenAI อย่างเป็นทางการของ LangChain4j | 1.20.0-beta30 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
+| JUnit Jupiter (จัดการโดย Boot) | 6.0.3 |
+
+MCP และตัวเชื่อมต่อ OpenAI อย่างเป็นทางการเป็น release beta ที่เผยแพร่ใน Maven Central ไม่ใช่ snapshots
+เวอร์ชันของพวกมันต่างจาก LangChain4j core ไม่จำเป็นต้องใช้ snapshot หรือ milestone repositories
+dependencies ที่ใช้เฉพาะฝั่งไคลเอนต์มี scope เป็น test เนื่องจากตัวอย่างที่รันอยู่ใน `src/test/java`
+
+## เข้าใจโครงสร้างโปรเจกต์
 
 โปรเจกต์เครื่องคิดเลขมีไฟล์สำคัญหลายไฟล์:
 
@@ -44,16 +69,16 @@ calculator/
 └── src/test/java/com/microsoft/mcp/sample/client/
     ├── SDKClient.java                     # Direct MCP communication
     ├── LangChain4jClient.java            # AI-powered client
-    └── Bot.java                          # Simple chat interface
+    └── Bot.java                          # Chat interface and interactive entrypoint
 ```
 
-## อธิบายส่วนประกอบหลัก
+## อธิบายคอมโพเนนต์หลัก
 
 ### 1. แอปพลิเคชันหลัก
 
 **ไฟล์:** `McpServerApplication.java`
 
-นี่คือจุดเริ่มต้นของบริการเครื่องคิดเลขของเรา เป็นแอปพลิเคชัน Spring Boot มาตรฐานที่มีการเพิ่มพิเศษหนึ่งอย่าง:
+นี่คือจุดเริ่มต้นของบริการเครื่องคิดเลขของเรา เป็นแอป Spring Boot ปกติที่มีการเพิ่มพิเศษหนึ่งอย่าง:
 
 ```java
 @SpringBootApplication
@@ -70,16 +95,16 @@ public class McpServerApplication {
 }
 ```
 
-**สิ่งที่ทำ:**
-- เริ่มต้นเว็บเซิร์ฟเวอร์ Spring Boot ที่พอร์ต 8080
-- สร้าง `ToolCallbackProvider` ที่ทำให้เมธอดเครื่องคิดเลขของเราพร้อมใช้งานเป็นเครื่องมือ MCP
-- คำสั่ง `@Bean` บอกให้ Spring จัดการคอมโพเนนต์นี้เพื่อให้ส่วนอื่นใช้ได้
+**ฟังก์ชันที่ทำงาน:**
+- เริ่ม Spring Boot เว็บเซิร์ฟเวอร์บนพอร์ต 8080
+- สร้าง `ToolCallbackProvider` ที่ทำให้เมธอดเครื่องคิดเลขของเราใช้งานเป็นเครื่องมือ MCP ได้
+- ตัวส่วนประกอบ `@Bean` บอกให้ Spring จัดการเป็น component ที่ส่วนอื่นๆ ใช้ได้
 
 ### 2. บริการเครื่องคิดเลข
 
 **ไฟล์:** `CalculatorService.java`
 
-ที่นี่คือจุดที่คำนวณทั้งหมดเกิดขึ้น โดยแต่ละเมธอดจะถูกติดแท็กด้วย `@Tool` เพื่อให้สามารถเรียกใช้ผ่าน MCP:
+ที่นี่คือจุดที่คำนวณเลขเกิดขึ้น แต่ละเมธอดติด `@Tool` เพื่อให้เรียกผ่าน MCP ได้:
 
 ```java
 @Service
@@ -100,221 +125,200 @@ public class CalculatorService {
     // การดำเนินการเครื่องคิดเลขเพิ่มเติม...
     
     private String formatResult(double a, String operator, double b, double result) {
-        return String.format("%.2f %s %.2f = %.2f", a, operator, b, result);
+        return String.format(java.util.Locale.ROOT, "%.2f %s %.2f = %.2f", a, operator, b, result);
     }
 }
 ```
 
-**คุณสมบัติสำคัญ:**
+**คุณสมบัติหลัก:**
 
-1. **คำสั่ง `@Tool`**: บอก MCP ว่าสามารถเรียกเมธอดนี้โดยไคลเอนต์ภายนอกได้
-2. **คำอธิบายชัดเจน**: แต่ละเครื่องมือมีคำอธิบายช่วยให้โมเดล AI เข้าใจเวลาที่ควรใช้งาน
-3. **รูปแบบผลลัพธ์สม่ำเสมอ**: ทุกการดำเนินการส่งคืนเป็นสตริงที่อ่านง่าย เช่น "5.00 + 3.00 = 8.00"
-4. **จัดการข้อผิดพลาด**: หารด้วยศูนย์และรากที่เป็นลบจะคืนข้อความแจ้งข้อผิดพลาด
+1. **การติดประกาศ `@Tool`**: บอก MCP ว่าเมธอดนี้สามารถเรียกผ่านไคลเอนต์ภายนอกได้
+2. **คำอธิบายชัดเจน**: ทุกเครื่องมือมีคำอธิบายช่วยให้โมเดล AI เข้าใจว่าจะใช้เมื่อใด
+3. **รูปแบบผลลัพธ์ที่เหมือนกัน**: ทุกการคำนวณคืนค่าเป็นสตริงที่อ่านง่าย เช่น "5.00 + 3.00 = 8.00"
+4. **การจัดการข้อผิดพลาด**: การหารด้วยศูนย์และรากที่เป็นลบจะคืนข้อความข้อผิดพลาด
 
-**การดำเนินการที่มี:**
-- `add(a, b)` - บวกเลขสองจำนวน
-- `subtract(a, b)` - ลบจำนวนที่สองจากจำนวนแรก
-- `multiply(a, b)` - คูณเลขสองจำนวน
-- `divide(a, b)` - หารจำนวนแรกด้วยจำนวนที่สอง (ตรวจสอบศูนย์)
-- `power(base, exponent)` - ยกกำลังฐานด้วยเลขชี้กำลัง
+**ฟังก์ชันที่พร้อมใช้งาน:**
+- `add(a, b)` - บวกเลขสองตัว
+- `subtract(a, b)` - ลบตัวที่สองจากตัวแรก
+- `multiply(a, b)` - คูณเลขสองตัว
+- `divide(a, b)` - หารตัวแรกด้วยตัวที่สอง (ตรวจสอบศูนย์)
+- `power(base, exponent)` - ยกกำลัง
 - `squareRoot(number)` - คำนวณรากที่สอง (ตรวจสอบค่าติดลบ)
 - `modulus(a, b)` - คืนเศษจากการหาร
-- `absolute(number)` - คืนค่าค่าสัมบูรณ์
-- `help()` - คืนข้อมูลเกี่ยวกับการดำเนินการทั้งหมด
+- `absolute(number)` - คืนค่าสัมบูรณ์
+- `help()` - คืนข้อมูลเกี่ยวกับทุกฟังก์ชัน
 
-### 3. ไคลเอนต์ MCP แบบตรง
+### 3. ลูกค้า MCP แบบตรง
 
-**ไฟล์:** `SDKClient.java`
+ดู [SDKClient.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/SDKClient.java)
 
-ไคลเอนต์นี้สื่อสารโดยตรงกับเซิร์ฟเวอร์ MCP โดยไม่ใช้ AI โดยเรียกฟังก์ชันเครื่องคิดเลขเฉพาะด้วยตนเอง:
+ลูกค้านี้ใช้ `HttpClientStreamableHttpTransport` ที่ `/mcp` เริ่มต้นการเชื่อมต่อ
+ส่งสัญญาณ ping เซิร์ฟเวอร์ และติดตามเครื่องมือผ่านการแบ่งหน้า ตรวจสอบว่ามีเครื่องมือเก้าอย่างครบ
+และเรียกใช้แต่ละเครื่องมือ รวม `modulus` และ `help` โดยไม่ใช้โมเดล AI
 
-```java
-public class SDKClient {
-    
-    public static void main(String[] args) {
-        McpClientTransport transport = WebFluxSseClientTransport.builder(
-            WebClient.builder().baseUrl("http://localhost:8080")
-        ).build();
-        new SDKClient(transport).run();
-    }
-    
-    public void run() {
-        var client = McpClient.sync(this.transport).build();
-        client.initialize();
-        
-        // แสดงรายการเครื่องมือที่มี
-        ListToolsResult toolsList = client.listTools();
-        System.out.println("Available Tools = " + toolsList);
-        
-        // เรียกใช้ฟังก์ชันเครื่องคำนวณเฉพาะ
-        CallToolResult resultAdd = client.callTool(
-            new CallToolRequest("add", Map.of("a", 5.0, "b", 3.0))
-        );
-        System.out.println("Add Result = " + resultAdd);
-        
-        CallToolResult resultSqrt = client.callTool(
-            new CallToolRequest("squareRoot", Map.of("number", 16.0))
-        );
-        System.out.println("Square Root Result = " + resultSqrt);
-        
-        client.closeGracefully();
-    }
-}
-```
-
-**สิ่งที่ทำ:**
-1. **เชื่อมต่อ** กับเซิร์ฟเวอร์เครื่องคิดเลขที่ `http://localhost:8080` โดยใช้รูปแบบ builder
-2. **แสดงรายการ** เครื่องมือทั้งหมด (ฟังก์ชันเครื่องคิดเลขของเรา)
-3. **เรียกใช้** ฟังก์ชันเฉพาะพร้อมพารามิเตอร์ที่ระบุ
-4. **แสดงผลลัพธ์** โดยตรง
-
-**หมายเหตุ:** ตัวอย่างนี้ใช้ dependency Spring AI 1.1.0-SNAPSHOT ซึ่งเพิ่มรูปแบบ builder สำหรับ `WebFluxSseClientTransport` หากคุณใช้เวอร์ชันเก่าที่เสถียร อาจต้องใช้ constructor โดยตรงแทน
-
-**เมื่อต้องใช้:** เมื่อคุณรู้ว่าต้องการคำนวณอะไรและต้องการเรียกใช้โปรแกรมโดยตรง
-
-### 4. ไคลเอนต์ที่ใช้ AI
-
-**ไฟล์:** `LangChain4jClient.java`
-
-ไคลเอนต์นี้ใช้โมเดล AI (GPT-4o-mini) ที่สามารถตัดสินใจโดยอัตโนมัติว่าเครื่องมือเครื่องคิดเลขใดควรใช้:
+ตัวสร้างคำขอปัจจุบันเป็นดังนี้:
 
 ```java
-public class LangChain4jClient {
-    
-    public static void main(String[] args) throws Exception {
-        // ตั้งค่ารูปแบบ AI (Azure AI Foundry, การยืนยันตัวตนแบบไม่ต้องใช้คีย์ผ่าน Microsoft Entra ID)
-        String endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1";
-        String token = new DefaultAzureCredentialBuilder().build()
-                .getToken(new TokenRequestContext().addScopes("https://ai.azure.com/.default"))
-                .block().getToken();
-        ChatLanguageModel model = OpenAiOfficialChatModel.builder()
-                .baseUrl(baseUrl)
-                .apiKey(token)
-                .modelName("gpt-4o-mini")
-                .build();
-
-        // เชื่อมต่อกับเซิร์ฟเวอร์เครื่องคิดเลข MCP ของเรา
-        McpTransport transport = new HttpMcpTransport.Builder()
-                .sseUrl("http://localhost:8080/sse")
-                .logRequests(true)  // แสดงสิ่งที่ AI กำลังทำอยู่
-                .logResponses(true)
-                .build();
-
-        McpClient mcpClient = new DefaultMcpClient.Builder()
-                .transport(transport)
-                .build();
-
-        // ให้ AI เข้าถึงเครื่องมือเครื่องคิดเลขของเรา
-        ToolProvider toolProvider = McpToolProvider.builder()
-                .mcpClients(List.of(mcpClient))
-                .build();
-
-        // สร้างบอท AI ที่สามารถใช้เครื่องคิดเลขของเราได้
-        Bot bot = AiServices.builder(Bot.class)
-                .chatLanguageModel(model)
-                .toolProvider(toolProvider)
-                .build();
-
-        // ตอนนี้เราสามารถขอให้ AI ทำการคำนวณด้วยภาษาธรรมชาติได้แล้ว
-        String response = bot.chat("Calculate the sum of 24.5 and 17.3 using the calculator service");
-        System.out.println(response);
-
-        response = bot.chat("What's the square root of 144?");
-        System.out.println(response);
-    }
-}
+var request = CallToolRequest.builder("add")
+    .arguments(Map.of("a", 5.0, "b", 3.0))
+    .build();
+var result = client.callTool(request);
 ```
 
-**สิ่งที่ทำ:**
-1. **สร้าง** การเชื่อมต่อโมเดล AI โดยใช้การพิสูจน์ตัวตนแบบไม่มีคีย์ (Microsoft Entra ID)
-2. **เชื่อมต่อ** AI กับเซิร์ฟเวอร์ MCP เครื่องคิดเลขของเรา
-3. **มอบ** สิทธิ์ให้ AI ใช้เครื่องมือเครื่องคิดเลขทั้งหมดของเรา
-4. **อนุญาต** ให้ส่งคำขอแบบภาษาธรรมชาติ เช่น "คำนวณผลรวมของ 24.5 และ 17.3"
+ข้อผิดพลาดของโปรโตคอลจะทำให้ไคลเอนต์ล้มเหลวแทนที่จะพิมพ์ข้อความสำเร็จผิด ๆ ลูกค้า MCP
+ปิดด้วย try-with-resources รวมถึงกรณีพบข้อผิดพลาดเมื่อค้นหาหรือเรียกใช้งานเครื่องมือ
 
-**AI ทำงานโดยอัตโนมัติ:**
-- เข้าใจว่าคุณต้องการบวกเลข
-- เลือกเครื่องมือ `add`
-- เรียก `add(24.5, 17.3)`
-- ส่งผลลัพธ์ในรูปแบบคำตอบธรรมชาติ
+### 4. ลูกค้าที่ใช้ AI
+
+ดู [LangChain4jClient.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/LangChain4jClient.java)
+และ [Bot.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/Bot.java)
+
+`OpenAiOfficialChatModel` เป็นการใช้งาน API `ChatModel` ของ LangChain4j รุ่นปัจจุบัน
+`StreamableHttpMcpTransport` เชื่อมต่อไปยัง endpoint `/mcp` เดียวกับไคลเอนต์ SDK
+`AiServices` ค้นหาเครื่องมือและจัดการการสนทนาเรียกใช้เครื่องมือและผลลัพธ์
+
+การปรับใช้เริ่มต้นคือ **GPT-5.6 Luna** โดยปิดการใช้ reasoning อย่างชัดเจน:
+
+```java
+var parameters = OpenAiOfficialChatRequestParameters.builder()
+    .modelName("gpt-5.6-luna")
+    .reasoningEffort("none")
+    .maxCompletionTokens(1024)
+    .parallelToolCalls(false)
+    .build();
+```
+
+ค่าปริยายนี้จะใช้กับทุกคำสั่งเสริม รวมถึงการติดตามผลหลังการใช้เครื่องมือ
+ลูกค้าใช้ `BearerTokenCredential` ที่รีเฟรชได้โดยมีพื้นฐานจาก `DefaultAzureCredential`
+และ scope `https://ai.azure.com/.default` ไม่ใช่โทเค็นแบบครั้งเดียวใช้เป็น API key
+URL ของ resource และ URL ที่ลงท้ายด้วย `/openai/v1` ทั้งคู่ถูกยอมรับ
+
+บอทเก็บประวัติการสนทนาไว้จำกัดจำนวน แสดง `Tool executed: ...` พร้อมผลลัพธ์ MCP จริง
+และล้มเหลวหากการตอบกลับข้ามเครื่องมือ วงจรเครื่องมือจำกัด 4 รอบเท่านั้น
+ข้อผิดพลาดการยืนยันตัวตน โมเดล MCP และเครื่องมือจะถูกส่งผ่าน ไปยังผู้ใช้
+และปิดไคลเอนต์ MCP/transport และไคลเอนต์ OpenAI อย่างเป็นทางการทั้งตอนสำเร็จและล้มเหลว
 
 ## การรันตัวอย่าง
 
-### ขั้นตอนที่ 1: เริ่มเซิร์ฟเวอร์เครื่องคิดเลข
+### ขั้นตอนที่ 1: เริ่มเครื่องคิดเลขเซิร์ฟเวอร์
 
-ก่อนอื่น ลงชื่อเข้าใช้และตั้งค่า Azure AI Foundry endpoint ของคุณ (จำเป็นสำหรับไคลเอนต์ AI — การพิสูจน์ตัวตนแบบไม่มีคีย์ ไม่มี API key):
+ไม่ต้องตั้งค่า Azure สำหรับเซิร์ฟเวอร์ คำสั่งด้านล่างรันจากไดเรกทอรีของตัวอย่างนี้
+ตัวอย่างใช้พอร์ต **18081** เพื่อหลีกเลี่ยงความขัดแย้งกับตัวอย่างอื่น พอร์ตเริ่มต้นยังคงเป็น 8080
 
-**Windows:**
-```cmd
-az login
-set AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-```
-
-**Linux/macOS:**
-```bash
-az login
-export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-```
-
-เริ่มเซิร์ฟเวอร์:
-```bash
+```powershell
 cd 04-PracticalSamples/calculator
-mvn clean spring-boot:run
+mvn spring-boot:run "-Dspring-boot.run.arguments=--server.port=18081"
 ```
 
-เซิร์ฟเวอร์จะเริ่มต้นที่ `http://localhost:8080` คุณควรเห็น:
-```
-Started McpServerApplication in X.XXX seconds
-```
+จุดเชื่อมต่อ MCP คือ `http://localhost:18081/mcp` ข้อมูลสถานะและการค้นหามีที่
+`http://localhost:18081/health` และ `http://localhost:18081/info`
+Streamable HTTP แทนที่การส่งข้อมูล SSE แบบเก่า `/sse` และ `/v1/tools` ไม่ใช่ endpoints
 
 ### ขั้นตอนที่ 2: ทดสอบด้วยไคลเอนต์แบบตรง
 
-ในเทอร์มินัล **ใหม่** โดยเซิร์ฟเวอร์ยังทำงานอยู่ ให้รันไคลเอนต์ MCP แบบตรง:
-```bash
+ในเทอร์มินัล PowerShell อีกอัน:
+
+```powershell
 cd 04-PracticalSamples/calculator
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient" -Dexec.classpathScope=test
+$env:MCP_SERVER_URL = "http://localhost:18081"
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.SDKClient" "-Dexec.classpathScope=test"
 ```
 
-คุณจะเห็นผลลัพธ์เช่น:
-```
-Available Tools = [add, subtract, multiply, divide, power, squareRoot, modulus, absolute, help]
-Add Result = 5.00 + 3.00 = 8.00
-Square Root Result = √16.00 = 4.00
-```
+ไม่ต้องใส่อินพุต เครื่องมือเก้าชิ้นทั้งหมดถูกใช้งาน ผลลัพธ์เลขคณิตคาดว่าจะมี
+8, 6, 42, 5, 256, 4, 2, และ 5.5 ตามด้วยข้อความช่วยเหลือ
 
-### ขั้นตอนที่ 3: ทดสอบด้วยไคลเอนต์ AI
+### ขั้นตอนที่ 3: ทดสอบด้วยลูกค้า AI
 
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient" -Dexec.classpathScope=test
-```
+หลังยืนยันตัวตนตามที่ได้อธิบายไว้ในพื้นฐาน ตั้งค่าลูกค้า AI ในเทอร์มินัลเดียวกัน:
 
-คุณจะเห็นว่า AI ใช้เครื่องมือโดยอัตโนมัติ:
-```
-The sum of 24.5 and 17.3 is 41.8.
-The square root of 144 is 12.
+```powershell
+$env:AZURE_OPENAI_ENDPOINT = "https://your-resource.openai.azure.com/"
+$env:AZURE_OPENAI_DEPLOYMENT = "gpt-5.6-luna"
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.LangChain4jClient" "-Dexec.classpathScope=test" "-Dexec.args=--prompt 'Calculate the sum of 24.5 and 17.3 using the calculator service'"
 ```
 
-### ขั้นตอนที่ 4: ปิดเซิร์ฟเวอร์ MCP
+คาดว่าจะเห็นบรรทัด `Tool executed: add` พร้อมค่าผลลัพธ์ `41.80` ตามด้วยคำตอบของโมเดล
+โหมด prompt เดี่ยวจะออกโดยไม่รออินพุต หากต้องการรันเดโมสี่ prompt เดิม:
 
-เมื่อทดสอบเสร็จ คุณสามารถหยุดไคลเอนต์ AI ได้โดยกด `Ctrl+C` ในเทอร์มินัลของมัน เซิร์ฟเวอร์ MCP จะยังคงทำงานจนกว่าคุณจะหยุด
-เพื่อหยุดเซิร์ฟเวอร์ ให้กด `Ctrl+C` ในเทอร์มินัลที่รันเซิร์ฟเวอร์อยู่
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.LangChain4jClient" "-Dexec.classpathScope=test" "-Dexec.args=--demo"
+```
+
+เดโมนี้เรียก `add`, `squareRoot`, `help` และลำดับผูกปม `power` แล้วตามด้วย `divide`
+คำตอบตัวเลขที่คาดหวังคือ 41.8, 12, และ 64 การละเว้นอาร์กิวเมนต์ก็รันเดโมนี้ได้เช่นกัน
+
+### ขั้นตอนที่ 4: รันบอทแบบโต้ตอบ
+
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.Bot" "-Dexec.classpathScope=test"
+```
+
+พิมพ์ `Multiply 6 by 7 using the calculator service` แล้วตามด้วย `exit` หรือ `quit`
+คาดว่าจะได้ผลลัพธ์จริงของเครื่องมือ `multiply` เท่ากับ 42 บรรทัดว่างจะถูกละเว้น EOF ก็จะปิดเซสชัน
+สำหรับทดสอบแบบไม่โต้ตอบขั้นต้นของจุดเข้าครั้งนี้:
+
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.Bot" "-Dexec.classpathScope=test" "-Dexec.args=--prompt 'Multiply 6 by 7 using the calculator service'"
+```
+
+จุดเข้า AI ทั้งสองรองรับ `--prompt "question"`, `--demo` และ `--interactive`
+ตัวเลือกที่ไม่ถูกต้องจะล้มเหลวก่อนเปิดเชื่อมต่อ ทุกอาร์กิวเมนต์ `-D...` ของ Maven ต้องใส่ในอัญประกาศเต็ม
+ใน PowerShell สำหรับ Bash ให้ใช้ `export NAME=value` แทน `$env:NAME = "value"`
+
+**โควต้า:** รันตัวอย่าง AI ต่อเนื่อง โหมด prompt ง่ายมักต้องการคำขอโมเดลสองครั้ง
+เดโมเต็มโดยปกติต้องการเก้าครั้ง รวมถึงการติดตามผลการใช้งานเครื่องมือในรายการ ถ้าใช้การปรับใช้ 10 RPM ร่วมกัน
+ควรเว้นช่วงหน้าต่างโควต้าก่อนรัน AI ครั้งถัดไป หากพบ 429 จะล้มเหลวทันทีไม่มีการลองใหม่อัตโนมัติ
+ให้ปฏิบัติตามคำแนะนำ retry-after จากบริการ จำนวนคำขอขึ้นอยู่กับโมเดล
+การทดสอบแบบออฟไลน์ไม่ใช้โควต้าและไม่ยืนยันความพร้อมของ Luna หรือคุณภาพคำตอบ
+
+### การตั้งค่าและการปิดเซิร์ฟเวอร์
+
+| การตั้งค่า | ค่าเริ่มต้น / พฤติกรรม |
+| --- | --- |
+| `MCP_SERVER_URL` | `http://localhost:8080`; URL พื้นฐาน, ไม่รวม `/mcp` |
+| `-Dmcp.server.url=...` | เขียนทับ `MCP_SERVER_URL` สำหรับไคลเอนต์ทั้งหมด |
+| `AZURE_OPENAI_ENDPOINT` | จำเป็นเฉพาะไคลเอนต์ AI; URL ของ resource หรือ URL ที่ลงท้ายด้วย `/openai/v1` |
+| `AZURE_OPENAI_DEPLOYMENT` | `gpt-5.6-luna`; ชื่อ deployment ใน Azure |
+| `AZURE_OPENAI_MAX_COMPLETION_TOKENS` | `1024`; จำนวนเต็มบวก |
+| ความพยายาม reasoning | ปิดตลอดเวลา รวมถึงการติดตามการวนเครื่องมือ |
+
+การปรับใช้ที่เขียนทับต้องรองรับ `reasoning_effort=none` และ `max_completion_tokens`
+ไคลเอนต์จะไม่อ่านไฟล์ `.env` โดยอัตโนมัติ หยุดเซิร์ฟเวอร์ด้วย `Ctrl+C` หลังทดสอบเสร็จ
+ไคลเอนต์จะคืนค่าปกติโดยไม่เรียก `System.exit` หรือหน่วงเวลา shutdown
+
+## การทดสอบแบบออฟไลน์
+
+```powershell
+mvn -B -ntp clean verify
+```
+
+การทดสอบทั้งหมดเป็นแบบออฟไลน์กับ Azure: โปรโตคอลชุดนี้เริ่มเซิร์ฟเวอร์ Spring และ
+stub ที่รองรับ OpenAI บนพอร์ต loopback แบบสุ่ม แล้วปิดเซิร์ฟเวอร์ เหมือนเดิม Maven อาจต้องดาวน์โหลด dependencies
+ไม่มีการใช้ credential, deployment จริง หรือ MCP server ที่มีอยู่ก่อนหน้า
+
+- การทดสอบ unit ของเครื่องคิดเลขครอบคลุมการคำนวณทั้งหมด ผลลัพธ์เลขฐานสิบ, help, และข้อผิดพลาดโดเมน
+- การทดสอบ MCP ครอบคลุมการเริ่มต้น ค้นหา การเรียกเครื่องมือเก้าอย่าง การล้มเหลวของเครื่องมือ และข้อมูลสถานะ/สุขภาพ
+- การทดสอบโปรโตคอล AI รันเดโมเต็มและบอทแบบโต้ตอบกับเครื่องคิดเลขจริง
+  ตรวจสอบว่าผลลัพธ์เครื่องมือเป็นอินพุตให้ completion ถัดไป และตรวจสอบ HTTP body ทุกครั้งสำหรับ Luna,
+  `reasoning_effort: "none"`, และ `max_completion_tokens` โดยไม่มี `max_tokens` แบบเก่า
+- การทดสอบการตั้งค่าและอินพุตครอบคลุมการเขียนทับ deployment และ endpoint, บรรทัดว่าง, EOF, exit/quit,
+  โหมด prompt เดี่ยว, ตัวเลือกไม่ถูกต้อง, และการส่งผ่านข้อผิดพลาด ทดสอบโควต้าพิสูจน์ว่า 429 ไม่ได้ถูกลองใหม่
 
 ## การทำงานร่วมกันทั้งหมด
 
-นี่คือลำดับขั้นตอนเมื่อคุณถาม AI ว่า "5 + 3 เท่ากับอะไร?":
+นี่คือขั้นตอนทั้งหมดเมื่อคุณถาม AI ว่า "5 + 3 เท่ากับอะไร?":
 
 1. **คุณ** ถาม AI ด้วยภาษาธรรมชาติ
-2. **AI** วิเคราะห์คำขอและรู้ว่าคุณต้องการบวกเลข
-3. **AI** เรียกเซิร์ฟเวอร์ MCP: `add(5.0, 3.0)`
+2. **AI** วิเคราะห์คำถามและเข้าใจว่าคุณต้องการบวกเลข
+3. **AI** เรียกใช้ MCP server: `add(5.0, 3.0)`
 4. **บริการเครื่องคิดเลข** คำนวณ: `5.0 + 3.0 = 8.0`
-5. **บริการเครื่องคิดเลข** ส่งคืน: `"5.00 + 3.00 = 8.00"`
-6. **AI** รับผลและจัดรูปแบบคำตอบเป็นธรรมชาติ
-7. **คุณ** ได้รับคำตอบ: "ผลรวมของ 5 และ 3 คือ 8"
+5. **บริการเครื่องคิดเลข** คืนค่า: `"5.00 + 3.00 = 8.00"`
+6. **AI** รับผลลัพธ์และจัดรูปแบบคำตอบเป็นภาษาธรรมชาติ
+7. **คุณ** ได้รับคำตอบ: "ผลบวกของ 5 กับ 3 คือ 8"
 
 ## ขั้นตอนถัดไป
 
-สำหรับตัวอย่างเพิ่มเติม โปรดดู [บทที่ 04: ตัวอย่างใช้งานจริง](../README.md)
+สำหรับตัวอย่างเพิ่มเติม ดู [บทที่ 04: ตัวอย่างเชิงปฏิบัติ](../README.md)
 
 ---
 

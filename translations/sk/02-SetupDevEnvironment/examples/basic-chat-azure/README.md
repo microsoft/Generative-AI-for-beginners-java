@@ -1,35 +1,37 @@
-# Základná konverzácia s Azure AI Foundry - kompletný príklad
+# Základný chat s Azure AI Foundry - príklad end-to-end
 
-Tento príklad je jednoduchá aplikácia Spring Boot, ktorá sa pripája k modelu **Azure AI Foundry** pomocou **overovania bez kľúča** (Microsoft Entra ID) a testuje vaše nastavenie. Používa Spring AI `ChatClient`.
+Tento príklad je jednoduchá aplikácia Spring Boot, ktorá sa pripája k modelu **Azure AI Foundry** pomocou **autentifikácie bez kľúča** (Microsoft Entra ID) a testuje vaše nastavenie. Používa Spring AI `ChatClient`, podporovaný **oficiálnym OpenAI Java SDK** a koncovým bodom **Azure OpenAI v1**.
+
+Verzie v [pom.xml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/pom.xml) sú Spring Boot **4.1.1**, Spring AI **2.0.1**, OpenAI Java **4.63.1**, Azure Identity **1.18.6** a dotenv-java **3.2.0**. Ukážka používa `spring-ai-starter-model-openai` a explicitne deklaruje `openai-java` a `azure-identity`; Spring AI 2 odstránil starý Azure OpenAI starter.
 
 ## Obsah
 
-- [Predpoklady](#prerekvizity)
-- [Rýchly štart](#rychly-start)
-- [Ako funguje overovanie](#ako-funguje-overovanie)
-- [Spustenie aplikácie](#spustenie-aplikacie)
-  - [Použitie Maven](#pouzitie-maven)
-  - [Použitie VS Code](#pouzitie-vs-code)
-  - [Očakávaný výstup](#ocakavany-vystup)
-- [Referencia konfigurácie](#referencia-konfiguracie)
-  - [Premenné prostredia](#premenne-prostredia)
-  - [Spring konfigurácia](#spring-konfiguracia)
-- [Riešenie problémov](#riesenie-problemov)
-  - [Bežné problémy](#bezne-problemy)
-  - [Režim ladenia](#rezim-ladenia)
-- [Ďalšie kroky](#dalej-kroky)
+- [Požiadavky](#požiadavky)
+- [Rýchly štart](#rýchly-štart)
+- [Ako funguje autentifikácia](#ako-funguje-autentifikácia)
+- [Spustenie aplikácie](#spustenie-aplikácie)
+  - [Použitie Maven](#použitie-maven)
+  - [Použitie VS Code](#použitie-vs-code)
+  - [Očakávaný výstup](#očakávaný-výstup)
+- [Referenčná konfigurácia](#referencia-konfigurácie)
+  - [Premenné prostredia](#premenné-prostredia)
+  - [Spring konfigurácia](#spring-konfigurácia)
+- [Riešenie problémov](#riešenie-problémov)
+  - [Bežné problémy](#bežné-problémy)
+  - [Ladenie](#režim-ladenia)
+- [Ďalšie kroky](#ďalšie-kroky)
 - [Zdroje](#zdroje)
 
-## Prerekvizity
+## Požiadavky
 
 Pred spustením tohto príkladu sa uistite, že máte:
 
-- Zdroj Azure AI Foundry s nasadením `gpt-4o-mini` — nastavte ho pomocou `azd up` alebo manuálne cez [návod na nastavenie Azure AI Foundry](../../getting-started-azure-openai.md)
-- Rola **Cognitive Services OpenAI User** pre tento zdroj (Bicep šablóny ju priraďujú automaticky)
-- [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli), prihlásený pomocou `az login`
+- Prostriedok Azure AI Foundry s nasadením `gpt-5.6-luna` - zriaďte ho pomocou `azd up` alebo manuálne podľa [návodu na nastavenie Azure AI Foundry](../../getting-started-azure-openai.md)
+- Rolu **Cognitive Services OpenAI User** na tomto prostriedku (Bicep šablóny to priraďujú za vás)
+- [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli), prihlásený cez `az login`
 - Java 21+ a Maven 3.9+
 
-> **Nie je potrebný žiadny API kľúč** — overovanie je bez kľúča cez Microsoft Entra ID.
+> **Nie je potrebný žiadny API kľúč** — autentifikácia je bez kľúča cez Microsoft Entra ID.
 
 ## Rýchly štart
 
@@ -37,11 +39,11 @@ Pred spustením tohto príkladu sa uistite, že máte:
 # 1. Prejdite do projektu
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 
-# 2. Prihláste sa, aby mohla autentifikácia bez kľúča získať token
+# 2. Prihláste sa, aby keyless autentifikácia mohla získať token
 az login
 
 # 3. Nakonfigurujte koncový bod
-#    - Ak ste spustili `azd up`, .env bol pre vás napísaný (toto preskočte).
+#    - Ak ste spustili `azd up`, .env bol pre vás vytvorený (preskočte toto).
 #    - Inak skopírujte šablónu a nastavte AZURE_OPENAI_ENDPOINT:
 cp .env.example .env
 
@@ -49,11 +51,17 @@ cp .env.example .env
 mvn spring-boot:run
 ```
 
-## Ako funguje overovanie
+## Ako funguje autentifikácia
 
-Tento príklad sa overuje pomocou **Microsoft Entra ID** — API kľúč sa nepoužíva.
+Tento príklad autentifikuje pomocou **Microsoft Entra ID** — nie je potrebný žiadny API kľúč.
 
-Keď je nastavený iba `spring.ai.azure.openai.endpoint` (a nie `api-key`), Spring AI vytvorí Azure OpenAI klienta s [`DefaultAzureCredential`](https://learn.microsoft.com/java/api/com.azure.identity.defaultazurecredential). Tento credential automaticky nájde token z vašej lokálnej relácie `az login` alebo z managed identity pri behu v Azure — takže ten istý kód funguje na oboch miestach bez zmien.
+Aplikácia explicitne konfiguruje autentifikáciu v [BasicChatApplication.java](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/java/com/example/BasicChatApplication.java):
+
+1. `azureCredential()` vytvára `BearerTokenCredential` pomocou `AuthenticationUtil.getBearerTokenSupplier` s `DefaultAzureCredential` a rozsahom `https://ai.azure.com/.default`.
+2. `azureOpenAiClient()` vytvára `OpenAIClient` cez `OpenAIOkHttpClient.builder()`, upravuje koncový bod zdroja na `/openai/v1` a dodáva bearer credential cez `.credential(...)`.
+3. `azureChatModel()` poskytuje klienta do Spring AI `OpenAiChatModel`, ktorý podporuje `ChatClient` v tomto príklade.
+
+Tieto explicitné beany zabraňujú globálnemu prepisu autentifikácie pomocou `OPENAI_API_KEY`. Vynechanie API kľúča v YAML samotnom nie je nastavenie autentifikácie. `DefaultAzureCredential` môže použiť lokálnu reláciu `az login` alebo spravovanú identitu v Azure; vybraná identita musí mať vyššie uvedenú rolu.
 
 ## Spustenie aplikácie
 
@@ -66,16 +74,21 @@ mvn spring-boot:run
 ### Použitie VS Code
 
 1. Otvorte projekt vo VS Code
-2. Stlačte `F5` alebo použite panel "Run and Debug"
-3. Vyberte konfiguráciu "Spring Boot-BasicChatApplication"
+2. Stlačte `F5` alebo použite panel „Run and Debug“
+3. Vyberte konfiguráciu „Spring Boot-BasicChatApplication“
 
-> **Poznámka**: Konfigurácia VS Code automaticky načíta váš .env súbor
+> **Poznámka**: Aplikácia načítava `.env` z pracovného adresára, vrátane spustenia z VS Code.
 
 ### Očakávaný výstup
 
-```
+Ilustratívny výstup po úspešnom spustení (záznamy spustenia sú vynechané; formulácia odpovede sa môže líšiť):
+
+```text
 Starting Basic Chat with Azure OpenAI...
-Environment variables loaded successfully
+Environment variables loaded from .env file
+Endpoint: https://your-resource.openai.azure.com/
+Deployment: gpt-5.6-luna
+Auth: keyless (Microsoft Entra ID via DefaultAzureCredential)
 Connecting to Azure OpenAI...
 Sending prompt: What is AI in a short sentence? Max 100 words.
 
@@ -93,79 +106,99 @@ Success! Azure OpenAI connection is working correctly.
 
 | Premenná | Popis | Povinné | Príklad |
 |----------|-------------|----------|---------|
-| `AZURE_OPENAI_ENDPOINT` | Adresa endpointu Foundry (Azure OpenAI) | Áno | `https://my-resource.openai.azure.com/` |
-| `AZURE_OPENAI_DEPLOYMENT` | Názov nasadenia chat modelu | Nie | `gpt-4o-mini` (predvolené) |
+| `AZURE_OPENAI_ENDPOINT` | Koncový bod Foundry (Azure OpenAI) | Áno | `https://my-resource.openai.azure.com/` |
+| `AZURE_OPENAI_DEPLOYMENT` | Názov nasadenia chat modelu | Nie | `gpt-5.6-luna` (predvolené) |
 
-> Nie je tu **žiadna** premenná pre API kľúč — overovanie je bez kľúča (Microsoft Entra ID cez `az login`).
+> Premenná s API kľúčom **neexistuje** — autentifikácia je bez kľúča (Microsoft Entra ID cez `az login`).
 
 ### Spring konfigurácia
 
-Súbor `application.yml` konfiguruje:
-- **Endpoint**: `${AZURE_OPENAI_ENDPOINT}` - z premennej prostredia
-- **Nasadenie**: `${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}` - z premennej prostredia s náhradou
-- **Overovanie**: bez kľúča — nie je nastavený `api-key`, takže Spring AI používa `DefaultAzureCredential`
-- **Teplota**: `0.7` - ovplyvňuje kreativitu (0.0 = deterministické, 1.0 = kreatívne)
-- **Maximálny počet tokenov**: `500` - maximálna dĺžka odpovede
+Nastavenia v [application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml) používajú prefix `spring.ai.openai` a sploštené vlastnosti chatu (bez bloku `options`):
+
+```yaml
+spring:
+  ai:
+    openai:
+      base-url: ${AZURE_OPENAI_ENDPOINT}
+      microsoft-foundry: true
+      chat:
+        model: ${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
+        reasoning-effort: none
+        max-completion-tokens: 500
+```
+
+`model` je **názov nasadenia v Azure**. Autentifikácia pochádza z explicitných beanov popísaných vyššie, nie z nastavenia `api-key`. Tento príklad deaktivuje reasoning a limituje tokeny odpovede na 500; necháva `temperature` a starý parameter `max-tokens` nenastavené.
+
+Microsoft odporúča [oficiálne OpenAI SDK s Azure OpenAI v1 a Responses API pre nové aplikácie](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java). Chat Completions zostáva podporované pre túto existujúcu lekciu založenú na správach. Pre GPT-5.6 musia požiadavky so zapnutými nástrojmi na Chat Completions nastaviť `reasoning_effort` na `none`; pre kombináciu reasoning a nástrojov používajte Responses. Viď [volanie nástrojov s reasoning modelmi](https://learn.microsoft.com/azure/foundry/openai/how-to/reasoning#tool-calling-with-reasoning-models).
 
 ## Riešenie problémov
 
 ### Bežné problémy
 
 <details>
-<summary><strong>Chyba: 401 / "PermissionDenied" / chyby tokenu</strong></summary>
+<summary><strong>Chyba: 401 / „PermissionDenied“ / chyby tokenu</strong></summary>
 
-- Spustite `az login` — overovanie bez kľúča vyžaduje aktívne prihlásenie na získanie tokenu
-- Overte, či má váš účet rolu **Cognitive Services OpenAI User** pre daný zdroj
-- Ak ste práve priradili rolu, počkajte chvíľu na jej propagáciu
-- Potvrďte, že ste v správnom tenantovi/predplatnom (`az account show`)
+- Spustite `az login` — autentifikácia bez kľúča vyžaduje aktívne prihlásenie pre získanie tokenu
+- Skontrolujte, či má vaše konto rolu **Cognitive Services OpenAI User** na prostriedku
+- Ak ste práve priradili rolu, počkajte minútu na jej propagáciu
+- Uistite sa, že ste v správnom tenante/predplatnom (`az account show`)
 </details>
 
 <details>
-<summary><strong>Chyba: "Endpoint nie je platný" / chyby pripojenia</strong></summary>
+<summary><strong>Chyba: „Koncový bod nie je platný“ / chyby pripojenia</strong></summary>
 
 - Uistite sa, že `AZURE_OPENAI_ENDPOINT` je úplná základná URL (napr. `https://your-resource.openai.azure.com/`)
-- Skontrolujte konzistenciu lomítka na konci
-- Overte, či endpoint zodpovedá vášmu nasadenému zdroju (`azd env get-values`)
+- Skontrolujte konzistenciu so záverečným lomítkom
+- Overte, že koncový bod zodpovedá vášmu provisionovanému prostriedku (`azd env get-values`)
 </details>
 
 <details>
-<summary><strong>Chyba: "Nasadenie nebolo nájdené"</strong></summary>
+<summary><strong>Chyba: „Nasadenie nenájdené“</strong></summary>
 
-- Skontrolujte, či `AZURE_OPENAI_DEPLOYMENT` zodpovedá názvu nasadenia v Azure
-- Overte, že model je úspešne nasadený a aktívny
-- Predvolený názov nasadenia je `gpt-4o-mini`
+- Overte, či `AZURE_OPENAI_DEPLOYMENT` zodpovedá názvu nasadenia v Azure
+- Skontrolujte, že model je úspešne nasadený a aktívny
+- Predvolený názov nasadenia je `gpt-5.6-luna`
 </details>
 
 <details>
-<summary><strong>VS Code: Premenné prostredia sa nenačítavajú</strong></summary>
+<summary><strong>Chyba: 429 / prekročený limit</strong></summary>
+
+- Predvolené nasadenie GPT-5.6 Luna má globálnu štandardnú kapacitu 10: 10 požiadaviek/minútu a 10 000 tokenov/minútu
+- Spúšťajte príklady postupne a počkajte na interval opakovania služby pred ďalším pokusom
+- Tento základný príklad vypína automatické opakovania SDK, preto sa zlyhanie hneď signalizuje
+</details>
+
+<details>
+<summary><strong>VS Code: premenné prostredia sa nenahrávajú</strong></summary>
 
 - Uistite sa, že súbor `.env` je v koreňovom adresári projektu (na rovnakej úrovni ako `pom.xml`)
 - Skúste spustiť `mvn spring-boot:run` v integrovanom termináli VS Code
-- Skontrolujte, či je rozšírenie pre Javu vo VS Code správne nainštalované
+- Skontrolujte, či je správne nainštalované rozšírenie Java pre VS Code
 </details>
 
 ### Režim ladenia
 
-Ak chcete povoliť podrobné logy, odkomentujte tieto riadky v `application.yml`:
+Pre detailné logovanie odkomentujte tieto riadky v [application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml):
 
 ```yaml
 logging:
   level:
-    org.springframework.ai: DEBUG
-    com.azure: DEBUG
+    "[org.springframework.ai]": DEBUG
+    "[com.azure]": DEBUG
 ```
 
 ## Ďalšie kroky
 
-**Nastavenie dokončené!** Pokračujte vo vašom vzdelávaní:
+**Nastavenie dokončené!** Pokračujte v učení:
 
-[Kap. 3: Základné techniky generatívnej AI](../../../03-CoreGenerativeAITechniques/README.md)
+[Kapitola 3: Základné techniky generatívnej AI](../../../03-CoreGenerativeAITechniques/README.md)
 
 ## Zdroje
 
-- [Spring AI Azure OpenAI dokumentácia](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)
-- [Overovanie bez kľúča cez Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
-- [Portál Azure AI Foundry](https://ai.azure.com/)
+- [Prechod na Spring AI 2 OpenAI Java SDK](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [Oficiálne OpenAI Java SDK s Azure OpenAI v1](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
+- [Autentifikácia bez kľúča s Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
+- [Azure AI Foundry portál](https://ai.azure.com/)
 - [Dokumentácia Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/)
 
 ---

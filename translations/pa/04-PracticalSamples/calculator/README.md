@@ -1,40 +1,65 @@
-# MCP ਕੈਲਕੂਲੇਟਰ ਟਿਊਟੋਰਿਅਲ ਸ਼ੁਰੂਆਤੀ ਲਈ
+# ਸ਼ੁਰੂਆਤੀ ਲੋਕਾਂ ਲਈ MCP ਕੈਲਕੂਲੇਟਰ ਟਿਊਟੋਰਿਯਲ
 
-## ਟੇਬਲ ਆਫ਼ ਕਂਟੈਂਟਸ
+## ਸਮੱਗਰੀ ਸੂਚੀ
 
 - [ਤੁਸੀਂ ਕੀ ਸਿੱਖੋਗੇ](#ਤੁਸੀਂ-ਕੀ-ਸਿੱਖੋਗੇ)
-- [ਆਗੇ ਦੀਆਂ ਲੋੜਾਂ](#ਆਗੇ-ਦੀਆਂ-ਲੋੜਾਂ)
-- [ਪ੍ਰੋਜੈਕਟ ਦੀ ساخت ਨੂੰ ਸਮਝਣਾ](#ਪ੍ਰੋਜੈਕਟ-ਦੀ-ਸਟਰੱਕਚਰ-ਨੂੰ-ਸਮਝਣਾ)
-- [ਮੁੱਖ ਹਿੱਸਿਆਂ ਦੀ ਵਿਆਖਿਆ](#ਮੁੱਖ-ਹਿੱਸਿਆਂ-ਦੀ-ਵਿਆਖਿਆ)
+- [ਪੂਰਵ-ਆਵਸ਼ਕਤਾਵਾਂ](#ਪੂਰਵ-ਆਵਸ਼ਕਤਾਵਾਂ)
+- [ਡਿਪੈਂਡੈਂਸੀ ਵਰਜਨ](#ਡਿਪੈਂਡੈਂਸੀ-ਵਰਜਨ)
+- [ਪ੍ਰੋਜੈਕਟ ਸੰਰਚਨਾ ਦੀ ਸਮਝ](#ਪ੍ਰੋਜੈਕਟ-ਸੰਰਚਨਾ-ਦੀ-ਸਮਝ)
+- [ਮੁੱਖ ਘਟਕਾਂ ਦੀ ਵਿਆਖਿਆ](#ਮੁੱਖ-ਘਟਕਾਂ-ਦੀ-ਵਿਆਖਿਆ)
   - [1. ਮੁੱਖ ਐਪਲੀਕੇਸ਼ਨ](#1-ਮੁੱਖ-ਐਪਲੀਕੇਸ਼ਨ)
-  - [2. ਕੈਲਕੂਲੇਟਰ ਸਰਵਿਸ](#2-ਕੈਲਕੂਲੇਟਰ-ਸਰਵਿਸ)
-  - [3. ਡਾਇਰੈਕਟ MCP ਕਲੀਐਂਟ](#3-ਡਾਇਰੈਕਟ-mcp-ਕਲੀਐਂਟ)
-  - [4. AI-ਚਲਿਤ ਕਲੀਐਂਟ](#4-ai-ਚਲਿਤ-ਕਲੀਐਂਟ)
-- [ਉਦਾਹਰਣਾਂ ਚਲਾਉਣਾ](#ਉਦਾਹਰਣਾਂ-ਚਲਾਉਣਾ)
-- [ਇਹ ਸਾਰਾ ਕਿਵੇਂ ਕੰਮ ਕਰਦਾ ਹੈ](#ਇਹ-ਸਾਰਾ-ਕਿਵੇਂ-ਕੰਮ-ਕਰਦਾ-ਹੈ)
+  - [2. ਕੈਲਕੂਲੇਟਰ ਸੇਵਾ](#2-ਕੈਲਕੂਲੇਟਰ-ਸੇਵਾ)
+  - [3. ਡਾਇਰੈਕਟ MCP ਕਲਾਇੰਟ](#3-ਡਾਇਰੈਕਟ-mcp-ਕਲਾਇੰਟ)
+  - [4. AI-ਸਮਰੱਥ ਕਲਾਇੰਟ](#4-ai-ਸਮਰੱਥ-ਕਲਾਇੰਟ)
+- [ਉਦਾਹਰਨਾਂ ਚਲਾਉਣਾ](#ਉਦਾਹਰਨਾਂ-ਚਲਾਉਣਾ)
+- [ਆਫਲਾਈਨ ਟੈਸਟ](#ਆਫਲਾਈਨ-ਟੈਸਟ)
+- [ਇੱਕਠੇ ਕੰਮ ਕਰਨ ਦਾ ਢੰਗ](#ਇਹ-ਸਾਰਾ-ਇਕੱਠੇ-ਕਿਵੇਂ-ਕੰਮ-ਕਰਦਾ-ਹੈ)
 - [ਅਗਲੇ ਕਦਮ](#ਅਗਲੇ-ਕਦਮ)
 
 ## ਤੁਸੀਂ ਕੀ ਸਿੱਖੋਗੇ
 
-ਇਹ ਟਿਊਟੋਰਿਅਲ ਮਾਡਲ ਸੰਦਰਭ ਪ੍ਰੋਟੋਕੋਲ (MCP) ਦੀ ਵਰਤੋਂ ਨਾਲ ਕੈਲਕੂਲੇਟਰ ਸਰਵਿਸ ਬਣਾਉਣ ਦੀ ਵਿਵਰਣਾ ਦਿੰਦਾ ਹੈ। ਤੁਸੀਂ ਸਮਝੋਗੇ:
+ਇਹ ਟਿਊਟੋਰਿਯਲ ਦੱਸਦਾ ਹੈ ਕਿ ਕਿਵੇਂ ਮਾਡਲ ਸੰਦਰਭ ਪ੍ਰੋਟੋਕਾਲ (MCP) ਦੀ ਵਰਤੋਂ ਕਰਕੇ ਕੈਲਕੂਲੇਟਰ ਸੇਵਾ ਬਣਾਈ ਜਾਵੇ. ਤੁਸੀਂ ਸਮਝੋਗੇ:
 
-- ਕਿ ਕਿਵੇਂ ਇੱਕ ਐਸੀ ਸਰਵਿਸ ਬਣਾਈ ਜਾਵੇ ਜੋ AI ਨੂੰ ਟੂਲ ਵਜੋਂ ਵਰਤ ਸਕਦੀ ਹੋਵੇ
-- MCP ਸਰਵਿਸਜ਼ ਨਾਲ ਸਿੱਧਾ ਸੰਚਾਰ ਕਿਵੇਂ ਸੈੱਟ ਕੀਤਾ ਜਾਵੇ
-- ਕਿਵੇਂ AI ਮਾਡਲ ਆਪਣੇ ਆਪ ਸੋਚ ਕੇ ਟੂਲ ਚੁਣ ਸਕਦੇ ਹਨ
-- ਸਿੱਧੇ ਪ੍ਰੋਟੋਕੋਲ ਕਾਲਾਂ ਅਤੇ AI-ਮਦਦਗਾਰ ਇੰਟਰੈਕਸ਼ਨਾਂ ਵਿਚ ਤਫ਼ਾਵਤ
+- ਕਿਵੇਂ ਐਸੀ ਸੇਵਾ ਬਣਾਈ ਜਾਵੇ ਜਿਸ ਨੂੰ AI ਇੱਕ ਸੰਦ ਵਜੋਂ ਵਰਤ ਸਕੇ
+- ਕਿਵੇਂ MCP ਸੇਵਾਵਾਂ ਨਾਲ ਸਿੱਧੀ ਸੰਚਾਰ ਸੈਟਅਪ ਕੀਤਾ ਜਾਵੇ
+- ਕਿਵੇਂ AI ਮਾਡਲ ਆਪਣੇ ਆਪ ਤੈਅ ਕਰਦੇ ਹਨ ਕਿ ਕਿਹੜੇ ਸੰਦ ਵਰਤਣੇ ਹਨ
+- ਸਿੱਧੇ ਪ੍ਰੋਟੋਕੋਲ ਕਾਲਾਂ ਅਤੇ AI-ਸਹਾਇਤਿਆਤਮਕ ਇੰਟਰਐਕਸ਼ਨਾਂ ਵਿਚਕਾਰ ਫਰਕ
 
-## ਆਗੇ ਦੀਆਂ ਲੋੜਾਂ
+## ਪੂਰਵ-ਆਵਸ਼ਕਤਾਵਾਂ
 
-ਸ਼ੁਰੂ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ, ਇਹ ਯਕੀਨੀ ਕਰੋ ਕਿ ਤੁਹਾਡੇ ਕੋਲ ਹੈ:
-- ਜਾਵਾ 21 ਜਾਂ ਇਸ ਤੋਂ ਉੱਚਾ ਸਥਾਪਿਤ
-- Maven ਦੀ ਡਿਪੇਂਡੇੰਸੀ ਮੈਨੇਜਮੈਂਟ ਲਈ
-- Azure AI Foundry ਮਾਡਲ ਡਿਪਲੋਇਮੈਂਟ (ਇਸ ਨੂੰ `azd up` ਨਾਲ ਪ੍ਰੋਵਿਜ਼ਨ ਕਰੋ — ਵੇਖੋ [ਅਧਿਆਇ 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md))
-- [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli), `az login` ਨਾਲ ਸਾਈਨ ਇਨ (ਕੀਲੇਸ ਪ੍ਰਮਾਣਿਕਤਾ)
-- ਜਾਵਾ ਅਤੇ ਸਪ੍ਰਿੰਗ ਬੂਟ ਬਾਰੇ ਬੁਨਿਆਦੀ ਸਮਝ
+ਸ਼ੁਰੂ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ, ਇਹ ਯਕੀਨੀ ਬਣਾਓ ਕਿ ਤੁਹਾਡੇ ਕੋਲ ਹੈ:
+- ਜਾਵਾ 21 ਜਾਂ ਇਸ ਤੋਂ ਉੱਚਾ ਇੰਸਟਾਲ ਕੀਤਾ ਹੋਇਆ
+- Maven ਡਿਪੈਂਡੈਂਸੀ ਪ੍ਰਬੰਧਨ ਲਈ
+- ਜਾਵਾ ਅਤੇ ਸਪ੍ਰਿੰਗ ਬੂਟ ਦੀ ਮੂਲ ਸਮਝ
 
-## ਪ੍ਰੋਜੈਕਟ ਦੀ ਸਟਰੱਕਚਰ ਨੂੰ ਸਮਝਣਾ
+ਸਿਰਫ AI ਕਲਾਇੰਟਾਂ ਨੂੰ ਹੀ ਏਜ਼ੂਰ OpenAI ਤੈਅਕਰਨ ਅਤੇ ਪ੍ਰਮਾਣਿਤ `DefaultAzureCredential` ਦੀ ਲੋੜ ਹੁੰਦੀ ਹੈ,
+ਜਿਵੇਂ ਕਿ ਲੋਕੇਲ ਤੇ ਮੌਜੂਦ ਏਜ਼ੂਰ CLI ਸਾਈਨ-ਇਨ ਜਾਂ ਏਜ਼ੂਰ ਵਿੱਚ ਪ੍ਰਬੰਧਿਤ ਪਹਚਾਣ. ਇਸ ਪਹਚਾਣ ਨੂੰ
+ਕੋਗਨਿਟਿਵ ਸਰਵਿਸਿਜ਼ OpenAI ਯੂਜ਼ਰ ਭੂਮਿਕਾ ਚਾਹੀਦੀ ਹੈ ਸਰੋਤ ਤੇ. ਵੇਖੋ [ਅਧਿਆਇ 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md).
+ਸਰਵਰ, ਸਿੱਧਾ SDK ਕਲਾਇੰਟ, ਅਤੇ ਸਾਰੇ ਆਟੋਮੇਟਿਕ ਟੈਸਟਾਂ ਨੂੰ ਕੋਈ ਏਜ਼ੂਰ ਖਾਤਾ ਜਾਂ ਮਾਡਲ ਐਕਸੈੱਸ ਨਹੀਂ ਚਾਹੀਦਾ.
 
-ਕੈਲਕੂਲੇਟਰ ਪ੍ਰੋਜੈਕਟ ਵਿੱਚ ਕਈ ਜਰੂਰੀ ਫਾਈਲਾਂ ਹਨ:
+## ਡਿਪੈਂਡੈਂਸੀ ਵਰਜਨ
+
+2026-09-14 ਨੂੰ ਪਰਖੇ ਗਏ ਰਿਲੀਜ਼ ਡਿਪੈਂਡੈਂਸੀ:
+
+| ਡਿਪੈਂਡੈਂਸੀ | ਵਰਜਨ |
+| --- | --- |
+| ਸਪ੍ਰਿੰਗ ਬੂਟ | 4.1.1 |
+| ਸਪ੍ਰਿੰਗ AI | 2.0.1 |
+| MCP ਜਾਵਾ SDK (ਸਪ੍ਰਿੰਗ AI-ਪ੍ਰਬੰਧਤ) | 2.0.0 |
+| LangChain4j / ਕੋਰ | 1.20.0 |
+| LangChain4j MCP | 1.20.0-beta30 |
+| LangChain4j ਅਧਿਕਾਰਿਕ OpenAI ਐਡਾਪਟਰ | 1.20.0-beta30 |
+| OpenAI ਜਾਵਾ SDK | 4.63.1 |
+| ਏਜ਼ੂਰ ਆਇਡੈਂਟਿਟੀ | 1.18.6 |
+| JUnit ਜੂਪੀਟਰ (ਬੂਟ-ਪ੍ਰਬੰਧਿਤ) | 6.0.3 |
+
+MCP ਅਤੇ ਅਧਿਕਾਰਿਕ OpenAI ਐਡਾਪਟਰ Maven Central ਵਿਚ ਪ੍ਰਕਾਸ਼ਿਤ ਬੀਟਾ ਰਿਲੀਜ਼ ਹਨ, ਸਨੇਪਸ਼ਾਟ ਨਹੀਂ.
+ਉਹਨਾਂ ਦੇ ਵਰਜਨ LangChain4j ਕੋਰ ਤੋਂ ਵੱਖਰੇ ਹਨ. ਕੋਈ ਸਨੇਪਸ਼ਾਟ ਜਾਂ ਮਾਇਲਸਟੋਨ ਰਿਪੋਜਿਟਰੀਜ਼ ਦੀ ਲੋੜ ਨਹੀਂ.
+ਸਿਰਫ ਕਲਾਇੰਟ ਡਿਪੈਂਡੈਂਸੀਜ਼ ਦੀ ਟੈਸਟ ਸਕੋਪ ਹੈ ਕਿਉਂਕਿ ਚਲਾਉਣਯੋਗ ਉਦਾਹਰਨਾਂ `src/test/java` ਹੇਠਾਂ ਹਨ.
+
+## ਪ੍ਰੋਜੈਕਟ ਸੰਰਚਨਾ ਦੀ ਸਮਝ
+
+ਕੈਲਕੂਲੇਟਰ ਪ੍ਰੋਜੈਕਟ ਵਿਚ ਕਈ ਮਹੱਤਵਪੂਰਨ ਫਾਈਲਾਂ ਹਨ:
 
 ```
 calculator/
@@ -44,16 +69,16 @@ calculator/
 └── src/test/java/com/microsoft/mcp/sample/client/
     ├── SDKClient.java                     # Direct MCP communication
     ├── LangChain4jClient.java            # AI-powered client
-    └── Bot.java                          # Simple chat interface
+    └── Bot.java                          # Chat interface and interactive entrypoint
 ```
 
-## ਮੁੱਖ ਹਿੱਸਿਆਂ ਦੀ ਵਿਆਖਿਆ
+## ਮੁੱਖ ਘਟਕਾਂ ਦੀ ਵਿਆਖਿਆ
 
 ### 1. ਮੁੱਖ ਐਪਲੀਕੇਸ਼ਨ
 
 **ਫਾਈਲ:** `McpServerApplication.java`
 
-ਇਹ ਸਾਡੀ ਕੈਲਕੂਲੇਟਰ ਸਰਵਿਸ ਦਾ ਐਂਟਰੀ ਪੋਇੰਟ ਹੈ। ਇਹ ਇੱਕ ਸਟੈਂਡਰਡ ਸਪ੍ਰਿੰਗ ਬੂਟ ਐਪਲੀਕੇਸ਼ਨ ਹੈ ਜਿਸ ਵਿੱਚ ਇੱਕ ਖਾਸ ਸ਼ਾਮਲ ਹੈ:
+ਇਹ ਸਾਡੀ ਕੈਲਕੂਲੇਟਰ ਸੇਵਾ ਦਾ ਪ੍ਰਵੇਸ਼ ਬਿੰਦੂ ਹੈ। ਇਹ ਇੱਕ ਸਟੈਂਡਰਡ ਸਪ੍ਰਿੰਗ ਬੂਟ ਐਪਲੀਕੇਸ਼ਨ ਹੈ ਜਿਸ ਵਿੱਚ ਇੱਕ ਵਿਸ਼ੇਸ਼ ਸ਼ਾਮਿਲ ਹੈ:
 
 ```java
 @SpringBootApplication
@@ -70,16 +95,16 @@ public class McpServerApplication {
 }
 ```
 
-**ਇਸਦਾ ਕੰਮ:**
-- ਪੋਰਟ 8080 'ਤੇ ਸਪ੍ਰਿੰਗ ਬੂਟ ਵੈੱਬ ਸਰਵਰ ਸਟਾਰਟ ਕਰਦਾ ਹੈ
-- `ToolCallbackProvider` ਬਣਾਉਂਦਾ ਹੈ ਜੋ ਸਾਡੇ ਕੈਲਕੂਲੇਟਰ ਦੇ ਤਰੀਕੇ MCP ਟੂਲਜ਼ ਵਜੋਂ ਉਪਲੱਬਧ ਕਰਵਾਉਂਦਾ ਹੈ
-- `@Bean` ਐਨੋਟੇਸ਼ਨ ਸਪ੍ਰਿੰਗ ਨੂੰ ਦੱਸਦਾ ਹੈ ਕਿ ਇਸਨੂੰ ਇੱਕ ਘਟਕ ਵਜੋਂ ਸੰਜੋਇਆ ਜਾਏ ਜੋ ਹੋਰ ਹਿੱਸੇ ਵਰਤ ਸਕਣ
+**ਇਹ ਕੀ ਕਰਦਾ ਹੈ:**
+- ਪੋਰਟ 8080 'ਤੇ ਇੱਕ ਸਪ੍ਰਿੰਗ ਬੂਟ ਵੈੱਬ ਸਰਵਰ ਸ਼ੁਰੂ ਕਰਦਾ ਹੈ
+- `ToolCallbackProvider` ਬਣਾਉਂਦਾ ਹੈ ਜੋ ਸਾਡੇ ਕੈਲਕੂਲੇਟਰ ਮੈਥਡ MCP ਸੰਦਾਂ ਵਜੋਂ ਉਪਲਬਧ ਕਰਵਾਉਂਦਾ ਹੈ
+- `@Bean` ਐਨੋਟੇਸ਼ਨ ਸਪ੍ਰਿੰਗ ਨੂੰ ਦੱਸਦਾ ਹੈ ਕਿ ਇਹ ਇੱਕ ਕੰਪੋਨੈਂਟ ਵਜੋਂ ਪ੍ਰਬੰਧਿਤ ਕੀਤਾ ਜਾਵੇ ਜੋ ਹੋਰ ਹਿੱਸੇ ਵਰਤ ਸਕਦੇ ਹਨ
 
-### 2. ਕੈਲਕੂਲੇਟਰ ਸਰਵਿਸ
+### 2. ਕੈਲਕੂਲੇਟਰ ਸੇਵਾ
 
 **ਫਾਈਲ:** `CalculatorService.java`
 
-ਇੱਥੇ ਸਾਰਾ ਗਣਿਤ ਹੁੰਦਾ ਹੈ। ਹਰ ਮੇਥਡ ਨੂੰ `@Tool` ਨਾਲ ਚਿੰਨ੍ਹਿਤ ਕੀਤਾ ਗਿਆ ਹੈ ਤਾਂ ਜੋ ਇਹ MCP ਕੇ ਜ਼ਰੀਏ ਉਪਲੱਬਧ ਹੋ ਸਕੇ:
+ਇੱਥੇ ਸਾਰਾ ਗਣਿਤ ਹੁੰਦਾ ਹੈ। ਹਰ ਮੈਥਡ ਨੂੰ `@Tool` ਨਾਲ ਨਿਸ਼ਾਨਿਤ ਕੀਤਾ ਗਿਆ ਹੈ ਤਾ ਕਿ ਇਹ MCP ਰਾਹੀਂ ਉਪਲਬਧ ਹੋ ਸਕੇ:
 
 ```java
 @Service
@@ -97,224 +122,203 @@ public class CalculatorService {
         return formatResult(a, "-", b, result);
     }
     
-    // ਹੋਰ ਕੈਲਕੂਲੇਟ ਕਰਮ...
+    // ਹੋਰ ਕੈਲਕੁਲੇਟਰ ਕਾਰਜ...
     
     private String formatResult(double a, String operator, double b, double result) {
-        return String.format("%.2f %s %.2f = %.2f", a, operator, b, result);
+        return String.format(java.util.Locale.ROOT, "%.2f %s %.2f = %.2f", a, operator, b, result);
     }
 }
 ```
 
-**ਮੁੱਖ ਖਾਸੀਅਤਾਂ:**
+**ਮੁੱਖ ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ:**
 
-1. **`@Tool` ਐਨੋਟੇਸ਼ਨ**: ਇਹ MCP ਨੂੰ ਦੱਸਦਾ ਹੈ ਕਿ ਇਹ ਮੇਥਡ ਬਾਹਰੀ ਕਲੀਐਂਟ ਵੱਲੋਂ ਕਾਲ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ
-2. **ਸਪਸ਼ਟ ਵਰਣਨ**: ਹਰ ਟੂਲ ਦਾ ਵੇਰਵਾ ਦਿੰਦਾ ਹੈ ਜੋ AI ਮਾਡਲ ਨੂੰ ਸਮਝਾਉਂਦਾ ਹੈ ਕਿ ਕਦੋਂ ਇਸ ਦਾ ਇਸਤੇਮਾਲ ਕਰਨਾ ਹੈ
-3. **ਇਕਸਾਰ ਵਾਪਸੀ ਫਾਰਮੈਟ**: ਸਭ ਓਪਰੇਸ਼ਨ ਮਨੁੱਖੀ-ਪਾਠ-ਯੋਗ ਸਤਰਾਂ "5.00 + 3.00 = 8.00" ਜਿਹੜੀਆਂ ਤਰ੍ਹਾਂ ਵਾਪਸ ਕਰਦੇ ਹਨ
-4. **ਗਲਤੀ ਸੰਭਾਲਣਾ**: ਜ਼ੀਰੋ ਨਾਲ ਭਾਗ ਕਰਨ ਜਾਂ ਨਕਾਰਾਤਮਕ ਵਰਗਮੂਲ ਲਈ ਗਲਤੀ ਦੇ ਸੁਨੇਹੇ ਵਾਪਸ ਦਿੰਦਾ ਹੈ
+1. **`@Tool` ਐਨੋਟੇਸ਼ਨ**: ਇਹ MCP ਨੂੰ ਦੱਸਦਾ ਹੈ ਕਿ ਇਹ ਮੈਥਡ ਬਾਹਰੀ ਕਲਾਇੰਟਾਂ ਵੱਲੋਂ ਕਾਲ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ
+2. **ਸਪੱਸ਼ਟ ਵਰਨਣਾਂ**: ਹਰ ਸੰਦ ਦੇ ਕੋਲ ਇੱਕ ਵਰਨਣ ਹੁੰਦੀ ਹੈ ਜੋ AI ਮਾਡਲ ਨੂੰ ਸਮਝਾਉਂਦਾ ਹੈ ਕਿ ਕਦੋਂ ਇਸ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਹੈ
+3. **ਸਥਿਰ ਰਿਟਰਨ ਫਾਰਮੈਟ**: ਸਾਰੇ ਕੰਮ ਇਨਸਾਨ-ਪੜ੍ਹ ਸਕਣ ਵਾਲੀਆਂ ਸਤਰਾਂ ਵਾਪਸ ਕਰਦੇ ਹਨ, ਜਿਵੇਂ "5.00 + 3.00 = 8.00"
+4. **ਗਲਤੀ ਸੰਭਾਲਣਾ**: ਜ਼ੀਰੋ ਨਾਲ ਭਾਗ ਕਰਨ ਜਾਂ ਨਕਾਰਾਤਮਕ ਵਰਗਮੂਲ ਲਈ ਗਲਤੀ ਸੁਨੇਹੇ ਦਿੱਤੇ ਜਾਂਦੇ ਹਨ
 
-**ਉਪਲਬਧ ਓਪਰੇਸ਼ਨ:**
+**ਉਪਲਬਧ কর্মকਲਾਪ:**
 - `add(a, b)` - ਦੋ ਨੰਬਰ ਜੋੜਦਾ ਹੈ
-- `subtract(a, b)` - ਦੂਜਾ ਨੰਬਰ ਪਹਿਲੇ ਤੋਂ ਘਟਾਉਂਦਾ ਹੈ
-- `multiply(a, b)` - ਦੋ ਨੰਬਰਾਂ ਦਾ ਗੁਣਾ ਕਰਦਾ ਹੈ
-- `divide(a, b)` - ਪਹਿਲਾ ਨੰਬਰ ਦੂਜੇ ਨਾਲ ਭਾਜ਼ਦਾ ਹੈ (ਜ਼ੀਰੋ ਚੈੱਕ ਦੇ ਨਾਲ)
-- `power(base, exponent)` - ਬੇਸ ਨੂੰ ਐਕਸਪੋਨੈਂਟ ਦੇ ਪਾਵਰ 'ਤੇ ਚੜ੍ਹਾਉਂਦਾ ਹੈ
-- `squareRoot(number)` - ਵਰਗਮੂਲ ਕੱਢਦਾ ਹੈ (ਨਕਾਰਾਤਮਕ ਚੈੱਕ ਦੇ ਨਾਲ)
-- `modulus(a, b)` - ਭਾਗ ਦੇ ਬਚਤ ਵੇਖਾਉਂਦਾ ਹੈ
-- `absolute(number)` - ਪਰਮ ਮੁੱਲ ਦਿੰਦਾ ਹੈ
-- `help()` - ਸਾਰੇ ਓਪਰੇਸ਼ੰਜ਼ ਬਾਰੇ ਜਾਣਕਾਰੀ ਦਿੰਦਾ ਹੈ
+- `subtract(a, b)` - ਦੂਜੇ ਨੂੰ ਪਹਿਲੇ ਤੋਂ ਘਟਾਉਂਦਾ ਹੈ
+- `multiply(a, b)` - ਦੋ ਨੰਬਰ ਗੁਣਾ ਕਰਦਾ ਹੈ
+- `divide(a, b)` - ਪਹਿਲੇ ਨੂੰ ਦੂਜੇ ਨਾਲ ਭਾਗ ਕਰਦਾ ਹੈ (ਜ਼ੀਰੋ-ਚੈੱਕ ਸਮੇਤ)
+- `power(base, exponent)` - ਬੇਸ ਨੂੰ ਘਾਤ ਵਿੱਚ ਵਧਾਉਂਦਾ ਹੈ
+- `squareRoot(number)` - ਵਰਗਮੂਲ ਕੱਡਦਾ ਹੈ (ਨਕਾਰਾਤਮਕ ਚੈੱਕ ਸਮੇਤ)
+- `modulus(a, b)` - ਭਾਗ ਦਾ ਬਾਕੀ ਮੁੜਦਾ ਹੈ
+- `absolute(number)` - ਮੁੱਲ ਦਾ ਪਰਮਾਣ (absolute value) ਵਾਪਸ ਕਰਦਾ ਹੈ
+- `help()` - ਸਾਰੇ কর্মকਲਾਪਾਂ ਬਾਰੇ ਜਾਣਕਾਰੀ ਵਾਪਸ ਕਰਦਾ ਹੈ
 
-### 3. ਡਾਇਰੈਕਟ MCP ਕਲੀਐਂਟ
+### 3. ਡਾਇਰੈਕਟ MCP ਕਲਾਇੰਟ
 
-**ਫਾਈਲ:** `SDKClient.java`
+ਦੇਖੋ [SDKClient.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/SDKClient.java).
 
-ਇਹ ਕਲੀਐਂਟ AI ਦੀ ਵਰਤੋਂ ਨਾ ਕਰਦਿਆਂ ਸਿੱਧਾ MCP ਸਰਵਰ ਨਾਲ ਗੱਲ ਕਰਦਾ ਹੈ। ਇਹ ਹੱਥੋਂ-ਹੱਥ নির্দিষ্ট ਕੈਲਕੂਲੇਟਰ ਫੰਕਸ਼ਨਾਂ ਨੂੰ ਕਾਲ ਕਰਦਾ ਹੈ:
+ਇਹ ਕਲਾਇੰਟ `/mcp` ਤੇ `HttpClientStreamableHttpTransport` ਦੀ ਵਰਤੋਂ ਕਰਦਾ ਹੈ, ਕਨੈਕਸ਼ਨ ਸ਼ੁਰੂ ਕਰਦਾ ਹੈ,
+ਸਰਵਰ ਨੂੰ ਪਿੰਗ ਕਰਦਾ ਹੈ ਤੇ ਸੰਦ-ਸੂਚੀ ਪੇਜਨੇਸ਼ਨ ਨੂੰ ਫਾਲੋ ਕਰਦਾ ਹੈ। ਇਹ ਯਕੀਨੀ ਬਣਾਉਂਦਾ ਹੈ ਕਿ ਸਾਰੇ ਨੌਂ ਉਮੀਦ ਕੀਤੇ ਸੰਦ ਮੌਜੂਦ ਹਨ
+ਅਤੇ ਹਰ ਇੱਕ ਕਾਲ ਕਰਦਾ ਹੈ, ਜਿਨ੍ਹਾਂ ਵਿੱਚ `modulus` ਅਤੇ `help` ਵੀ ਸ਼ਾਮਿਲ ਹਨ, ਬਿਨਾਂ ਕਿਸੇ AI ਮਾਡਲ ਦੇ.
 
-```java
-public class SDKClient {
-    
-    public static void main(String[] args) {
-        McpClientTransport transport = WebFluxSseClientTransport.builder(
-            WebClient.builder().baseUrl("http://localhost:8080")
-        ).build();
-        new SDKClient(transport).run();
-    }
-    
-    public void run() {
-        var client = McpClient.sync(this.transport).build();
-        client.initialize();
-        
-        // ਉਪਲਬਧ ਉਪਕਰਨਾਂ ਦੀ ਸੂਚੀ ਬਣਾਓ
-        ListToolsResult toolsList = client.listTools();
-        System.out.println("Available Tools = " + toolsList);
-        
-        // ਖਾਸ ਕੈਲਕੂਲੇਟਰ ਫੰਕਸ਼ਨਾਂ ਨੂੰ ਕਾਲ ਕਰੋ
-        CallToolResult resultAdd = client.callTool(
-            new CallToolRequest("add", Map.of("a", 5.0, "b", 3.0))
-        );
-        System.out.println("Add Result = " + resultAdd);
-        
-        CallToolResult resultSqrt = client.callTool(
-            new CallToolRequest("squareRoot", Map.of("number", 16.0))
-        );
-        System.out.println("Square Root Result = " + resultSqrt);
-        
-        client.closeGracefully();
-    }
-}
-```
-
-**ਇਸਦਾ ਕੰਮ:**
-1. ਬਿਲਡਰ ਪੈਟਰਨ ਦੀ ਵਰਤੋਂ ਕਰਕੇ `http://localhost:8080` ਤੇ ਕੈਲਕੂਲੇਟਰ ਸਰਵਰ ਨਾਲ ਜੁੜਦਾ ਹੈ
-2. ਸਾਰੇ ਉਪਲਬਧ ਟੂਲਜ਼ ਦੀ ਸੂਚੀ ਦਿਖਾਉਂਦਾ ਹੈ (ਸਾਡੇ ਕੈਲਕੂਲੇਟਰ ਫੰਕਸ਼ਨ)
-3. ਸਹੀ ਪੈਰਾਮੀਟਰਾਂ ਨਾਲ ਖਾਸ ਫੰਕਸ਼ਨਾਂ ਨੂੰ ਕਾਲ ਕਰਦਾ ਹੈ
-4. ਨਤੀਜੇ ਸਿੱਧਾ ਪ੍ਰਿੰਟ ਕਰਦਾ ਹੈ
-
-**ਨੋਟ:** ਇਹ ਉਦਾਹਰਣ Spring AI 1.1.0-SNAPSHOT ਡਿਪੇਂਡੇੰਸੀ ਵਰਤਦਾ ਹੈ, ਜਿਸਨੇ `WebFluxSseClientTransport` ਲਈ ਬਿਲਡਰ ਪੈਟਰਨ ਸ਼ੁਰੂ ਕੀਤਾ। ਜੇ ਤੁਸੀਂ ਪੁਰਾਣਾ ਸਥਿਰ ਵਰਜਨ ਵਰਤ ਰਹੇ ਹੋ ਤਾਂ ਤੁਹਾਨੂੰ ਸਿੱਧਾ ਕਨਸਟਰਕਟਰ ਵਰਤਣਾ ਪੈ ਸਕਦਾ ਹੈ।
-
-**ਕਦੋਂ ਵਰਤਣਾ:** ਜਦੋਂ ਤੁਹਾਨੂੰ ਪਤਾ ਹੋ ਕਿ ਕਿਸ ਗਣਨਾ ਨੂੰ ਕਿਵੇਂ ਕਰਨਾ ਹੈ ਅਤੇ ਤੁਸੀਂ ਇਸਨੂੰ ਪ੍ਰੋਗ੍ਰਾਮਾਂਗਤ ਤੌਰ 'ਤੇ ਕਾਲ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ।
-
-### 4. AI-ਚਲਿਤ ਕਲੀਐਂਟ
-
-**ਫਾਈਲ:** `LangChain4jClient.java`
-
-ਇਹ ਕਲੀਐਂਟ AI ਮਾਡਲ (GPT-4o-mini) ਵਰਤਦਾ ਹੈ ਜੋ ਆਪਣੇ ਆਪ ਫੈਸਲਾ ਕਰਦਾ ਹੈ ਕਿ ਕਿਹੜੇ ਕੈਲਕੂਲੇਟਰ ਟੂਲ ਵਰਤਣੇ ਹਨ:
+ਮੌਜੂਦਾ ਕਾਲ ਜੋਬਿਲਡਰ ਇਸ ਤਰ੍ਹਾਂ ਦਿੱਸਦਾ ਹੈ:
 
 ```java
-public class LangChain4jClient {
-    
-    public static void main(String[] args) throws Exception {
-        // ਏਆਈ ਮਾਡਲ ਸੈਟਅਪ ਕਰੋ (Azure AI Foundry, Microsoft Entra ID ਰਾਹੀਂ ਬਿਨਾਂ ਕੁੰਜੀ ਦੀ ਪ੍ਰਮਾਣਿਕਤਾ)
-        String endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1";
-        String token = new DefaultAzureCredentialBuilder().build()
-                .getToken(new TokenRequestContext().addScopes("https://ai.azure.com/.default"))
-                .block().getToken();
-        ChatLanguageModel model = OpenAiOfficialChatModel.builder()
-                .baseUrl(baseUrl)
-                .apiKey(token)
-                .modelName("gpt-4o-mini")
-                .build();
-
-        // ਸਾਡੇ ਕੈਲਕੂਲੇਟਰ MCP ਸਰਵਰ ਨਾਲ ਜੁੜੋ
-        McpTransport transport = new HttpMcpTransport.Builder()
-                .sseUrl("http://localhost:8080/sse")
-                .logRequests(true)  // ਦਿਖਾਉਂਦਾ ਹੈ ਕਿ ਏਆਈ ਕੀ ਕਰ ਰਿਹਾ ਹੈ
-                .logResponses(true)
-                .build();
-
-        McpClient mcpClient = new DefaultMcpClient.Builder()
-                .transport(transport)
-                .build();
-
-        // ਏਆਈ ਨੂੰ ਸਾਡੇ ਕੈਲਕੂਲੇਟਰ ਟੂਲਾਂ ਤੱਕ ਪਹੁੰਚ ਦਿਓ
-        ToolProvider toolProvider = McpToolProvider.builder()
-                .mcpClients(List.of(mcpClient))
-                .build();
-
-        // ਇੱਕ ਏਆਈ ਬੋਟ ਬਣਾਓ ਜੋ ਸਾਡੇ ਕੈਲਕੂਲੇਟਰ ਦਾ ਉਪਯੋਗ ਕਰ ਸਕਦਾ ਹੈ
-        Bot bot = AiServices.builder(Bot.class)
-                .chatLanguageModel(model)
-                .toolProvider(toolProvider)
-                .build();
-
-        // ਹੁਣ ਅਸੀਂ ਏਆਈ ਨੂੰ ਕੁਦਰਤੀ ਭਾਸ਼ਾ ਵਿੱਚ ਗਣਨਾ ਕਰਨ ਲਈ ਕਹਿ ਸਕਦੇ ਹਾਂ
-        String response = bot.chat("Calculate the sum of 24.5 and 17.3 using the calculator service");
-        System.out.println(response);
-
-        response = bot.chat("What's the square root of 144?");
-        System.out.println(response);
-    }
-}
+var request = CallToolRequest.builder("add")
+    .arguments(Map.of("a", 5.0, "b", 3.0))
+    .build();
+var result = client.callTool(request);
 ```
 
-**ਇਸਦਾ ਕੰਮ:**
-1. Microsoft Entra ID ਦੀ ਕੀਲੇਸ ਪ੍ਰਮਾਣਿਕਤਾ ਨਾਲ AI ਮਾਡਲ ਕਨੈਕਸ਼ਨ ਬਣਾਉਂਦਾ ਹੈ
-2. AI ਨੂੰ ਸਾਡੇ ਕੈਲਕੂਲੇਟਰ MCP ਸਰਵਰ ਨਾਲ ਜੋੜਦਾ ਹੈ
-3. AI ਨੂੰ ਸਾਡੇ ਸਾਰੇ ਕੈਲਕੂਲੇਟਰ ਟੂਲਜ਼ ਦੀ ਪਹੁੰਚ ਦਿੰਦਾ ਹੈ
-4. ਕਿਵੇਂ "24.5 ਅਤੇ 17.3 ਦਾ ਜੋੜ ਕੱਢੋ" ਵਰਗੀਆਂ ਕੁਦਰਤੀ ਭਾਸ਼ਾ ਦੀਆਂ ਬੇਨਤੀਆਂ ਸਵਾਗਤ ਕਰਦਾ ਹੈ
+ਪ੍ਰੋਟੋਕੋਲ ਗਲਤੀਆਂ ਕਲਾਇੰਟ ਨੂੰ ਫੇਲਡ ਕਰਦੀਆਂ ਹਨ ਨਾ ਕਿ ਗਲਤ ਸਫਲਤਾ ਪ੍ਰਦਰਸ਼ਿਤ ਕਰਦੀਆਂ ਹਨ. MCP ਕਲਾਇੰਟ
+ਟ੍ਰਾਈ-ਵਿਥ-ਰਿਸੋਰਸਿਜ਼ ਨਾਲ ਬੰਦ ਕੀਤਾ ਜਾਂਦਾ ਹੈ, ਜਦੋਂ ਡਿਸਕਵਰੀ ਜਾਂ ਸੰਦ ਕਾਲ ਫੇਲ ਹੁੰਦੀ ਹੈ ਤਦ ਵੀ.
 
-**AI ਸਵੈਚਾਲਿਤ ਤੌਰ 'ਤੇ:**
-- ਸਮਝਦਾ ਹੈ ਕਿ ਤੁਸੀਂ ਨੰਬਰ ਜੋੜਨਾ ਚਾਹੁੰਦੇ ਹੋ
-- `add` ਟੂਲ ਚੁਣਦਾ ਹੈ
-- `add(24.5, 17.3)` ਕਾਲ ਕਰਦਾ ਹੈ
-- ਕੁਦਰਤੀ ਉੱਤਰ ਵਿੱਚ ਨਤੀਜਾ ਵਾਪਸ ਦਿੰਦਾ ਹੈ
+### 4. AI-ਸਮਰੱਥ ਕਲਾਇੰਟ
 
-## ਉਦਾਹਰਣਾਂ ਚਲਾਉਣਾ
+ਦੇਖੋ [LangChain4jClient.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/LangChain4jClient.java)
+ਅਤੇ [Bot.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/Bot.java).
+
+`OpenAiOfficialChatModel` ਮੌਜੂਦਾ LangChain4j `ChatModel` API ਨੂੰ ਲਾਗੂ ਕਰਦਾ ਹੈ.
+`StreamableHttpMcpTransport` ਇਸ ਨੂੰ ਉਹੀ `/mcp` ਐਂਡਪੌਇੰਟ ਨਾਲ ਜੋੜਦਾ ਹੈ ਜਿਹੜਾ SDK ਕਲਾਇੰਟ ਵਰਤਦਾ ਹੈ.
+`AiServices` ਸੰਦਾਂ ਦੀ ਢੂੰਢ ਅਤੇ ਸੰਦ-ਕਾਲ/ਨਤੀਜਾ ਗੱਲਬਾਤ ਨੂੰ ਪ੍ਰਬੰਧਿਤ ਕਰਦਾ ਹੈ.
+
+ਡਿਫੌਲਟ ਤੈਨਾਤੀ **GPT-5.6 Luna** ਹੈ, ਜਿਸ ਵਿੱਚ ਵਜਹ ਬੰਦ ਹੈ:
+
+```java
+var parameters = OpenAiOfficialChatRequestParameters.builder()
+    .modelName("gpt-5.6-luna")
+    .reasoningEffort("none")
+    .maxCompletionTokens(1024)
+    .parallelToolCalls(false)
+    .build();
+```
+
+ਇਹ ਡਿਫੌਲਟ ਹਰ ਪੂਰਨਤਾ ਲਈ ਲਾਗੂ ਹੁੰਦੇ ਹਨ, ਸੰਦਾਂ ਨੂੰ ਚਲਾਉਣ ਬਾਅਦ ਦੇ ਫਾਲੋਅੱਪ ਸਮੇਤ.
+ਕਲਾਇੰਟ ਇੱਕ ਰੀਫਰੇਸ਼ ਕਰਨ ਯੋਗ `BearerTokenCredential` ਵਰਤਦਾ ਹੈ ਜੋ `DefaultAzureCredential` ਦੁਆਰਾ ਸਮਰਥਿਤ ਹੈ
+ਅਤੇ `https://ai.azure.com/.default` ਸਕੋਪ ਦਾ, ਨਾ ਕਿ ਏਪੀ ਕੀ ਵਜੋਂ ਦੇ ਇੱਕ ਵਾਰੀ ਟੋਕਨ.
+ਸਰੋਤ URLs ਅਤੇ ਜਿਹੜੇ URLs `/openai/v1` ਨਾਲ ਖਤਮ ਹੁੰਦੇ ਹਨ ਦੋਹਾਂ ਸਵੀਕਾਰਯੋਗ ਹਨ.
+
+ਬੋਟ ਇੱਕ ਸੀਮਿਤ ਗੱਲਬਾਤ ਇਤਿਹਾਸ ਰੱਖਦਾ ਹੈ, `Tool executed: ...` ਪ੍ਰਿੰਟ ਕਰਦਾ ਹੈ ਅਸਲੀ
+MCP ਨਤੀਜੇ ਨਾਲ, ਅਤੇ ਜੇ ਜਵਾਬ ਸੰਦ ਛੱਡ ਦਿੰਦਾ ਹੈ ਤਾਂ ਫੇਲ ਹੁੰਦਾ ਹੈ. ਸੰਦ ਲੂਪ ਚਾਰ ਰਾਉਂਡ ਟ੍ਰਿਪਸ ਤੱਕ ਸੀਮਿਤ ਹਨ.
+ਪ੍ਰਮਾਣੀਕਰਨ, ਮਾਡਲ, MCP ਅਤੇ ਸੰਦ ਗਲਤੀਆਂ ਫੈਲਦੀਆਂ ਹਨ; ਆਪੇ-ਆਪ ਰੀਟ੍ਰਾਈਜ਼ ਬੰਦ ਹਨ.
+ਦੋਹਾਂ MCP ਟ੍ਰਾਂਸਪੋਰਟ/ਕਲਾਇੰਟ ਅਤੇ ਅਧਿਕਾਰਿਕ OpenAI ਕਲਾਇੰਟ ਕਾਮਯਾਬੀ ਜਾਂ ਅਸਫਲਤਾ ਤੇ ਬੰਦ ਹੁੰਦੇ ਹਨ.
+
+## ਉਦਾਹਰਨਾਂ ਚਲਾਉਣਾ
 
 ### ਕਦਮ 1: ਕੈਲਕੂਲੇਟਰ ਸਰਵਰ ਸ਼ੁਰੂ ਕਰੋ
 
-ਸਭ ਤੋਂ ਪਹਿਲਾਂ, ਸਾਇਨ ਇਨ ਕਰੋ ਅਤੇ ਆਪਣਾ Azure AI Foundry ਏਂਡਪੋਇੰਟ ਸੈੱਟ ਕਰੋ (AI ਕਲੀਐਂਟ ਲਈ ਲੋੜੀਂਦਾ — ਕੀਲੇਸ ਪ੍ਰਮਾਣਿਕਤਾ, ਕੋਈ API ਕੁੰਜੀ ਨਹੀਂ):
+ਸਰਵਰ ਲਈ ਕੋਈ ਏਜ਼ੂਰ ਸੈੱਟਅਪ ਦੀ ਲੋੜ ਨਹੀਂ. ਹੇਠਾਂ ਦਿੱਤੇ ਕਮਾਂਡ ਇਸ ਸੈਮਪਲ ਦੀ ਡਾਇਰੈਕਟਰੀ ਵਿੱਚੋਂ ਚਲਾਓ.
+ਉਦਾਹਰਨ ਪੋਰਟ **18081** ਵਰਤਦੀ ਹੈ ਦੂਜੇ ਸੈਮਪਲ ਨਾਲ ਟਕਰਾਅ ਤੋਂ ਬਚਣ ਲਈ; ਡਿਫੌਲਟ 8080 ਹੀ ਰਹਿੰਦਾ ਹੈ.
 
-**Windows:**
-```cmd
-az login
-set AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-```
-
-**Linux/macOS:**
-```bash
-az login
-export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-```
-
-ਸਰਵਰ ਸਟਾਰਟ ਕਰੋ:
-```bash
+```powershell
 cd 04-PracticalSamples/calculator
-mvn clean spring-boot:run
+mvn spring-boot:run "-Dspring-boot.run.arguments=--server.port=18081"
 ```
 
-ਸਰਵਰ `http://localhost:8080` ਤੇ ਚੱਲੇਗਾ। ਤੁਸੀਂ ਇਹ ਵੇਖੋਗੇ:
-```
-Started McpServerApplication in X.XXX seconds
-```
+MCP ਐਂਡਪੌਇੰਟ ਹੈ `http://localhost:18081/mcp`. ਸਿਹਤ ਅਤੇ ਖੋਜ ਜਾਣਕਾਰੀ ਮੌਜੂਦ ਹੈ
+`http://localhost:18081/health` ਅਤੇ `http://localhost:18081/info` 'ਤੇ.
+Streamable HTTP ਪੁਰਾਣੇ SSE-ਸਿਰਫ ਟ੍ਰਾਂਸਪੋਰਟ ਨੂੰ ਬਦਲਦਾ ਹੈ; `/sse` ਅਤੇ `/v1/tools` ਐਂਡਪੌਇੰਟ ਨਹੀਂ ਹਨ.
 
-### ਕਦਮ 2: ਡਾਇਰੈਕਟ ਕਲੀਐਂਟ ਨਾਲ ਟੈਸਟ ਕਰੋ
+### ਕਦਮ 2: ਡਾਇਰੈਕਟ ਕਲਾਇੰਟ ਨਾਲ ਟੈਸਟ ਕਰੋ
 
-ਸਰਵਰ ਤੋਂ ਇਲਾਵਾ ਇੱਕ **ਨਵੀਂ** ਟਰਮੀਨਲ ਵਿੱਚ, ਡਾਇਰੈਕਟ MCP ਕਲੀਐਂਟ ਚਲਾਓ:
-```bash
+ਹੋਰ ਇੱਕ PowerShell ਟਰਮੀਨਲ ਵਿੱਚ:
+
+```powershell
 cd 04-PracticalSamples/calculator
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient" -Dexec.classpathScope=test
+$env:MCP_SERVER_URL = "http://localhost:18081"
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.SDKClient" "-Dexec.classpathScope=test"
 ```
 
-ਤੁਹਾਨੂੰ ਆਉਟਪੁੱਟ ਇਸ ਤਰ੍ਹਾਂ ਦੇਖਣ ਨੂੰ ਮਿਲੇਗਾ:
-```
-Available Tools = [add, subtract, multiply, divide, power, squareRoot, modulus, absolute, help]
-Add Result = 5.00 + 3.00 = 8.00
-Square Root Result = √16.00 = 4.00
-```
+ਕੋਈ ਇਨਪੁੱਟ ਲੋੜ ਨਹੀਂ. ਸਾਰੇ ਨੌਂ ਸੰਦ ਚਲਾਏ ਜਾਂਦੇ ਹਨ. ਉਮੀਦ ਕੀਤੇ ਗਣਿਤ ਨਤੀਜੇ ਹਨ
+8, 6, 42, 5, 256, 4, 2, ਅਤੇ 5.5, ਉਸ ਤੋਂ ਬਾਅਦ ਸਹਾਇਤਾ ਲਿਖਤ ਹੈ.
 
-### ਕਦਮ 3: AI ਕਲੀਐਂਟ ਨਾਲ ਟੈਸਟ ਕਰੋ
+### ਕਦਮ 3: AI ਕਲਾਇੰਟ ਨਾਲ ਟੈਸਟ ਕਰੋ
 
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient" -Dexec.classpathScope=test
-```
+ਪੂਰਵ-ਆਵਸ਼ਕਤਾਵਾਂ ਵਿੱਚ ਦਿੱਤੇ ਗਏ ਪ੍ਰਮਾਣੀਕਰਨ ਤੋਂ ਬਾਅਦ, ਉਸੇ ਟਰਮੀਨਲ ਵਿੱਚ AI ਕਲਾਇੰਟ ਸੈੱਟ ਕਰੋ:
 
-ਤੁਸੀਂ ਦੇਖੋਗੇ ਕਿ AI ਸਵੈਚਾਲਿਤ ਤਰੀਕੇ ਨਾਲ ਟੂਲ ਵਰਤਦਾ ਹੈ:
-```
-The sum of 24.5 and 17.3 is 41.8.
-The square root of 144 is 12.
+```powershell
+$env:AZURE_OPENAI_ENDPOINT = "https://your-resource.openai.azure.com/"
+$env:AZURE_OPENAI_DEPLOYMENT = "gpt-5.6-luna"
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.LangChain4jClient" "-Dexec.classpathScope=test" "-Dexec.args=--prompt 'Calculate the sum of 24.5 and 17.3 using the calculator service'"
 ```
 
-### ਕਦਮ 4: MCP ਸਰਵਰ ਬੰਦ ਕਰੋ
+ਉਮੀਦ ਕਰੋ `Tool executed: add` ਦੀ ਲਾਈਨ ਨਾਲ `41.80`, ਉਸ ਤੋਂ ਬਾਅਦ ਮਾਡਲ ਦਾ ਜਵਾਬ.
+ਸਿੰਗਲ-ਪ੍ਰਾਂਪਟ ਮੋਡ ਇਨਪੁੱਟ ਦੀ ਉਡੀਕ ਕੀਤੇ ਬਿਨਾਂ ਬਾਹਰ ਨਿਕਲ ਜਾਂਦਾ ਹੈ. ਮੂਲ ਚਾਰ-ਪ੍ਰਾਂਪਟ ਡੈਮੋ ਚਲਾਉਣ ਲਈ:
 
-ਜਦੋਂ ਤੁਸੀਂ ਟੈਸਟਿੰਗ ਖਤਮ ਕਰ ਲੋ, ਤਾਂ AI ਕਲੀਐਂਟ ਨੂੰ ਉਸ ਦੀ ਟਰਮੀਨਲ ਵਿੱਚ `Ctrl+C` ਦਬਾ ਕੇ ਬੰਦ ਕਰੋ। MCP ਸਰਵਰ ਚਲਦਾ ਰਹੇਗਾ ਜਦ ਤੱਕ ਤੁਸੀਂ ਇਸ ਨੂੰ ਖ਼ਤਮ ਨਾ ਕਰੋ।
-ਸਰਵਰ ਬੰਦ ਕਰਨ ਲਈ, ਉਸ ਟਰਮੀਨਲ ਵਿੱਚ `Ctrl+C` ਦਬਾਓ ਜਿੱਥੇ ਇਹ ਚੱਲ ਰਿਹਾ ਹੈ।
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.LangChain4jClient" "-Dexec.classpathScope=test" "-Dexec.args=--demo"
+```
 
-## ਇਹ ਸਾਰਾ ਕਿਵੇਂ ਕੰਮ ਕਰਦਾ ਹੈ
+ਡੈਮੋ ਕਾਲ ਕਰਦਾ ਹੈ `add`, `squareRoot`, `help`, ਅਤੇ ਫਿਰ ਜੁੜੀ ਹੋਈ `power` ਅਤੇ ਬਾਅਦ ਵਿੱਚ `divide`.
+ਉਮੀਦ ਕੀਤੇ ਗਿਣਤੀ ਦੇ ਜਵਾਬ ਹਨ 41.8, 12, ਅਤੇ 64. ਦਲੀਲ ਨਾ ਦਿੰਦੇ ਹੋਏ ਵੀ ਇਹ ਡੈਮੋ ਚਲਦਾ ਹੈ.
 
-ਜਦੋਂ ਤੁਸੀਂ AI ਨੂੰ ਪੁੱਛਦੇ ਹੋ "5 + 3 ਕੀ ਹੈ?" ਤਾਂ ਹੇਠਾਂ ਦਿੱਤਾ ਪੂਰਾ ਪ੍ਰਕਿਰਿਆ ਚੱਲਦੀ ਹੈ:
+### ਕਦਮ 4: ਇੰਟਰਐਕਟਿਵ ਬੋਟ ਚਲਾਓ
 
-1. **ਤੁਸੀਂ** ਕੁਦਰਤੀ ਭਾਸ਼ਾ ਵਿੱਚ AI ਨੂੰ ਪੁੱਛਦੇ ਹੋ
-2. **AI** ਤੁਹਾਡੀ ਬੇਨਤੀ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ ਕਰਦਾ ਹੈ ਅਤੇ ਸਮਝਦਾ ਹੈ ਕਿ ਤੁਸੀਂ ਜੋੜ ਚਾਹੁੰਦੇ ਹੋ
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.Bot" "-Dexec.classpathScope=test"
+```
+
+ਲਿਖੋ `Multiply 6 by 7 using the calculator service`, ਫਿਰ `exit` ਜਾਂ `quit`.
+ਅਸਲੀ `multiply` ਸੰਦ ਦਾ ਨਤੀਜਾ 42 ਦੀ ਉਮੀਦ ਕਰੋ. ਖਾਲੀ ਲਾਈਨਾਂ ਨੂੰ ਅਣਡਿੱਠਾ ਕੀਤਾ ਜਾਂਦਾ ਹੈ; EOF ਵੀ ਸੈਸ਼ਨ ਖਤਮ ਕਰਦਾ ਹੈ.
+ਇਸ ਐਂਟ੍ਰੀਪੁਆਇੰਟ ਦਾ ਗੈਰ-ਇੰਟਰਐਕਟਿਵ ਸਗੰਧ ਟੈਸਟ ਕਰਨ ਲਈ:
+
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.Bot" "-Dexec.classpathScope=test" "-Dexec.args=--prompt 'Multiply 6 by 7 using the calculator service'"
+```
+
+ਦੋਹਾਂ AI ਐਂਟ੍ਰੀਪੁਆਇੰਟ `--prompt "question"`, `--demo`, ਅਤੇ `--interactive` ਸਵੀਕਾਰਦੇ ਹਨ.
+ਗਲਤ ਵਿਕਲਪ ਕਨੈਕਸ਼ਨ ਖੋਲ੍ਹਣ ਤੋਂ ਪਹਿਲਾਂ ਫੇਲ ਹੁੰਦੇ ਹਨ. ਹਰ Maven `-D...` ਆਰਗੂਮੈਂਟ ਪਾਵਰਸ਼ੈੱਲ ਲਈ ਪੂਰੀ ਤਰ੍ਹਾਂ ਕੋਟ ਕੀਤਾ ਗਿਆ ਹੈ.
+ਬੈਸ਼ ਤੇ, `$env:NAME = "value"` ਦੀ ਬਜਾਏ `export NAME=value` ਵਰਤੋਂ.
+
+**ਕੋਟਾ:** AI ਉਦਾਹਰਨਾਂ ਨੂੰ ਲੜੀਵਾਰ ਚਲਾਓ. ਇੱਕ ਸਧਾਰਣ ਪ੍ਰਾਂਪਟ ਨੂੰ ਆਮ ਤੌਰ ਤੇ ਦੋ ਮਾਡਲ ਬੇਨਤੀਆਂ ਦੀ ਲੋੜ ਹੁੰਦੀ ਹੈ;
+ਪੂਰਾ ਡੈਮੋ ਆਮ ਤੌਰ ਤੇ ਨੌ ਕਾਲਾਂ ਦੀ ਲੋੜ ਹੁੰਦੀ ਹੈ, ਸੰਦ-ਨਤੀਜਾ ਫਾਲੋਅੱਪ ਸਮੇਤ. ਸਾਂਝੀ 10 RPM
+ਤੈਅਕਰਨ ਨਾਲ, ਅਗਲੇ AI ਚਲਾਓ ਲਈ ਤਾਜ਼ਾ ਕੋਟਾ ਵਿੰਡੋ ਦੀ ਆਗਿਆ ਦਿਓ. 429 ਸਫਲ ਕਿਸੇ ਵੀ ਆਟੋਮੈਟਿਕ ਰੀਟ੍ਰਾਈਜ਼ ਬਿਨਾਂ ਅਸਫਲ ਹੁੰਦਾ ਹੈ;
+ਸੇਵਾ ਦੀ ਰੀਟ੍ਰਾਈ-ਆਫਟਰ ਸਲਾਹ ਦੇ ਪਿੱਛਾ ਕਰੋ. ਅਸਲੀ ਕਾਲ ਦੀ ਗਿਣਤੀ ਮਾਡਲ 'ਤੇ ਨਿਰਭਰ ਕਰਦੀ ਹੈ.
+ਆਫਲਾਈਨ ਟੈਸਟ ਕਿਸੇ ਵੀ ਕੋਟਾ ਨਹੀਂ ਖਾਣਦੇ ਅਤੇ ਲਾਈਵ Luna ਉਪਲਬਧਤਾ ਜਾਂ ਜਵਾਬ ਦੀ ਗੁਣਵੱਤਾ ਦੀ ਪੁਸ਼ਟੀ ਨਹੀਂ ਕਰਦੇ.
+
+### ਸੰਰਚਨਾ ਅਤੇ ਬੰਦ ਕਰਨਾ
+
+| ਸੈਟਿੰਗ | ਡਿਫੌਲਟ / ਵਿਹਾਰ |
+| --- | --- |
+| `MCP_SERVER_URL` | `http://localhost:8080`; ਬੇਸ URL, `/mcp` ਦੇ ਬਿਨਾਂ |
+| `-Dmcp.server.url=...` | ਸਾਰੇ ਕਲਾਇੰਟਾਂ ਲਈ `MCP_SERVER_URL` ਨੂੰ ਓਵਰਰਾਈਡ ਕਰਦਾ ਹੈ |
+| `AZURE_OPENAI_ENDPOINT` | ਸਿਰਫ AI ਕਲਾਇੰਟਾਂ ਲਈ ਜ਼ਰੂਰੀ; ਸਰੋਤ URL ਜਾਂ `/openai/v1` URL |
+| `AZURE_OPENAI_DEPLOYMENT` | `gpt-5.6-luna`; ਏਜ਼ੂਰ ਤੈਅਕਰਨ ਨਾਮ |
+| `AZURE_OPENAI_MAX_COMPLETION_TOKENS` | `1024`; ਸਕਾਰਾਤਮਕ ਪੂਰਾ ਸੰਖਿਆ |
+| ਵਿਚਾਰ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ | ਹਮੇਸ਼ਾ `none`, ਸੰਦ-ਲੂਪ ਫਾਲੋਅੱਪ ਸਮੇਤ |
+
+ਇੱਕ ਓਵਰਰਾਈਡ ਕੀਤਾ ਗਿਆ ਤੈਅਕਰਨ `reasoning_effort=none` ਅਤੇ `max_completion_tokens` ਨੂੰ ਸਮਰਥਿਤ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ.
+ਕਲਾਇੰਟ ਆਪਣੇ ਆਪ `.env` ਫਾਈਲ ਨਹੀਂ ਪੜ੍ਹਦੇ. ਟੈਸਟ ਮੁਕੰਮਲ ਹੋਣ ਤੇ ਸਰਵਰ ਨੂੰ `Ctrl+C` ਨਾਲ ਬੰਦ ਕਰੋ.
+ਕਲਾਇੰਟ ਸਧਾਰਣ ਤੌਰ ਤੇ ਵਾਪਸ ਆਉਂਦੇ ਹਨ ਬਿਨਾਂ `System.exit` ਜਾਂ ਬੰਦ ਕਰਨ ਵਾਲੀਆਂ ਨੀਂਦਾਂ ਦੇ.
+
+## ਆਫਲਾਈਨ ਟੈਸਟ
+
+```powershell
+mvn -B -ntp clean verify
+```
+
+ਸਾਰੇ ਟੈਸਟ ਏਜ਼ੂਰ ਤੋਂ ਆਫਲਾਈਨ ਹਨ: ਪ੍ਰੋਟੋਕੋਲ ਸੂਟ ਇੱਕ ਸਪ੍ਰਿੰਗ ਸਰਵਰ ਅਤੇ
+ਇੱਕ OpenAI-ਸੰਗਤ ਸਟੱਬ ਨੂੰ ਰੈਂਡਮ ਲੂਪਬैक ਪੋਰਟਾਂ 'ਤੇ ਸ਼ੁਰੂ ਕਰਦਾ ਹੈ, ਫਿਰ ਉਹਨਾਂ ਨੂੰ ਬੰਦ ਕਰਦਾ ਹੈ। Maven ਨੂੰ ਹੁਣ ਵੀ
+ਡਿਪੈਂਡੈਂਸੀਆਂ ਡਾਊਨਲੋਡ ਕਰਨ ਦੀ ਲੋੜ ਹੋ ਸਕਦੀ ਹੈ। ਕੋਈ ਕ੍ਰਿਡੈਂਸ਼ੀਅਲ, ਲਾਈਵ ਤੈਅਕਰਨ, ਜਾਂ ਮੌਜੂਦਾ MCP ਸਰਵਰ ਵਰਤਿਆ ਨਹੀਂ ਜਾਂਦਾ।
+
+- ਕੈਲਕੂਲੇਟਰ ਯੂਨਿਟ ਟੈਸਟ ਸਾਰੇ ਗਣਿਤ ਕੰਮ, ਦਸ਼ਮਲਵ ਨਤੀਜੇ, ਸਹਾਇਤਾ, ਅਤੇ ਖੇਤਰ ਗਲਤੀਆਂ ਕਵਰ ਕਰਦੇ ਹਨ.
+- MCP ਟੈਸਟ ਸ਼ੁਰੂਆਤ, ਖੋਜ, ਸਾਰੇ ਨੌ ਟੂਲ ਕਾਲਾਂ, ਟੂਲ ਫੇਲੀਆਂ, ਅਤੇ ਸਿਹਤ/ਜਾਣਕਾਰੀ ਕਵਰ ਕਰਦੇ ਹਨ.
+- AI ਪ੍ਰੋਟੋਕੋਲ ਟੈਸਟ ਪੂਰਾ ਡੈਮੋ ਅਤੇ ਇੰਟਰਐਕਟਿਵ ਬੋਟ ਕੈਲਕੂਲੇਟਰ ਵਿਰੁੱਧ ਚਲਾਉਂਦੇ ਹਨ,
+  ਯਕੀਨੀ ਬਣਾਂਦੇ ਹਨ ਕਿ ਟੂਲ ਨਤੀਜੇ ਅਗਲੇ ਪੂਰਨਤਾ ਨੂੰ ਫੀਡ ਕਰਦੇ ਹਨ, ਅਤੇ ਹਰ HTTP ਬੋਡੀ ਨੂੰ ਲੂਣਾ ਲਈ ਜਾਂਚਦੇ ਹਨ,
+  `reasoning_effort: "none"`, ਅਤੇ `max_completion_tokens` ਬਿਨਾਂ ਪੁਰਾਣੀ `max_tokens` ਦੇ.
+- ਸੰਰਚਨਾ/ਇਨਪੁੱਟ ਟੈਸਟ ਤੈਅਕਰਨ ਅਤੇ ਐਂਡਪੌਇੰਟ ਓਵਰਰਾਈਡ, ਖਾਲੀ ਲਾਈਨਾਂ, EOF, ਬਾਹਰ ਨਿਕਲਣਾ/ਬੰਦ ਕਰਨਾ,
+  ਸਿੰਗਲ-ਪ੍ਰਾਂਪਟ ਮੋਡ, ਗਲਤ ਵਿਕਲਪ, ਅਤੇ ਗਲਤੀ ਪ੍ਰਸਾਰਿਤ ਨੂੰ ਕਵਰ ਕਰਦੇ ਹਨ. ਕੋਟਾ ਟੈਸਟ ਸਾਬਤ ਕਰਦੇ ਹਨ ਕਿ 429 ਮੁੜ ਨਹੀਂ ਕੀਤਾ ਜਾਂਦਾ.
+
+## ਇਹ ਸਾਰਾ ਇਕੱਠੇ ਕਿਵੇਂ ਕੰਮ ਕਰਦਾ ਹੈ
+
+ਜਦੋਂ ਤੁਸੀਂ AI ਨੂੰ ਪੁੱਛਦੇ ਹੋ "5 + 3 ਕੀ ਹੈ?" ਤਾਂ ਪੂਰਾ ਪ੍ਰਵਾਹ ਇਹ ਹੈ:
+
+1. **ਤੁਸੀਂ** ਕੁਦਰਤੀ ਭਾਸ਼ਾ ਵਿੱਚ AI ਨੂੰ ਪੁੱਖਦੇ ਹੋ
+2. **AI** ਤੁਹਾਡੇ ਬੇਨਤੀ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ ਕਰਦਾ ਹੈ ਅਤੇ ਸਮਝਦਾ ਹੈ ਕਿ ਤੁਸੀਂ ਜੋੜ ਚਾਹੁੰਦੇ ਹੋ
 3. **AI** MCP ਸਰਵਰ ਨੂੰ ਕਾਲ ਕਰਦਾ ਹੈ: `add(5.0, 3.0)`
-4. **ਕੈਲਕੂਲੇਟਰ ਸਰਵਿਸ** ਕਰਦਾ ਹੈ: `5.0 + 3.0 = 8.0`
-5. **ਕੈਲਕੂਲੇਟਰ ਸਰਵਿਸ** ਵਾਪਸ ਕਰਦਾ ਹੈ: `"5.00 + 3.00 = 8.00"`
-6. **AI** ਨਤੀਜੇ ਨੂੰ ਪ੍ਰਾਪਤ ਕਰਦਾ ਹੈ ਅਤੇ ਕੁਦਰਤੀ ਜਵਾਬ ਬਣਾਉਂਦਾ ਹੈ
-7. **ਤੁਸੀਂ** ਪਾਉਂਦੇ ਹੋ: "5 ਅਤੇ 3 ਦਾ ਜੋੜ 8 ਹੈ"
+4. **ਕੈਲਕੂਲੇਟਰ ਸੇਵਾ** ਕਿਰਿਆ ਕਰਦੀ ਹੈ: `5.0 + 3.0 = 8.0`
+5. **ਕੈਲਕੂਲੇਟਰ ਸੇਵਾ** ਵਾਪਸ ਕਰਦੀ ਹੈ: `"5.00 + 3.00 = 8.00"`
+6. **AI** ਨਤੀਜਾ ਪ੍ਰਾਪਤ ਕਰਦਾ ਹੈ ਅਤੇ ਇਕ ਕੁਦਰਤੀ ਜਵਾਬ ਤਿਆਰ ਕਰਦਾ ਹੈ
+7. **ਤੁਸੀਂ** ਪ੍ਰਾਪਤ ਕਰਦੇ ਹੋ: "5 ਅਤੇ 3 ਦਾ ਜੋੜ 8 ਹੈ"
 
 ## ਅਗਲੇ ਕਦਮ
 
-ਹੋਰ ਉਦਾਹਰਣਾਂ ਲਈ ਵੇਖੋ [ਅਧਿਆਇ 04: ਅਮਲੀ ਨਮੂਨੇ](../README.md)
+ਹੋਰ ਉਦਾਹਰਨਾਂ ਲਈ, ਦੇਖੋ [ਅਧਿਆਇ 04: ਵਿਹਾਰਕ ਨਮੂਨੇ](../README.md)
 
 ---
 

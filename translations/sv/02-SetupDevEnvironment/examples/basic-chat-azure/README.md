@@ -1,6 +1,8 @@
-# Grundläggande chatt med Azure AI Foundry – steg-för-steg-exempel
+# Grundläggande chatt med Azure AI Foundry - Exemplifiering från början till slut
 
-Detta exempel är en enkel Spring Boot-applikation som ansluter till en **Azure AI Foundry**-modell med **nyckellös autentisering** (Microsoft Entra ID) och testar din uppsättning. Den använder Spring AI:s `ChatClient`.
+Detta exempel är en enkel Spring Boot-applikation som ansluter till en **Azure AI Foundry**-modell med hjälp av **autentisering utan nyckel** (Microsoft Entra ID) och testar din installation. Det använder Spring AI:s `ChatClient`, som stöds av den **officiella OpenAI Java SDK** och **Azure OpenAI v1**-endpointen.
+
+Versionerna i [pom.xml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/pom.xml) är Spring Boot **4.1.1**, Spring AI **2.0.1**, OpenAI Java **4.63.1**, Azure Identity **1.18.6** och dotenv-java **3.2.0**. Exemplet använder `spring-ai-starter-model-openai` och deklarerar uttryckligen `openai-java` och `azure-identity`; Spring AI 2 tog bort den gamla Azure OpenAI-startaren.
 
 ## Innehållsförteckning
 
@@ -22,14 +24,14 @@ Detta exempel är en enkel Spring Boot-applikation som ansluter till en **Azure 
 
 ## Förutsättningar
 
-Innan du kör detta exempel, se till att du har:
+Innan du kör detta exempel, säkerställ att du har:
 
-- En Azure AI Foundry-resurs med en `gpt-4o-mini`-utplacering — skapa den med `azd up` eller manuellt via [Azure AI Foundry-uppstarts guiden](../../getting-started-azure-openai.md)
+- En Azure AI Foundry-resurs med en `gpt-5.6-luna`-distribution - förse den med `azd up` eller manuellt via [Azure AI Foundry installationsguide](../../getting-started-azure-openai.md)
 - Rollen **Cognitive Services OpenAI User** på den resursen (Bicep-mallarna tilldelar detta åt dig)
 - [Azure CLI (`az`)](https://learn.microsoft.com/cli/azure/install-azure-cli), inloggad med `az login`
 - Java 21+ och Maven 3.9+
 
-> **Ingen API-nyckel krävs** — autentisering sker nyckellöst via Microsoft Entra ID.
+> **Ingen API-nyckel krävs** — autentisering är utan nyckel via Microsoft Entra ID.
 
 ## Snabbstart
 
@@ -37,10 +39,10 @@ Innan du kör detta exempel, se till att du har:
 # 1. Navigera till projektet
 cd 02-SetupDevEnvironment/examples/basic-chat-azure
 
-# 2. Logga in så att keyless auth kan få en token
+# 2. Logga in så att keyless autentisering kan få en token
 az login
 
-# 3. Konfigurera endpointen
+# 3. Konfigurera slutpunkten
 #    - Om du körde `azd up`, skrevs .env för dig (hoppa över detta).
 #    - Annars kopiera mallen och ange AZURE_OPENAI_ENDPOINT:
 cp .env.example .env
@@ -51,9 +53,15 @@ mvn spring-boot:run
 
 ## Hur autentisering fungerar
 
-Detta exempel autentiserar med **Microsoft Entra ID** — ingen API-nyckel används.
+Detta exempel autentiserar med **Microsoft Entra ID** — det finns ingen API-nyckel.
 
-När endast `spring.ai.azure.openai.endpoint` är satt (och ingen api-nyckel), bygger Spring AI Azure OpenAI-klienten med [`DefaultAzureCredential`](https://learn.microsoft.com/java/api/com.azure.identity.defaultazurecredential). Denna credential hämtar automatiskt en token från din lokala `az login`-session eller från en hanterad identitet när den körs i Azure — så samma kod fungerar på båda ställena utan ändringar.
+Applikationen konfigurerar autentisering uttryckligen i [BasicChatApplication.java](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/java/com/example/BasicChatApplication.java):
+
+1. `azureCredential()` skapar en `BearerTokenCredential` med `AuthenticationUtil.getBearerTokenSupplier` med `DefaultAzureCredential` och omfånget `https://ai.azure.com/.default`.
+2. `azureOpenAiClient()` bygger en `OpenAIClient` med `OpenAIOkHttpClient.builder()`, löser resursens endpoint till `/openai/v1` och tillhandahåller bearertoken-uppgifterna med `.credential(...)`.
+3. `azureChatModel()` levererar den klienten till Spring AI:s `OpenAiChatModel`, som backar lektionens `ChatClient`.
+
+Dessa uttryckliga beans förhindrar att en global `OPENAI_API_KEY` åsidosätter Azure-autentisering. Att utelämna en API-nyckel från YAML ensam är inte konfigurationen för autentisering. `DefaultAzureCredential` kan använda din `az login`-session lokalt eller en hanterad identitet i Azure; vilken identitet som än väljs måste ha den resursrollen som nämns ovan.
 
 ## Köra applikationen
 
@@ -65,17 +73,22 @@ mvn spring-boot:run
 
 ### Använda VS Code
 
-1. Öppna projektet i VS Code  
-2. Tryck på `F5` eller använd panelen "Run and Debug"  
-3. Välj konfigurationen "Spring Boot-BasicChatApplication"
+1. Öppna projektet i VS Code
+2. Tryck på `F5` eller använd panelen "Kör och felsök"
+3. Välj "Spring Boot-BasicChatApplication"-konfigurationen
 
-> **Observera**: VS Code-konfigurationen laddar automatiskt din .env-fil
+> **Notera**: Applikationen laddar `.env` från sin arbetskatalog, även vid start från VS Code.
 
 ### Förväntad utdata
 
-```
+Illustrativ utdata efter en lyckad körning (uppstartsloggar utelämnas; formulering i svar kan variera):
+
+```text
 Starting Basic Chat with Azure OpenAI...
-Environment variables loaded successfully
+Environment variables loaded from .env file
+Endpoint: https://your-resource.openai.azure.com/
+Deployment: gpt-5.6-luna
+Auth: keyless (Microsoft Entra ID via DefaultAzureCredential)
 Connecting to Azure OpenAI...
 Sending prompt: What is AI in a short sentence? Max 100 words.
 
@@ -92,67 +105,86 @@ Success! Azure OpenAI connection is working correctly.
 ### Miljövariabler
 
 | Variabel | Beskrivning | Obligatorisk | Exempel |
-|----------|-------------|--------------|---------|
+|----------|-------------|-------------|---------|
 | `AZURE_OPENAI_ENDPOINT` | Foundry (Azure OpenAI) endpoint-URL | Ja | `https://my-resource.openai.azure.com/` |
-| `AZURE_OPENAI_DEPLOYMENT` | Namn på chattmodellens utplacering | Nej | `gpt-4o-mini` (standard) |
+| `AZURE_OPENAI_DEPLOYMENT` | Namn på chatmodell-distribution | Nej | `gpt-5.6-luna` (standard) |
 
-> Det finns **ingen** variabel för API-nyckel — autentisering är nyckellös (Microsoft Entra ID via `az login`).
+> Det finns **ingen** API-nyckel-variabel — autentisering är utan nyckel (Microsoft Entra ID via `az login`).
 
 ### Spring-konfiguration
 
-Filen `application.yml` konfigurerar:  
-- **Endpoint**: `${AZURE_OPENAI_ENDPOINT}` - Från miljövariabel  
-- **Deployment**: `${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}` - Från miljövariabel med reservvärde  
-- **Auth**: nyckellös — ingen `api-key` är satt, så Spring AI använder `DefaultAzureCredential`  
-- **Temperature**: `0.7` - Styr kreativiteten (0.0 = deterministisk, 1.0 = kreativ)  
-- **Max Tokens**: `500` - Maximal svarslängd  
+Inställningarna i [application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml) använder prefixet `spring.ai.openai` och platta chattegenskaper (ingen `options`-block):
+
+```yaml
+spring:
+  ai:
+    openai:
+      base-url: ${AZURE_OPENAI_ENDPOINT}
+      microsoft-foundry: true
+      chat:
+        model: ${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
+        reasoning-effort: none
+        max-completion-tokens: 500
+```
+
+`model` är **Azure-distributionsnamnet**. Autentisering kommer från de uttryckliga beans som beskrivits ovan, inte från en `api-key`-inställning. Lektionen inaktiverar resonemang och sätter tak för slutförandetokens till 500; lämnar `temperature` och den äldre `max-tokens` oinställda.
+
+Microsoft rekommenderar [officiella OpenAI SDK med Azure OpenAI v1 och Responses API för nya applikationer](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java). Chat Completions stöds fortfarande för denna existerande lektions modell med meddelandebaserade samtal. För GPT-5.6 måste förfrågningar med verktyg på Chat Completions sätta `reasoning_effort` till `none`; använd Responses när resonemang kombineras med verktyg. Se [verktygsanrop med resonemangsmodeller](https://learn.microsoft.com/azure/foundry/openai/how-to/reasoning#tool-calling-with-reasoning-models).
 
 ## Felsökning
 
 ### Vanliga problem
 
 <details>
-<summary><strong>Fel: 401 / "PermissionDenied" / token-fel</strong></summary>
+<summary><strong>Fel: 401 / "PermissionDenied" / tokenfel</strong></summary>
 
-- Kör `az login` — nyckellös autentisering kräver aktiv inloggning för att få token  
-- Kontrollera att ditt konto har rollen **Cognitive Services OpenAI User** på resursen  
-- Om du nyligen tilldelade rollen, vänta en minut för att ändringen ska gälla  
-- Kontrollera att du är i rätt tenant/abonnemang (`az account show`)  
+- Kör `az login` — autentisering utan nyckel kräver en aktiv inloggning för att få en token
+- Kontrollera att ditt konto har rollen **Cognitive Services OpenAI User** på resursen
+- Om du just tilldelade rollen, vänta en minut för att ändringen ska slå igenom
+- Bekräfta att du är i rätt tenant/prenumeration (`az account show`)
 </details>
 
 <details>
 <summary><strong>Fel: "The endpoint is not valid" / anslutningsfel</strong></summary>
 
-- Säkerställ att `AZURE_OPENAI_ENDPOINT` är den fullständiga bas-URL:en (t.ex. `https://your-resource.openai.azure.com/`)  
-- Kontrollera konsekvent snedstreck i slutet av URL:en  
-- Verifiera att endpointen stämmer med din provisionerade resurs (`azd env get-values`)  
+- Kontrollera att `AZURE_OPENAI_ENDPOINT` är hela bas-URL:en (t.ex. `https://your-resource.openai.azure.com/`)
+- Kontrollera att slashes i slutet är konsekventa
+- Säkerställ att endpointen motsvarar din tillhandahållna resurs (`azd env get-values`)
 </details>
 
 <details>
 <summary><strong>Fel: "The deployment was not found"</strong></summary>
 
-- Kontrollera att `AZURE_OPENAI_DEPLOYMENT` matchar ett utplaceringsnamn i Azure  
-- Kontrollera att modellen är framgångsrikt utplacerad och aktiv  
-- Standardnamnet för utplacering är `gpt-4o-mini`  
+- Kontrollera att `AZURE_OPENAI_DEPLOYMENT` matchar ett distributionsnamn i Azure
+- Kontrollera att modellen är lyckosamt distribuerad och aktiv
+- Standardsnamnet för distribution är `gpt-5.6-luna`
+</details>
+
+<details>
+<summary><strong>Fel: 429 / hastighetsgräns överskriden</strong></summary>
+
+- Standarddistributionen GPT-5.6 Luna har Global Standard kapacitet 10: 10 förfrågningar/minut och 10 000 tokens/minut
+- Kör exempel sekventiellt och vänta tjänstens retry-intervall innan du försöker igen
+- Detta enkla exempel inaktiverar automatiska SDK-försök, så en misslyckad förfrågan rapporteras direkt
 </details>
 
 <details>
 <summary><strong>VS Code: Miljövariabler laddas inte</strong></summary>
 
-- Säkerställ att din `.env`-fil finns i projektets rotkatalog (samma nivå som `pom.xml`)  
-- Prova att köra `mvn spring-boot:run` i VS Codes integrerade terminal  
-- Kontrollera att Java-tillägget för VS Code är korrekt installerat  
+- Säkerställ att din `.env`-fil finns i projektets rotkatalog (på samma nivå som `pom.xml`)
+- Försök köra `mvn spring-boot:run` i VS Codes integrerade terminal
+- Kontrollera att VS Code:s Java-tillägg är korrekt installerat
 </details>
 
 ### Felsökningsläge
 
-För att aktivera detaljerad loggning, ta bort kommentaren från dessa rader i `application.yml`:
+För att aktivera detaljerad loggning, avkommentera dessa rader i [application.yml](../../../../../02-SetupDevEnvironment/examples/basic-chat-azure/src/main/resources/application.yml):
 
 ```yaml
 logging:
   level:
-    org.springframework.ai: DEBUG
-    com.azure: DEBUG
+    "[org.springframework.ai]": DEBUG
+    "[com.azure]": DEBUG
 ```
 
 ## Nästa steg
@@ -163,9 +195,10 @@ logging:
 
 ## Resurser
 
-- [Spring AI Azure OpenAI-dokumentation](https://docs.spring.io/spring-ai/reference/api/chat/azure-openai-chat.html)  
-- [Nyckellös autentisering med Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)  
-- [Azure AI Foundry-portal](https://ai.azure.com/)  
+- [Spring AI 2 OpenAI Java SDK-övergång](https://docs.spring.io/spring-ai/reference/upgrade-notes.html#_openai_java_sdk_transition)
+- [Officiella OpenAI Java SDK med Azure OpenAI v1](https://learn.microsoft.com/azure/foundry/openai/supported-languages?pivots=programming-language-java)
+- [Autentisering utan nyckel med Microsoft Entra ID](https://learn.microsoft.com/azure/ai-foundry/foundry-models/how-to/configure-entra-id)
+- [Azure AI Foundry-portal](https://ai.azure.com/)
 - [Azure AI Foundry-dokumentation](https://learn.microsoft.com/azure/ai-foundry/)
 
 ---

@@ -1,40 +1,65 @@
-# MCP Туторијал за Израчунавање за Почетнике
+# Почетни водич за MCP калкулатор
 
 ## Садржај
 
 - [Шта ћете научити](#шта-ћете-научити)
-- [Претходни предуслови](#претходни-предуслови)
-- [Разумевање Структуре Пројекта](#разумевање-структуре-пројекта)
-- [Објашњење Кључних Компоненти](#објашњење-кључних-компоненти)
-  - [1. Главна Апликација](#1-главна-апликација)
-  - [2. Сервис за Израчунавање](#2-сервис-за-израчунавање)
-  - [3. Директни MCP Клијент](#3-директни-mcp-клијент)
-  - [4. Клијент са Вештачком Интелигенцијом](#4-клијент-са-вештачком-интелигенцијом)
-- [Покретање Примера](#покретање-примера)
-- [Како Све Ради Зajедно](#како-све-ради-зajедно)
-- [Следећи Корaци](#следећи-корaци)
+- [Претходни услови](#претходни-услови)
+- [Верзије зависности](#верзије-зависности)
+- [Разумевање структуре пројекта](#разумевање-структуре-пројекта)
+- [Објашњење основних компоненти](#објашњење-основних-компоненти)
+  - [1. Главна апликација](#1-главна-апликација)
+  - [2. Калкулатор сервис](#2-калкулатор-сервис)
+  - [3. Директни MCP клијент](#3-директни-mcp-клијент)
+  - [4. Клијент са вештачком интелигенцијом](#4-клијент-са-вештачком-интелигенцијом)
+- [Покретање примера](#покретање-примера)
+- [Оффлине тестови](#оффлине-тестови)
+- [Како све функционише заједно](#како-све-функционише-заједно)
+- [Следећи кораци](#следећи-кораци)
 
 ## Шта ћете научити
 
-Овај туторијал објашњава како да направите сервис за израчунавање користећи Model Context Protocol (MCP). Разумете:
+Овај водич објашњава како израдити калкулатор сервис користећи Model Context Protocol (MCP). Укуцаћете:
 
-- Како да направите сервис који вештачка интелигенција може користити као алат
-- Како да поставите директну комуникацију са MCP сервисима
-- Како AI модели могу аутоматски изабрати које алате да користе
-- Разлику између директних позива протокола и интеракције уз помоћ AI
+- Како створити сервис који вештачка интелигенција може користити као алат
+- Како поставити директну комуникацију са MCP сервисима
+- Како модели вештачке интелигенције аутоматски одабирају које алате да користе
+- Разлику између директних позива протокола и интеракција уз помоћ вештачке интелигенције
 
-## Претходни предуслови
+## Претходни услови
 
 Пре него што почнете, уверите се да имате:
-- Инсталиран Java 21 или новији
+- Јава 21 или новију верзију инсталирану
 - Maven за управљање зависностима
-- Деплојмент модела у Azure AI Foundry (поставите га помоћу `azd up` — погледајте [Поглавље 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md))
-- [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli), пријављен корисник са `az login` (ауторизација без кључа)
-- Основно разумевање Јаве и Spring Boot-а
+- Основно разумевање Јаве и Spring Boot
 
-## Разумевање Структуре Пројекта
+Само AI клијенти захтевају развојну Azure OpenAI инстанцу и аутентификовани `DefaultAzureCredential`,
+као што је постојећа Azure CLI пријава локално или управљани идентитет у Azure-у. Идентитет треба
+Cognitive Services OpenAI User улогу на ресурсу. Погледајте [Поглавље 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md).
+Сервер, директни SDK клијент и сви аутоматизовани тестови не захтевају Azure налог или приступ моделу.
 
-Пројекат калкулатора садржи неколико важних фајлова:
+## Верзије зависности
+
+Потврђене зависности од 14.09.2026:
+
+| Зависност | Верзија |
+| --- | --- |
+| Spring Boot | 4.1.1 |
+| Spring AI | 2.0.1 |
+| MCP Java SDK (Spring AI-managed) | 2.0.0 |
+| LangChain4j / core | 1.20.0 |
+| LangChain4j MCP | 1.20.0-beta30 |
+| LangChain4j official OpenAI adapter | 1.20.0-beta30 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
+| JUnit Jupiter (Boot-managed) | 6.0.3 |
+
+MCP и службени OpenAI адаптери су објављене бета верзије у Maven Central, а не snapshot верзије.
+Њихове верзије се разликују од LangChain4j core. Нема потребе за snapshot или milestone репозиторијумима.
+Зависности само за клијенте имају опсег тестирања јер се покретљиви примери налазе у `src/test/java`.
+
+## Разумевање структуре пројекта
+
+Калкулатор пројекат има неколико важних фајлова:
 
 ```
 calculator/
@@ -44,16 +69,16 @@ calculator/
 └── src/test/java/com/microsoft/mcp/sample/client/
     ├── SDKClient.java                     # Direct MCP communication
     ├── LangChain4jClient.java            # AI-powered client
-    └── Bot.java                          # Simple chat interface
+    └── Bot.java                          # Chat interface and interactive entrypoint
 ```
 
-## Објашњење Кључних Компоненти
+## Објашњење основних компоненти
 
-### 1. Главна Апликација
+### 1. Главна апликација
 
 **Фајл:** `McpServerApplication.java`
 
-Ово је улазна тачка нашег сервиса за израчунавање. То је стандардна Spring Boot апликација са једним посебним додатком:
+Ово је улазна тачка нашег калкулатор сервиса. Стандардна је Spring Boot апликација са једним посебним додатком:
 
 ```java
 @SpringBootApplication
@@ -72,14 +97,14 @@ public class McpServerApplication {
 
 **Шта ово ради:**
 - Покреће Spring Boot веб сервер на порту 8080
-- Креира `ToolCallbackProvider` који наше калкулаторске методе чини доступним као MCP алате
-- Анотација `@Bean` говори Spring-у да ова компонента буде управљана и доступна другим деловима
+- Креира `ToolCallbackProvider` који чини наше калкулатор методе доступним као MCP алате
+- `@Bean` анотација каже Spring-у да ово управља као компонентом коју други делови могу користити
 
-### 2. Сервис за Израчунавање
+### 2. Калкулатор сервис
 
 **Фајл:** `CalculatorService.java`
 
-Овде се обавља свако математичко рачунање. Свака метода је означена са `@Tool` да би била доступна преко MCP-а:
+Овде се обавља сва математика. Свакa метода је означена са `@Tool` да би била доступна кроз MCP:
 
 ```java
 @Service
@@ -100,221 +125,200 @@ public class CalculatorService {
     // Још операција калкулатора...
     
     private String formatResult(double a, String operator, double b, double result) {
-        return String.format("%.2f %s %.2f = %.2f", a, operator, b, result);
+        return String.format(java.util.Locale.ROOT, "%.2f %s %.2f = %.2f", a, operator, b, result);
     }
 }
 ```
 
 **Кључне карактеристике:**
 
-1. **`@Tool` Анотација**: Каже MCP-у да ова метода може бити позвана од стране спољних клијената
-2. **Јасни Описи**: Сваки алат има опис који помаже AI моделима да разумеју када да га користе
-3. **Уједначен Формат Резултата**: Све операције враћају људски читљиве стрингове као "5.00 + 3.00 = 8.00"
-4. **Обрада Грешака**: Дељење са нулом и негативан корен квадратни враћају поруке о грешкама
+1. **`@Tool` анотација**: Ово каже MCP-у да ова метода може бити позвана од стране спољашњих клијената
+2. **Јасни описи**: Сваки алат има опис који помаже AI моделима да разумеју када да га користе
+3. **Конзистентан формат повратне вредности**: Све операције враћају људски читљиве стрингове као "5.00 + 3.00 = 8.00"
+4. **Руковање грешкама**: Дељење са нулом и негативни корени враћају поруке о грешци
 
-**Доступне Операције:**
-- `add(a, b)` - Сабира два броја
+**Доступне операције:**
+- `add(a, b)` - Сабаја два броја
 - `subtract(a, b)` - Одузима други од првог
 - `multiply(a, b)` - Множи два броја
-- `divide(a, b)` - Делить први број са другим (са провером на нулу)
-- `power(base, exponent)` - Подиже базу на степен експонента
-- `squareRoot(number)` - Израчунава квадратни корен (са провером на негативе)
+- `divide(a, b)` - Делује први са другим (са провером за нулу)
+- `power(base, exponent)` - Подиже основу на степен експонента
+- `squareRoot(number)` - Израчунава квадратни корен (са провером за негативни број)
 - `modulus(a, b)` - Враћа остатак при дељењу
 - `absolute(number)` - Враћа апсолутну вредност
 - `help()` - Враћа информације о свим операцијама
 
-### 3. Директни MCP Клијент
+### 3. Директни MCP клијент
 
-**Фајл:** `SDKClient.java`
+Погледајте [SDKClient.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/SDKClient.java).
 
-Овај клијент директно комуницира са MCP сервером без употребе AI. Ручно позива специфичне калкулаторске функције:
+Овај клијент користи `HttpClientStreamableHttpTransport` на `/mcp`, иницијализује везу,
+шаље пинг серверу и прати пагинацију листе алата. Проверава да свих девет очекиваних алата
+постоји и позива сваки од њих, укључујући `modulus` и `help`, без AI модела.
 
-```java
-public class SDKClient {
-    
-    public static void main(String[] args) {
-        McpClientTransport transport = WebFluxSseClientTransport.builder(
-            WebClient.builder().baseUrl("http://localhost:8080")
-        ).build();
-        new SDKClient(transport).run();
-    }
-    
-    public void run() {
-        var client = McpClient.sync(this.transport).build();
-        client.initialize();
-        
-        // Листа доступних алата
-        ListToolsResult toolsList = client.listTools();
-        System.out.println("Available Tools = " + toolsList);
-        
-        // Позови специфичне функције калкулатора
-        CallToolResult resultAdd = client.callTool(
-            new CallToolRequest("add", Map.of("a", 5.0, "b", 3.0))
-        );
-        System.out.println("Add Result = " + resultAdd);
-        
-        CallToolResult resultSqrt = client.callTool(
-            new CallToolRequest("squareRoot", Map.of("number", 16.0))
-        );
-        System.out.println("Square Root Result = " + resultSqrt);
-        
-        client.closeGracefully();
-    }
-}
-```
-
-**Шта ово ради:**
-1. Повезује се са сервером калкулатора на `http://localhost:8080` користећи builder pattern
-2. Листa све расположиве алате (наше калкулаторске функције)
-3. Позива специфичне функције са тачним параметрима
-4. Исписује резултате директно
-
-**Напомена:** Овај пример користи Spring AI 1.1.0-SNAPSHOT зависност, која је увела builder pattern за `WebFluxSseClientTransport`. Ако користите старију стабилну верзију, можда ћете морати користити директан конструктор.
-
-**Када користити овако:** Када тачно знате коју рачунање желите да извршите и желите да га позовете програмски.
-
-### 4. Клијент са Вештачком Интелигенцијом
-
-**Фајл:** `LangChain4jClient.java`
-
-Овај клијент користи AI модел (GPT-4o-mini) који може аутоматски одлучити које калкулаторске алате да користи:
+Тренутни конструктор захтева изгледа овако:
 
 ```java
-public class LangChain4jClient {
-    
-    public static void main(String[] args) throws Exception {
-        // Подесите АИ модел (Azure AI Foundry, аутентификација без кључа путем Microsoft Entra ID)
-        String endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1";
-        String token = new DefaultAzureCredentialBuilder().build()
-                .getToken(new TokenRequestContext().addScopes("https://ai.azure.com/.default"))
-                .block().getToken();
-        ChatLanguageModel model = OpenAiOfficialChatModel.builder()
-                .baseUrl(baseUrl)
-                .apiKey(token)
-                .modelName("gpt-4o-mini")
-                .build();
-
-        // Повежите се са нашим MCP сервером калкулатора
-        McpTransport transport = new HttpMcpTransport.Builder()
-                .sseUrl("http://localhost:8080/sse")
-                .logRequests(true)  // Приказује шта АИ ради
-                .logResponses(true)
-                .build();
-
-        McpClient mcpClient = new DefaultMcpClient.Builder()
-                .transport(transport)
-                .build();
-
-        // Дајте АИ приступ нашим алаткама калкулатора
-        ToolProvider toolProvider = McpToolProvider.builder()
-                .mcpClients(List.of(mcpClient))
-                .build();
-
-        // Направите АИ бота који може користити наш калкулатор
-        Bot bot = AiServices.builder(Bot.class)
-                .chatLanguageModel(model)
-                .toolProvider(toolProvider)
-                .build();
-
-        // Сада можемо тражити од АИ да израчунава на природном језику
-        String response = bot.chat("Calculate the sum of 24.5 and 17.3 using the calculator service");
-        System.out.println(response);
-
-        response = bot.chat("What's the square root of 144?");
-        System.out.println(response);
-    }
-}
+var request = CallToolRequest.builder("add")
+    .arguments(Map.of("a", 5.0, "b", 3.0))
+    .build();
+var result = client.callTool(request);
 ```
 
-**Шта ово ради:**
-1. Креира везу са AI моделом користећи аутентификацију без кључа (Microsoft Entra ID)
-2. Повезује AI са нашим MCP сервером калкулатора
-3. Дозвољава AI приступ свим нашим калкулаторским алатима
-4. Омогућава природне захтеве као што је "Израчунај суму 24.5 и 17.3"
+Протоколске грешке узрокују неуспех клијента уместо приказивања заблудног успеха. MCP клијент
+се затвара коришћењем try-with-resources, укључујући ситуације када откривање или позив алата не успе.
 
-**AI аутоматски:**
-- Разуме да желите да саберете бројеве
-- Бира алат `add`
-- Позива `add(24.5, 17.3)`
-- Враћа резултат у природном одговору
+### 4. Клијент са вештачком интелигенцијом
 
-## Покретање Примера
+Погледајте [LangChain4jClient.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/LangChain4jClient.java)
+и [Bot.java](../../../../04-PracticalSamples/calculator/src/test/java/com/microsoft/mcp/sample/client/Bot.java).
 
-### Корак 1: Покрените Сервер Калкулатора
+`OpenAiOfficialChatModel` имплементира тренутни LangChain4j `ChatModel` API.
+`StreamableHttpMcpTransport` га повезује са истом `/mcp` крајњом тачком као и SDK клијент.
+`AiServices` открива алате и управља разговором позива и резултата алата.
 
-Прво се пријавите и подесите свој Azure AI Foundry endpoint (потребно за AI клијента — ауторизација без кључа, без API кључа):
+Подразумевана имплементација је **GPT-5.6 Luna**, са изричито онемогућеним разумевањем (reasoning):
 
-**Windows:**
-```cmd
-az login
-set AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
+```java
+var parameters = OpenAiOfficialChatRequestParameters.builder()
+    .modelName("gpt-5.6-luna")
+    .reasoningEffort("none")
+    .maxCompletionTokens(1024)
+    .parallelToolCalls(false)
+    .build();
 ```
 
-**Linux/macOS:**
-```bash
-az login
-export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-```
+Ове подразумеване вредности важе за сваки захтев, укључујући праћење након извршења алата.
+Клијент користи освеживи `BearerTokenCredential` подржан од `DefaultAzureCredential`
+и опсег `https://ai.azure.com/.default`, а не једнократни токен прослеђен као API кључ.
+Прихватају се URL-ови ресурса и URL-ови који већ завршавају са `/openai/v1`.
 
-Покрените сервер:
-```bash
+Бот чува ограничену историју разговора, штампа `Tool executed: ...` са стварним
+MCP резултатом и неуспева ако одговор прескочи алате. Лупови са алатима су ограничени на четири пута.
+Аутентификација, модели, MCP и грешке алата се пропагирају; аутоматски покушаји поновног покретања модела су онемогућени.
+Како MCP транспорт/клијент, тако и службени OpenAI клијент се затварају у случају успеха или неуспеха.
+
+## Покретање примера
+
+### Корак 1: Покрените Калкулатор сервер
+
+За сервер није потребна Azure конфигурација. Команде испод се покрећу из овог директоријума примера.
+Пример користи порт **18081** да избегне конфликт са другим примером; подразумевани је 8080.
+
+```powershell
 cd 04-PracticalSamples/calculator
-mvn clean spring-boot:run
+mvn spring-boot:run "-Dspring-boot.run.arguments=--server.port=18081"
 ```
 
-Сервер ће почети на `http://localhost:8080`. Требало би да видите:
-```
-Started McpServerApplication in X.XXX seconds
-```
+MCP крајња тачка је `http://localhost:18081/mcp`. Информације о здрављу и откривању су на
+`http://localhost:18081/health` и `http://localhost:18081/info`.
+Streamable HTTP замењује стари SSE-only транспорт; `/sse` и `/v1/tools` нису крајње тачке.
 
-### Корак 2: Тестирајте са Директним Клијентом
+### Корак 2: Тестирајте са директним клијентом
 
-У **НОВОМ** терминалу, док сервер ради, покрените директни MCP клијент:
-```bash
+У другом PowerShell терминалу:
+
+```powershell
 cd 04-PracticalSamples/calculator
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.SDKClient" -Dexec.classpathScope=test
+$env:MCP_SERVER_URL = "http://localhost:18081"
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.SDKClient" "-Dexec.classpathScope=test"
 ```
 
-Видећете излаз попут:
-```
-Available Tools = [add, subtract, multiply, divide, power, squareRoot, modulus, absolute, help]
-Add Result = 5.00 + 3.00 = 8.00
-Square Root Result = √16.00 = 4.00
-```
+Улаз није потребан. Сви девет алата се испробавају. Очекују се аритметички резултати укључују
+8, 6, 42, 5, 256, 4, 2 и 5.5, праћени помоћним текстом.
 
-### Корак 3: Тестирајте са AI Клијентом
+### Корак 3: Тестирајте са AI клијентом
 
-```bash
-mvn test-compile exec:java -Dexec.mainClass="com.microsoft.mcp.sample.client.LangChain4jClient" -Dexec.classpathScope=test
-```
+Након аутентификације како је описано у претходним условима, конфигуришите AI клијента у истом терминалу:
 
-Видећете да AI аутоматски користи алате:
-```
-The sum of 24.5 and 17.3 is 41.8.
-The square root of 144 is 12.
+```powershell
+$env:AZURE_OPENAI_ENDPOINT = "https://your-resource.openai.azure.com/"
+$env:AZURE_OPENAI_DEPLOYMENT = "gpt-5.6-luna"
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.LangChain4jClient" "-Dexec.classpathScope=test" "-Dexec.args=--prompt 'Calculate the sum of 24.5 and 17.3 using the calculator service'"
 ```
 
-### Корак 4: Затворите MCP Сервер
+Очекује се линија `Tool executed: add` са `41.80`, праћена одговором модела.
+Режим са једним упитом излази без чекања на улаз. Да бисте покренули оригинални демонстрациони пример са четири питања:
 
-Када завршите са тестирањем, можете зауставити AI клијента притиском на `Ctrl+C` у његовом терминалу. MCP сервер остаје покренут док га не зауставите.
-Да бисте зауставили сервер, притисните `Ctrl+C` у терминалу у коме ради.
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.LangChain4jClient" "-Dexec.classpathScope=test" "-Dexec.args=--demo"
+```
 
-## Како Све Ради Заједно
+Демо позива `add`, `squareRoot`, `help` и ланчане операције `power` па `divide`.
+Очекују се нумерички одговори 41.8, 12 и 64. Овaј демо такође ради и ако се аргументи прескоче.
 
-Ево комплетног процеса када питате AI "Колико је 5 + 3?":
+### Корак 4: Покрените интерактивног бота
 
-1. **Ви** питате AI у природном језику
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.Bot" "-Dexec.classpathScope=test"
+```
+
+Унесите `Multiply 6 by 7 using the calculator service`, затим `exit` или `quit`.
+Очекује се стварни резултат `multiply` алата 42. Празни редови се игноришу; EOF такође завршава сесију.
+За неинтерактивни тест ове улазне тачке:
+
+```powershell
+mvn test-compile exec:java "-Dexec.mainClass=com.microsoft.mcp.sample.client.Bot" "-Dexec.classpathScope=test" "-Dexec.args=--prompt 'Multiply 6 by 7 using the calculator service'"
+```
+
+Обе AI улазне тачке прихватају `--prompt "question"`, `--demo` и `--interactive`.
+Неважеће опције не успевају пре успостављања везе. Свакa Maven `-D...` аргумент је потпуно цитирана
+за PowerShell. На Bash-у користите `export NAME=value` уместо `$env:NAME = "value"`.
+
+**Квота:** Покрећите AI примере секвенцијално. Једноставан упит обично захтева два захтева модели;
+комплетан демо углавном треба девет, укључујући и праћења резултата алата. При дељењу 10 RPM
+имплементације, сачекајте нови прозор квоте пре следећег AI покретања. Код 429 изазива видљиви неуспех без
+аутоматских покушаја; пратите смернице о поновном покушају сервиса. Стварни број захтева зависи од модела.
+Оффлине тестови не троше квоту и не проверавају стварну доступност Луне или квалитет одговора.
+
+### Конфигурација и заустављање
+
+| Поставка | Подразумевано / понашање |
+| --- | --- |
+| `MCP_SERVER_URL` | `http://localhost:8080`; основни URL, без `/mcp` |
+| `-Dmcp.server.url=...` | Превазилази `MCP_SERVER_URL` за све клијенте |
+| `AZURE_OPENAI_ENDPOINT` | Захтева се само за AI клијенте; URL ресурса или `/openai/v1` URL |
+| `AZURE_OPENAI_DEPLOYMENT` | `gpt-5.6-luna`; име Azure имплементације |
+| `AZURE_OPENAI_MAX_COMPLETION_TOKENS` | `1024`; позитиван цео број |
+| Напор размишљања | Увек `none`, укључујући праћење у луповима алата |
+
+Превлашћена имплементација мора подржавати `reasoning_effort=none` и `max_completion_tokens`.
+Клијенти аутоматски не читају `.env` фајл. Зауставите сервер са `Ctrl+C` након тестирања.
+Клијенти се нормално враћају без `System.exit` или заустављања са спавањем.
+
+## Оффлине тестови
+
+```powershell
+mvn -B -ntp clean verify
+```
+
+Сви тестови су оффлине у односу на Azure: протокол покреће Spring сервер и
+OpenAI- компатибилни stub на насумичним локалним портовима, који се потом затварају. Maven може ипак
+морати да преузме зависности. Није неопходно имати креденцијале, живу имплементацију или постојећи MCP сервер.
+
+- Јединични тестови калкулатора обухватају све аритметичке операције, децималне резултате, помоћ и грешке домена.
+- MCP тестови обухватају иницијализацију, откривање, све девет позива алата, неуспехе алата и здравље/информације.
+- AI протоколски тестови извршавају цео демо и интерактивног бота против правог калкулатора,
+  проверавају да резултати алата утичу на следећи захтев и анализирају сваки HTTP тело за Луну,
+  `reasoning_effort: "none"` и `max_completion_tokens` без застарелог `max_tokens`.
+- Тестови конфигурације/улаза покривају имплементације и замену крајњих тачака, празне редове, EOF, exit/quit,
+  режим једног упита, неважеће опције и пропагацију грешака. Тестови квота доказују да 429 није поново покушан.
+
+## Како све функционише заједно
+
+Ево целокупног тока када питате AI "Колико је 5 + 3?":
+
+1. **Ви** питате AI на природном језику
 2. **AI** анализира ваш захтев и схвата да желите сабирање
 3. **AI** позива MCP сервер: `add(5.0, 3.0)`
-4. **Сервис за Калкулатор** рачуна: `5.0 + 3.0 = 8.0`
-5. **Сервис за Калкулатор** враћа: `"5.00 + 3.00 = 8.00"`
-6. **AI** прими резултат и формира природни одговор
-7. **Ви** добијате: "Сума од 5 и 3 је 8"
+4. **Калкулатор сервис** извршава: `5.0 + 3.0 = 8.0`
+5. **Калкулатор сервис** враћа: `"5.00 + 3.00 = 8.00"`
+6. **AI** прима резултат и форматира природан одговор
+7. **Ви** добијате: "Збир бројева 5 и 3 је 8"
 
-## Следећи Корaци
+## Следећи кораци
 
-За више примера, погледајте [Поглавље 04: Практични Примери](../README.md)
+За више примера погледајте [Поглавље 04: Практични примерци](../README.md)
 
 ---
 

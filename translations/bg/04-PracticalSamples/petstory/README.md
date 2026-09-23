@@ -1,38 +1,48 @@
-# Урок за Генератор на Истории с Домашни Любимци за Начинаещи
+# Урок за генератор на истории за домашни любимци за начинаещи
+
+Качете снимка на домашен любимец, анализирайте я с GPT-5.6 Luna и генерирайте история от получения опис. И двата модела използват `reasoning_effort: none`.
+
+| Компонент | Версия |
+| --- | --- |
+| Java | 21 или по-висока |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
 
 ## Съдържание
 
 - [Предварителни изисквания](#предварителни-изисквания)
 - [Разбиране на структурата на проекта](#разбиране-на-структурата-на-проекта)
 - [Обяснение на основните компоненти](#обяснение-на-основните-компоненти)
-  - [1. Основно приложение](#1-основно-приложение)
+  - [1. Главно приложение](#1-главно-приложение)
   - [2. Уеб контролер](#2-уеб-контролер)
-  - [3. Story Service](#3-story-service)
+  - [3. Сервиз за истории](#3-сервиз-за-истории)
   - [4. Уеб шаблони](#4-уеб-шаблони)
   - [5. Конфигурация](#5-конфигурация)
 - [Стартиране на приложението](#стартиране-на-приложението)
+- [Тестове офлайн](#офлайн-тестове)
 - [Как всичко работи заедно](#как-всичко-работи-заедно)
-- [Разбиране на AI интеграцията](#разбиране-на-ai-интеграцията)
+- [Разбиране на интеграцията с AI](#разбиране-на-интеграцията-с-ai)
 - [Следващи стъпки](#следващи-стъпки)
 
 ## Предварителни изисквания
 
 Преди да започнете, уверете се, че имате:
-- Инсталиран Java 21 или по-нова версия
-- Maven за управление на зависимости
-- Разгърнат модел на Azure AI Foundry (осигурете го с `azd up` — вижте [Глава 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md)), влезли сте с `az login` (авторизация без ключ)
+- Инсталирана Java 21 или по-висока
+- Maven за управление на зависимостите
+- Деплоймънт на Azure AI Foundry GPT-5.6 Luna със име `gpt-5.6-luna` или препокриване `AZURE_OPENAI_DEPLOYMENT`, сочещо към този деплоймънт. Вижте [Глава 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md) за настройка и вход с `az login` за безключова автентикация. Деплоймънтът трябва да поддържа входящи изображения и `reasoning_effort: none`.
 - Основни познания по Java, Spring Boot и уеб разработка
 
 ## Разбиране на структурата на проекта
 
-Проектът за истории с домашни любимци има няколко важни файла:
+Проектът за истории с домашни любимци съдържа няколко важни файла:
 
 ```
 petstory/
 ├── src/main/java/com/example/petstory/
 │   ├── PetStoryApplication.java       # Main Spring Boot application
 │   ├── PetController.java             # Web request handler
-│   ├── StoryService.java              # AI story generation service
+│   ├── StoryService.java              # AI image analysis and story generation
 │   └── SecurityConfig.java            # Security configuration
 ├── src/main/resources/
 │   ├── application.properties         # App configuration
@@ -44,11 +54,11 @@ petstory/
 
 ## Обяснение на основните компоненти
 
-### 1. Основно приложение
+### 1. Главно приложение
 
 **Файл:** `PetStoryApplication.java`
 
-Това е входната точка за нашето Spring Boot приложение:
+Това е входната точка на нашето Spring Boot приложение:
 
 ```java
 @SpringBootApplication
@@ -59,208 +69,49 @@ public class PetStoryApplication {
 }
 ```
 
-**Какво прави:**
-- Анотацията `@SpringBootApplication` активира автоматично конфигуриране и сканиране на компоненти
+**Какво прави това:**
+- Анотацията `@SpringBootApplication` активира авто-конфигурация и сканиране на компоненти
 - Стартира вграден уеб сървър (Tomcat) на порт 8080
-- Автоматично създава всички необходими Spring бинове и услуги
+- Създава всички необходими Spring обекти (beans) и услуги автоматично
 
 ### 2. Уеб контролер
 
-**Файл:** `PetController.java`
+**Файл:** [PetController.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/PetController.java)
 
-Той обработва всички уеб заявки и взаимодействия с потребителите:
+| Крайна точка | Заявка | Успешен отговор |
+| --- | --- | --- |
+| `GET /` | Без тяло | HTML форма за качване със CSRF токен |
+| `POST /analyze-image` | `multipart/form-data`, поле с файл `image` | JSON: `{"description":"Игриво домашно любимче..."}` |
+| `POST /generate-story` | `application/x-www-form-urlencoded`, поле `description` | HTML страница с резултат с описанието и генерираната история |
 
-```java
-@Controller
-public class PetController {
-    
-    private final StoryService storyService;
-    
-    public PetController(StoryService storyService) {
-        this.storyService = storyService;
-    }
-    
-    @GetMapping("/")
-    public String index() {
-        return "index";  // Връща шаблона index.html
-    }
-    
-    @PostMapping("/generate-story")
-    public String generateStory(@RequestParam("description") String description, 
-                               Model model, 
-                               RedirectAttributes redirectAttributes) {
-        
-        // Валидация на входните данни
-        if (description.trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Please provide a description.");
-            return "redirect:/";
-        }
-        
-        // Почиства входните данни за сигурност
-        String sanitizedDescription = sanitizeInput(description);
-        
-        // Генерира история с обработка на грешки
-        try {
-            String story = storyService.generateStory(sanitizedDescription);
-            model.addAttribute("caption", sanitizedDescription);
-            model.addAttribute("story", story);
-            return "result";  // Връща шаблона result.html
-            
-        } catch (Exception e) {
-            // Използва резервна история, ако AI се провали
-            String fallbackStory = generateFallbackStory(sanitizedDescription);
-            model.addAttribute("story", fallbackStory);
-            return "result";
-        }
-    }
-    
-    private String sanitizeInput(String input) {
-        return input.replaceAll("[<>\"'&]", "")  // Remove dangerous characters
-                   .trim()
-                   .substring(0, Math.min(input.length(), 500));  // Ограничаване на дължината
-    }
-}
-```
+И двете POST крайни точки изискват сесийна бисквитка и CSRF токен, получени от `GET /`. Скриптът за качване изпраща скритата стойност `_csrf` в заглавката `X-CSRF-TOKEN`; изпращането на историята я изпраща като `_csrf` поле във формата. API клиентите трябва да запазват бисквитката между заявките. Това са форми за подаване, а не API за JSON заявка.
 
-**Основни функции:**
+Описанията трябва да са не празни и не по-дълги от 1000 символа. Контролерът изрязва описанието и премахва `<`, `>`, двойни кавички, апострофи и `&` преди да го предаде на услугата. Резултатният шаблон също екранира изхода с `th:text`.
 
-1. **Обработка на маршрути:** `@GetMapping("/")` показва формата за качване, `@PostMapping("/generate-story")` обработва изпращанията
-2. **Валидиране на входни данни:** Проверява за празни описания и ограничения на дължина
-3. **Сигурност:** Санитизира потребителския вход за предотвратяване на XSS атаки
-4. **Обработка на грешки:** Осигурява резервни истории, когато AI услугата не работи
-5. **Привързване на модел:** Предава данни към HTML шаблоните чрез Spring `Model`
+Грешки при валидиране на изображения връщат HTTP 400 с поле `error`; грешки в модела връщат HTTP 502 с поле `error` и без `description`. Невалидни описания или грешки на модела пренасочват към `/` с видима грешка. Липсващи необходими полета връщат HTTP 400, а липсващи или невалидни CSRF токени връщат HTTP 403. Няма резервни описания или истории, представяни като успешни AI резултати.
 
-**Система за резервни варианти:**
-Контролерът включва предварително написани шаблони за истории, които се използват, когато AI услугата не е налична:
+### 3. Сервиз за истории
 
-```java
-private String generateFallbackStory(String description) {
-    String[] storyTemplates = {
-        "Meet the most wonderful pet in the world – a furry ball of energy...",
-        "Once upon a time, there lived a remarkable pet whose heart was as big...",
-        "In a cozy home filled with love, there lived an extraordinary pet..."
-    };
-    
-    // Използвайте хеш на описанието за последователни отговори
-    int index = Math.abs(description.hashCode() % storyTemplates.length);
-    return storyTemplates[index];
-}
-```
+**Файл:** [StoryService.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/StoryService.java)
 
-### 3. Story Service
+Официалният OpenAI Java SDK 4.63.1 извиква OpenAI-съвместимия Chat Completions API на Azure AI Foundry. Azure Identity 1.18.6 осигурява Microsoft Entra bearer токен чрез `DefaultAzureCredential`; API ключ не е необходим.
 
-**Файл:** `StoryService.java`
+| Операция | Вход | `max_completion_tokens` |
+| --- | --- | --- |
+| `analyzeImage` | Байтове на изображение, кодирани като base64 data URL с качения MIME тип | 300 |
+| `generateStory` | Описание на домашен любимец като потребителско съобщение | 800 |
 
-Тази услуга комуникира с Azure AI Foundry за генериране на истории с използване на авторизация без ключ:
+И двете заявки използват конфигурирания деплоймънт, по подразбиране `gpt-5.6-luna`, и изрично задават `ReasoningEffort.NONE` (`reasoning_effort: none`). Никоя от заявките не изпраща `temperature` или остарелия параметър `max_tokens`.
 
-```java
-@Service
-public class StoryService {
-    
-    private final OpenAIClient openAIClient;
-    private final String modelName;
-    
-    public StoryService(@Value("${azure.openai.endpoint:}") String endpoint,
-                       @Value("${azure.openai.deployment:gpt-4o-mini}") String modelName) {
-        this.modelName = modelName;
-        if (endpoint == null || endpoint.isBlank()) {
-            endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        }
-        
-        // OpenAI-съвместимата крайна точка на Foundry се намира под /openai/v1/
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1/";
-        
-        // Удостоверяване без ключ с Microsoft Entra ID (без API ключ)
-        DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-        this.openAIClient = OpenAIOkHttpClient.builder()
-                .baseUrl(baseUrl)
-                .credential(BearerTokenCredential.create(
-                        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-                .build();
-    }
-    
-    public String generateStory(String description) {
-        String systemPrompt = "You are a creative storyteller who writes fun, " +
-                             "family-friendly short stories about pets. " +
-                             "Keep stories under 500 words and appropriate for all ages.";
-        
-        String userPrompt = "Write a fun short story about a pet described as: " + description;
-        
-        // Конфигурирайте AI заявката
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(modelName)
-                .addSystemMessage(systemPrompt)
-                .addUserMessage(userPrompt)
-                .maxCompletionTokens(500)  // Ограничете дължината на отговора
-                .temperature(0.8)          // Контролирайте креативността (0.0-1.0)
-                .build();
-        
-        // Изпратете заявката и вземете отговора
-        ChatCompletion response = openAIClient.chat().completions().create(params);
-        
-        return response.choices().get(0).message().content().orElse("");
-    }
-}
-```
-
-**Ключови компоненти:**
-
-1. **OpenAI клиент:** Използва официалния OpenAI Java SDK, конфигуриран за Azure AI Foundry (без ключ)
-2. **Системен подсказ:** Задава поведението на AI да пише истории за домашни любимци, подходящи за семейна аудитория
-3. **Потребителски подсказ:** Казва на AI точно коя история да напише въз основа на описанието
-4. **Параметри:** Контролира дължината и степента на креативност на историята
-5. **Обработка на грешки:** Хвърля изключения, които контролерът прихваща и обработва
+Анализът на изображения приема JPEG, PNG, GIF и WebP, отхвърля празни изображения и файлове над 10MB и ограничава резултата до 1000 символа. Заявката за история иска кратка семейна история. Празни избори или празно съдържание са грешки, като неуспехите съхраняват причината за диагностиката. SDK клиентът се затваря при спиране на приложението.
 
 ### 4. Уеб шаблони
 
-**Файл:** `index.html` (форма за качване)
+**Файл:** [index.html](../../../../04-PracticalSamples/petstory/src/main/resources/templates/index.html) (форма за качване)
 
-Основната страница, на която потребителите описват своите домашни любимци:
+Страницата започва с избор на снимка, не с текстово поле за описание. **Анализирай изображението** показва предварителен преглед на избраната снимка и я изпраща на `/analyze-image`. Успешен отговор показва описанието, попълва скритото поле `description` и показва бутона **Генерирай история**. Този бутон подава формата към `/generate-story`.
 
-```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Pet Story Generator</title>
-    <!-- CSS styling -->
-</head>
-<body>
-    <div class="container">
-        <h1>Pet Story Generator</h1>
-        <p>Describe your pet and we'll create a fun story about them!</p>
-        
-        <!-- Error message display -->
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-        
-        <!-- Story generation form -->
-        <form action="/generate-story" method="post">
-            <div class="form-group">
-                <label for="description">Describe your pet:</label>
-                <textarea id="description" name="description" 
-                         placeholder="Tell us about your pet - what they look like, their personality, favorite activities..."
-                         maxlength="1000" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Generate Story</button>
-        </form>
-        
-        <!-- Image upload section with client-side processing -->
-        <div class="upload-section">
-            <h2>Or Upload a Photo</h2>
-            <input type="file" id="imageInput" accept="image/*" />
-            <button onclick="analyzeImage()" class="upload-btn">Analyze Image</button>
-        </div>
-        
-        <script>
-            // Client-side image analysis using Transformers.js
-            async function analyzeImage() {
-                // Image processing code here
-                // Generates description automatically from uploaded image
-            }
-        </script>
-    </div>
-</body>
-</html>
-```
+Няма сваляне на модел в браузъра или зависимост от CDN. Анализът се изпълнява на сървъра чрез конфигурирания Azure деплоймънт. Грешките са видими и не позволяват генериране на история с измислено описание. Избор на друг файл изчиства предишния анализ.
 
 **Файл:** `result.html` (показване на история)
 
@@ -297,12 +148,12 @@ public class StoryService {
 </html>
 ```
 
-**Функционалности на шаблона:**
+**Характеристики на шаблона:**
 
-1. **Интеграция с Thymeleaf:** Използва атрибути `th:` за динамично съдържание
-2. **Отзивчив дизайн:** CSS стилове за мобилни устройства и настолни компютри
-3. **Обработка на грешки:** Показва грешки по време на валидиране на потребителите
-4. **Обработка на клиентската страна:** JavaScript за анализ на изображения (използвайки Transformers.js)
+1. **Интеграция с Thymeleaf**: Използва `th:` атрибути за динамично съдържание
+2. **Отзивчив дизайн**: CSS стилове за мобилни и настолни устройства
+3. **Обработка на грешки**: Показва грешки при валидиране на потребителите
+4. **Обработка на качване**: JavaScript показва предварителен преглед на снимката, изпраща multipart заявка с CSRF защита и показва върнатото описание
 
 ### 5. Конфигурация
 
@@ -322,21 +173,21 @@ logging.level.com.example.petstory=INFO
 
 # Azure AI Foundry (keyless) configuration
 azure.openai.endpoint=${AZURE_OPENAI_ENDPOINT:}
-azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
 ```
 
 **Обяснение на конфигурацията:**
 
-1. **Качване на файлове:** Позволява изображения до 10MB
-2. **Логване:** Контролира каква информация се логва по време на изпълнение
-3. **Azure AI Foundry:** Посочва крайна точка и разгънат модел за използване (без ключ)
-4. **Сигурност:** Конфигурация за обработка на грешки, за да не се излагат чувствителни данни
+1. **Качване на файлове**: както файловете, така и цялата multipart заявка са ограничени до 10MB; поддържайте снимките под този лимит за заглавките на multipart
+2. **Логване**: Контролира каква информация се записва по време на изпълнение
+3. **Azure AI Foundry**: Определя крайния пункт и деплоймънта на модела за използване (без ключ)
+4. **Сигурност**: CSRF защитата остава активна; диагностиката на модела се записва в сървъра, а контролерът показва общи съобщения при грешки на модела
 
 ## Стартиране на приложението
 
-### Стъпка 1: Вход и настройка на крайна точка
+### Стъпка 1: Вход и задаване на крайния пункт
 
-Авторизацията е без ключ (Microsoft Entra ID), затова няма API ключ. Влезте и задайте крайна точка за Foundry:
+Автентикацията е без ключ (Microsoft Entra ID), затова няма API ключ. Влезте и задайте своя Foundry крайна точка:
 
 **Windows (Command Prompt):**
 ```cmd
@@ -357,20 +208,22 @@ export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 ```
 
 **Защо е нужно това:**
-- Azure AI Foundry използва Microsoft Entra ID за удостоверяване на заявки за инференс
-- Безключовата авторизация означава, че няма тайни в изходния код или средата
-- Вашият акаунт трябва да има роля **Cognitive Services OpenAI User** за ресурса
+- Azure AI Foundry използва Microsoft Entra ID за автентикация на заявки
+- Безключовата автентикация означава, че няма тайни в кода или средата
+- Вашият акаунт трябва да има ролята **Cognitive Services OpenAI User** върху ресурса
 
-### Стъпка 2: Компилиране и стартиране
+По подразбиране името на деплоймънта е `gpt-5.6-luna`. Ако вашият GPT-5.6 Luna деплоймънт има различно име, задайте `AZURE_OPENAI_DEPLOYMENT` в същия терминал преди да стартирате приложението. И двата типа заявки - анализ на изображения и генериране на история - използват тази настройка.
 
-Навигирайте до директорията на проекта:
+### Стъпка 2: Сглобяване и стартиране
+
+Отидете в директорията на проекта:
 ```bash
 cd 04-PracticalSamples/petstory
 ```
 
-Компилирайте приложението:
+Сглобете самостоятелния JAR и стартирайте всички офлайн тестове:
 ```bash
-mvn clean compile
+mvn clean package
 ```
 
 Стартирайте сървъра:
@@ -380,69 +233,65 @@ mvn spring-boot:run
 
 Приложението ще стартира на `http://localhost:8080`.
 
+Като алтернатива, стартирайте опакования JAR на свободен порт, например:
+
+```bash
+java -jar target/pet-story-app-0.0.1-SNAPSHOT.jar --server.port=8083
+```
+
+За тази команда, отворете `http://localhost:8083/`. Същите маршрути `/analyze-image` и `/generate-story` са достъпни на избрания порт.
+
 ### Стъпка 3: Тествайте приложението
 
-1. **Отворете** `http://localhost:8080` в браузъра
-2. **Опишете** вашия домашен любимец в текстовото поле (например "Игрив златист ретрийвър, който обича да донася топки")
-3. **Натиснете** "Генерирай история", за да получите AI-генерирана история
-4. **Алтернативно**, качете снимка на домашния любимец, за да се генерира автоматично описание
-5. **Прегледайте** креативната история, базирана на описанието на вашия любимец
+1. **Отворете** `http://localhost:8080` в браузъра си
+2. **Изберете** ясна снимка на домашен любимец в JPEG, PNG, GIF или WebP, под 10MB
+3. **Кликнете** "Analyze Image" и изчакайте описание на домашния любимец
+4. **Кликнете** "Generate Story" след успешен анализ
+5. **Прегледайте** историята и използвайте линка на страницата за резултат, за да се върнете към формата за качване
+
+Успешната последователност снимка-към-история извършва две повиквания към модела, по едно на бутон. Живото инфериране използва квотата на вашия деплоймънт и може да доведе до такси; стартирайте тестове по ред при споделяне на ограничен по скорост деплоймънт. Зареждането на началната страница не извиква модела.
+
+## Офлайн тестове
+
+От директория sample стартирайте:
+
+```bash
+mvn test
+```
+
+[StoryServiceTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/StoryServiceTest.java) улавя реални заявки към OpenAI SDK с HTTP фиксиране на loopback. Тества деплоймънта на двете заявки, `reasoning_effort: none`, лимити на токени, натоварване на изображение, валидация, празни отговори и грешки на ниво upstream.
+
+[PetControllerTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/PetControllerTest.java) използва MockMvc с макетирана услуга модел, за да тества рендерираните Thymeleaf страници, контракт за качване, CSRF, валидация, избягване на изход и видими грешки. Тези тестове не изискват Azure креденшъли и никога не викат платено Azure инфериране. Maven записва Surefire отчети в `target/surefire-reports`.
 
 ## Как всичко работи заедно
 
-Ето пълния процес при генериране на история с домашен любимец:
+Ето пълния поток при генериране на история за домашен любимец:
 
-1. **Потребителски вход:** Вие описвате домашния си любимец във формата в уеб страницата
-2. **Изпращане на формата:** Браузърът изпраща POST заявка към `/generate-story`
-3. **Обработка в контролера:** `PetController` валидира и санитизира входа
-4. **Извикване на AI услугата:** `StoryService` изпраща заявка към модела на Azure AI Foundry
-5. **Генериране на история:** AI създава креативна история въз основа на описанието
-6. **Обработка на отговора:** Контролерът получава историята и я добавя в модела
-7. **Изобразяване на шаблона:** Thymeleaf рендерира `result.html` с историята
-8. **Покажи:** Потребителят вижда генерираната история в браузъра си
+1. **Избор на снимка**: Избирате изображение на домашен любимец във формата за качване
+2. **Качване на изображение**: "Analyze Image" изпраща multipart POST към `/analyze-image` с CSRF заглавка
+3. **Анализ на изображение**: `StoryService` изпраща изображението към GPT-5.6 Luna с reasoning зададено на `none`
+4. **Показване на описанието**: Браузърът показва върнатото описание и го съхранява в формата
+5. **Изпращане на историята**: "Generate Story" подава `description` и `_csrf` към `/generate-story`
+6. **Генериране на история**: Контролерът валидира описанието и извиква същия деплоймънт с reasoning зададено на `none`
+7. **Рендериране на шаблона**: Thymeleaf избягва и показва описанието и историята на страницата с резултат
 
-**Процес при грешка:**
-Ако AI услугата се провали:
-1. Контролерът прихваща изключението
-2. Генерира резервна история с използване на предварително написани шаблони
-3. Показва резервната история с бележка, че AI не е наличен
-4. Потребителят все пак получава история, осигурявайки добро потребителско преживяване
+**Поток за обработка на грешки:**
+Ако моделът се провали, сървърът записва причината. Анализът на изображението връща HTTP 502 и браузърът показва грешката, без да позволява "Generate Story". Генерирането на история пренасочва към формата с съобщение за грешка. Никой от двата пътя не замества безшумно с предварително написан резултат.
 
-## Разбиране на AI интеграцията
+## Разбиране на интеграцията с AI
 
-### Azure AI Foundry (без ключ)
-Приложението използва Azure AI Foundry с безключова авторизация (Microsoft Entra ID):
+### Azure AI Foundry (безключово)
+Услугата конфигурира SDK с вашата `/openai/v1/` крайна точка за ресурса. `DefaultAzureCredential` и `AuthenticationUtil.getBearerTokenSupplier` осигуряват Microsoft Entra токени за `https://ai.azure.com/.default`. Локалната разработка може да използва влизане чрез Azure CLI; Azure хоствано приложение може да използва управлявана идентичност с подходящи разрешения.
 
-```java
-// Безключова автентикация - без API ключ
-DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-this.openAIClient = OpenAIOkHttpClient.builder()
-    .baseUrl(endpoint + "openai/v1/")
-    .credential(BearerTokenCredential.create(
-        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-    .build();
-```
+### Проектиране на подсказка
+Заявката за анализ на изображение търси наблюдаеми черти на домашния любимец в кратък параграф и казва на модела да третира текста в изображението като данни, а не като инструкции. Генерирането на история използва върнатото описание в отделна, семейно подходяща заявка за писане. Никоя заявка не позволява reasoning или настройка на температура.
 
-### Създаване на подскази
-Услугата използва внимателно създадени подскази за добри резултати:
-
-```java
-String systemPrompt = "You are a creative storyteller who writes fun, " +
-                     "family-friendly short stories about pets. " +
-                     "Keep stories under 500 words and appropriate for all ages.";
-```
-
-### Обработка на отговора
-Отговорът от AI се извлича и валидира:
-
-```java
-ChatCompletion response = openAIClient.chat().completions().create(params);
-String story = response.choices().get(0).message().content().orElse("");
-```
+### Обработка на отговорите
+Общият обработвач на отговори отхвърля липсващи избори и празно или само с бели пространства съдържание, отрязва валидно съдържание и запазва upstream грешки. Описанията на изображения са ограничени до 1000 символа, за да паснат на следващата форма за история. Оригиналната грешка на модела се запазва за диагностика, но не се показва на потребителя.
 
 ## Следващи стъпки
 
-За още примери вижте [Глава 04: Практически примери](../README.md)
+За повече примери вижте [Глава 04: Практически примери](../README.md)
 
 ---
 

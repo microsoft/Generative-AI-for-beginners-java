@@ -1,38 +1,48 @@
-# Pet Story Generator チュートリアル（初心者向け）
+# 初心者向けペットストーリー生成チュートリアル
+
+ペットの写真をアップロードし、GPT-5.6 Lunaで分析し、その結果の説明をもとにストーリーを生成します。両方のモデルリクエストは `reasoning_effort: none` を使用します。
+
+| コンポーネント | バージョン |
+| --- | --- |
+| Java | 21以上 |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
 
 ## 目次
 
 - [前提条件](#前提条件)
-- [プロジェクト構造の理解](#プロジェクト構造の理解)
-- [コアコンポーネントの説明](#コアコンポーネントの説明)
+- [プロジェクト構成の理解](#プロジェクト構成の理解)
+- [主要コンポーネントの説明](#主要コンポーネントの説明)
   - [1. メインアプリケーション](#1-メインアプリケーション)
-  - [2. Webコントローラ](#2-webコントローラ)
+  - [2. Webコントローラー](#2-webコントローラー)
   - [3. ストーリーサービス](#3-ストーリーサービス)
   - [4. Webテンプレート](#4-webテンプレート)
   - [5. 設定](#5-設定)
 - [アプリケーションの実行](#アプリケーションの実行)
-- [すべてが連携する仕組み](#すべてが連携する仕組み)
-- [AI連携の理解](#ai連携の理解)
+- [オフラインテスト](#オフラインテスト)
+- [全体の動作](#全体の動作)
+- [AI統合の理解](#ai統合の理解)
 - [次のステップ](#次のステップ)
 
 ## 前提条件
 
-開始する前に、以下を確認してください：
-- Java 21 以上がインストールされていること
-- 依存関係管理のための Maven
-- Azure AI Foundry モデルのデプロイ（`azd up` でプロビジョニング — [第2章](../../02-SetupDevEnvironment/getting-started-azure-openai.md)参照）、`az login` でサインイン済み（キー不要の認証）
-- Java、Spring Boot、およびウェブ開発の基本知識
+はじめる前に、次のものが揃っていることを確認してください:
+- Java 21以上がインストールされていること
+- 依存関係管理にMavenを使用
+- `gpt-5.6-luna` という名前のAzure AI Foundry上のGPT-5.6 Lunaデプロイメント、またはそれを指す `AZURE_OPENAI_DEPLOYMENT` のオーバーライド。プロビジョニングとキー不要認証のための `az login` については [第2章](../../02-SetupDevEnvironment/getting-started-azure-openai.md) を参照。デプロイメントは画像入力と `reasoning_effort: none` をサポートしている必要があります。
+- Java, Spring Boot, Web開発の基本的な理解
 
-## プロジェクト構造の理解
+## プロジェクト構成の理解
 
-ペットストーリープロジェクトにはいくつかの重要なファイルがあります：
+ペットストーリープロジェクトには重要なファイルがいくつかあります:
 
 ```
 petstory/
 ├── src/main/java/com/example/petstory/
 │   ├── PetStoryApplication.java       # Main Spring Boot application
 │   ├── PetController.java             # Web request handler
-│   ├── StoryService.java              # AI story generation service
+│   ├── StoryService.java              # AI image analysis and story generation
 │   └── SecurityConfig.java            # Security configuration
 ├── src/main/resources/
 │   ├── application.properties         # App configuration
@@ -42,13 +52,13 @@ petstory/
 └── pom.xml                           # Maven dependencies
 ```
 
-## コアコンポーネントの説明
+## 主要コンポーネントの説明
 
 ### 1. メインアプリケーション
 
 **ファイル:** `PetStoryApplication.java`
 
-これは Spring Boot アプリケーションのエントリポイントです：
+これはSpring Bootアプリケーションのエントリポイントです:
 
 ```java
 @SpringBootApplication
@@ -59,212 +69,53 @@ public class PetStoryApplication {
 }
 ```
 
-**概要:**
-- `@SpringBootApplication` アノテーションは自動構成とコンポーネントスキャンを有効にします
-- ポート8080で組み込みのウェブサーバ（Tomcat）を起動します
-- 必要なSpringのBeanとサービスを自動で作成します
+**動作内容:**
+- `@SpringBootApplication` アノテーションが自動設定およびコンポーネントスキャンを有効化
+- 組み込みウェブサーバー（Tomcat）をポート8080で起動
+- 必要なSpringビーンとサービスを自動的に作成
 
-### 2. Webコントローラ
+### 2. Webコントローラー
 
-**ファイル:** `PetController.java`
+**ファイル:** [PetController.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/PetController.java)
 
-これはすべてのウェブリクエストとユーザーインタラクションを処理します：
+| エンドポイント | リクエスト | 成功時レスポンス |
+| --- | --- | --- |
+| `GET /` | ボディなし | CSRFトークン付きのHTMLアップロードフォーム |
+| `POST /analyze-image` | `multipart/form-data`、ファイルフィールド名 `image` | JSON: `{"description":"遊び好きなペット..."}` |
+| `POST /generate-story` | `application/x-www-form-urlencoded`、フィールド名 `description` | 説明と生成されたストーリーを含むHTML結果ページ |
 
-```java
-@Controller
-public class PetController {
-    
-    private final StoryService storyService;
-    
-    public PetController(StoryService storyService) {
-        this.storyService = storyService;
-    }
-    
-    @GetMapping("/")
-    public String index() {
-        return "index";  // index.htmlテンプレートを返す
-    }
-    
-    @PostMapping("/generate-story")
-    public String generateStory(@RequestParam("description") String description, 
-                               Model model, 
-                               RedirectAttributes redirectAttributes) {
-        
-        // 入力の検証
-        if (description.trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Please provide a description.");
-            return "redirect:/";
-        }
-        
-        // セキュリティのために入力をサニタイズする
-        String sanitizedDescription = sanitizeInput(description);
-        
-        // エラーハンドリング付きでストーリーを生成する
-        try {
-            String story = storyService.generateStory(sanitizedDescription);
-            model.addAttribute("caption", sanitizedDescription);
-            model.addAttribute("story", story);
-            return "result";  // result.htmlテンプレートを返す
-            
-        } catch (Exception e) {
-            // AIが失敗した場合にフォールバックのストーリーを使用する
-            String fallbackStory = generateFallbackStory(sanitizedDescription);
-            model.addAttribute("story", fallbackStory);
-            return "result";
-        }
-    }
-    
-    private String sanitizeInput(String input) {
-        return input.replaceAll("[<>\"'&]", "")  // Remove dangerous characters
-                   .trim()
-                   .substring(0, Math.min(input.length(), 500));  // 長さを制限する
-    }
-}
-```
+両方のPOSTエンドポイントは、`GET /`から取得したセッションクッキーとCSRFトークンが必要です。アップロードスクリプトは隠し `_csrf` 値を `X-CSRF-TOKEN` ヘッダーで送信し、ストーリー送信は `_csrf` フォームフィールドとして送信します。APIクライアントはリクエスト間でクッキーを保持する必要があります。これらはJSONリクエストではなくフォームエンドポイントです。
 
-**主な機能：**
+説明は空でなく、1000文字以下である必要があります。コントローラーは説明をトリムし、`<`、`>`、ダブルクォート、アポストロフィ、`&`を除去してサービスに渡します。結果テンプレートではモデル出力も `th:text` でエスケープしています。
 
-1. <strong>ルート処理</strong>: `@GetMapping("/")` はアップロードフォームを表示し、`@PostMapping("/generate-story")` は送信を処理します
-2. <strong>入力検証</strong>: 空の説明や文字数制限をチェックします
-3. <strong>セキュリティ</strong>: ユーザー入力をサニタイズしてXSS攻撃を防ぎます
-4. <strong>エラーハンドリング</strong>: AIサービスが失敗した場合は代替ストーリーを提供します
-5. <strong>モデルバインディング</strong>: Springの `Model` を使ってデータをHTMLテンプレートに渡します
-
-**フォールバックシステム:**
-コントローラにはAIサービスが利用できない場合に使用する事前作成済みのストーリーテンプレートがあります：
-
-```java
-private String generateFallbackStory(String description) {
-    String[] storyTemplates = {
-        "Meet the most wonderful pet in the world – a furry ball of energy...",
-        "Once upon a time, there lived a remarkable pet whose heart was as big...",
-        "In a cozy home filled with love, there lived an extraordinary pet..."
-    };
-    
-    // 一貫した応答のために説明ハッシュを使用する
-    int index = Math.abs(description.hashCode() % storyTemplates.length);
-    return storyTemplates[index];
-}
-```
+画像検証失敗はHTTP 400と`error`フィールドを返し、モデル失敗はHTTP 502と`error`フィールドを返して`description`は含みません。無効な説明やモデル失敗は`/`へリダイレクトしエラーメッセージを表示します。必須フィールドの欠如はHTTP 400、CSRFトークンの欠如や無効はHTTP 403です。代替の説明やストーリーを成功したAI結果として提示しません。
 
 ### 3. ストーリーサービス
 
-**ファイル:** `StoryService.java`
+**ファイル:** [StoryService.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/StoryService.java)
 
-このサービスは Azure AI Foundry と通信し、キー不要の認証を使ってストーリーを生成します：
+公式OpenAI Java SDK 4.63.1がAzure AI FoundryのOpenAI互換チャット補完APIを呼び出します。Azure Identity 1.18.6は`DefaultAzureCredential`経由でMicrosoft Entraベアラートークンを提供し、APIキーは不要です。
 
-```java
-@Service
-public class StoryService {
-    
-    private final OpenAIClient openAIClient;
-    private final String modelName;
-    
-    public StoryService(@Value("${azure.openai.endpoint:}") String endpoint,
-                       @Value("${azure.openai.deployment:gpt-4o-mini}") String modelName) {
-        this.modelName = modelName;
-        if (endpoint == null || endpoint.isBlank()) {
-            endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        }
-        
-        // FoundryのOpenAI互換エンドポイントは/openai/v1/にあります
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1/";
-        
-        // Microsoft Entra IDによるキーレス認証（APIキー不要）
-        DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-        this.openAIClient = OpenAIOkHttpClient.builder()
-                .baseUrl(baseUrl)
-                .credential(BearerTokenCredential.create(
-                        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-                .build();
-    }
-    
-    public String generateStory(String description) {
-        String systemPrompt = "You are a creative storyteller who writes fun, " +
-                             "family-friendly short stories about pets. " +
-                             "Keep stories under 500 words and appropriate for all ages.";
-        
-        String userPrompt = "Write a fun short story about a pet described as: " + description;
-        
-        // AIリクエストを設定する
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(modelName)
-                .addSystemMessage(systemPrompt)
-                .addUserMessage(userPrompt)
-                .maxCompletionTokens(500)  // 応答の長さを制限する
-                .temperature(0.8)          // 創造性を制御する（0.0〜1.0）
-                .build();
-        
-        // リクエストを送信して応答を取得する
-        ChatCompletion response = openAIClient.chat().completions().create(params);
-        
-        return response.choices().get(0).message().content().orElse("");
-    }
-}
-```
+| 操作 | 入力 | `max_completion_tokens` |
+| --- | --- | --- |
+| `analyzeImage` | アップロードされたMIMEタイプでエンコードされたベース64データURLの画像バイト列 | 300 |
+| `generateStory` | ユーザーメッセージに含まれるペット説明 | 800 |
 
-**主な構成要素:**
+両リクエストとも設定されたデプロイメントを使用し、デフォルトは`gpt-5.6-luna`、明示的に`ReasoningEffort.NONE`（`reasoning_effort: none`）を設定します。`temperature`や旧式の`max_tokens`パラメーターは送信しません。
 
-1. **OpenAI クライアント**: Azure AI Foundry 用に設定された公式OpenAI Java SDK（キー不要）
-2. <strong>システムプロンプト</strong>: AIに家族向けのペットストーリーを書くよう指示
-3. <strong>ユーザープロンプト</strong>: 説明に基づきAIにどのようなストーリーを書くか正確に指示
-4. <strong>パラメータ</strong>: ストーリーの長さと創造性のレベルを制御
-5. <strong>エラーハンドリング</strong>: コントローラが捕捉可能な例外を投げます
+画像解析はJPEG, PNG, GIF, WebPを受け入れ、空の画像や10MB超のファイルを拒否し、結果の説明は1000文字以内に制限します。ストーリープロンプトは家族向けの短編を要求します。空の選択肢や空のモデル出力はエラーであり、失敗は元の原因を保持してサーバー側で診断します。SDKクライアントはアプリ終了時にクローズされます。
 
 ### 4. Webテンプレート
 
-**ファイル:** `index.html`（アップロードフォーム）
+**ファイル:** [index.html](../../../../04-PracticalSamples/petstory/src/main/resources/templates/index.html) （アップロードフォーム）
 
-ユーザーがペットを説明するメインページです：
+ページは説明テキストエリアではなく、写真選択から始まります。<strong>画像を分析</strong>は選択した写真をプレビューし、`/analyze-image`へ送信します。成功レスポンスは説明を表示し、隠し`description`フィールドを埋め、<strong>ストーリーを生成</strong>ボタンを表示します。そのボタンは既存フォームを`/generate-story`に送信します。
 
-```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Pet Story Generator</title>
-    <!-- CSS styling -->
-</head>
-<body>
-    <div class="container">
-        <h1>Pet Story Generator</h1>
-        <p>Describe your pet and we'll create a fun story about them!</p>
-        
-        <!-- Error message display -->
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-        
-        <!-- Story generation form -->
-        <form action="/generate-story" method="post">
-            <div class="form-group">
-                <label for="description">Describe your pet:</label>
-                <textarea id="description" name="description" 
-                         placeholder="Tell us about your pet - what they look like, their personality, favorite activities..."
-                         maxlength="1000" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Generate Story</button>
-        </form>
-        
-        <!-- Image upload section with client-side processing -->
-        <div class="upload-section">
-            <h2>Or Upload a Photo</h2>
-            <input type="file" id="imageInput" accept="image/*" />
-            <button onclick="analyzeImage()" class="upload-btn">Analyze Image</button>
-        </div>
-        
-        <script>
-            // Client-side image analysis using Transformers.js
-            async function analyzeImage() {
-                // Image processing code here
-                // Generates description automatically from uploaded image
-            }
-        </script>
-    </div>
-</body>
-</html>
-```
+ブラウザ側のモデルダウンロードやCDN依存はありません。画像解析は設定済みAzureデプロイメントのサーバー側で行います。失敗は表示され、偽の説明でストーリー生成はできません。ファイルを変えると前回の解析はクリアされます。
 
-**ファイル:** `result.html`（ストーリー表示）
+**ファイル:** `result.html` （ストーリー表示）
 
-生成されたストーリーを表示します：
+生成されたストーリーを表示:
 
 ```html
 <!DOCTYPE html>
@@ -297,18 +148,18 @@ public class StoryService {
 </html>
 ```
 
-**テンプレートの特徴：**
+**テンプレートの特徴:**
 
-1. **Thymeleaf連携**: 動的コンテンツ用の `th:` 属性を使用
-2. <strong>レスポンシブデザイン</strong>: モバイルとデスクトップ向けのCSSスタイリング
-3. <strong>エラーハンドリング</strong>: 検証エラーをユーザーに表示
-4. <strong>クライアントサイド処理</strong>: 画像解析用JavaScript（Transformers.jsを使用）
+1. **Thymeleaf統合**：動的コンテンツ用の `th:` 属性を使用
+2. <strong>レスポンシブデザイン</strong>：モバイルとデスクトップ用のCSSスタイリング
+3. <strong>エラーハンドリング</strong>：検証エラーをユーザーに表示
+4. <strong>アップロード処理</strong>：JavaScriptで写真をプレビューし、CSRF保護付きmultipartリクエストを送信、返された説明を表示
 
 ### 5. 設定
 
 **ファイル:** `application.properties`
 
-アプリケーションの設定内容：
+アプリケーションの設定内容:
 
 ```properties
 spring.application.name=pet-story-app
@@ -322,21 +173,21 @@ logging.level.com.example.petstory=INFO
 
 # Azure AI Foundry (keyless) configuration
 azure.openai.endpoint=${AZURE_OPENAI_ENDPOINT:}
-azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
 ```
 
-**設定の説明：**
+**設定の説明:**
 
-1. <strong>ファイルアップロード</strong>: 最大10MBの画像を許可
-2. <strong>ログ出力</strong>: 実行中のログ情報を制御
-3. **Azure AI Foundry**: 使用するエンドポイントとモデルデプロイを指定（キー不要認証）
-4. <strong>セキュリティ</strong>: 敏感情報を公開しないエラーハンドリング設定
+1. <strong>ファイルアップロード</strong>：ファイルとmultipart全体が10MBまでに制限。マルチパートヘッダー分の余裕を考え、写真はこの制限内に収める
+2. <strong>ログ記録</strong>：実行中のログ出力を制御
+3. **Azure AI Foundry**：使用するエンドポイントとモデルデプロイメントを指定（キー不要認証）
+4. <strong>セキュリティ</strong>：CSRF保護は有効のまま、モデル診断はサーバーログに出力、コントローラーは一般的なモデル失敗メッセージを表示
 
 ## アプリケーションの実行
 
-### 手順1: サインインしてエンドポイントを設定
+### ステップ1: サインインとエンドポイント設定
 
-認証はキー不要のMicrosoft Entra IDを使いますので、APIキー不要です。サインインしてFoundryエンドポイントを設定します：
+認証はキー不要（Microsoft Entra ID）なのでAPIキーは不要です。サインインしFoundryのエンドポイントを設定してください:
 
 **Windows（コマンドプロンプト）：**
 ```cmd
@@ -350,99 +201,97 @@ az login
 $env:AZURE_OPENAI_ENDPOINT="https://your-resource.openai.azure.com/"
 ```
 
-**Linux/macOS：**
+**Linux/macOS:**
 ```bash
 az login
 export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 ```
 
-**必要な理由：**
-- Azure AI Foundryは推論リクエスト認証にMicrosoft Entra IDを使用します
-- キー不要認証により、ソースコードや環境変数に秘密情報を含める必要がありません
-- アカウントは対象リソースに対して **Cognitive Services OpenAI User** ロールが必要です
+**必要な理由:**
+- Azure AI FoundryはMicrosoft Entra IDを使って推論リクエストを認証
+- キー不要認証はソースコードや環境に秘密情報を残さない
+- アカウントには該当リソースの **Cognitive Services OpenAI User** ロールが必要
 
-### 手順2: ビルドと実行
+デフォルトのデプロイメント名は`gpt-5.6-luna`です。もし別の名前のGPT-5.6 Lunaを使う場合は、アプリ起動前に同じ端末で `AZURE_OPENAI_DEPLOYMENT` を設定してください。画像解析とストーリー生成の両方でこの設定を使用します。
 
-プロジェクトディレクトリに移動：
+### ステップ2: ビルドと実行
+
+プロジェクトディレクトリに移動します:
 ```bash
 cd 04-PracticalSamples/petstory
 ```
 
-アプリケーションをビルド：
+スタンドアロンの実行可能JARをビルドし、すべてのオフラインテストを実行:
 ```bash
-mvn clean compile
+mvn clean package
 ```
 
-サーバーを起動：
+サーバーを起動します:
 ```bash
 mvn spring-boot:run
 ```
 
-アプリケーションは `http://localhost:8080` で起動します。
+アプリは `http://localhost:8080` で起動します。
 
-### 手順3: アプリケーションをテスト
+代わりに任意の空きポートでパッケージ済みJARを起動可能で、例えば:
+
+```bash
+java -jar target/pet-story-app-0.0.1-SNAPSHOT.jar --server.port=8083
+```
+
+この場合は `http://localhost:8083/` を開いてください。`/analyze-image` と `/generate-story` は選択したポートで利用可能です。
+
+### ステップ3: アプリケーションのテスト
 
 1. ブラウザで `http://localhost:8080` を開く
-2. テキストエリアにペットを説明（例：「遊び好きのゴールデンレトリバーでボール遊びが大好き」）
-3. 「ストーリーを生成」ボタンをクリックしてAI生成のストーリーを取得
-4. あるいはペットの画像をアップロードして自動で説明を生成
-5. ペットの説明に基づくクリエイティブなストーリーを閲覧
+2. JPEG、PNG、GIF、WebP形式の10MB以下の鮮明なペット写真を選択
+3. 「画像を分析」をクリックし、ペットの説明を待つ
+4. 成功した解析後、「ストーリーを生成」をクリック
+5. ストーリーを表示し、結果ページのリンクでアップロードフォームに戻る
 
-## すべてが連携する仕組み
+写真からストーリーへの正常なフローはボタンごとにモデルを2回呼び出します。ライブ推論はデプロイメントのクォータを消費し課金される場合があります。レート制限があるデプロイメントを共有する場合は連続してスモークテストを実行してください。ホームページをロードしてもモデルは呼び出しされません。
 
-ペットストーリー生成の全体の流れは以下の通りです：
+## オフラインテスト
 
-1. <strong>ユーザー入力</strong>：ウェブフォームでペットの説明を入力
-2. <strong>フォーム送信</strong>：ブラウザが `/generate-story` にPOSTリクエスト送信
-3. <strong>コントローラ処理</strong>：`PetController` が入力を検証しサニタイズ
-4. **AIサービス呼び出し**：`StoryService` がAzure AI Foundryモデルにリクエスト送信
-5. <strong>ストーリー生成</strong>：AIが説明に基づいてクリエイティブなストーリーを生成
-6. <strong>レスポンス処理</strong>：コントローラがストーリーを受け取りモデルに追加
-7. <strong>テンプレート描画</strong>：Thymeleafが `result.html` をストーリー付きでレンダリング
-8. <strong>表示</strong>：ユーザーのブラウザに生成ストーリーを表示
+サンプルディレクトリから次のコマンドを実行:
 
-**エラーハンドリングの流れ：**  
-AIサービスが失敗した場合：
-1. コントローラが例外を捕捉
-2. 事前用意したテンプレートから代替ストーリーを生成
-3. AI非利用状態の説明付きで代替ストーリーを表示
-4. ユーザーには常にストーリーが提供され、良いユーザー体験を確保
-
-## AI連携の理解
-
-### Azure AI Foundry（キー不要認証）  
-アプリは Azure AI Foundry をキー不要認証（Microsoft Entra ID）で使用しています：
-
-```java
-// キーレス認証 - APIキー不要
-DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-this.openAIClient = OpenAIOkHttpClient.builder()
-    .baseUrl(endpoint + "openai/v1/")
-    .credential(BearerTokenCredential.create(
-        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-    .build();
+```bash
+mvn test
 ```
 
-### プロンプトエンジニアリング  
-優れた結果を得るために慎重に設計されたプロンプトを使用：
+[StoryServiceTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/StoryServiceTest.java) はループバックHTTPフィクスチャで実際のOpenAI SDKリクエストをキャプチャします。両リクエストのデプロイメント、`reasoning_effort: none`、トークン制限、画像ペイロード、入力検証、空応答、上流エラーをチェックします。
 
-```java
-String systemPrompt = "You are a creative storyteller who writes fun, " +
-                     "family-friendly short stories about pets. " +
-                     "Keep stories under 500 words and appropriate for all ages.";
-```
+[PetControllerTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/PetControllerTest.java) はMockMvcとモックのモデルサービスでThymeleafページのレンダリング、アップロード契約、CSRF、検証、出力エスケープ、可視的失敗をテストします。これらのテストはAzure資格情報不要で、課金されるAzure推論も呼び出しません。MavenはSurefireレポートを `target/surefire-reports` に出力します。
 
-### 応答処理  
-AIの応答を抽出し検証：
+## 全体の動作
 
-```java
-ChatCompletion response = openAIClient.chat().completions().create(params);
-String story = response.choices().get(0).message().content().orElse("");
-```
+ペットストーリー生成時の完全なフローは次の通りです:
+
+1. <strong>写真選択</strong>：アップロードフォームでペット画像を選ぶ
+2. <strong>画像アップロード</strong>：「画像を分析」がCSRFヘッダー付のmultipart POSTを`/analyze-image`へ送信
+3. <strong>画像解析</strong>：`StoryService`が理由づけを`none`に設定し画像をGPT-5.6 Lunaに送信
+4. <strong>説明表示</strong>：ブラウザが返された説明を表示しフォームに保存
+5. <strong>ストーリー送信</strong>：「ストーリーを生成」が`description`と`_csrf`を`/generate-story`へPOST
+6. <strong>ストーリー生成</strong>：コントローラーが説明を検証し、同じデプロイメントに理由づけ`none`で呼び出し
+7. <strong>テンプレートレンダリング</strong>：Thymeleafで説明とストーリーを結果ページにエスケープ表示
+
+**エラーハンドリングフロー:**
+モデル失敗時はサーバーに原因ログが残ります。画像解析はHTTP 502を返し、ブラウザには「ストーリーを生成」を表示せずエラーだけ表示。ストーリー生成はフォームへリダイレクトしエラーメッセージを出します。どちらの経路も事前作成結果と静かに置き換えを行いません。
+
+## AI統合の理解
+
+### Azure AI Foundry（キー不要）
+サービスはSDKをリソースの `/openai/v1/` エンドポイントで構成。`DefaultAzureCredential` と `AuthenticationUtil.getBearerTokenSupplier` がMicrosoft Entraトークンを `https://ai.azure.com/.default` 用に供給。ローカル開発はAzure CLIサインインを利用でき、Azureホストのアプリは必要なリソース権限付きのマネージドIDを使用可能。
+
+### プロンプトエンジニアリング
+画像解析は観察可能なペットの特徴を短い段落で要求し、画像内テキストを命令ではなくデータとして扱うようモデルに指示。ストーリー生成は返された説明を用い、別途家族向け短編を書かせる。どちらも理由づけや温度パラメーター変更は無効。
+
+### レスポンス処理
+共通レスポンスハンドラーは選択肢の欠如や空白のみの内容を拒否し、有効な内容をトリムし上流の失敗は維持。画像説明は後続のストーリーフォームに収めるため1000文字に制限。元のモデル失敗はユーザーには表示せず診断用に保持。
 
 ## 次のステップ
 
-さらなる例については [第04章: 実践サンプル](../README.md) をご覧ください。
+さらなる例は [第04章: 実践的サンプル集](../README.md) を参照
 
 ---
 

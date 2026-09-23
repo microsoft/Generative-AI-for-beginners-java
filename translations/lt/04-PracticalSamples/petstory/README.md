@@ -1,4 +1,13 @@
-# Naminių gyvūnėlių istorijų generatoriaus pamoka pradedantiesiems
+# Augintinių istorijų generatoriaus pamoka pradedantiesiems
+
+Įkelkite augintinio nuotrauką, ją analizuokite naudodami GPT-5.6 Luna ir sugeneruokite istoriją iš gauto aprašymo. Abu modelio užklausimai naudoja `reasoning_effort: none`.
+
+| Komponentas | Versija |
+| --- | --- |
+| Java | 21 arba naujesnė |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
 
 ## Turinys
 
@@ -6,33 +15,34 @@
 - [Projekto struktūros supratimas](#projekto-struktūros-supratimas)
 - [Pagrindinių komponentų paaiškinimas](#pagrindinių-komponentų-paaiškinimas)
   - [1. Pagrindinė programa](#1-pagrindinė-programa)
-  - [2. Tinklo valdiklis](#2-tinklo-valdiklis)
-  - [3. Istorijų paslauga](#3-istorijų-paslauga)
-  - [4. Interneto šablonai](#4-interneto-šablonai)
+  - [2. Web valdiklis](#2-web-valdiklis)
+  - [3. Istorijų servisas](#3-istorijų-servisas)
+  - [4. Web šablonai](#4-web-šablonai)
   - [5. Konfigūracija](#5-konfigūracija)
 - [Programos paleidimas](#programos-paleidimas)
+- [Offline testai](#offline-testai)
 - [Kaip visa tai veikia kartu](#kaip-visa-tai-veikia-kartu)
 - [AI integracijos supratimas](#ai-integracijos-supratimas)
 - [Kiti žingsniai](#kiti-žingsniai)
 
 ## Reikalavimai
 
-Prieš pradėdami, įsitikinkite, kad turite:
+Prieš pradėdami įsitikinkite, kad turite:
 - Įdiegtą Java 21 arba naujesnę versiją
 - Maven priklausomybių valdymui
-- Azure AI Foundry modelio diegimą (paleiskite su `azd up` — žr. [2 skyrių](../../02-SetupDevEnvironment/getting-started-azure-openai.md)), prisijungę su `az login` (autentifikacija be rakto)
-- Pagrindines žinias apie Java, Spring Boot ir tinklo programavimą
+- Azure AI Foundry GPT-5.6 Luna diegimą pavadinimu `gpt-5.6-luna`, arba `AZURE_OPENAI_DEPLOYMENT` pakeitimą, nukreipiantį į tą diegimą. Žr. [2 skyrių](../../02-SetupDevEnvironment/getting-started-azure-openai.md) dėl diegimo ir prisijunkite naudodami `az login` be raktų autentifikacijos. Diegimas turi palaikyti vaizdo įkėlimą ir `reasoning_effort: none`.
+- Pagrindines žinias apie Java, Spring Boot ir žiniatinklio kūrimą
 
 ## Projekto struktūros supratimas
 
-Naminių gyvūnėlių istorijų projekte yra keli svarbūs failai:
+Augintinių istorijų projekte yra keletas svarbių failų:
 
 ```
 petstory/
 ├── src/main/java/com/example/petstory/
 │   ├── PetStoryApplication.java       # Main Spring Boot application
 │   ├── PetController.java             # Web request handler
-│   ├── StoryService.java              # AI story generation service
+│   ├── StoryService.java              # AI image analysis and story generation
 │   └── SecurityConfig.java            # Security configuration
 ├── src/main/resources/
 │   ├── application.properties         # App configuration
@@ -48,7 +58,7 @@ petstory/
 
 **Failas:** `PetStoryApplication.java`
 
-Tai yra įėjimo taškas mūsų Spring Boot programai:
+Tai mūsų Spring Boot programos įėjimo taškas:
 
 ```java
 @SpringBootApplication
@@ -61,206 +71,47 @@ public class PetStoryApplication {
 
 **Ką tai daro:**
 - `@SpringBootApplication` anotacija leidžia automatinį konfigūravimą ir komponentų nuskaitymą
-- Paleidžia įterptą tinklo serverį (Tomcat) 8080 prievade
-- Automatiškai sukuria visus reikalingus Spring bean'us ir paslaugas
+- Paleidžia integruotą žiniatinklio serverį (Tomcat) prievade 8080
+- Automatiškai sukuria visus reikalingus Spring beans ir servisas
 
-### 2. Tinklo valdiklis
+### 2. Web valdiklis
 
-**Failas:** `PetController.java`
+**Failas:** [PetController.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/PetController.java)
 
-Šis valdo visus tinklo užklausimus ir vartotojo sąveikas:
+| Galinis taškas | Užklausa | Sėkmingas atsakymas |
+| --- | --- | --- |
+| `GET /` | Be turinio | HTML įkėlimo forma su CSRF žetonu |
+| `POST /analyze-image` | `multipart/form-data`, bylų laukas `image` | JSON: `{"description":"Žaismingas augintinis..."}` |
+| `POST /generate-story` | `application/x-www-form-urlencoded`, laukas `description` | HTML rezultatų puslapis su aprašymu ir sugeneruota istorija |
 
-```java
-@Controller
-public class PetController {
-    
-    private final StoryService storyService;
-    
-    public PetController(StoryService storyService) {
-        this.storyService = storyService;
-    }
-    
-    @GetMapping("/")
-    public String index() {
-        return "index";  // Grąžina index.html šabloną
-    }
-    
-    @PostMapping("/generate-story")
-    public String generateStory(@RequestParam("description") String description, 
-                               Model model, 
-                               RedirectAttributes redirectAttributes) {
-        
-        // Įvesties tikrinimas
-        if (description.trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Please provide a description.");
-            return "redirect:/";
-        }
-        
-        // Išvalyti įvestį dėl saugumo
-        String sanitizedDescription = sanitizeInput(description);
-        
-        // Generuoti istoriją su klaidų tvarkymu
-        try {
-            String story = storyService.generateStory(sanitizedDescription);
-            model.addAttribute("caption", sanitizedDescription);
-            model.addAttribute("story", story);
-            return "result";  // Grąžina result.html šabloną
-            
-        } catch (Exception e) {
-            // Naudoti atsarginę istoriją, jei DI nepavyksta
-            String fallbackStory = generateFallbackStory(sanitizedDescription);
-            model.addAttribute("story", fallbackStory);
-            return "result";
-        }
-    }
-    
-    private String sanitizeInput(String input) {
-        return input.replaceAll("[<>\"'&]", "")  // Remove dangerous characters
-                   .trim()
-                   .substring(0, Math.min(input.length(), 500));  // Apriboti ilgį
-    }
-}
-```
+Abu POST galiniai taškai reikalauja sesijos slapuko ir CSRF žetono, gauto iš `GET /`. Įkėlimo skriptas siunčia paslėptą `_csrf` reikšmę `X-CSRF-TOKEN` antraštėje; istorijos pateikimas siunčia kaip `_csrf` formos lauką. API klientai privalo saugoti slapuką užklausų metu. Tai formos galiniai taškai, o ne JSON užklausų galiniai taškai.
 
-**Pagrindinės savybės:**
+Aprašymai turi būti ne tušti ir ne ilgesni nei 1000 simbolių. Valdiklis apkarpo aprašymą ir pašalina `<`, `>`, dvigubas kabutes, apostrofius ir `&` prieš perduodamas servisu. Rezultato šablonas taip pat apsaugo modelio išvestį naudodamas `th:text`.
 
-1. **Maršruto valdymas**: `@GetMapping("/")` rodo įkėlimo formą, `@PostMapping("/generate-story")` apdoroja pateikimus
-2. **Įvesties patikra**: Tikrina ar aprašymai nėra tušti ir neviršija ilgio ribos
-3. **Sauga**: Išvalo vartotojo įvestį, kad būtų išvengta XSS atakų
-4. **Klaidų valdymas**: Teikia atsarginę istoriją, jei AI paslauga nepasiekiama
-5. **Modelio susiejimas**: Perduoda duomenis į HTML šablonus naudojant Spring `Model`
+Vaizdo validavimo klaidos grąžina HTTP 400 su lauku `error`; modelio klaidos grąžina HTTP 502 su lauku `error` ir be `description`. Netinkami istorijos aprašymai arba modelio klaidos nukreipia į `/` su matoma klaida. Privalomų laukų trūkumai grąžina HTTP 400, o trūkstami arba neteisingi CSRF žetonai grąžina HTTP 403. Nepateikiamos jokios pakaitinės aprašymo ar istorijos versijos kaip sėkmingi AI rezultatai.
 
-**Atsarginė sistema:**
-Valdiklis turi iš anksto parašytus istorijų šablonus, kurie naudojami, kai AI paslauga neveikia:
+### 3. Istorijų servisas
 
-```java
-private String generateFallbackStory(String description) {
-    String[] storyTemplates = {
-        "Meet the most wonderful pet in the world – a furry ball of energy...",
-        "Once upon a time, there lived a remarkable pet whose heart was as big...",
-        "In a cozy home filled with love, there lived an extraordinary pet..."
-    };
-    
-    // Naudokite aprašymo maišą nuoseklioms atsakoms
-    int index = Math.abs(description.hashCode() % storyTemplates.length);
-    return storyTemplates[index];
-}
-```
+**Failas:** [StoryService.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/StoryService.java)
 
-### 3. Istorijų paslauga
+Oficialus OpenAI Java SDK 4.63.1 kviečia Azure AI Foundry OpenAI suderinamą Chat Completions API. Azure Identity 1.18.6 suteikia Microsoft Entra prieigos žetoną per `DefaultAzureCredential`; API raktas nereikalingas.
 
-**Failas:** `StoryService.java`
+| Veiksmas | Įvestis | `max_completion_tokens` |
+| --- | --- | --- |
+| `analyzeImage` | Vaizdo baitai, užkoduoti kaip base64 duomenų URL su įkeltu MIME tipu | 300 |
+| `generateStory` | Augintinio aprašymas vartotojo pranešime | 800 |
 
-Ši paslauga bendrauja su Azure AI Foundry, kad generuotų istorijas be rakto autentifikacijos:
+Abu užklausimai naudoja konfigūruotą diegimą, pagal nutylėjimą `gpt-5.6-luna`, ir aiškiai nustato `ReasoningEffort.NONE` (`reasoning_effort: none`). Nė viena užklausa nesiunčia `temperature` ar senojo `max_tokens` parametro.
 
-```java
-@Service
-public class StoryService {
-    
-    private final OpenAIClient openAIClient;
-    private final String modelName;
-    
-    public StoryService(@Value("${azure.openai.endpoint:}") String endpoint,
-                       @Value("${azure.openai.deployment:gpt-4o-mini}") String modelName) {
-        this.modelName = modelName;
-        if (endpoint == null || endpoint.isBlank()) {
-            endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        }
-        
-        // Foundry suderinamas su OpenAI galinis taškas gyvena po /openai/v1/
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1/";
-        
-        // Prisijungimas be rakto su Microsoft Entra ID (be API rakto)
-        DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-        this.openAIClient = OpenAIOkHttpClient.builder()
-                .baseUrl(baseUrl)
-                .credential(BearerTokenCredential.create(
-                        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-                .build();
-    }
-    
-    public String generateStory(String description) {
-        String systemPrompt = "You are a creative storyteller who writes fun, " +
-                             "family-friendly short stories about pets. " +
-                             "Keep stories under 500 words and appropriate for all ages.";
-        
-        String userPrompt = "Write a fun short story about a pet described as: " + description;
-        
-        // Konfigūruokite AI užklausą
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(modelName)
-                .addSystemMessage(systemPrompt)
-                .addUserMessage(userPrompt)
-                .maxCompletionTokens(500)  // Apriboti atsakymo ilgį
-                .temperature(0.8)          // Valdykite kūrybiškumą (0.0-1.0)
-                .build();
-        
-        // Siųsti užklausą ir gauti atsakymą
-        ChatCompletion response = openAIClient.chat().completions().create(params);
-        
-        return response.choices().get(0).message().content().orElse("");
-    }
-}
-```
+Vaizdo analizė priima JPEG, PNG, GIF ir WebP formatus, atmeta tuščius vaizdus ir failus, viršijančius 10MB, bei riboja galutinį aprašymą iki 1000 simbolių. Istorijos užklausa reikalauja šeimai tinkamos trumpą istoriją. Tušti pasirinkimai arba tuščias modelio turinys laikomi klaidomis, o klaidų priežastis išlaikoma serverio diagnostikai. SDK klientas uždaromas, kai programa sustabdyta.
 
-**Svarbūs komponentai:**
+### 4. Web šablonai
 
-1. **OpenAI klientas**: Naudoja oficialų OpenAI Java SDK, konfigūruotą Azure AI Foundry (be rakto)
-2. **Sistemos pakvietimas**: Nustato AI elgesį rašyti šeimai draugiškas naminių gyvūnėlių istorijas
-3. **Vartotojo pakvietimas**: Nurodo AI tiksliai kokią istoriją rašyti pagal aprašymą
-4. **Parametrai**: Valdo istorijos ilgį ir kūrybingumo lygį
-5. **Klaidų valdymas**: Metamas išimtis, kurias pagauna ir apdoroja valdiklis
+**Failas:** [index.html](../../../../04-PracticalSamples/petstory/src/main/resources/templates/index.html) (Įkėlimo forma)
 
-### 4. Interneto šablonai
+Puslapis prasideda nuo nuotraukų pasirinkimo, o ne aprašymo teksto lauko. **Analizuoti vaizdą** parodo pasirinktą nuotrauką ir išsiunčia į `/analyze-image`. Sėkmingas atsakymas rodo aprašymą, užpildo paslėptą `description` lauką ir atgaivina mygtuką **Sugeneruoti istoriją**. Šis mygtukas pateikia esamą formą į `/generate-story`.
 
-**Failas:** `index.html` (Įkėlimo forma)
-
-Pagrindinis puslapis, kuriame vartotojai aprašo savo gyvūnus:
-
-```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Pet Story Generator</title>
-    <!-- CSS styling -->
-</head>
-<body>
-    <div class="container">
-        <h1>Pet Story Generator</h1>
-        <p>Describe your pet and we'll create a fun story about them!</p>
-        
-        <!-- Error message display -->
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-        
-        <!-- Story generation form -->
-        <form action="/generate-story" method="post">
-            <div class="form-group">
-                <label for="description">Describe your pet:</label>
-                <textarea id="description" name="description" 
-                         placeholder="Tell us about your pet - what they look like, their personality, favorite activities..."
-                         maxlength="1000" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Generate Story</button>
-        </form>
-        
-        <!-- Image upload section with client-side processing -->
-        <div class="upload-section">
-            <h2>Or Upload a Photo</h2>
-            <input type="file" id="imageInput" accept="image/*" />
-            <button onclick="analyzeImage()" class="upload-btn">Analyze Image</button>
-        </div>
-        
-        <script>
-            // Client-side image analysis using Transformers.js
-            async function analyzeImage() {
-                // Image processing code here
-                // Generates description automatically from uploaded image
-            }
-        </script>
-    </div>
-</body>
-</html>
-```
+Naršyklėje nesiunčiama jokia modelio kopija ar CDN priklausomybė. Vaizdo analizė vyksta serveryje per konfigūruotą Azure diegimą. Klaidos lieka matomos ir neleidžia generuoti istorijos su sukurta fiktyvia aprašymo versija. Pasirinkus kitą failą ankstesnė analizė išvaloma.
 
 **Failas:** `result.html` (Istorijos rodymas)
 
@@ -297,12 +148,12 @@ Rodo sugeneruotą istoriją:
 </html>
 ```
 
-**Šablono savybės:**
+**Šablono ypatybės:**
 
-1. **Thymeleaf integracija**: Naudoja `th:` atributus dinamiškam turiniui
-2. **Reaguojantis dizainas**: CSS stiliai mobiliesiems ir staliniams įrenginiams
-3. **Klaidų rodymas**: Rodo patikros klaidas vartotojams
-4. **Kliento pusės apdorojimas**: JavaScript vaizdų analizei (naudojant Transformers.js)
+1. **Thymeleaf integracija**: Naudoja `th:` atributus dinaminei turinio valdymui
+2. **Reaguojantis dizainas**: CSS stilizavimas mobiliesiems ir stacionariems įrenginiams
+3. **Klaidų tvarkymas**: Rodo validavimo klaidas vartotojams
+4. **Įkėlimo tvarkymas**: JavaScript peržiūri nuotrauką, siunčia CSRF apsaugotą multipart užklausą ir rodo grąžintą aprašymą
 
 ### 5. Konfigūracija
 
@@ -322,23 +173,23 @@ logging.level.com.example.petstory=INFO
 
 # Azure AI Foundry (keyless) configuration
 azure.openai.endpoint=${AZURE_OPENAI_ENDPOINT:}
-azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
 ```
 
 **Konfigūracijos paaiškinimas:**
 
-1. **Failų įkėlimas**: Leidžia įkelti paveikslėlius iki 10MB
-2. **Registravimas**: Kontroliuoja, kokia informacija fiksuojama vykdymo metu
-3. **Azure AI Foundry**: Nurodo galinio taško adresą ir naudojamą modelio diegimą (be rakto)
-4. **Sauga**: Klaidų valdymo nustatymai, kad nebūtų išduodama jautri informacija
+1. **Failų įkėlimas**: Tiek failas, tiek visas multipart užklausa ribojami iki 10MB; laikykitės mažesnių nuotraukų, kad liktų vietos multipart antraštėms
+2. **Logavimas**: Valdo, kokią informaciją fiksuoti vykdymo metu
+3. **Azure AI Foundry**: Nurodo naudotiną galutinį tašką ir modelio diegimą (be raktų autentifikacijos)
+4. **Saugumas**: CSRF apsauga išlieka įjungta; modelio diagnostika loguojama serveryje, valdiklis rodo bendras modelio klaidų žinutes
 
 ## Programos paleidimas
 
-### 1 žingsnis: Prisijunkite ir nustatykite galinį tašką
+### 1 veiksmas: Prisijungimas ir galutinio taško nustatymas
 
-Autentifikacija vyksta be rakto (Microsoft Entra ID), tad API rakto nereikia. Prisijunkite ir nurodykite Foundry galinį tašką:
+Autentifikacija be raktų (Microsoft Entra ID), todėl API rakto nereikia. Prisijunkite ir nustatykite Foundry galutinį tašką:
 
-**Windows (Komandinė eilutė):**
+**Windows (Komandų eilutė):**
 ```cmd
 az login
 set AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
@@ -358,19 +209,21 @@ export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 
 **Kodėl tai reikalinga:**
 - Azure AI Foundry naudoja Microsoft Entra ID autentifikuoti užklausas
-- Be rakto autentifikacija reiškia, kad šaltinio kode ar aplinkoje nėra slaptažodžių
-- Jūsų paskyra turi turėti **Cognitive Services OpenAI User** vaidmenį resurse
+- Autentifikacija be raktų reiškia, kad jūsų šaltinio kode ar aplinkoje nėra slapčių duomenų
+- Jūsų paskyra turi turėti **Cognitive Services OpenAI User** rolę prie ištekliaus
 
-### 2 žingsnis: Kompiliavimas ir paleidimas
+Pagal nutylėjimą diegimo pavadinimas yra `gpt-5.6-luna`. Jei jūsų GPT-5.6 Luna diegimas turi kitą pavadinimą, nustatykite `AZURE_OPENAI_DEPLOYMENT` tame pačiame terminale prieš paleidžiant programą. Tiek vaizdo analizė, tiek istorijos generavimas naudoja šį nustatymą.
+
+### 2 veiksmas: Sukurkite ir paleiskite
 
 Eikite į projekto katalogą:
 ```bash
 cd 04-PracticalSamples/petstory
 ```
 
-Sukurkite programą:
+Sukurkite savarankišką JAR vykdomąjį failą ir paleiskite visus offline testus:
 ```bash
-mvn clean compile
+mvn clean package
 ```
 
 Paleiskite serverį:
@@ -378,71 +231,67 @@ Paleiskite serverį:
 mvn spring-boot:run
 ```
 
-Programa pradės veikti adresu `http://localhost:8080`.
+Programa bus pasiekiama adresu `http://localhost:8080`.
 
-### 3 žingsnis: Testavimas
+Arba paleiskite supakuotą JAR laisvame prievade, pavyzdžiui:
 
-1. **Atidarykite** `http://localhost:8080` naršyklėje
-2. **Aprašykite** savo gyvūną teksto lauke (pvz., „Žaismingas auksaspalvis retriveris, mėgstantis nešti daiktus“)
-3. **Paspauskite** „Generate Story“ (Sukurti istoriją), kad gautumėte AI sukurtą pasakojimą
-4. **Arba** įkelkite gyvūno nuotrauką, kad automatiškai sugeneruotumėte aprašymą
-5. **Peržiūrėkite** kūrybingą istoriją, sukurtą pagal jūsų aprašymą
+```bash
+java -jar target/pet-story-app-0.0.1-SNAPSHOT.jar --server.port=8083
+```
+
+Šiai komandai atidaromas `http://localhost:8083/`. Tie patys `/analyze-image` ir `/generate-story` maršrutai veikia pasirinktu prievadu.
+
+### 3 veiksmas: Išbandykite programą
+
+1. **Atidarykite** `http://localhost:8080` savo naršyklėje
+2. **Pasirinkite** aiškią augintinio nuotrauką JPEG, PNG, GIF arba WebP formatu, iki 10MB
+3. **Spustelėkite** "Analizuoti vaizdą" ir palaukite augintinio aprašymo
+4. **Spustelėkite** "Sugeneruoti istoriją" po sėkmingos analizės
+5. **Peržiūrėkite** istoriją ir naudokite rezultatų puslapio nuorodą, norėdami grįžti į įkėlimo formą
+
+Sėkmingas nuotraukos į istoriją srautas atlieka du modelio kvietimus, po vieną kiekvienam mygtukui. Gyva inferencija naudoja jūsų diegimo kvotą ir gali sukelti mokesčius; vykdykite pagrindinius testus paeiliui, jei dalijatės ribota diegimo spartą. Pagrindinio puslapio įkėlimas nekviečia modelio.
+
+## Offline testai
+
+Iš pavyzdžių katalogo vykdykite:
+
+```bash
+mvn test
+```
+
+[StoryServiceTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/StoryServiceTest.java) fiksuoja tikras OpenAI SDK užklausas naudodamas lokalų HTTP fixturą. Tikrina abu užklausų diegimus, `reasoning_effort: none`, žetonų ribas, vaizdo įkėlimą, įvesties validaciją, tuščius atsakymus ir viršutines klaidas.
+
+[PetControllerTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/PetControllerTest.java) naudoja MockMvc su imituotu modelio servisu, kad testuotų pateiktų Thymeleaf puslapių atvaizdavimą, įkėlimo sutartį, CSRF, validaciją, išvesties apsaugą ir matomas klaidas. Šiems testams nereikia Azure kredencialų ir jie niekada nekviečia mokamos Azure inferencijos. Maven rašo Surefire ataskaitas į `target/surefire-reports`.
 
 ## Kaip visa tai veikia kartu
 
-Štai visas procesas, generuojant naminės gyvūnėlio istoriją:
+Štai visas srautas, kai generuojate augintinio istoriją:
 
-1. **Vartotojo įvestis**: Jūs aprašote savo gyvūną internete
-2. **Formos pateikimas**: Naršyklė siunčia POST užklausą į `/generate-story`
-3. **Valdiklio apdorojimas**: `PetController` patikrina ir išvalo įvestį
-4. **AI paslaugos užklausa**: `StoryService` siunčia užklausą Azure AI Foundry modelio atpažinimui
-5. **Istorijos kūrimas**: AI sugeneruoja kūrybingą pasakojimą pagal aprašymą
-6. **Atsakymo apdorojimas**: Valdiklis gauna istoriją ir prideda ją modelyje
-7. **Šablono atvaizdavimas**: Thymeleaf generuoja `result.html` su istorija
-8. **Rodymas**: Vartotojas mato sugeneruotą istoriją savo naršyklėje
+1. **Nuotraukos pasirinkimas**: Pasirenkate augintinio vaizdą įkėlimo formoje
+2. **Vaizdo įkėlimas**: "Analizuoti vaizdą" siunčia multipart POST į `/analyze-image` su CSRF antrašte
+3. **Vaizdo analizė**: `StoryService` siunčia vaizdą GPT-5.6 Luna su reasoning nustatytu į `none`
+4. **Aprašymo rodymas**: Naršyklė parodo grąžintą aprašymą ir saugo jį formoje
+5. **Istorijos pateikimas**: "Sugeneruoti istoriją" pateikia `description` ir `_csrf` į `/generate-story`
+6. **Istorijos generavimas**: Valdiklis tikrina aprašymą ir kviečia tą patį diegimą su reasoning `none`
+7. **Šablono atvaizdavimas**: Thymeleaf apsaugo ir parodo aprašymą ir istoriją rezultatų puslapyje
 
-**Klaidų apdorojimo eiga:**
-Jei AI paslauga neveikia:
-1. Valdiklis pagauna išimtį
-2. Sukuria atsarginę istoriją naudojant iš anksto paruoštus šablonus
-3. Parodo atsarginę istoriją su pranešimu apie AI paslaugos nebuvimą
-4. Vartotojas vis tiek gauna istoriją, užtikrinant gerą naudotojo patirtį
+**Klaidų valdymo srautas:**
+Jei modelis nepavyksta, serveris užfiksuoja priežastį. Vaizdo analizė grąžina HTTP 502 ir naršyklė rodo klaidą, nerodant "Sugeneruoti istoriją". Istorijos generavimas nukreipia atgal į formą su klaidos pranešimu. Jokia iš dviejų krypčių tyliai nekeičia rezultato iš anksto parengtu.
 
 ## AI integracijos supratimas
 
-### Azure AI Foundry (be rakto)
-Programa naudoja Azure AI Foundry su autentifikacija be rakto (Microsoft Entra ID):
+### Azure AI Foundry (be raktų)
+Servisas konfigūruoja SDK su jūsų ištekliaus `/openai/v1/` galutiniu tašku. `DefaultAzureCredential` ir `AuthenticationUtil.getBearerTokenSupplier` tiekia Microsoft Entra žetonus `https://ai.azure.com/.default`. Vietiniam kūrimui galima naudoti jūsų Azure CLI prisijungimą; Azure talpinama programa gali naudoti valdomą tapatybę su reikalingomis išteklių teisėmis.
 
-```java
-// Autentifikacija be rakto - joks API raktas
-DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-this.openAIClient = OpenAIOkHttpClient.builder()
-    .baseUrl(endpoint + "openai/v1/")
-    .credential(BearerTokenCredential.create(
-        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-    .build();
-```
-
-### Pakvietimų kūrimas
-Paslauga naudoja kruopščiai parinktus pakvietimus, kad gautų gerus rezultatus:
-
-```java
-String systemPrompt = "You are a creative storyteller who writes fun, " +
-                     "family-friendly short stories about pets. " +
-                     "Keep stories under 500 words and appropriate for all ages.";
-```
+### Užklausų konstravimas (Prompt Engineering)
+Vaizdo analizė prašo pastebimų augintinio savybių trumpame pastraipoje ir įspėja modelį laikyti tekstą vaizde kaip duomenis, o ne instrukcijas. Istorijos generavimas naudoja grąžintą aprašymą atskiroje, šeimai tinkamoje rašymo užklausoje. Nei viena užklausa neįjungia reasoning ar nenustato temperatūros pakeitimo.
 
 ### Atsakymo apdorojimas
-AI atsakymas ištraukiamas ir patikrinamas:
-
-```java
-ChatCompletion response = openAIClient.chat().completions().create(params);
-String story = response.choices().get(0).message().content().orElse("");
-```
+Bendras atsakymų apdorotojas atmeta trūkstamus pasirinkimus ir tuščią arba tik tarpus turinį, apkarpo galiojantį turinį ir išsaugo viršunines klaidas. Vaizdo aprašymai ribojami iki 1000 simbolių, kad tilptų vėlesnėje istorijos formoje. Originali modelio klaida išlaikoma diagnostikai, bet nerodoma vartotojui.
 
 ## Kiti žingsniai
 
-Daugiau pavyzdžių rasite [4 skyriuje: Praktiniai pavyzdžiai](../README.md)
+Daugiau pavyzdžių žr. [4 skyrių: Praktiniai pavyzdžiai](../README.md)
 
 ---
 

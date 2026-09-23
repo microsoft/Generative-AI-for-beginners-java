@@ -1,38 +1,48 @@
 # 寵物故事生成器初學者教學
 
+上傳寵物照片，使用 GPT-5.6 Luna 進行分析，並根據生成的描述產生故事。兩個模型請求均使用 `reasoning_effort: none`。
+
+| 組件 | 版本 |
+| --- | --- |
+| Java | 21 或更高 |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
+
 ## 目錄
 
-- [先決條件](#先決條件)
-- [了解專案結構](#了解專案結構)
-- [核心組件說明](#核心組件說明)
+- [前置需求](#前置需求)
+- [理解專案結構](#理解專案結構)
+- [核心組件解說](#核心組件解說)
   - [1. 主應用程式](#1-主應用程式)
   - [2. 網頁控制器](#2-網頁控制器)
   - [3. 故事服務](#3-故事服務)
-  - [4. 網頁範本](#4-網頁範本)
-  - [5. 設定](#5-設定)
-- [執行應用程式](#執行應用程式)
-- [運作流程說明](#運作流程說明)
-- [理解 AI 整合](#理解-ai-整合)
-- [後續步驟](#後續步驟)
+  - [4. 網頁模板](#4-網頁模板)
+  - [5. 配置](#5-配置)
+- [啟動應用程式](#啟動應用程式)
+- [離線測試](#離線測試)
+- [整體運作原理](#整體運作原理)
+- [理解AI整合](#理解-ai-整合)
+- [下一步](#下一步)
 
-## 先決條件
+## 前置需求
 
-開始之前，請確保您已經具備：
-- 安裝 Java 21 或更高版本
-- 具備 Maven 依賴管理工具
-- Azure AI Foundry 模型部署（使用 `azd up` 進行佈署 — 請參閱[第二章](../../02-SetupDevEnvironment/getting-started-azure-openai.md)），並使用 `az login` 登入（無需 API 金鑰的驗證）
-- 基本的 Java、Spring Boot 及網頁開發知識
+開始前，請確認您已具備：
+- 已安裝 Java 21 或更高版本
+- 使用 Maven 作為依賴管理工具
+- 擁有 Azure AI Foundry 部署的 GPT-5.6 Luna，部署名稱為 `gpt-5.6-luna`，或有一個指向該部署的 `AZURE_OPENAI_DEPLOYMENT` 覆寫設定。請參閱 [第二章](../../02-SetupDevEnvironment/getting-started-azure-openai.md) 了解部署配置並使用 `az login` 進行無金鑰認證。該部署必須支持圖片輸入且 `reasoning_effort: none`。
+- 基本理解 Java、Spring Boot 和網頁開發
 
-## 了解專案結構
+## 理解專案結構
 
-寵物故事專案包含幾個重要檔案：
+寵物故事專案包含數個重要檔案：
 
 ```
 petstory/
 ├── src/main/java/com/example/petstory/
 │   ├── PetStoryApplication.java       # Main Spring Boot application
 │   ├── PetController.java             # Web request handler
-│   ├── StoryService.java              # AI story generation service
+│   ├── StoryService.java              # AI image analysis and story generation
 │   └── SecurityConfig.java            # Security configuration
 ├── src/main/resources/
 │   ├── application.properties         # App configuration
@@ -42,13 +52,13 @@ petstory/
 └── pom.xml                           # Maven dependencies
 ```
 
-## 核心組件說明
+## 核心組件解說
 
 ### 1. 主應用程式
 
 **檔案：** `PetStoryApplication.java`
 
-這是我們 Spring Boot 應用程式的進入點：
+這是我們 Spring Boot 應用程式的入口：
 
 ```java
 @SpringBootApplication
@@ -59,212 +69,53 @@ public class PetStoryApplication {
 }
 ```
 
-**功能說明：**
-- `@SpringBootApplication` 註解啟用自動配置與元件掃描
-- 啟動嵌入式網頁伺服器 (Tomcat)，監聽 8080 埠號
-- 自動建立所有必需的 Spring Bean 與服務
+**此程式碼功能：**
+- `@SpringBootApplication` 註解啟用自動配置與組件掃描
+- 啟動嵌入式網頁伺服器（Tomcat）於 8080 埠口
+- 自動建立所有必要的 Spring bean 和服務
 
 ### 2. 網頁控制器
 
-**檔案：** `PetController.java`
+**檔案：** [PetController.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/PetController.java)
 
-負責處理所有網頁請求與使用者互動：
+| 路由端點 | 請求 | 成功回應 |
+| --- | --- | --- |
+| `GET /` | 無請求體 | 含 CSRF 令牌的 HTML 上傳表單 |
+| `POST /analyze-image` | `multipart/form-data`，檔案欄位為 `image` | JSON: `{"description":"一隻愛玩的寵物..."}` |
+| `POST /generate-story` | `application/x-www-form-urlencoded`，欄位為 `description` | 回傳包含描述和生成故事的 HTML 結果頁 |
 
-```java
-@Controller
-public class PetController {
-    
-    private final StoryService storyService;
-    
-    public PetController(StoryService storyService) {
-        this.storyService = storyService;
-    }
-    
-    @GetMapping("/")
-    public String index() {
-        return "index";  // 回傳 index.html 範本
-    }
-    
-    @PostMapping("/generate-story")
-    public String generateStory(@RequestParam("description") String description, 
-                               Model model, 
-                               RedirectAttributes redirectAttributes) {
-        
-        // 輸入驗證
-        if (description.trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Please provide a description.");
-            return "redirect:/";
-        }
-        
-        // 針對安全性清理輸入
-        String sanitizedDescription = sanitizeInput(description);
-        
-        // 生成故事並處理錯誤
-        try {
-            String story = storyService.generateStory(sanitizedDescription);
-            model.addAttribute("caption", sanitizedDescription);
-            model.addAttribute("story", story);
-            return "result";  // 回傳 result.html 範本
-            
-        } catch (Exception e) {
-            // 如果 AI 失敗則使用備用故事
-            String fallbackStory = generateFallbackStory(sanitizedDescription);
-            model.addAttribute("story", fallbackStory);
-            return "result";
-        }
-    }
-    
-    private String sanitizeInput(String input) {
-        return input.replaceAll("[<>\"'&]", "")  // Remove dangerous characters
-                   .trim()
-                   .substring(0, Math.min(input.length(), 500));  // 限制長度
-    }
-}
-```
+兩個 POST 路由皆需會話 cookie 和從 `GET /` 獲取的 CSRF 令牌。上傳腳本將隱藏欄位 `_csrf` 值放入 `X-CSRF-TOKEN` 標頭；故事提交以 `_csrf` 表單欄位送出。API 用戶端必須在多次請求間保留 cookie。這些端點為表單提交，非 JSON 請求端點。
 
-**主要功能：**
+描述文字必須非空且不超過1000字元。控制器會修剪描述內容，並剝除 `<`，`>`，雙引號，撇號及 `&`，然後才將其傳給服務。結果模板亦使用 `th:text` 轉譯模型輸出。
 
-1. <strong>路由處理</strong>：`@GetMapping("/")` 顯示上傳表單，`@PostMapping("/generate-story")` 處理提交請求
-2. <strong>輸入驗證</strong>：檢查描述是否為空或超過限制長度
-3. <strong>安全性</strong>：清理使用者輸入，防止 XSS 攻擊
-4. <strong>錯誤處理</strong>：當 AI 服務失敗時提供備用故事
-5. <strong>模型綁定</strong>：使用 Spring 的 `Model` 將資料傳給 HTML 範本
-
-**備用系統：**
-控制器包含預先撰寫的故事範本，當 AI 服務無法使用時將使用這些範本：
-
-```java
-private String generateFallbackStory(String description) {
-    String[] storyTemplates = {
-        "Meet the most wonderful pet in the world – a furry ball of energy...",
-        "Once upon a time, there lived a remarkable pet whose heart was as big...",
-        "In a cozy home filled with love, there lived an extraordinary pet..."
-    };
-    
-    // 使用描述雜湊以確保回應一致性
-    int index = Math.abs(description.hashCode() % storyTemplates.length);
-    return storyTemplates[index];
-}
-```
+圖片驗證失敗將回傳 HTTP 400 並帶有 `error` 欄位；模型呼叫失敗則回 HTTP 502，帶有 `error` 欄位且無 `description`。故事描述無效或模型失敗時會重定向回 `/` 顯示錯誤訊息。缺少必須欄位時回 HTTP 400，缺失或驗證失敗的 CSRF 令牌則回 HTTP 403。不會以備用描述或故事假裝成功結果。
 
 ### 3. 故事服務
 
-**檔案：** `StoryService.java`
+**檔案：** [StoryService.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/StoryService.java)
 
-此服務透過無需金鑰的認證，與 Azure AI Foundry 進行故事生成的通訊：
+官方 OpenAI Java SDK 4.63.1 調用 Azure AI Foundry 支援的 OpenAI 兼容聊天完成 API。Azure Identity 1.18.6 透過 `DefaultAzureCredential` 提供 Microsoft Entra 存取令牌，無需 API 金鑰。
 
-```java
-@Service
-public class StoryService {
-    
-    private final OpenAIClient openAIClient;
-    private final String modelName;
-    
-    public StoryService(@Value("${azure.openai.endpoint:}") String endpoint,
-                       @Value("${azure.openai.deployment:gpt-4o-mini}") String modelName) {
-        this.modelName = modelName;
-        if (endpoint == null || endpoint.isBlank()) {
-            endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        }
-        
-        // Foundry 的 OpenAI 相容端點位於 /openai/v1/
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1/";
-        
-        // 使用 Microsoft Entra ID 進行無金鑰身份驗證（無需 API 密鑰）
-        DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-        this.openAIClient = OpenAIOkHttpClient.builder()
-                .baseUrl(baseUrl)
-                .credential(BearerTokenCredential.create(
-                        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-                .build();
-    }
-    
-    public String generateStory(String description) {
-        String systemPrompt = "You are a creative storyteller who writes fun, " +
-                             "family-friendly short stories about pets. " +
-                             "Keep stories under 500 words and appropriate for all ages.";
-        
-        String userPrompt = "Write a fun short story about a pet described as: " + description;
-        
-        // 設定 AI 請求
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(modelName)
-                .addSystemMessage(systemPrompt)
-                .addUserMessage(userPrompt)
-                .maxCompletionTokens(500)  // 限制回應長度
-                .temperature(0.8)          // 控制創意度（0.0-1.0）
-                .build();
-        
-        // 發送請求並取得回應
-        ChatCompletion response = openAIClient.chat().completions().create(params);
-        
-        return response.choices().get(0).message().content().orElse("");
-    }
-}
-```
+| 操作 | 輸入 | `max_completion_tokens` |
+| --- | --- | --- |
+| `analyzeImage` | 已編碼為 base64 data URL 且帶上上傳的 MIME 類型的圖片位元組 | 300 |
+| `generateStory` | 使用者訊息中的寵物描述 | 800 |
 
-**關鍵元件：**
+兩個請求皆使用已配置的部署，預設為 `gpt-5.6-luna`，並明確設定 `ReasoningEffort.NONE`（`reasoning_effort: none`）。請求未傳送 `temperature` 或過時的 `max_tokens` 參數。
 
-1. **OpenAI 用戶端**：使用官方 OpenAI Java SDK，且針對 Azure AI Foundry（無需金鑰）進行設定
-2. <strong>系統提示</strong>：設定 AI 的行為為撰寫適合家庭閱讀的寵物故事
-3. <strong>使用者提示</strong>：告訴 AI 根據描述精確產生故事
-4. <strong>參數</strong>：控制故事長度及創意程度
-5. <strong>錯誤處理</strong>：拋出例外，供控制器捕捉並處理
+圖片分析支援 JPEG、PNG、GIF 及 WebP，拒絕空檔與超過 10MB 的檔案，結果描述限制為 1000 字元。故事提示要求產生適合家庭的短篇故事。空白選項或空白模型內容視為錯誤，失敗結果保留原始原因以供伺服器端診斷。應用程式關閉時 SDK 客戶端也會關閉。
 
-### 4. 網頁範本
+### 4. 網頁模板
 
-**檔案：** `index.html`（上傳表單）
+**檔案：** [index.html](../../../../04-PracticalSamples/petstory/src/main/resources/templates/index.html)（上傳表單）
 
-使用者描述寵物的主要頁面：
+該頁面以照片選擇器開始，非描述文字區。<strong>分析圖片</strong> 按鈕會預覽所選照片並傳送至 `/analyze-image`。成功回應後顯示描述文字，填入隱藏的 `description` 欄位，並顯示 <strong>產生故事</strong> 按鈕。該按鈕將提交表單至 `/generate-story`。
 
-```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Pet Story Generator</title>
-    <!-- CSS styling -->
-</head>
-<body>
-    <div class="container">
-        <h1>Pet Story Generator</h1>
-        <p>Describe your pet and we'll create a fun story about them!</p>
-        
-        <!-- Error message display -->
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-        
-        <!-- Story generation form -->
-        <form action="/generate-story" method="post">
-            <div class="form-group">
-                <label for="description">Describe your pet:</label>
-                <textarea id="description" name="description" 
-                         placeholder="Tell us about your pet - what they look like, their personality, favorite activities..."
-                         maxlength="1000" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Generate Story</button>
-        </form>
-        
-        <!-- Image upload section with client-side processing -->
-        <div class="upload-section">
-            <h2>Or Upload a Photo</h2>
-            <input type="file" id="imageInput" accept="image/*" />
-            <button onclick="analyzeImage()" class="upload-btn">Analyze Image</button>
-        </div>
-        
-        <script>
-            // Client-side image analysis using Transformers.js
-            async function analyzeImage() {
-                // Image processing code here
-                // Generates description automatically from uploaded image
-            }
-        </script>
-    </div>
-</body>
-</html>
-```
+無需瀏覽器端模型下載或 CDN 依賴。圖片分析於伺服器端經由設定的 Azure 部署執行。失敗會持續顯示錯誤且不允許以虛構描述啟用故事生成。重新選擇不同檔案會清除先前分析結果。
 
 **檔案：** `result.html`（故事顯示）
 
-顯示生成出來的故事：
+顯示生成的故事：
 
 ```html
 <!DOCTYPE html>
@@ -297,18 +148,18 @@ public class StoryService {
 </html>
 ```
 
-**範本特色：**
+**模板功能：**
 
-1. **Thymeleaf 整合**：使用 `th:` 屬性支援動態內容
-2. <strong>響應式設計</strong>：CSS 樣式同時適用於行動裝置及桌面環境
-3. <strong>錯誤回饋</strong>：顯示驗證錯誤給使用者
-4. <strong>前端處理</strong>：JavaScript 進行圖片分析（使用 Transformers.js）
+1. **Thymeleaf 整合**：使用 `th:` 屬性動態載入內容
+2. <strong>響應式設計</strong>：CSS 支援行動及桌面樣式
+3. <strong>錯誤處理</strong>：向使用者顯示驗證錯誤
+4. <strong>上傳處理</strong>：JavaScript 預覽照片，傳送附 CSRF 保護的 multipart 請求，顯示回傳描述
 
-### 5. 設定
+### 5. 配置
 
 **檔案：** `application.properties`
 
-應用程式的設定參數：
+應用程式的配置設定：
 
 ```properties
 spring.application.name=pet-story-app
@@ -322,29 +173,29 @@ logging.level.com.example.petstory=INFO
 
 # Azure AI Foundry (keyless) configuration
 azure.openai.endpoint=${AZURE_OPENAI_ENDPOINT:}
-azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
 ```
 
-**設定說明：**
+**配置說明：**
 
-1. <strong>檔案上傳</strong>：允許最大 10MB 的圖片上傳
-2. <strong>日誌紀錄</strong>：控制執行時哪些資訊會被寫入日誌
-3. **Azure AI Foundry**：指定使用的端點與模型部署（無需金鑰認證）
-4. <strong>安全性</strong>：錯誤處理設定避免暴露敏感資料
+1. <strong>檔案上傳</strong>：檔案與 multipart 整體請求皆限制為 10MB 以下；儘量保持照片大小限制以留空間給 multipart 標頭
+2. <strong>日誌</strong>：控制執行時輸出哪些資訊
+3. **Azure AI Foundry**：指定端點與模型部署（無金鑰認證）
+4. <strong>安全性</strong>：保持 CSRF 保護啟用；模型診斷記錄於伺服器，控制器顯示通用的模型失敗訊息
 
-## 執行應用程式
+## 啟動應用程式
 
-### 第一步：登入並設定端點
+### 步驟 1：登入並設定端點
 
-採用無需金鑰的認證（Microsoft Entra ID），無需 API 金鑰。請登入並指定您的 Foundry 端點：
+認證採用無金鑰方式（Microsoft Entra ID），不需 API 金鑰。登入並設定 Foundry 端點：
 
-**Windows (命令提示字元)：**
+**Windows（命令提示字元）：**
 ```cmd
 az login
 set AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 ```
 
-**Windows (PowerShell)：**
+**Windows（PowerShell）：**
 ```powershell
 az login
 $env:AZURE_OPENAI_ENDPOINT="https://your-resource.openai.azure.com/"
@@ -356,21 +207,23 @@ az login
 export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 ```
 
-**必要原因：**
+**為什麼需要這個步驟：**
 - Azure AI Foundry 使用 Microsoft Entra ID 驗證推論請求
-- 無需金鑰認證，即不需在原始碼或環境變數中放置秘密
-- 您的帳戶在該資源需要具備 **Cognitive Services OpenAI User** 角色權限
+- 無金鑰認證意味著程式碼或環境中無秘密資訊
+- 您的帳號需有資源上的 **Cognitive Services OpenAI User** 角色
 
-### 第二步：編譯並執行
+預設部署名稱為 `gpt-5.6-luna`。若您的 GPT-5.6 Luna 部署名稱不同，請在相同終端機中啟動應用程式前設定 `AZURE_OPENAI_DEPLOYMENT`。圖片分析與故事生成皆會使用此設定。
 
-切換至專案目錄：
+### 步驟 2：建置並執行
+
+切換到專案目錄：
 ```bash
 cd 04-PracticalSamples/petstory
 ```
 
-編譯應用程式：
+建置獨立可執行 JAR 並執行所有離線測試：
 ```bash
-mvn clean compile
+mvn clean package
 ```
 
 啟動伺服器：
@@ -378,69 +231,65 @@ mvn clean compile
 mvn spring-boot:run
 ```
 
-應用程式會在 `http://localhost:8080` 啟動。
+應用程式將於 `http://localhost:8080` 啟動。
 
-### 第三步：測試應用程式
+另可選擇於其他空閒埠口執行封裝的 JAR，例如：
 
-1. <strong>開啟</strong> 瀏覽器並輸入 `http://localhost:8080`
-2. <strong>描述</strong> 您的寵物（例如：「一隻喜歡玩接球的黃金獵犬」）
-3. <strong>點擊</strong> 「Generate Story」取得 AI 生成的故事
-4. <strong>或者</strong> 上傳寵物圖片，自動生成描述
-5. <strong>瀏覽</strong> 根據描述產生的創意故事
+```bash
+java -jar target/pet-story-app-0.0.1-SNAPSHOT.jar --server.port=8083
+```
 
-## 運作流程說明
+針對該指令，請開啟 `http://localhost:8083/`。同樣有 `/analyze-image` 與 `/generate-story` 路由。
 
-當您產生寵物故事時的完整流程如下：
+### 步驟 3：測試應用程式
 
-1. <strong>使用者輸入</strong>：在網頁表單描述您的寵物
-2. <strong>表單提交</strong>：瀏覽器送出 POST 請求至 `/generate-story`
-3. <strong>控制器處理</strong>：`PetController` 驗證並清理輸入資料
-4. **AI 服務呼叫**：`StoryService` 向 Azure AI Foundry 模型發出請求
-5. <strong>故事生成</strong>：AI 根據描述產生創意故事
-6. <strong>回應處理</strong>：控制器接收故事並加入模型
-7. <strong>範本渲染</strong>：Thymeleaf 產生 `result.html` 並帶入故事內容
-8. <strong>顯示結果</strong>：使用者在瀏覽器看到產生的故事
+1. <strong>開啟</strong> 您的瀏覽器並造訪 `http://localhost:8080`
+2. <strong>選擇</strong> 一張清晰的 JPEG、PNG、GIF 或 WebP 格式寵物照片，大小低於 10MB
+3. <strong>點擊</strong>「分析圖片」，等待寵物描述生成
+4. <strong>點擊</strong> 成功分析後出現的「產生故事」
+5. <strong>查看</strong> 生成的故事，並使用結果頁面的連結返回上傳表單
+
+成功的照片至故事流程會呼叫兩次模型，對應兩個按鈕。即時推論會消耗您部署的額度並可能產生費用；在共享限速部署時，請依序運行測試。載入首頁不會呼叫模型。
+
+## 離線測試
+
+在 sample 目錄下執行：
+
+```bash
+mvn test
+```
+
+[StoryServiceTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/StoryServiceTest.java) 使用回圈 HTTP 模擬針對 OpenAI SDK 請求進行封包擷取。它檢查兩個請求的部署、`reasoning_effort: none`、令牌限制、圖片負載、輸入驗證、空白回應及上游錯誤。
+
+[PetControllerTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/PetControllerTest.java) 利用 MockMvc 與模擬模型服務，測試 Thymeleaf 渲染頁面、上傳協定、CSRF、防衛驗證、輸出轉譯與可見錯誤。這些測試不需 Azure 憑證，且不會呼叫付費的 Azure 推論服務。Maven 將 Surefire 報告寫入 `target/surefire-reports`。
+
+## 整體運作原理
+
+以下為產生寵物故事時的完整流程：
+
+1. <strong>照片選擇</strong>：您在上傳表單中選擇寵物照片
+2. <strong>圖片上傳</strong>：「分析圖片」送出附 CSRF 標頭的 multipart POST 請求至 `/analyze-image`
+3. <strong>圖片分析</strong>：`StoryService` 將圖片送至 GPT-5.6 Luna，推理模式為 `none`
+4. <strong>描述顯示</strong>：瀏覽器顯示回傳描述並存入表單中
+5. <strong>故事提交</strong>：「產生故事」送出 `description` 和 `_csrf` 至 `/generate-story`
+6. <strong>故事生成</strong>：控制器驗證描述，並呼叫同一部署，推理設定為 `none`
+7. <strong>模板渲染</strong>：Thymeleaf 轉譯並在結果頁顯示描述和故事
 
 **錯誤處理流程：**
-若 AI 服務失敗：
-1. 控制器捕捉例外狀況
-2. 使用預先撰寫的備用故事範本進行生成
-3. 顯示備用故事並註明 AI 服務目前無法使用
-4. 確保使用者仍能取得故事，維持良好使用體驗
+若模型失敗，伺服器會記錄原因。圖片分析失敗回 HTTP 502，瀏覽器顯示錯誤且不顯示「產生故事」按鈕。故事生成失敗時重定向至表單並顯示錯誤訊息。兩者皆不會暗中替換為預設結果。
 
 ## 理解 AI 整合
 
-### Azure AI Foundry（無需金鑰）
-應用程式採用 Azure AI Foundry 結合無需金鑰認證（Microsoft Entra ID）：
+### Azure AI Foundry（無金鑰認證）
+服務透過 SDK 以資源的 `/openai/v1/` 端點設定。`DefaultAzureCredential` 與 `AuthenticationUtil.getBearerTokenSupplier` 提供 Microsoft Entra 存取權杖，範圍是 `https://ai.azure.com/.default`。本地開發可使用 Azure CLI 登入，Azure 托管應用可用具有資源權限的管理身份識別。
 
-```java
-// 無鑰匙認證 - 無 API 金鑰
-DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-this.openAIClient = OpenAIOkHttpClient.builder()
-    .baseUrl(endpoint + "openai/v1/")
-    .credential(BearerTokenCredential.create(
-        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-    .build();
-```
-
-### 提示語工程
-服務使用精心設計的提示語取得良好結果：
-
-```java
-String systemPrompt = "You are a creative storyteller who writes fun, " +
-                     "family-friendly short stories about pets. " +
-                     "Keep stories under 500 words and appropriate for all ages.";
-```
+### 提示工程
+圖片分析請求模型以短段落描述可觀察的寵物特徵，指示模型將圖片文字視為資料而非指令。故事生成則使用回傳描述，以另行獨立且適合家庭的風格編寫。皆未啟用推理或設定溫度調整。
 
 ### 回應處理
-從 AI 回應中擷取並驗證有效資料：
+共享回應處理器會拒絕缺少選項或空白/僅空白內容，修剪有效內容並保留上游失敗。圖片描述限制為 1000 字元以適合後續故事表單。原始模型失敗記錄保留於診斷，未呈現給使用者。
 
-```java
-ChatCompletion response = openAIClient.chat().completions().create(params);
-String story = response.choices().get(0).message().content().orElse("");
-```
-
-## 後續步驟
+## 下一步
 
 更多範例請見 [第四章：實務範例](../README.md)
 

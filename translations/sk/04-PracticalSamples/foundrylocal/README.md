@@ -1,354 +1,230 @@
-# Foundry Local Spring Boot Tutoriál
+# Foundry Local Spring Boot Tutorial
 
-## Obsah
-
-- [Predpoklady](#prerekvizity)
-- [Prehľad projektu](#prehľad-projektu)
-- [Pochopenie kódu](#pochopenie-kódu)
-  - [1. Konfigurácia aplikácie (application.properties)](#1-konfigurácia-aplikácie-applicationproperties)
-  - [2. Hlavná trieda aplikácie (Application.java)](#2-hlavná-trieda-aplikácie-applicationjava)
-  - [3. Vrstva AI služby (FoundryLocalService.java)](#3-vrstva-ai-služby-foundrylocalservicejava)
-  - [4. Závislosti projektu (pom.xml)](#4-závislosti-projektu-pomxml)
-- [Ako to všetko spolu funguje](#ako-to-všetko-spolu-funguje)
-- [Nastavenie Foundry Local](#nastavenie-foundry-local)
-- [Spustenie aplikácie](#spustenie-aplikácie)
-- [Očakávaný výstup](#očakávaný-výstup)
-- [Ďalšie kroky](#ďalšie-kroky)
-- [Riešenie problémov](#riešenie-problémov)
+Spustite malý jazykový model na vlastnom počítači a volajte jeho OpenAI-kompatibilnú
+REST koncovku z konzolovej aplikácie v Jave. Nie je potrebné nasadenie Azure, prihlásenie do Azure,
+cloudový API kľúč ani cloudové inferencie. **GPT-5.6 Luna je len pre Azure; nekonfigurujte ho ako Foundry Local model.**
 
 
-## Prerekvizity
+## Verzie a požiadavky
 
-Pred začiatkom tohto tutoriálu sa uistite, že máte:
+| Komponent | Verzia |
+| --- | --- |
+| Java | 21 alebo novšia |
+| Maven | 3.6.3 alebo novšia |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Foundry Local SDK (lokálny REST server) | 2.0.1 |
+| Node.js (lokálny REST server) | 20 alebo novšia |
+| Foundry Local CLI (voliteľné, samostatné vydanie) | 0.10.3 preview |
 
-- **Java 21 alebo novšiu** nainštalovanú vo vašom systéme
-- **Maven 3.6+** na zostavenie projektu
-- **Foundry Local** nainštalovaný a spustený
+Spring Boot spravuje verzie Spring Framework, Jackson, JUnit a Maven pluginov.
+Tento príklad používa priamo OpenAI Java SDK, nie Spring AI. Staré nepoužívané
+vlastnosti a repozitár Spring AI milestone boli odstránené.
 
-### **Inštalácia Foundry Local:**
+Odporúčaný štartovací model je **Qwen 2.5 0.5B**, CPU varianta
+`qwen2.5-0.5b-instruct-generic-cpu:4` (približne 822 MB v katalógu).
+Vyhýba sa požiadavkám na GPU poskytovateľov vykonávania. Iné podporované, uložené malé modely
+je možné zvoliť explicitne. Inštalácia modelov a runtime vyžaduje prístup k sieti;
+požiadavky a inferencie zostávajú lokálne. Foundry Local môže stále vydávať minimálnu
+diagnostiku runtime aj pri neesenciálnej deaktivácii telemetrie.
 
-> **Poznámka:** Foundry Local CLI je dostupný iba pre **Windows** a **macOS**. Linux je podporovaný cez [Foundry Local SDKs](https://github.com/microsoft/Foundry-Local) (Python, JavaScript, C#, Rust).
+Spustite nasledujúce príkazy z tohto vzorového adresára.
 
-```bash
-# Windows
-winget install Microsoft.FoundryLocal
+## Skompilujte a otestujte Javou
 
-# macOS
-brew tap microsoft/foundrylocal
-brew install foundrylocal
+```powershell
+mvn clean verify
 ```
 
-Overte inštaláciu:
-```bash
+HTTP kontraktné testy spúšťajú dočasný loopback server a testujú samotné
+OpenAI Java SDK. Pokrývajú serializáciu požiadaviek, objavovanie modelov, explicitný výber modelu,
+nejednoznačné alebo neúplné zoznamy modelov, HTTP zlyhania, prázdne odpovede,
+lokálne URL adresy a propagáciu zlyhaní z príkazového riadku. Nepotrebujú model ani
+prístup k sieti okrem inštalácie závislostí Mavenom. Live test je opt-in.
+
+## Spustite lokálny model
+
+### Odporúčané: fixovaný SDK server
+
+Neexistuje natívne Foundry Local Java SDK. Malý pomocný Node.js hosťuje
+oficiálny REST server SDK; aplikácia a chat požiadavka zostávajú v Jave.
+
+Nainštalujte fixované runtime závislosti:
+
+```powershell
+npm ci
+```
+
+Ak Windows x64 nedosiahne NuGet počas natívnej inštalácie SDK, použite dodaný
+záložný spôsob. Stiahne zodpovedajúci oficiálny archív runtime z GitHubu, overí
+SHA-256 kontrolný súčet vydania a pripraví jeho DLL vedľa natívneho addonu. Nevypína
+TLS validáciu, nevyžaduje oprávnenia ani nemení zdroj SDK.
+
+```powershell
+npm ci --ignore-scripts
+pwsh -File ./scripts/install-foundry-runtime.ps1
+```
+
+Zoznam modelov už uložených v cache na tomto stroji:
+
+```powershell
+npm run start:foundry -- --list
+```
+
+Pri prvom spustení výslovne povoľte stiahnutie malého CPU modelu:
+
+```powershell
+npm run start:foundry -- --model qwen2.5-0.5b-instruct-generic-cpu:4 --download --port 5273
+```
+
+Pri ďalších spusteniach vynechajte `--download`, aby bol požadovaný model z cache:
+
+```powershell
+npm run start:foundry -- --model qwen2.5-0.5b-instruct-generic-cpu:4 --port 5273
+```
+
+Pomocník preferuje zodpovedajúci uložený model, akceptuje alias alebo presné ID variantu
+a odmieta chýbajúci model, pokiaľ nie je zadané `--download`. Zaregistruje iba
+vykonávacieho poskytovateľa vybraného modelu, keď je požadovaný. Uložené GPU varianty môžu
+stále potrebovať kompatibilné balíky a ovládače poskytovateľa vykonávania.
+
+Ak je port 5273 obsadený, zadajte `--port 0` pre dostupný port. Pomocník vypíše
+`FOUNDRY_LOCAL_BASE_URL`, presné `FOUNDRY_LOCAL_MODEL` ID a PID po pripravení.
+Použite vytlačenú koncovku v Jave. Nezatvárajte tento terminál počas behu Java;
+**Ctrl+C** zastaví REST server a uvoľní model.
+
+Predvolená cache je `~/.foundry/cache/models`. Nastavte `FOUNDRY_LOCAL_CACHE_DIR` pre
+inú existujúcu cache. Logy a stav pomocníka sa zapisujú pod adresár
+`target/foundry-local` tohto príkladu. Pred spustením `mvn clean` ukončite pomocníka.
+
+### Voliteľné: Foundry Local CLI
+
+CLI a SDK majú nezávislé vydania: CLI **0.10.3** obsahuje SDK **1.2.4**;
+zahrnutý pomocník používa SDK **2.0.1**. Inštalácia najnovšieho CLI neznamená inštaláciu
+najnovšieho jazykového SDK. Viď [poznámky k vydaniu CLI](https://github.com/microsoft/Foundry-Local/releases/tag/cli-preview-0.10.3).
+
+Na Windows používajte príkaz inštalácie pre používateľa, ak CLI chýba:
+
+```powershell
+winget install --id Microsoft.FoundryLocal --exact --source winget --scope user --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
+```
+
+Alebo aktualizujte existujúcu inštaláciu:
+
+```powershell
+winget upgrade --id Microsoft.FoundryLocal --exact --source winget --scope user --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
 foundry --version
 ```
 
-## Prehľad projektu
+CLI 0.10.x nahrádza staré príkazy `foundry service` príkazom `foundry server`:
 
-Tento projekt pozostáva zo štyroch hlavných komponentov:
-
-1. **Application.java** - Hlavný vstupný bod Spring Boot aplikácie
-2. **FoundryLocalService.java** - Vrstva služby, ktorá rieši komunikáciu s AI
-3. **application.properties** - Konfigurácia spojenia s Foundry Local
-4. **pom.xml** - Maven závislosti a konfigurácia projektu
-
-## Pochopenie kódu
-
-### 1. Konfigurácia aplikácie (application.properties)
-
-**Súbor:** `src/main/resources/application.properties`
-
-```properties
-foundry.local.base-url=http://localhost:5273/v1
-# foundry.local.model is auto-detected from Foundry Local. Set it here to override:
-# foundry.local.model=Phi-4-mini-instruct-cuda-gpu:5
+```powershell
+foundry server start --port 5273
+foundry cache list
+foundry model load qwen2.5-0.5b-instruct-generic-cpu:4
+foundry server status --output json
 ```
 
-**Čo to robí:**
-- **base-url**: Špecifikuje, kde Foundry Local beží, vrátane cesty `/v1` pre kompatibilitu s OpenAI API. Predvolený port je `5273`. Ak sa port líši, skontrolujte ho príkazom `foundry service status`.
-- **model** (voliteľné): Názov AI modelu použitého na generovanie textu. **Aplikácia štandardne automaticky zistí model** dotazom na `/v1/models` Foundry Local pri štarte, takže ho nemusíte nastavovať. Môžete ho nastaviť explicitne, ak chcete prekonať automatickú detekciu.
+`model load` potrebuje už stiahnutý model. Skontrolujte `foundry model --help` pre
+príkazy na stiahnutie. Používajte aktuálnu koncovku zo statusového výstupu; CLI inak
+používa automaticky priradený port. Nespúšťajte CLI a SDK pomocníka na rovnakom porte.
+Po dokončení:
 
-**Kľúčový koncept:** Spring Boot automaticky načíta tieto vlastnosti a sprístupní ich aplikácii pomocou anotácie `@Value`.
-
-### 2. Hlavná trieda aplikácie (Application.java)
-
-**Súbor:** `src/main/java/com/example/Application.java`
-
-```java
-@SpringBootApplication
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(Application.class);
-        app.setWebApplicationType(WebApplicationType.NONE);  // Nie je potrebný webový server
-        app.run(args);
-    }
+```powershell
+foundry server stop
 ```
 
-**Čo to robí:**
-- `@SpringBootApplication` umožňuje automatickú konfiguráciu Spring Boot
-- `WebApplicationType.NONE` hovorí Springu, že ide o príkazový riadok, nie webový server
-- Hlavná metóda spúšťa Spring aplikáciu
+## Spustite Java aplikáciu
 
-**Demo spúšťač:**
-```java
-@Bean
-public CommandLineRunner foundryLocalRunner(FoundryLocalService foundryLocalService) {
-    return args -> {
-        System.out.println("=== Foundry Local Demo ===");
-        System.out.println("Calling Foundry Local service...");
-        
-        String testMessage = "Hello! Can you tell me what you are and what model you're running?";
-        System.out.println("Sending message: " + testMessage);
-        
-        String response = foundryLocalService.chat(testMessage);
-        System.out.println("Response from Foundry Local:");
-        System.out.println(response);
-        System.out.println("=========================");
-    };
-}
-```
+V druhom termináli nastavte koncovku a presné ID modelu, ktoré vám server vytlačil:
 
-**Čo to robí:**
-- `@Bean` vytvára komponentu, ktorú Spring spravuje
-- `CommandLineRunner` spustí kód po štarte Spring Boot
-- `foundryLocalService` je automaticky injektovaný Springom (injektáž závislostí)
-- Posiela testovaciu správu AI a zobrazí odpoveď
-
-### 3. Vrstva AI služby (FoundryLocalService.java)
-
-**Súbor:** `src/main/java/com/example/FoundryLocalService.java`
-
-#### Injektáž konfigurácie:
-```java
-@Service
-public class FoundryLocalService {
-    
-    @Value("${foundry.local.base-url:http://localhost:5273/v1}")
-    private String baseUrl;
-    
-    @Value("${foundry.local.model:}")
-    private String model;    // Automaticky zistené, ak je prázdne
-```
-
-**Čo to robí:**
-- `@Service` hovorí Springu, že táto trieda poskytuje obchodnú logiku
-- `@Value` injektuje hodnoty konfigurácie z application.properties
-- Model je predvolene prázdny, čo spúšťa **automatickú detekciu** modelu zo Foundry Local pri štarte. To znamená, že aplikácia funguje s akýmkoľvek modelom nahraným v Foundry Local bez manuálnej konfigurácie.
-
-#### Inicializácia klienta:
-```java
-@PostConstruct
-public void init() {
-    // Automaticky zistiť model z Foundry Local, ak nie je explicitne nakonfigurovaný
-    if (model == null || model.isBlank()) {
-        model = detectModel();
-    }
-
-    this.openAIClient = OpenAIOkHttpClient.builder()
-            .baseUrl(baseUrl)                // Základná URL už obsahuje /v1 z konfigurácie
-            .apiKey("not-needed")            // Lokálny server nepotrebuje skutočný API kľúč
-            .build();
-}
-```
-
-**Čo to robí:**
-- `@PostConstruct` spustí túto metódu po vytvorení služby Springom
-- Ak nie je nastavený model, dotazuje sa na `/v1/models` Foundry Local a zvolí prvý nahraný model
-- Vytvorí OpenAI klienta, ktorý smeruje na vašu lokálnu inštanciu Foundry Local
-- Base URL z `application.properties` už obsahuje `/v1` pre kompatibilitu s OpenAI API
-- API kľúč je nastavený na "not-needed", pretože lokálny vývoj nevyžaduje autentifikáciu
-
-#### Metóda pre chat:
-```java
-public String chat(String message) {
-    try {
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(model)                    // Ktorý AI model použiť
-                .addUserMessage(message)         // Vaša otázka/podnet
-                .maxCompletionTokens(150)        // Obmedziť dĺžku odpovede
-                .temperature(0.7)                // Ovládanie kreativity (0.0-1.0)
-                .build();
-        
-        ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
-        
-        // Extrahovať odpoveď AI z výsledku API
-        if (chatCompletion.choices() != null && !chatCompletion.choices().isEmpty()) {
-            return chatCompletion.choices().get(0).message().content().orElse("No response found");
-        }
-        
-        return "No response content found";
-    } catch (Exception e) {
-        throw new RuntimeException("Error calling chat completion: " + e.getMessage(), e);
-    }
-}
-```
-
-**Čo to robí:**
-- **ChatCompletionCreateParams**: Konfiguruje požiadavku na AI
-  - `model`: Špecifikuje AI model na použitie (musí presne zodpovedať ID z `foundry model list`)
-  - `addUserMessage`: Pridá vašu správu do konverzácie
-  - `maxCompletionTokens`: Ohradzuje dĺžku odpovede (šetrí zdroje)
-  - `temperature`: Kontroluje náhodnosť (0.0 = deterministické, 1.0 = kreatívne)
-- **API volanie**: Posiela požiadavku Foundry Local
-- **Spracovanie odpovede**: Bezpečne získa textovú odpoveď AI
-- **Riešenie chýb**: Zabalí výnimky s užitočnými chybovými hláseniami
-
-### 4. Závislosti projektu (pom.xml)
-
-**Kľúčové závislosti:**
-
-```xml
-<!-- Spring Boot - Application framework -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter</artifactId>
-    <version>${spring-boot.version}</version>
-</dependency>
-
-<!-- OpenAI Java SDK - For AI API calls -->
-<dependency>
-    <groupId>com.openai</groupId>
-    <artifactId>openai-java</artifactId>
-    <version>2.12.0</version>
-</dependency>
-
-<!-- Jackson - JSON processing -->
-<dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-    <version>2.17.0</version>
-</dependency>
-```
-
-**Čo to robia:**
-- **spring-boot-starter**: Poskytuje základnú funkcionalitu Spring Boot
-- **openai-java**: Oficiálne OpenAI Java SDK pre komunikáciu s API
-- **jackson-databind**: Spracováva serializáciu/deserializáciu JSON pre API volania
-
-## Ako to všetko spolu funguje
-
-Tu je kompletný tok, keď spustíte aplikáciu:
-
-1. **Štart**: Spring Boot sa spustí a načíta `application.properties`
-2. **Vytvorenie služby**: Spring vytvorí `FoundryLocalService` a injektuje konfiguračné hodnoty
-3. **Detekcia modelu**: Ak nie je model nastavený, služba sa dotáže Foundry Local `/v1/models` a automaticky použije prvý dostupný model
-4. **Nastavenie klienta**: `@PostConstruct` inicializuje OpenAI klienta na prepojenie s Foundry Local
-5. **Spustenie demo**: `CommandLineRunner` sa vykoná po štarte
-6. **Volanie AI**: Demo zavolá `foundryLocalService.chat()` s testovacou správou
-7. **Žiadosť API**: Služba vytvorí a odošle OpenAI-kompatibilnú požiadavku Foundry Local
-8. **Spracovanie odpovede**: Služba extrahuje a vráti odpoveď AI
-9. **Zobrazenie**: Aplikácia vytlačí odpoveď a skončí
-
-## Nastavenie Foundry Local
-
-1. **Nainštalujte Foundry Local** podľa inštrukcií v sekcii [Prerekvizity](#prerekvizity).
-
-2. **Spustite službu** (ak ešte neběží):
-   ```bash
-   foundry service start
-   ```
-
-3. **Skontrolujte stav služby** a zapamätajte si port:
-   ```bash
-   foundry service status
-   ```
-
-4. **Stiahnite a spustite model** (pri prvom spustení sa stiahne, na ďalšie spustenia je už v cache):
-   ```bash
-   foundry model run phi-4-mini
-   ```
-   Tento príkaz otvorí interaktívnu chatovaciu reláciu. Ukončíte ju stlačením `Ctrl+C`. Model zostáva nahraný v službe.
-
-   > **Tip:** Spustite `foundry model list` pre zobrazenie všetkých dostupných modelov. Nahradte `phi-4-mini` ľubovoľnou aliasom z katalógu (napr. `qwen2.5-0.5b` pre menší/rychlejší model).
-
-5. **Overte, že je model nahraný:**
-   ```bash
-   foundry service ps
-   ```
-
-6. **Aktualizujte `application.properties` ak je potrebné:**
-   - Predvolený `base-url` (`http://localhost:5273/v1`) zodpovedá predvolenému portu CLI. Aktualizujte len, ak `foundry service status` ukáže iný port.
-   - Model je **automaticky detekovaný** pri štarte — konfigurácia nie je potrebná.
-
-   ```properties
-   foundry.local.base-url=http://localhost:5273/v1
-   # Model is auto-detected. Uncomment below to override:
-   # foundry.local.model=Phi-4-mini-instruct-cuda-gpu:5
-   ```
-
-## Spustenie aplikácie
-
-### Krok 1: Uistite sa, že je model nahraný v Foundry Local
-```bash
-foundry service ps
-```
-Ak nie sú žiadne modely, nahrajte jeden:
-```bash
-foundry model run phi-4-mini
-```
-
-### Krok 2: Skompilujte a spustite aplikáciu
-V inom termináli:
-```bash
-cd 04-PracticalSamples/foundrylocal
+```powershell
+$env:FOUNDRY_LOCAL_BASE_URL = "http://127.0.0.1:5273/v1"
+$env:FOUNDRY_LOCAL_MODEL = "qwen2.5-0.5b-instruct-generic-cpu:4"
 mvn spring-boot:run
 ```
 
-Alebo zostavte a spustite ako JAR:
-```bash
-mvn clean package
+Alebo spustite zabalenú aplikáciu:
+
+```powershell
 java -jar target/foundry-local-spring-boot-0.0.1-SNAPSHOT.jar
 ```
 
-## Očakávaný výstup
+Jediným vstupným bodom v Jave je `com.example.Application`. Vytlačí vybranú
+koncovku, aktuálne ID modelu, prompt a vygenerovanú odpoveď, potom zatvorí Spring
+kontext a HTTP klienta. Neúspešné inferencie alebo chýbajúci text odpovede spôsobí
+zlyhanie ukončenia namiesto uspiešne tvarovaného zástupcu.
 
+### Konfigurácia
+
+| Premenná prostredia | Predvolené | Účel |
+| --- | --- | --- |
+| `FOUNDRY_LOCAL_BASE_URL` | `http://127.0.0.1:5273/v1` | Loopback HTTP koncovka, vrátane `/v1` |
+| `FOUNDRY_LOCAL_MODEL` | Prázdne | Presné ID modelu; inak sa vyberie jediný inzerovaný model |
+| `FOUNDRY_LOCAL_PROMPT` | Jednosentencová otázka o lokálnych modeloch | Prompt posielaný konzolovým spúšťačom |
+
+Ekvivalentné Spring argumenty sú `--foundry.local.base-url=...`,
+`--foundry.local.model=...`, a `--foundry.local.prompt=...`.
+Prijímajú sa iba loopback HTTP koncovky. Vzdialené/cloudové koncovky, vložené
+poverenia, query stringy a cesty bez `/v1` sa odmietajú.
+
+Prázdna hodnota modelu funguje len ak `/v1/models` inzeruje presne jeden model.
+Inzerovaný model nemusí byť nutne načítaný. Ak sa inzeruje viac modelov,
+nastavte presné načítané ID namiesto spoliehania sa na poradie v katalógu.
+
+Požiadavky používajú `temperature=0`, limit výstupu 150 tokenov, timeout 120 sekúnd a
+žiadne automatické opakovania. Pole požiadavky `max_tokens` je zámerné:
+podporuje ho Foundry Local REST kontrakt, aj keď OpenAI Java deprecated
+to pole pre novšie cloudové modely. Identita modelu pochádza z konfigurácie alebo
+zisťovania, nie z tvrdení samotného modelu o sebe.
+
+## Živá validácia
+
+Pri spustenom lokálnom serveri spustite všetky testy vrátane voliteľného živého testu.
+Nahraďte port koncového bodu hodnotou, ktorú vytlačí váš server. V PowerShellu uvádzajte bodky v
+vlastnostiach Maven v úvodzovkách:
+
+```powershell
+mvn "-Dfoundry.local.live=true" "-Dfoundry.local.base-url=http://127.0.0.1:5273/v1" "-Dfoundry.local.model=qwen2.5-0.5b-instruct-generic-cpu:4" verify
 ```
-=== Foundry Local Demo ===
-Calling Foundry Local service...
-Sending message: Hello! Can you tell me what you are and what model you're running?
-Response from Foundry Local:
-Hello! I'm Phi, an AI developed by Microsoft. I can assist with a wide variety of 
-tasks including answering questions, helping with analysis, creative writing, coding, 
-and general conversation. How can I help you today?
-=========================
-```
 
-## Ďalšie kroky
+Živý test zavolá `Application.main`, dodá fakt „Hlavné mesto
+Francúzska je Paríž,“ vypýta si mesto a overí, že skutočný vygenerovaný text je
+`Paríž`. Kontroluje sémantický výsledok, nie len úspešný HTTP status.
 
-Pre viac príkladov pozrite [Kapitolu 04: Praktické príklady](../README.md)
+Toto je integračná kontrola, nie benchmark presnosti. Počas validácie
+0,5B model odpovedal na samostatný prompt „2 + 2“ hodnotou `3` v Jave aj priamo cez
+REST. Nespoliehajte sa naňho pri aritmetike alebo faktickej presnosti bez nezávislej
+overy; pre výpočty používajte deterministické nástroje.
 
 ## Riešenie problémov
 
-### Bežné problémy
+| Príznak | Skontrolujte |
+| --- | --- |
+| Pripojenie odmietnuté | Počkajte na správu o pripravenosti; použite vytlačený port a cestu `/v1`. |
+| Viacero modelov oznámených | Nastavte `FOUNDRY_LOCAL_MODEL` na presné ID načítaného modelu. |
+| Model chýba | Použite `--list` alebo explicitne povoľte stiahnutie s `--download`. |
+| Poskytovateľ GPU zlyháva alebo zamŕza | Použite malý CPU model. Kešovaný GPU model stále potrebuje svojho poskytovateľa. |
+| CLI zostáva v stave `initializing` | Prečítajte si `foundry server logs --lines 80`; zastavte démona a použite SDK pomocníka. |
+| NuGet TLS/ťahanie zlyhalo | Opravte sieťový prístup alebo použite overenú Windows x64 náhradnú možnosť vyššie. Neposkytujte TLS. |
+| Port obsadený | Použite `--port 0` a nakonfigurujte Javu podľa vytlačeného koncového bodu. |
+| Žiadne možnosti alebo prázdny text | Aplikácia zámerne zlyhala; skontrolujte model a logy runtime. |
 
-**„Connection refused“ alebo „Service unavailable“**
-- Skontrolujte službu: `foundry service status`
-- Reštartujte ak treba: `foundry service restart`
-- Skontrolujte, či port v `application.properties` zodpovedá výstupu `foundry service status`
-- Uistite sa, že URL končí na `/v1`: `http://localhost:5273/v1`
+## Zdroj a odkazy
 
-**„No model found“ pri štarte**
-- Aplikácia automaticky detekuje model. Uistite sa, že je aspoň jeden model nahraný: `foundry service ps`
-- Ak nie sú nahrané modely: `foundry model run phi-4-mini`
-- Ak ste prepisovali názov modelu v `application.properties`, overte jeho zhodu s `foundry model list`
-
-**Chyby „400 Bad Request“**
-- Skontrolujte, že base URL obsahuje `/v1`: `http://localhost:5273/v1`
-- Používajte `maxCompletionTokens()` v kóde, nie zastaralé `maxTokens()`
-
-**Chyby kompilácie Maven**
-- Uistite sa, že používate Java 21 alebo novšiu: `java -version`
-- Vyčistite a zostavte projekt: `mvn clean compile`
-- Skontrolujte internetové pripojenie pre sťahovanie závislostí
-
-**Problémy s pripojením k službe**
-- Ak vidíte `Request to local service failed`, spustite: `foundry service restart`
-- Skontrolujte nahrané modely: `foundry service ps`
-- Prezrite logy služby: `foundry service diag`
+- [Application.java](../../../../04-PracticalSamples/foundrylocal/src/main/java/com/example/Application.java): jednorazový Spring Boot runner.
+- [FoundryLocalService.java](../../../../04-PracticalSamples/foundrylocal/src/main/java/com/example/FoundryLocalService.java): typová detekcia a lokálne chat doplnenia.
+- [FoundryLocalServiceTest.java](../../../../04-PracticalSamples/foundrylocal/src/test/java/com/example/FoundryLocalServiceTest.java): HTTP kontrakt, runner a živé testy.
+- [start-foundry.mjs](../../../../04-PracticalSamples/foundrylocal/scripts/start-foundry.mjs): oficiálny SDK REST server s výberom kešovaných modelov a čistením.
+- [install-foundry-runtime.ps1](../../../../04-PracticalSamples/foundrylocal/scripts/install-foundry-runtime.ps1): overená Windows x64 natívna náhradná možnosť.
+- [application.properties](../../../../04-PracticalSamples/foundrylocal/src/main/resources/application.properties), [pom.xml](../../../../04-PracticalSamples/foundrylocal/pom.xml) a [package.json](../../../../04-PracticalSamples/foundrylocal/package.json): konfigurácia a závislosti.
+- [Foundry Local REST integrácia](https://learn.microsoft.com/azure/foundry-local/how-to/how-to-integrate-with-inference-sdks).
+- [Foundry Local 2.0.1 vydanie a poznámky k migrácii](https://github.com/microsoft/Foundry-Local/releases/tag/v2.0.1).
+- [Kapitola 04: Praktické príklady](../README.md).
 
 ---
 
 <!-- CO-OP TRANSLATOR DISCLAIMER START -->
-**Zrieknutie sa zodpovednosti**:  
-Tento dokument bol preložený pomocou AI prekladateľskej služby [Co-op Translator](https://github.com/Azure/co-op-translator). Hoci sa snažíme o presnosť, berte prosím na vedomie, že automatické preklady môžu obsahovať chyby alebo nepresnosti. Originálny dokument v jeho pôvodnom jazyku sa považuje za autoritatívny zdroj. Pre kritické informácie sa odporúča profesionálny ľudský preklad. Za akékoľvek nedorozumenia alebo nesprávne interpretácie vyplývajúce z použitia tohto prekladu nenesieme zodpovednosť.
+**Vyhlásenie o zodpovednosti**:
+Tento dokument bol preložený pomocou AI prekladateľskej služby [Co-op Translator](https://github.com/Azure/co-op-translator). Hoci sa snažíme o presnosť, vezmite prosím na vedomie, že automatické preklady môžu obsahovať chyby alebo nepresnosti. Pôvodný dokument v jeho natívnom jazyku by mal byť považovaný za autoritatívny zdroj. Pre kritické informácie sa odporúča profesionálny ľudský preklad. Nie sme zodpovední za žiadne nedorozumenia alebo nesprávne interpretácie vyplývajúce z použitia tohto prekladu.
 <!-- CO-OP TRANSLATOR DISCLAIMER END -->

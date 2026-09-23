@@ -1,38 +1,48 @@
-# Pet Story Generator Tutorial for Beginners
+# Pet Story Generator Tori Tok for Beginners
+
+Upload pet foto, use GPT-5.6 Luna check am, then make tori from di description wey e give. Both model request dey use `reasoning_effort: none`.
+
+| Component | Version |
+| --- | --- |
+| Java | 21 or pass |
+| Spring Boot | 4.1.1 |
+| OpenAI Java SDK | 4.63.1 |
+| Azure Identity | 1.18.6 |
 
 ## Table of Contents
 
-- [Prerequisites](#prerequisites)
-- [Understanding the Project Structure](#understanding-the-project-structure)
-- [Core Components Explained](#core-components-explained)
+- [Wetin You Go Need](#wetin-you-go-need)
+- [How Project Setup Be](#how-project-setup-be)
+- [Wetin Di Core Components Mean](#wetin-di-core-components-mean)
   - [1. Main Application](#1-main-application)
   - [2. Web Controller](#2-web-controller)
   - [3. Story Service](#3-story-service)
   - [4. Web Templates](#4-web-templates)
   - [5. Configuration](#5-configuration)
-- [Running the Application](#running-the-application)
-- [How It All Works Together](#how-it-all-works-together)
-- [Understanding the AI Integration](#understanding-the-ai-integration)
+- [How To Run Di Application](#how-to-run-di-application)
+- [Offline Tests](#offline-tests)
+- [How E Dey Work Together](#how-e-dey-work-together)
+- [How AI Dem Join Am](#how-ai-dem-join-am)
 - [Next Steps](#next-steps)
 
-## Prerequisites
+## Wetin You Go Need
 
-Before you start, make sure say you get:
-- Java 21 or beta version wey pass dat
-- Maven for how to manage the things wey your code need
-- Azure AI Foundry model wey you deploy for ground (arrange am with `azd up` — see [Chapter 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md)), signin wit `az login` (no need API key)
-- Small sabi for Java, Spring Boot, and how web development dey work
+Before you start, make sure say:
+- Java 21 or pass dey installed
+- Maven dey for dependency management
+- Azure AI Foundry GPT-5.6 Luna deployment wey dem name `gpt-5.6-luna`, or make you get `AZURE_OPENAI_DEPLOYMENT` override wey point to dat deployment. See [Chapter 2](../../02-SetupDevEnvironment/getting-started-azure-openai.md) for how to arrange am and sign in with `az login` for keyless authentication. Di deployment gats fit take image input and `reasoning_effort: none`.
+- Basic sabi Java, Spring Boot, and web development
 
-## Understanding the Project Structure
+## How Project Setup Be
 
-The pet story project get different important files:
+Di pet story project get plenti important files:
 
 ```
 petstory/
 ├── src/main/java/com/example/petstory/
 │   ├── PetStoryApplication.java       # Main Spring Boot application
 │   ├── PetController.java             # Web request handler
-│   ├── StoryService.java              # AI story generation service
+│   ├── StoryService.java              # AI image analysis and story generation
 │   └── SecurityConfig.java            # Security configuration
 ├── src/main/resources/
 │   ├── application.properties         # App configuration
@@ -42,13 +52,13 @@ petstory/
 └── pom.xml                           # Maven dependencies
 ```
 
-## Core Components Explained
+## Wetin Di Core Components Mean
 
 ### 1. Main Application
 
 **File:** `PetStoryApplication.java`
 
-Na here we start our Spring Boot application:
+Na di main entry point for our Spring Boot application be dis:
 
 ```java
 @SpringBootApplication
@@ -59,212 +69,53 @@ public class PetStoryApplication {
 }
 ```
 
-**Wetin this one dey do:**
-- `@SpringBootApplication` annotation dey enable auto-configuration plus e dey check make e find components automatically
+**Wetin dis one dey do:**
+- `@SpringBootApplication` annotation dey enable auto-configuration and component scanning
 - E dey start embedded web server (Tomcat) for port 8080
-- E go create all Spring beans and services wey e need automatically
+- E dey automatically create all Spring beans and services wey necessary
 
 ### 2. Web Controller
 
-**File:** `PetController.java`
+**File:** [PetController.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/PetController.java)
 
-Na im e dey handle all the web request and how user dem dey interact:
+| Endpoint | Request | Successful response |
+| --- | --- | --- |
+| `GET /` | No body | HTML upload form wey get CSRF token |
+| `POST /analyze-image` | `multipart/form-data`, file field `image` | JSON: `{"description":"A playful pet..."}` |
+| `POST /generate-story` | `application/x-www-form-urlencoded`, field `description` | HTML result page wey get di description and di created story |
 
-```java
-@Controller
-public class PetController {
-    
-    private final StoryService storyService;
-    
-    public PetController(StoryService storyService) {
-        this.storyService = storyService;
-    }
-    
-    @GetMapping("/")
-    public String index() {
-        return "index";  // Returns index.html template
-    }
-    
-    @PostMapping("/generate-story")
-    public String generateStory(@RequestParam("description") String description, 
-                               Model model, 
-                               RedirectAttributes redirectAttributes) {
-        
-        // Check di input
-        if (description.trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Please provide a description.");
-            return "redirect:/";
-        }
-        
-        // Clean di input make e safe
-        String sanitizedDescription = sanitizeInput(description);
-        
-        // Make story wit error handling
-        try {
-            String story = storyService.generateStory(sanitizedDescription);
-            model.addAttribute("caption", sanitizedDescription);
-            model.addAttribute("story", story);
-            return "result";  // Returns result.html template
-            
-        } catch (Exception e) {
-            // Use fallback story if AI no work
-            String fallbackStory = generateFallbackStory(sanitizedDescription);
-            model.addAttribute("story", fallbackStory);
-            return "result";
-        }
-    }
-    
-    private String sanitizeInput(String input) {
-        return input.replaceAll("[<>\"'&]", "")  // Remove dangerous characters
-                   .trim()
-                   .substring(0, Math.min(input.length(), 500));  // Limit di length
-    }
-}
-```
+Both POST endpoints gats session cookie and CSRF token wey you get from `GET /`. Di upload script dey send di hidden `_csrf` value for `X-CSRF-TOKEN` header; story submission go send am as `_csrf` form field. API clients gats save di cookie between requests. Dem be form endpoints, no be JSON request endpoints.
 
-**Main thing dem:**
+Description gats no empty and no pass 1000 characters. Di controller go trim description, remove `<`, `>`, double quotes, apostrophes, and `&` before e pass am to di service. Di result template go also escape model output with `th:text`.
 
-1. **Route Handling**: `@GetMapping("/")` go show upload form, `@PostMapping("/generate-story")` go process wetin user send
-2. **Input Validation**: E check say description no empty and e no pass size wey dem set
-3. **Security**: E clean wetin user put make e no get XSS attack
-4. **Error Handling**: E get backup stories if AI service no fit work
-5. **Model Binding**: E pass data go HTML templates with Spring `Model`
-
-**Fallback System:**
-Controller get pre-made story templates wey e go use if AI service no dey:
-
-```java
-private String generateFallbackStory(String description) {
-    String[] storyTemplates = {
-        "Meet the most wonderful pet in the world – a furry ball of energy...",
-        "Once upon a time, there lived a remarkable pet whose heart was as big...",
-        "In a cozy home filled with love, there lived an extraordinary pet..."
-    };
-    
-    // Use description hash make responses dey consistent
-    int index = Math.abs(description.hashCode() % storyTemplates.length);
-    return storyTemplates[index];
-}
-```
+If image validation fail, e go return HTTP 400 with `error` field; model failure go return HTTP 502 with `error` field and no `description`. Wrong story description or model failure go redirect go `/` with error wey you fit see. If required fields miss, e go return HTTP 400, and if CSRF token miss or no valid, e go return HTTP 403. No fallback descriptions or stories dey show as successful AI results.
 
 ### 3. Story Service
 
-**File:** `StoryService.java`
+**File:** [StoryService.java](../../../../04-PracticalSamples/petstory/src/main/java/com/example/petstory/StoryService.java)
 
-This service dey communicate with Azure AI Foundry to create stories, e dey use keyless authentication:
+Di official OpenAI Java SDK 4.63.1 dey call Azure AI Foundry OpenAI-compatible Chat Completions API. Azure Identity 1.18.6 dey provide Microsoft Entra bearer token through `DefaultAzureCredential`; no API key tey tey require.
 
-```java
-@Service
-public class StoryService {
-    
-    private final OpenAIClient openAIClient;
-    private final String modelName;
-    
-    public StoryService(@Value("${azure.openai.endpoint:}") String endpoint,
-                       @Value("${azure.openai.deployment:gpt-4o-mini}") String modelName) {
-        this.modelName = modelName;
-        if (endpoint == null || endpoint.isBlank()) {
-            endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
-        }
-        
-        // Foundry openai-compatible endpoint dey under /openai/v1/
-        String baseUrl = (endpoint.endsWith("/") ? endpoint : endpoint + "/") + "openai/v1/";
-        
-        // Keyless authentication wit Microsoft Entra ID (no API key)
-        DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-        this.openAIClient = OpenAIOkHttpClient.builder()
-                .baseUrl(baseUrl)
-                .credential(BearerTokenCredential.create(
-                        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-                .build();
-    }
-    
-    public String generateStory(String description) {
-        String systemPrompt = "You are a creative storyteller who writes fun, " +
-                             "family-friendly short stories about pets. " +
-                             "Keep stories under 500 words and appropriate for all ages.";
-        
-        String userPrompt = "Write a fun short story about a pet described as: " + description;
-        
-        // Configure di AI request
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(modelName)
-                .addSystemMessage(systemPrompt)
-                .addUserMessage(userPrompt)
-                .maxCompletionTokens(500)  // Limit how long di response go be
-                .temperature(0.8)          // Control how creative e go be (0.0-1.0)
-                .build();
-        
-        // Send di request make you get di response
-        ChatCompletion response = openAIClient.chat().completions().create(params);
-        
-        return response.choices().get(0).message().content().orElse("");
-    }
-}
-```
+| Operation | Input | `max_completion_tokens` |
+| --- | --- | --- |
+| `analyzeImage` | Image bytes wey encoded as base64 data URL with uploaded MIME type | 300 |
+| `generateStory` | Pet description for user message | 800 |
 
-**Main parts:**
+Both request dey use di configured deployment, wey by default na `gpt-5.6-luna`, and dem set `ReasoningEffort.NONE` (`reasoning_effort: none`). No request dey send `temperature` or old `max_tokens` parameter.
 
-1. **OpenAI Client**: E dey use official OpenAI Java SDK wey setup for Azure AI Foundry (keyless)
-2. **System Prompt**: E tell AI how e suppose take behave, to write stories wey make family dem happy about pets
-3. **User Prompt**: E tell AI exact story wey e go write based on description
-4. **Parameters**: E control story length and how creative e suppose be
-5. **Error Handling**: E throw exceptions wey controller go catch and manage
+Image analysis fit handle JPEG, PNG, GIF, and WebP, e no go accept empty images or files wey pass 10MB, and e limit description to 1000 characters. Di story prompt dey ask for short family-friendly story. Empty choices or blank model content be error, and failure go keep original cause for server diagnosis. SDK client go close wen application shut down.
 
 ### 4. Web Templates
 
-**File:** `index.html` (Upload Form)
+**File:** [index.html](../../../../04-PracticalSamples/petstory/src/main/resources/templates/index.html) (Upload Form)
 
-Na main page wey user go describe their pets:
+Di page dey start wit photo picker, no be description text area. **Analyze Image** go preview di selected photo and post am go `/analyze-image`. If e successful, e go show description, fill hidden `description` field, and make **Generate Story** show. Dis button go submit di form to `/generate-story`.
 
-```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Pet Story Generator</title>
-    <!-- CSS styling -->
-</head>
-<body>
-    <div class="container">
-        <h1>Pet Story Generator</h1>
-        <p>Describe your pet and we'll create a fun story about them!</p>
-        
-        <!-- Error message display -->
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-        
-        <!-- Story generation form -->
-        <form action="/generate-story" method="post">
-            <div class="form-group">
-                <label for="description">Describe your pet:</label>
-                <textarea id="description" name="description" 
-                         placeholder="Tell us about your pet - what they look like, their personality, favorite activities..."
-                         maxlength="1000" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Generate Story</button>
-        </form>
-        
-        <!-- Image upload section with client-side processing -->
-        <div class="upload-section">
-            <h2>Or Upload a Photo</h2>
-            <input type="file" id="imageInput" accept="image/*" />
-            <button onclick="analyzeImage()" class="upload-btn">Analyze Image</button>
-        </div>
-        
-        <script>
-            // Client-side image analysis using Transformers.js
-            async function analyzeImage() {
-                // Image processing code here
-                // Generates description automatically from uploaded image
-            }
-        </script>
-    </div>
-</body>
-</html>
-```
+No browser model download or CDN dey. Image analysis dey run on server through Azure deployment. Failure go remain visible, no story generation with fake description. If you select different file, e go clear old analysis.
 
 **File:** `result.html` (Story Display)
 
-Na here e go show the story wey e generate:
+E dey show di generated story:
 
 ```html
 <!DOCTYPE html>
@@ -299,16 +150,16 @@ Na here e go show the story wey e generate:
 
 **Template features:**
 
-1. **Thymeleaf Integration**: E use `th:` attributes for dynamic content
+1. **Thymeleaf Integration**: E dey use `th:` attributes for dynamic content
 2. **Responsive Design**: CSS styling for mobile and desktop
-3. **Error Handling**: E dey show users validation error messages
-4. **Client-side Processing**: JavaScript dey do image analysis (using Transformers.js)
+3. **Error Handling**: E dey show validation errors to users
+4. **Upload Handling**: JavaScript dey preview foto, send CSRF-protected multipart request, and display description wey e return
 
 ### 5. Configuration
 
 **File:** `application.properties`
 
-Na how the application settings be:
+Di settings for application configuration:
 
 ```properties
 spring.application.name=pet-story-app
@@ -322,21 +173,21 @@ logging.level.com.example.petstory=INFO
 
 # Azure AI Foundry (keyless) configuration
 azure.openai.endpoint=${AZURE_OPENAI_ENDPOINT:}
-azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-4o-mini}
+azure.openai.deployment=${AZURE_OPENAI_DEPLOYMENT:gpt-5.6-luna}
 ```
 
-**Configuration explanation:**
+**Wetin configuration mean:**
 
-1. **File Upload**: E allow images wey size reach 10MB
-2. **Logging**: E control wetin e go log while e dey run
-3. **Azure AI Foundry**: E specify endpoint and model deployment wey e go use (keyless auth)
-4. **Security**: E configure error handling make e no show secret info
+1. **File Upload**: Both file and complete multipart request size capped at 10MB; try make photos below dis limit to allow multipart headers
+2. **Logging**: E control wetin dem dey log during application run
+3. **Azure AI Foundry**: E specify endpoint and model deployment to use (keyless auth)
+4. **Security**: CSRF protection still dey active; model diagnostics dey logged on server, controller go just show general model failure message
 
-## Running the Application
+## How To Run Di Application
 
 ### Step 1: Sign In and Set Your Endpoint
 
-Authentication no need key (e use Microsoft Entra ID), so no API key necessary. Sign in and set your Foundry endpoint:
+Authentication no need key (Microsoft Entra ID), so no API key dey involved. Sign in and set your Foundry endpoint:
 
 **Windows (Command Prompt):**
 ```cmd
@@ -356,93 +207,91 @@ az login
 export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 ```
 
-**Why you need am:**
-- Azure AI Foundry dey use Microsoft Entra ID to authenticate inference requests
-- Keyless authentication mean say no secrets for your code or environment
-- Your account must get **Cognitive Services OpenAI User** role for the resource
+**Why e dey important:**
+- Azure AI Foundry dey use Microsoft Entra ID authenticate inference request
+- Keyless auth mean no secrets for your source code or environment
+- Your account need **Cognitive Services OpenAI User** role on di resource
+
+Di default deployment name na `gpt-5.6-luna`. If your GPT-5.6 Luna deployment get one oda name, set `AZURE_OPENAI_DEPLOYMENT` for di same terminal before you start di application. Both image analysis and story generation dey use dis setting.
 
 ### Step 2: Build and Run
 
-Go the project folder:
+Go project directory:
 ```bash
 cd 04-PracticalSamples/petstory
 ```
 
-Build the application:
+Build di standalone executable JAR and run all offline tests:
 ```bash
-mvn clean compile
+mvn clean package
 ```
 
-Start the server:
+Start di server:
 ```bash
 mvn spring-boot:run
 ```
 
-The app go start for `http://localhost:8080`.
+Di application go start for `http://localhost:8080`.
+
+Alternatively, start di packaged JAR on one free port, for example:
+
+```bash
+java -jar target/pet-story-app-0.0.1-SNAPSHOT.jar --server.port=8083
+```
+
+For dat command, open `http://localhost:8083/`. Di same `/analyze-image` and `/generate-story` routes dey available for di selected port.
 
 ### Step 3: Test the Application
 
 1. **Open** `http://localhost:8080` for your browser
-2. **Describe** your pet inside the text area (for example, "Playful golden retriever wey sabi fetch well well")
-3. **Click** "Generate Story" to get AI-generated story
-4. **Or** upload pet picture to automatically make description
-5. **View** the creative story wey relate to your pet description
+2. **Select** clear pet photo for JPEG, PNG, GIF, or WebP format, below 10MB
+3. **Click** "Analyze Image" and wait for pet description
+4. **Click** "Generate Story" after analysis successful
+5. **View** di story and use di result page link to go back to upload form
 
-## How It All Works Together
+Di successful photo-to-story flow dey make two model calls, one per button. Live inference dey use your deployment quota and fit make you pay; make you run smoke tests one by one if you dey share rate-limited deployment. Just opening home page no dey call model.
 
-Here na how the whole flow go be when you generate pet story:
+## Offline Tests
 
-1. **User Input**: You go describe your pet for the web form
-2. **Form Submission**: Your browser go send POST request to `/generate-story`
-3. **Controller Processing**: `PetController` go validate plus clean the input
-4. **AI Service Call**: `StoryService` go send request to Azure AI Foundry model
-5. **Story Generation**: AI go generate creative story based on your description
-6. **Response Handling**: Controller go receive story and add am to model
-7. **Template Rendering**: Thymeleaf go render `result.html` with the story
-8. **Display**: You go see the story for your browser
+From sample directory, run:
+
+```bash
+mvn test
+```
+
+[StoryServiceTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/StoryServiceTest.java) dey capture real OpenAI SDK requests wit loopback HTTP fixture. E dey check deployment, `reasoning_effort: none`, token limits, image payload, input validation, empty responses, and upstream errors for both requests.
+
+[PetControllerTest.java](../../../../04-PracticalSamples/petstory/src/test/java/com/example/petstory/PetControllerTest.java) dey use MockMvc wit mocked model service to test Thymeleaf pages rendering, upload contract, CSRF, validation, output escaping, and visible failure. These tests no need Azure credentials and no ever call paid Azure inference. Maven go write Surefire reports under `target/surefire-reports`.
+
+## How E Dey Work Together
+
+Dis na di full flow when you wan generate pet story:
+
+1. **Photo Selection**: You choose pet image for upload form
+2. **Image Upload**: "Analyze Image" send multipart POST to `/analyze-image` wit CSRF header
+3. **Image Analysis**: `StoryService` go send image to GPT-5.6 Luna with reasoning set to `none`
+4. **Description Display**: Browser go show description and store am for form
+5. **Story Submission**: "Generate Story" go post `description` and `_csrf` to `/generate-story`
+6. **Story Generation**: Controller go validate description and call same deployment with reasoning set to `none`
+7. **Template Rendering**: Thymeleaf go escape and show description and story for result page
 
 **Error Handling Flow:**
-If AI service fail:
-1. Controller go catch the exception
-2. E go generate fallback story with pre-written templates
-3. E go show fallback story plus tell say AI no ready
-4. You still go get story so e go make sure users happy
+If model fail, server go log di reason. Image analysis go return HTTP 502 and browser go show error without "Generate Story". Story generation go redirect back to form wit error message. Neither go quietly replace wit pre-made result.
 
-## Understanding the AI Integration
+## How AI Dem Join Am
 
 ### Azure AI Foundry (keyless)
-This app dey use Azure AI Foundry with keyless authentication (Microsoft Entra ID):
-
-```java
-// Keyless authentication - no API key (no key dey)
-DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-this.openAIClient = OpenAIOkHttpClient.builder()
-    .baseUrl(endpoint + "openai/v1/")
-    .credential(BearerTokenCredential.create(
-        AuthenticationUtil.getBearerTokenSupplier(credential, "https://ai.azure.com/.default")))
-    .build();
-```
+Service dey configure SDK wit your resource `/openai/v1/` endpoint. `DefaultAzureCredential` and `AuthenticationUtil.getBearerTokenSupplier` supply Microsoft Entra tokens for `https://ai.azure.com/.default`. Local development fit use your Azure CLI sign-in; Azure-hosted app fit use managed identity wit correct resource permission.
 
 ### Prompt Engineering
-This service dey use well thought-out prompts to get better results:
-
-```java
-String systemPrompt = "You are a creative storyteller who writes fun, " +
-                     "family-friendly short stories about pets. " +
-                     "Keep stories under 500 words and appropriate for all ages.";
-```
+Image analysis dey ask make model see pet features in short paragraph and treat text inside image as data, no be commands. Story generation go use returned description for family-friendly writing request separately. Neither call enable reasoning or set temperature override.
 
 ### Response Processing
-AI response go extract and validate:
-
-```java
-ChatCompletion response = openAIClient.chat().completions().create(params);
-String story = response.choices().get(0).message().content().orElse("");
-```
+Shared response handler go reject missing choices and empty/whitespace-only content, trim valid content, and keep upstream failure info. Image descriptions capped at 1000 characters to fit next story form. Original model failure dey for diagnostics but no dey show user.
 
 ## Next Steps
 
-For more examples, see [Chapter 04: Practical samples](../README.md)
+For more examples, check [Chapter 04: Practical samples](../README.md)
 
 ---
 
